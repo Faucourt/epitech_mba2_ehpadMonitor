@@ -1,0 +1,2291 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHPAD — Tableau de bord</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #1a1d2e; --bg3: #242840;
+    --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
+    --border: #2d3748;
+    --blue: #3b82f6; --blue-dark: #1d4ed8;
+    --yellow: #f59e0b; --orange: #f97316;
+    --red: #ef4444; --black-alert: #1a0a0a;
+    --green: #10b981; --purple: #8b5cf6;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; font-size: 14px; }
+
+  /* Header */
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 18px; font-weight: 700; color: var(--blue); }
+  .header-stats { display: flex; gap: 20px; }
+  .stat { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: var(--text2); }
+  .conn-indicator { width: 10px; height: 10px; border-radius: 50%; background: var(--red); display: inline-block; margin-right: 6px; }
+  .conn-indicator.connected { background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .time-ribbon { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: #121826; }
+  .time-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+  .time-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .time-value { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .time-value.accent { color: #60a5fa; }
+  .quick-history { margin-bottom: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .quick-history-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .quick-history-title { font-size: 13px; font-weight: 700; }
+  .quick-history-list { display: grid; gap: 6px; }
+  .quick-history-row { display: grid; grid-template-columns: 88px 1fr 72px; gap: 8px; align-items: center; font-size: 12px; color: var(--text2); border-top: 1px solid rgba(148,163,184,0.12); padding-top: 6px; }
+  .quick-history-row:first-child { border-top: 0; padding-top: 0; }
+  .night-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .night-stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+  .night-stat strong { display: block; font-size: 20px; line-height: 1.1; }
+  .night-stat span { display: block; font-size: 11px; color: var(--text2); margin-top: 4px; }
+  .night-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .night-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 11px; cursor: pointer; }
+  .night-card.warn { border-color: var(--yellow); }
+  .night-card.danger { border-color: var(--red); box-shadow: 0 0 10px rgba(239,68,68,0.22); }
+  .night-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .night-name { font-weight: 700; font-size: 13px; }
+  .night-room { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .night-state { font-size: 11px; font-weight: 800; padding: 3px 7px; border-radius: 5px; background: var(--bg3); color: var(--text2); white-space: nowrap; }
+  .night-state.ok { background: rgba(16,185,129,0.14); color: var(--green); }
+  .night-state.warn { background: rgba(245,158,11,0.14); color: var(--yellow); }
+  .night-state.danger { background: rgba(239,68,68,0.16); color: var(--red); }
+  .night-signals { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; color: var(--text2); }
+  .night-signal { background: rgba(36,40,64,0.72); border-radius: 5px; padding: 5px 6px; min-width: 0; }
+
+  /* Layout */
+  .main { display: flex; height: calc(100vh - 126px); overflow: hidden; }
+  .sidebar { width: 300px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .content { flex: 1; overflow-y: auto; padding: 16px; }
+
+  /* Tabs */
+  .tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .tab { padding: 10px 16px; cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent; font-size: 13px; transition: all 0.2s; }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Alert sidebar */
+  .alert-list { overflow-y: auto; flex: 1; }
+  .alert-item { padding: 10px 14px; border-left: 4px solid; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+  .alert-item:hover { background: var(--bg3); }
+  .alert-item.level-1 { border-color: var(--blue); }
+  .alert-item.level-2 { border-color: var(--yellow); }
+  .alert-item.level-3 { border-color: var(--orange); }
+  .alert-item.level-4 { border-color: var(--red); }
+  .alert-item.level-5 { border-color: #ff0000; background: #1a0505; animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.7} }
+  .alert-name { font-weight: 600; font-size: 13px; }
+  .alert-reason { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .alert-time { font-size: 10px; color: var(--text3); }
+  .alert-badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-bottom: 3px; }
+  .badge-1 { background: #1e3a5f; color: var(--blue); }
+  .badge-2 { background: #3d2e00; color: var(--yellow); }
+  .badge-3 { background: #3d1a00; color: var(--orange); }
+  .badge-4 { background: #3d0000; color: var(--red); }
+  .badge-5 { background: #1a0000; color: #ff3333; }
+
+  /* Resident grid */
+  .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .section-title { font-size: 16px; font-weight: 600; }
+  .filter-bar { display: flex; gap: 8px; align-items: center; }
+  .filter-btn { padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg2); color: var(--text2); cursor: pointer; font-size: 12px; }
+  .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .demo-banner { display: none; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding: 10px 12px; border: 1px solid rgba(249,115,22,0.5); background: rgba(249,115,22,0.08); border-radius: 8px; }
+  .demo-banner.active { display: flex; }
+  .demo-title { font-size: 13px; font-weight: 700; color: var(--orange); }
+  .demo-meta { font-size: 12px; color: var(--text2); }
+  .scenario-chip { display: inline-block; margin-top: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(249,115,22,0.18); color: var(--orange); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+
+  .resident-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .resident-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .resident-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+  .resident-card.alert-1 { border-color: var(--blue); }
+  .resident-card.alert-2 { border-color: var(--yellow); }
+  .resident-card.alert-3 { border-color: var(--orange); box-shadow: 0 0 8px rgba(249,115,22,0.3); }
+  .resident-card.alert-4 { border-color: var(--red); box-shadow: 0 0 12px rgba(239,68,68,0.4); }
+  .resident-card.alert-5 { border-color: #ff0000; box-shadow: 0 0 16px rgba(255,0,0,0.5); animation: blink 1s infinite; }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .card-name { font-weight: 600; font-size: 13px; line-height: 1.3; }
+  .card-room { font-size: 11px; color: var(--text3); }
+  .card-vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .vital { display: flex; flex-direction: column; }
+  .vital-val { font-size: 15px; font-weight: 700; }
+  .vital-label { font-size: 10px; color: var(--text3); }
+  .vital-val.warn { color: var(--yellow); }
+  .vital-val.danger { color: var(--red); }
+  .vital-val.ok { color: var(--green); }
+  .ml-risk-bar { margin-top: 8px; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+  .ml-risk-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+  .status-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Floor plan */
+  .floor-plan { background: var(--bg2); border-radius: var(--radius); padding: 16px; }
+  .floor-selector { display: flex; gap: 8px; margin-bottom: 12px; }
+  .floor-btn { padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: 12px; }
+  .floor-btn.active { background: var(--blue); color: #fff; }
+  #floor-svg { width: 100%; max-width: 700px; display: block; margin: 0 auto; }
+
+  /* 3D facility view */
+  .model-shell { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 12px; height: calc(100vh - 122px); min-height: 560px; }
+  .model-stage { position: relative; min-height: 520px; border: 1px solid var(--border); background: #0b1018; border-radius: var(--radius); overflow: hidden; }
+  #ehpad-3d { width: 100%; height: 100%; display: block; }
+  .model-overlay { position: absolute; left: 12px; top: 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; pointer-events: none; }
+  .model-overlay .filter-btn { pointer-events: auto; }
+  .model-pill { background: rgba(15,17,23,0.82); border: 1px solid rgba(148,163,184,0.22); border-radius: 6px; padding: 6px 8px; color: var(--text2); font-size: 11px; font-weight: 700; }
+  .resident-tooltip { position: absolute; z-index: 30; display: none; pointer-events: none; transform: translate(12px, 12px); background: rgba(15,17,23,0.94); border: 1px solid rgba(148,163,184,0.32); color: var(--text); border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.35; box-shadow: 0 8px 26px rgba(0,0,0,0.35); min-width: 160px; }
+  .resident-tooltip strong { display: block; color: #dbeafe; margin-bottom: 2px; }
+  .model-side { border: 1px solid var(--border); background: var(--bg2); border-radius: var(--radius); padding: 12px; overflow: auto; }
+  .model-side h3 { font-size: 14px; margin-bottom: 8px; }
+  .model-detail { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px; color: var(--text2); font-size: 12px; line-height: 1.45; }
+  .sensor-legend { display: grid; gap: 7px; margin-top: 8px; }
+  .sensor-key { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text2); }
+  .sensor-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px currentColor; }
+  .model-controls { display: grid; gap: 8px; margin-top: 12px; }
+  .model-controls label { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--text2); }
+  .model-controls input { accent-color: var(--blue); }
+  @media (max-width: 900px) {
+    .time-ribbon { grid-template-columns: 1fr 1fr; }
+    .night-summary { grid-template-columns: 1fr 1fr; }
+    .model-shell { grid-template-columns: 1fr; height: auto; }
+    .model-stage { height: 62vh; }
+  }
+
+  /* Detail panel */
+  #detail-panel { display: none; position: fixed; right: 0; top: 57px; width: 380px; height: calc(100vh - 57px); background: var(--bg2); border-left: 1px solid var(--border); z-index: 100; overflow-y: auto; padding: 16px; box-shadow: -4px 0 20px rgba(0,0,0,0.4); }
+  #detail-panel.open { display: block; }
+  .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .detail-close { cursor: pointer; font-size: 20px; color: var(--text2); }
+  .vital-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .chart-container { height: 120px; background: var(--bg3); border-radius: 8px; margin: 8px 0; padding: 8px; position: relative; overflow: hidden; }
+  .sparkline { width: 100%; height: 100%; }
+  .monitor-scope { background: linear-gradient(180deg, #07111b, #050b12 75%); border: 1px solid rgba(125,164,203,0.24); border-radius: 8px; padding: 10px; margin: 8px 0 12px; box-shadow: inset 0 0 20px rgba(14,165,233,0.05); }
+  .monitor-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .monitor-title { color: #6bd3ff; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .monitor-live { display: inline-flex; align-items: center; gap: 5px; color: #9fb9d7; font-size: 10px; font-weight: 700; }
+  .monitor-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,0.8); }
+  .monitor-values { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+  .monitor-value { border: 1px solid rgba(159,185,215,0.14); background: rgba(7,18,30,0.88); border-radius: 6px; padding: 6px; min-width: 0; }
+  .monitor-label { font-size: 9px; color: #85a3bf; font-weight: 800; text-transform: uppercase; }
+  .monitor-number { font-size: 18px; line-height: 1.05; font-weight: 900; color: #e8f2ff; }
+  .monitor-unit { font-size: 9px; color: #85a3bf; }
+  .monitor-row { display: grid; grid-template-columns: 42px 1fr; align-items: center; gap: 6px; height: 45px; border-top: 1px solid rgba(159,185,215,0.08); }
+  .monitor-wave-label { font-size: 10px; color: #9fb9d7; font-weight: 800; }
+  .monitor-wave { width: 100%; height: 38px; display: block; background-image: linear-gradient(rgba(35,73,115,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(35,73,115,0.18) 1px, transparent 1px); background-size: 24px 19px; border-radius: 4px; }
+  .section-sub { font-size: 12px; font-weight: 600; color: var(--text2); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .ack-btn { width: 100%; padding: 10px; background: var(--green); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 12px; }
+  .ack-btn:hover { opacity: 0.9; }
+  .pathology-tag { display: inline-block; padding: 2px 8px; background: var(--bg3); border-radius: 4px; font-size: 11px; margin: 2px; color: var(--text2); }
+
+  /* Toast */
+  #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+  .toast { padding: 12px 16px; border-radius: 8px; border-left: 4px solid; max-width: 350px; animation: slideIn 0.3s ease; font-size: 13px; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast-3 { background: #1a1000; border-color: var(--orange); }
+  .toast-4 { background: #1a0000; border-color: var(--red); }
+  .toast-5 { background: #0a0000; border-color: #ff0000; color: #ff6666; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .report-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .report-toolbar input, .report-toolbar select { background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 6px 8px; }
+  .report-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); gap: 12px; align-items: start; }
+  .report-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 0; }
+  .report-panel h3 { font-size: 14px; margin-bottom: 8px; }
+  .report-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+  .report-kpi { background: var(--bg3); border-radius: 6px; padding: 8px; }
+  .report-kpi strong { display: block; font-size: 20px; }
+  .report-kpi span { color: var(--text2); font-size: 11px; }
+  .handover-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .handover-table th, .handover-table td { padding: 7px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  .handover-table th { color: var(--text2); font-weight: 700; }
+  .handover-row { cursor: pointer; }
+  .handover-row:hover { background: rgba(59,130,246,0.08); }
+  .dpi-grid { display: grid; gap: 8px; }
+  .dpi-row { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid rgba(148,163,184,0.14); padding-bottom: 6px; font-size: 12px; }
+  .dpi-row span:first-child { color: var(--text2); }
+  .watch-list { display: grid; gap: 6px; margin-top: 8px; }
+  .watch-item { background: rgba(36,40,64,0.72); border-radius: 6px; padding: 7px; font-size: 12px; color: var(--text2); }
+  @media (max-width: 1100px) { .report-layout { grid-template-columns: 1fr; } }
+
+  .no-alerts { padding: 20px; text-align: center; color: var(--text3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ðŸ¥ EHPAD Monitor</div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Résidents</div></div>
+    <div class="stat"><div class="stat-val" id="stat-alerts" style="color:var(--red)">—</div><div class="stat-label">Alertes actives</div></div>
+    <div class="stat"><div class="stat-val" id="stat-ml" style="color:var(--purple)">—</div><div class="stat-label">Risque ML élevé</div></div>
+    <div class="stat"><div class="stat-val" id="stat-ok" style="color:var(--green)">—</div><div class="stat-label">Status OK</div></div>
+  </div>
+  <div style="font-size:12px;color:var(--text2)">
+    <span class="conn-indicator" id="conn-dot"></span>
+    <span id="conn-status">Connexion...</span>
+  </div>
+</header>
+<section class="time-ribbon">
+  <div class="time-card">
+    <div class="time-label">Date réelle</div>
+    <div class="time-value" id="real-date">--/--/----</div>
+  </div>
+  <div class="time-card">
+    <div class="time-label">Heure réelle</div>
+    <div class="time-value" id="real-time">--:--:--</div>
+  </div>
+  <div class="time-card">
+    <div class="time-label">Heure simulée EHPAD</div>
+    <div class="time-value accent" id="sim-clock-main">--:--</div>
+  </div>
+  <div class="time-card">
+    <div class="time-label">Phase / vitesse</div>
+    <div class="time-value" id="sim-phase-main">Routine · x1</div>
+  </div>
+</section>
+
+<div class="main">
+  <!-- Sidebar alertes -->
+  <div class="sidebar">
+    <div style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;">
+      Alertes actives
+    </div>
+    <div class="alert-list" id="alert-list">
+      <div class="no-alerts">Aucune alerte active</div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="content">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('grid')">Grille résidents</div>
+      <div class="tab" onclick="showTab('plan')">Plan EHPAD</div>
+      <div class="tab" onclick="showTab('model3d')">Vue 3D</div>
+      <div class="tab" onclick="showTab('night')">Vue Nuit</div>
+      <div class="tab" onclick="showTab('reports')">Transmissions</div>
+      <div class="tab" onclick="showTab('history')">Historique alertes</div>
+    </div>
+
+    <!-- Tab: Grille -->
+    <div class="tab-content active" id="tab-grid" style="padding-top:14px">
+      <div class="grid-header">
+        <div class="section-title">Vue globale — <span id="grid-count">0</span> résidents</div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
+          <button class="filter-btn" onclick="setFilter('alert', this)">En alerte</button>
+          <button class="filter-btn" onclick="setFilter('risk', this)">Risque ML</button>
+          <button class="filter-btn" onclick="focusDemoResident(this)">Démo R005</button>
+        </div>
+      </div>
+      <div class="demo-banner" id="demo-banner">
+        <div>
+          <div class="demo-title">Scénario démo R005 · hypoxie progressive</div>
+          <div class="demo-meta" id="demo-meta">En attente des constantes du simulateur...</div>
+        </div>
+        <button class="filter-btn" onclick="openDetail('R005')">Ouvrir</button>
+      </div>
+      <div class="quick-history">
+        <div class="quick-history-head">
+          <div>
+            <div class="quick-history-title">Historique récent</div>
+            <div style="font-size:11px;color:var(--text2)">Dernières alertes reçues et accès au mois simulé</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="filter-btn" onclick="showTab('history')">Voir historique</button>
+            <button class="filter-btn" onclick="openMonthHistoryFromGrid()">30 jours</button>
+          </div>
+        </div>
+        <div class="quick-history-list" id="quick-history-list">
+          <div class="no-alerts" style="padding:6px;text-align:left">Aucun événement récent</div>
+        </div>
+      </div>
+      <div class="resident-grid" id="resident-grid"></div>
+    </div>
+
+    <!-- Tab: Plan -->
+    <div class="tab-content" id="tab-plan" style="padding-top:14px">
+      <div class="floor-plan">
+        <div class="floor-selector">
+          <button class="floor-btn active" onclick="showFloor(0, this)">RDC</button>
+          <button class="floor-btn" onclick="showFloor(1, this)">1er</button>
+        </div>
+        <svg id="floor-svg" viewBox="0 0 700 400"></svg>
+      </div>
+    </div>
+
+    <!-- Tab: Vue 3D -->
+    <div class="tab-content" id="tab-model3d" style="padding-top:14px">
+      <div class="model-shell">
+        <div class="model-stage">
+          <canvas id="ehpad-3d"></canvas>
+          <div class="resident-tooltip" id="resident-tooltip-3d"></div>
+          <div class="model-overlay">
+            <div class="model-pill">RDC + 1er etage</div>
+            <div class="model-pill">Residents live MQTT</div>
+            <div class="model-pill">Capteurs par zone</div>
+            <button class="filter-btn active" onclick="set3DFloorMode('all', this)">Tout</button>
+            <button class="filter-btn" onclick="set3DFloorMode('0', this)">RDC</button>
+            <button class="filter-btn" onclick="set3DFloorMode('1', this)">1er</button>
+            <button class="filter-btn" onclick="focus3DView()">Recentrer</button>
+          </div>
+        </div>
+        <aside class="model-side">
+          <h3>Maquette capteurs</h3>
+          <div style="font-size:12px;color:var(--text2)">Clique une chambre, un resident ou un capteur.</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:6px">Clic gauche: deplacer le plan · molette: zoom curseur · clic droit: rotation</div>
+          <div class="sensor-legend">
+            <div class="sensor-key"><span class="sensor-dot" style="color:#3b82f6;background:#3b82f6"></span>PIR / presence</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#8b5cf6;background:#8b5cf6"></span>Radar mmWave</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#10b981;background:#10b981"></span>Wearable / BLE</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#f59e0b;background:#f59e0b"></span>Sol / matelas</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#ef4444;background:#ef4444"></span>Porte / RFID / SOS</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#22d3ee;background:#22d3ee"></span>CO2 / son / environnement</div>
+          </div>
+          <div class="model-controls">
+            <label>Residents <input id="toggle-residents-3d" type="checkbox" checked onchange="set3DLayer('residents', this.checked)"></label>
+            <label>Capteurs <input id="toggle-sensors-3d" type="checkbox" checked onchange="set3DLayer('sensors', this.checked)"></label>
+            <label>Toits transparents <input id="toggle-walls-3d" type="checkbox" checked onchange="set3DLayer('walls', this.checked)"></label>
+            <label>Vitesse scenario <span><input id="sim-speed" type="range" min="1" max="30" value="1" onchange="setSimulatorSpeed(this.value)" oninput="document.getElementById('sim-speed-label').textContent = this.value + 'x'"> <b id="sim-speed-label">1x</b></span></label>
+          </div>
+          <div class="model-detail" id="model-3d-detail">Plan fidèle au document : accueil, soins, patio, espaces communs, couloirs, ascenseur, escalier et 25 lits.</div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Tab: Nuit -->
+    <div class="tab-content" id="tab-night" style="padding-top:14px">
+      <div class="grid-header">
+        <div>
+          <div class="section-title">Surveillance nocturne</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:3px" id="night-period-label">Coucher et nuit simulés</div>
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setNightFilter('all', this)">Tous</button>
+          <button class="filter-btn" onclick="setNightFilter('bed', this)">Au lit</button>
+          <button class="filter-btn" onclick="setNightFilter('up', this)">Levés</button>
+          <button class="filter-btn" onclick="setNightFilter('door', this)">Porte</button>
+          <button class="filter-btn" onclick="setNightFilter('risk', this)">Risque</button>
+        </div>
+      </div>
+      <div class="night-summary">
+        <div class="night-stat"><strong id="night-total">0</strong><span>Résidents suivis</span></div>
+        <div class="night-stat"><strong id="night-bed">0</strong><span>Au lit / sommeil</span></div>
+        <div class="night-stat"><strong id="night-up">0</strong><span>Levés ou actifs</span></div>
+        <div class="night-stat"><strong id="night-door">0</strong><span>Portes ouvertes</span></div>
+        <div class="night-stat"><strong id="night-risk">0</strong><span>À surveiller</span></div>
+      </div>
+      <div class="night-grid" id="night-grid"></div>
+    </div>
+
+    <!-- Tab: Historique -->
+    <div class="tab-content" id="tab-reports" style="padding-top:14px">
+      <div class="report-toolbar">
+        <input type="date" id="report-date">
+        <select id="report-resident-select" onchange="loadResidentDpi(this.value)"></select>
+        <button class="filter-btn" onclick="loadDailyReport()">Charger fiche</button>
+        <button class="filter-btn" onclick="generateDailyReport()">Regénérer aujourd'hui</button>
+        <button class="filter-btn" onclick="print()">Imprimer transmission</button>
+        <span style="font-size:12px;color:var(--text2)">Fiche globale soignants + mini DPI résident.</span>
+      </div>
+      <div class="report-layout">
+        <section class="report-panel">
+          <h3>Fiche de transmission globale</h3>
+          <div id="global-report"></div>
+        </section>
+        <aside class="report-panel">
+          <h3>Mini DPI résident</h3>
+          <div id="resident-dpi"></div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-history" style="padding-top:14px">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+        <select id="sim-history-resident" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px 8px"></select>
+        <button class="filter-btn" onclick="loadSimulatedHistory()">Historique simulé 30 jours</button>
+        <span style="font-size:12px;color:var(--text2)">Scénarios mensuels générés pour tester les niveaux 1 à 5.</span>
+      </div>
+      <div id="simulated-history" style="margin-bottom:14px"></div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel détail résident -->
+<div id="detail-panel">
+  <div class="detail-header">
+    <div>
+      <div style="font-size:18px;font-weight:700" id="dp-name">—</div>
+      <div style="font-size:13px;color:var(--text2)" id="dp-info">—</div>
+    </div>
+    <div class="detail-close" onclick="closeDetail()">×</div>
+  </div>
+  <div id="dp-content"></div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+const BACKEND_WS = `ws://${location.hostname}:8001/ws`;
+const BACKEND_HTTP = `http://${location.hostname}:8001`;
+
+let ws = null;
+let residents = {};
+let activeAlerts = {};
+let historyData = [];
+let currentFilter = 'all';
+let currentNightFilter = 'all';
+let currentFloor = 0;
+let currentDetailResident = null;
+let historyBuffer = {};  // resident_id → [{val, time}]
+let simulatorSpeed = 1;
+let currentDailyReport = null;
+
+// ============================================================
+// WebSocket
+// ============================================================
+function connect() {
+  ws = new WebSocket(BACKEND_WS);
+
+  ws.onopen = () => {
+    document.getElementById('conn-dot').classList.add('connected');
+    document.getElementById('conn-status').textContent = 'Connecté';
+  };
+
+  ws.onclose = () => {
+    document.getElementById('conn-dot').classList.remove('connected');
+    document.getElementById('conn-status').textContent = 'Reconnexion...';
+    setTimeout(connect, 3000);
+  };
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'init') {
+      msg.data.residents.forEach(r => residents[r.id] = r);
+      (msg.data.alerts || []).forEach(a => activeAlerts[a.resident_id] = a);
+      renderAll();
+    } else if (msg.type === 'resident_update') {
+      const r = msg.data;
+      residents[r.resident_id] = { ...residents[r.resident_id], ...r, id: r.resident_id };
+      if (r.alert) activeAlerts[r.resident_id] = r.alert;
+      else if (activeAlerts[r.resident_id] && !activeAlerts[r.resident_id].acknowledged) {
+        // Keep alert
+      }
+      updateResidentCard(r.resident_id);
+      updateStats();
+      updateAlertSidebar();
+      updateTimeRibbon();
+      updateQuickHistory();
+      renderNightView();
+      updateEHPAD3D();
+      bufferHistory(r.resident_id, r.vitals);
+    } else if (msg.type === 'alert') {
+      const a = msg.data;
+      activeAlerts[a.resident_id] = a;
+      historyData.unshift(a);
+      showToast(a);
+      updateAlertSidebar();
+      renderHistoryTab();
+      updateQuickHistory();
+    } else if (msg.type === 'summary') {
+      // Update from summary if individual updates are behind
+    }
+  };
+}
+
+function bufferHistory(rid, vitals) {
+  if (!historyBuffer[rid]) historyBuffer[rid] = { hr: [], spo2: [], bp: [], temp: [] };
+  const b = historyBuffer[rid];
+  const push = (arr, val) => { arr.push(val); if (arr.length > 60) arr.shift(); };
+  push(b.hr, vitals.heart_rate);
+  push(b.spo2, vitals.spo2);
+  push(b.bp, vitals.blood_pressure_sys);
+  push(b.temp, vitals.temperature);
+}
+
+// ============================================================
+// Render helpers
+// ============================================================
+function getAlertLevel(rid) {
+  const a = activeAlerts[rid];
+  return a && !a.resolved ? a.level : 0;
+}
+
+function getMLRiskColor(risk) {
+  if (risk > 0.75) return '#ef4444';
+  if (risk > 0.5) return '#f97316';
+  if (risk > 0.25) return '#f59e0b';
+  return '#10b981';
+}
+
+function vitalColor(type, val) {
+  const ranges = {
+    heart_rate: { ok: [50,100], warn: [40,130], danger: [0,200] },
+    spo2: { ok: [95,100], warn: [90,94], danger: [0,89] },
+    blood_pressure_sys: { ok: [90,159], warn: [80,179], danger: [0,220] },
+    temperature: { ok: [36,37.9], warn: [37.9,39.5], danger: [39.5,45] }
+  };
+  const r = ranges[type];
+  if (!r) return 'ok';
+  if (val >= r.danger[0] && val < r.danger[1] && (val < r.warn[0] || val > r.warn[1])) return 'danger';
+  if (val >= r.ok[0] && val <= r.ok[1]) return 'ok';
+  return 'warn';
+}
+
+function renderAll() {
+  renderGrid();
+  updateStats();
+  updateAlertSidebar();
+  updateDemoBanner();
+  updateSimulatedHistorySelect();
+  updateReportResidentSelect();
+  renderFloorPlan(currentFloor);
+  updateTimeRibbon();
+  updateQuickHistory();
+  renderNightView();
+  updateEHPAD3D();
+}
+
+function updateWallClock() {
+  const now = new Date();
+  document.getElementById('real-date').textContent = now.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+  document.getElementById('real-time').textContent = now.toLocaleTimeString('fr-FR');
+}
+
+function getReferenceResident() {
+  const all = Object.values(residents);
+  return all.find(r => r.id === currentDetailResident) || all.find(r => r.time_label) || all[0] || {};
+}
+
+function updateTimeRibbon() {
+  updateWallClock();
+  const ref = getReferenceResident();
+  document.getElementById('sim-clock-main').textContent = ref.time_label || '--:--';
+  document.getElementById('sim-phase-main').textContent = `${ref.routine_label || 'Routine'} · x${simulatorSpeed}`;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('resident-grid');
+  const all = Object.values(residents);
+  const filtered = all.filter(r => {
+    if (currentFilter === 'alert') return getAlertLevel(r.id) > 0;
+    if (currentFilter === 'risk') return (r.ml_risk || 0) > 0.5;
+    if (currentFilter === 'demo') return r.id === 'R005';
+    return true;
+  });
+
+  document.getElementById('grid-count').textContent = all.length;
+
+  // Update or create cards
+  filtered.forEach(r => {
+    let card = document.getElementById(`card-${r.id}`);
+    if (!card) {
+      card = document.createElement('div');
+      card.id = `card-${r.id}`;
+      card.className = 'resident-card';
+      card.onclick = () => openDetail(r.id);
+      grid.appendChild(card);
+    }
+    renderCard(card, r);
+  });
+
+  // Remove cards not in filter
+  grid.querySelectorAll('.resident-card').forEach(card => {
+    const rid = card.id.replace('card-', '');
+    if (!filtered.find(r => r.id === rid)) card.remove();
+  });
+}
+
+function renderCard(card, r) {
+  const level = getAlertLevel(r.id);
+  card.className = `resident-card ${level > 0 ? 'alert-' + level : ''}`;
+  const v = r.vitals || {};
+  const mlRisk = r.ml_risk || 0;
+  const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario;
+  const fugue = r.current_zone === 'hors_ehpad' || r.movement_scenario === 'fugue_hors_ehpad';
+
+  const statusColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
+  const statusColor = statusColors[level] || '#10b981';
+
+  card.innerHTML = `
+    <div class="status-dot" style="background:${statusColor}"></div>
+    <div class="card-header">
+      <div>
+        <div class="card-name">${r.name || r.id}</div>
+        <div class="card-room">Chambre ${r.room || '—'}</div>
+        ${scenario ? `<span class="scenario-chip">${fugue ? 'FUGUE HORS EHPAD' : scenario}</span>` : ''}
+      </div>
+    </div>
+    <div class="card-vitals">
+      <div class="vital">
+        <span class="vital-val ${vitalColor('heart_rate', v.heart_rate || 0)}">${v.heart_rate || '—'}</span>
+        <span class="vital-label">FC bpm</span>
+      </div>
+      <div class="vital">
+        <span class="vital-val ${vitalColor('spo2', v.spo2 || 0)}">${v.spo2 || '—'}%</span>
+        <span class="vital-label">SpO2</span>
+      </div>
+      <div class="vital">
+        <span class="vital-val ${vitalColor('blood_pressure_sys', v.blood_pressure_sys || 0)}">${v.blood_pressure_sys || '—'}</span>
+        <span class="vital-label">PA mmHg</span>
+      </div>
+      <div class="vital">
+        <span class="vital-val ${vitalColor('temperature', v.temperature || 0)}">${v.temperature || '—'}°C</span>
+        <span class="vital-label">Temp.</span>
+      </div>
+    </div>
+    <div class="ml-risk-bar">
+      <div class="ml-risk-fill" style="width:${mlRisk*100}%;background:${getMLRiskColor(mlRisk)}"></div>
+    </div>
+    <div style="font-size:10px;color:var(--text3);margin-top:3px">Risque ML: ${(mlRisk*100).toFixed(0)}%</div>
+    <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.time_label || '--:--'} · ${r.routine_label || 'routine'}${r.meal_mode === 'chambre' ? ' · repas en chambre' : (r.current_zone === 'salle_manger' ? ` · table ${r.dining_table || '?'}` : '')}</div>
+  `;
+}
+
+function updateResidentCard(rid) {
+  const r = residents[rid];
+  if (!r) return;
+  const card = document.getElementById(`card-${rid}`);
+  if (card) renderCard(card, r);
+  else if (currentFilter === 'all' || currentFilter === 'demo') renderGrid();
+  if (rid === 'R005') updateDemoBanner();
+  if (currentDetailResident === rid && document.getElementById('detail-panel').classList.contains('open')) {
+    openDetail(rid);
+  }
+}
+
+function updateStats() {
+  const all = Object.values(residents);
+  const alertCount = Object.values(activeAlerts).filter(a => !a.resolved).length;
+  const mlHigh = all.filter(r => (r.ml_risk || 0) > 0.5).length;
+  const ok = all.filter(r => getAlertLevel(r.id) === 0 && (r.ml_risk || 0) < 0.5).length;
+
+  document.getElementById('stat-total').textContent = all.length;
+  document.getElementById('stat-alerts').textContent = alertCount;
+  document.getElementById('stat-ml').textContent = mlHigh;
+  document.getElementById('stat-ok').textContent = ok;
+}
+
+function updateDemoBanner() {
+  const banner = document.getElementById('demo-banner');
+  const meta = document.getElementById('demo-meta');
+  const r = residents.R005;
+  if (!banner || !meta) return;
+  if (!r) {
+    banner.classList.remove('active');
+    return;
+  }
+  const v = r.vitals || {};
+  const mlRisk = ((r.ml_risk || 0) * 100).toFixed(0);
+  const level = getAlertLevel('R005');
+  const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario || 'hypoxie';
+  banner.classList.add('active');
+  meta.textContent = `SpO2 ${v.spo2 ?? '—'}% · FC ${v.heart_rate ?? '—'} bpm · ML ${mlRisk}% signalé 30 min avant · alerte niveau ${level || '—'} · ${scenario}`;
+}
+
+function updateAlertSidebar() {
+  const list = document.getElementById('alert-list');
+  const alerts = Object.values(activeAlerts).filter(a => !a.resolved).sort((a,b) => b.level - a.level);
+
+  if (!alerts.length) {
+    list.innerHTML = '<div class="no-alerts">✓ Aucune alerte active</div>';
+    return;
+  }
+
+  const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
+  list.innerHTML = alerts.map(a => `
+    <div class="alert-item level-${a.level}" onclick="openDetail('${a.resident_id}')">
+      <span class="alert-badge badge-${a.level}">${levelNames[a.level]}</span>
+      <div class="alert-name">${a.resident_name}</div>
+      <div class="alert-reason">${a.reason}</div>
+      <div class="alert-reason">Position: ${formatAlertLocation(a)}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <span class="alert-time">Chambre ${a.room} · ${formatSensorEvents(a.sensor_events)}</span>
+        <span class="alert-time">${a.time_since_s}s</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function formatAlertLocation(a) {
+  if (a.current_zone === 'hors_ehpad') return 'SORTIE HORS EHPAD';
+  const floor = Number.isFinite(a.floor) ? ` · etage ${a.floor}` : '';
+  return `${a.location_label || a.current_zone || ('Chambre ' + a.room)}${floor}`;
+}
+
+function formatSensorEvents(events = {}) {
+  const labels = [];
+  if (events.door_open) labels.push('porte');
+  if (events.floor_pressure_event) labels.push('sol/matelas');
+  if (events.room_radar_presence || events.radar_immobile_low) labels.push('radar');
+  if (events.room_pir_motion) labels.push('PIR');
+  if (events.bed_occupied) labels.push('lit');
+  return labels.length ? labels.join(', ') : 'capteurs';
+}
+
+function renderHistoryTab() {
+  const container = document.getElementById('history-list');
+  const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
+  const levelColors = ['', 'var(--blue)', 'var(--yellow)', 'var(--orange)', 'var(--red)', '#ff0000'];
+
+  if (!historyData.length) {
+    container.innerHTML = '<div class="no-alerts">Pas encore d\'historique</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="color:var(--text2);font-size:13px">${historyData.length} alertes</span>
+      <button onclick="exportAlertsCSV()" style="padding:5px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:6px;cursor:pointer;font-size:12px">
+        ↓ Exporter CSV
+      </button>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="color:var(--text2);border-bottom:1px solid var(--border)">
+          <th style="padding:8px;text-align:left">Heure</th>
+          <th style="padding:8px;text-align:left">Résident</th>
+          <th style="padding:8px;text-align:left">Chambre</th>
+          <th style="padding:8px;text-align:left">Niveau</th>
+          <th style="padding:8px;text-align:left">Raison</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${historyData.slice(0,50).map(a => `
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px;color:var(--text2)">${new Date(a.created_at).toLocaleTimeString('fr')}</td>
+            <td style="padding:8px">${a.resident_name}</td>
+            <td style="padding:8px;color:var(--text3)">${a.room}</td>
+            <td style="padding:8px"><span style="color:${levelColors[a.level]};font-weight:600">${levelNames[a.level]}</span></td>
+            <td style="padding:8px;color:var(--text2);font-size:12px">${a.reason}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function updateQuickHistory() {
+  const list = document.getElementById('quick-history-list');
+  if (!list) return;
+  const liveAlerts = Object.values(activeAlerts).filter(a => !a.resolved);
+  const recent = [...liveAlerts, ...historyData]
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+    .slice(0, 5);
+  if (!recent.length) {
+    list.innerHTML = '<div class="no-alerts" style="padding:6px;text-align:left">Aucun événement récent</div>';
+    return;
+  }
+  const levelNames = ['', 'Info', 'Attention', 'Alerte', 'Urgence', 'Danger'];
+  list.innerHTML = recent.map(a => {
+    const date = a.created_at ? new Date(a.created_at) : new Date();
+    return `
+      <div class="quick-history-row" onclick="openDetail('${a.resident_id}')" style="cursor:pointer">
+        <span>${date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })} ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+        <span>${a.resident_name || a.resident_id} · ${formatAlertLocation(a)}</span>
+        <span style="color:${['', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'][a.level] || '#94a3b8'}">${levelNames[a.level] || 'Info'}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function openMonthHistoryFromGrid() {
+  showTab('history');
+  setTimeout(() => loadSimulatedHistory(), 50);
+}
+
+function getNightStatus(r) {
+  const m = r.movement || {};
+  const events = r.sensor_events || m.sensor_events || {};
+  const scenario = r.movement_scenario || r.assigned_movement_scenario || '';
+  const isNightPhase = ['coucher', 'nuit'].includes(r.time_of_day) || (r.routine_label || '').toLowerCase().includes('nuit');
+  const inRoom = String(r.current_zone || '').startsWith('ch') || r.current_zone === r.zone;
+  const sleeping = Boolean(m.is_sleeping || r.activity === 'immobile');
+  const bed = Boolean(events.bed_occupied || (isNightPhase && inRoom && sleeping));
+  const door = Boolean(events.door_open || events.mattress_exit);
+  const up = Boolean(door || r.activity === 'deplacement' || !inRoom || scenario === 'aller_toilettes_nuit' || scenario === 'errance_nuit');
+  const fall = Boolean(m.is_fall_detected || m.ambient_fall_confirmed || events.floor_pressure_event || events.fall_confirmed_by_room_sensor);
+  const immobileMinutes = Math.round((m.last_movement_ago_s || 0) / 60);
+  const risk = fall || scenario === 'errance_nuit' || scenario === 'chute_chambre' || door || immobileMinutes >= 30 || getAlertLevel(r.id) >= 2;
+  let label = 'Repos chambre';
+  let severity = 'ok';
+  if (fall) { label = 'Chute suspectée'; severity = 'danger'; }
+  else if (scenario === 'errance_nuit') { label = 'Errance nuit'; severity = 'danger'; }
+  else if (door) { label = 'Sortie lit / porte'; severity = 'warn'; }
+  else if (up) { label = 'Levé'; severity = 'warn'; }
+  else if (bed) { label = 'Au lit'; severity = 'ok'; }
+  return { isNightPhase, inRoom, sleeping, bed, door, up, fall, risk, label, severity, immobileMinutes };
+}
+
+function renderNightView() {
+  const grid = document.getElementById('night-grid');
+  if (!grid) return;
+  const all = Object.values(residents).sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
+  const states = all.map(r => ({ r, s: getNightStatus(r) }));
+  const filtered = states.filter(({ s }) => {
+    if (currentNightFilter === 'bed') return s.bed;
+    if (currentNightFilter === 'up') return s.up;
+    if (currentNightFilter === 'door') return s.door;
+    if (currentNightFilter === 'risk') return s.risk;
+    return true;
+  });
+  const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  setText('night-total', states.length);
+  setText('night-bed', states.filter(x => x.s.bed).length);
+  setText('night-up', states.filter(x => x.s.up).length);
+  setText('night-door', states.filter(x => x.s.door).length);
+  setText('night-risk', states.filter(x => x.s.risk).length);
+  const ref = getReferenceResident();
+  const label = document.getElementById('night-period-label');
+  if (label) label.textContent = `${ref.time_label || '--:--'} · ${ref.routine_label || 'Routine'} · les statuts lit/porte restent visibles toute la journée`;
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="no-alerts">Aucun résident dans ce filtre</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(({ r, s }) => {
+    const events = r.sensor_events || r.movement?.sensor_events || {};
+    const m = r.movement || {};
+    const sensors = [
+      `Lit: ${s.bed ? 'occupé' : events.mattress_exit ? 'sortie' : 'non détecté'}`,
+      `Porte: ${events.door_open ? 'ouverte' : 'fermée'}`,
+      `Radar/PIR: ${events.room_radar_presence ? 'présence' : events.room_pir_motion ? 'mouvement' : 'calme'}`,
+      `Inactif: ${s.immobileMinutes} min`,
+    ];
+    return `
+      <div class="night-card ${s.severity === 'danger' ? 'danger' : s.severity === 'warn' ? 'warn' : ''}" onclick="openDetail('${r.id}')">
+        <div class="night-head">
+          <div>
+            <div class="night-name">${r.name || r.id}</div>
+            <div class="night-room">Ch. ${r.room || '—'} · ${r.current_zone || r.zone || 'zone inconnue'}</div>
+          </div>
+          <div class="night-state ${s.severity}">${s.label}</div>
+        </div>
+        <div class="night-signals">
+          ${sensors.map(text => `<div class="night-signal">${text}</div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px">${r.time_label || '--:--'} · ${r.routine_label || 'routine'}${m.is_sleeping ? ' · sommeil' : ''}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setNightFilter(filter, btn) {
+  currentNightFilter = filter;
+  document.querySelectorAll('#tab-night .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderNightView();
+}
+
+function updateSimulatedHistorySelect() {
+  const select = document.getElementById('sim-history-resident');
+  if (!select) return;
+  const current = select.value;
+  const all = Object.values(residents).sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
+  if (!all.length) return;
+  select.innerHTML = all.map(r => `<option value="${r.id}">Ch. ${r.room} - ${r.name || r.id}</option>`).join('');
+  select.value = all.some(r => r.id === current) ? current : (currentDetailResident || all[0].id);
+}
+
+async function loadSimulatedHistory() {
+  updateSimulatedHistorySelect();
+  const residentId = document.getElementById('sim-history-resident')?.value || currentDetailResident || Object.keys(residents)[0];
+  const panel = document.getElementById('simulated-history');
+  if (!residentId || !panel) return;
+  panel.innerHTML = '<div class="no-alerts">Chargement de l historique simulé...</div>';
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`);
+    const data = await res.json();
+    const rows = data.history || [];
+    const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
+    const events = rows.reduce((acc, r) => {
+      acc[r.event] = (acc[r.event] || 0) + 1;
+      return acc;
+    }, {});
+    const important = rows.filter(r => r.alert_level > 0).slice(-12).reverse();
+    panel.innerHTML = `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+          <b>${rows.length} points sur ${data.days} jours</b>
+          <span style="color:var(--text2);font-size:12px">${Object.entries(events).map(([k,v]) => `${k}: ${v}`).join(' · ')}</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr style="color:var(--text2);border-bottom:1px solid var(--border)">
+            <th style="padding:6px;text-align:left">Date</th><th style="padding:6px;text-align:left">Zone</th><th style="padding:6px;text-align:left">Routine</th><th style="padding:6px;text-align:left">Evenement</th><th style="padding:6px;text-align:left">Niveau</th><th style="padding:6px;text-align:left">Constantes</th>
+          </tr></thead>
+          <tbody>
+            ${important.map(r => `<tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:6px;color:var(--text2)">${new Date(r.time).toLocaleString('fr')}</td>
+              <td style="padding:6px">${r.zone}</td>
+              <td style="padding:6px;color:var(--text2)">${r.routine || 'routine'}</td>
+              <td style="padding:6px;color:var(--text2)">${r.event}</td>
+              <td style="padding:6px">${levelNames[r.alert_level] || 'Normal'}</td>
+              <td style="padding:6px;color:var(--text2)">FC ${r.heart_rate} · SpO2 ${r.spo2}% · PA ${r.blood_pressure_sys}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (err) {
+    panel.innerHTML = `<div class="no-alerts">Historique simulé indisponible: ${err.message}</div>`;
+  }
+}
+
+function todayIsoDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function updateReportResidentSelect() {
+  const select = document.getElementById('report-resident-select');
+  const dateInput = document.getElementById('report-date');
+  if (dateInput && !dateInput.value) dateInput.value = todayIsoDate();
+  if (!select) return;
+  const current = select.value;
+  const all = Object.values(residents).sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
+  if (!all.length) return;
+  select.innerHTML = all.map(r => `<option value="${r.id}">Ch. ${r.room} - ${r.name || r.id}</option>`).join('');
+  select.value = all.some(r => r.id === current) ? current : (currentDetailResident || all[0].id);
+}
+
+async function loadDailyReport() {
+  updateReportResidentSelect();
+  const date = document.getElementById('report-date')?.value || todayIsoDate();
+  const globalPanel = document.getElementById('global-report');
+  const dpiPanel = document.getElementById('resident-dpi');
+  if (globalPanel) globalPanel.innerHTML = '<div class="no-alerts">Chargement de la fiche globale...</div>';
+  if (dpiPanel) dpiPanel.innerHTML = '<div class="no-alerts">Chargement du mini DPI...</div>';
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/reports/daily/${date}`);
+    currentDailyReport = await res.json();
+    renderGlobalReport(currentDailyReport);
+    await loadResidentDpi(document.getElementById('report-resident-select')?.value);
+  } catch (err) {
+    if (globalPanel) globalPanel.innerHTML = `<div class="no-alerts">Fiche indisponible: ${err.message}</div>`;
+  }
+}
+
+async function generateDailyReport() {
+  const date = document.getElementById('report-date')?.value || todayIsoDate();
+  const globalPanel = document.getElementById('global-report');
+  if (globalPanel) globalPanel.innerHTML = '<div class="no-alerts">Génération de la fiche de transmission...</div>';
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/reports/daily/generate?date=${date}&force=true`, { method: 'POST' });
+    const data = await res.json();
+    currentDailyReport = data.report;
+    renderGlobalReport(currentDailyReport);
+    await loadResidentDpi(document.getElementById('report-resident-select')?.value);
+  } catch (err) {
+    if (globalPanel) globalPanel.innerHTML = `<div class="no-alerts">Génération impossible: ${err.message}</div>`;
+  }
+}
+
+async function loadResidentDpi(rid) {
+  updateReportResidentSelect();
+  const residentId = rid || document.getElementById('report-resident-select')?.value || Object.keys(residents)[0];
+  const date = document.getElementById('report-date')?.value || todayIsoDate();
+  const panel = document.getElementById('resident-dpi');
+  if (!residentId || !panel) return;
+  panel.innerHTML = '<div class="no-alerts">Chargement du mini DPI...</div>';
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${date}`);
+    const data = await res.json();
+    renderResidentDpi(data.mini_dpi);
+  } catch (err) {
+    panel.innerHTML = `<div class="no-alerts">Mini DPI indisponible: ${err.message}</div>`;
+  }
+}
+
+function renderGlobalReport(report) {
+  const panel = document.getElementById('global-report');
+  if (!panel || !report) return;
+  const rows = report.handover_sheet || [];
+  const counts = report.risk_counts || {};
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <div style="color:var(--text2);font-size:12px">Date ${report.date} · générée ${new Date(report.generated_at).toLocaleString('fr-FR')}</div>
+      <div style="font-size:12px;color:var(--text2)">${report.total_residents || rows.length} résidents</div>
+    </div>
+    <div class="report-kpis">
+      <div class="report-kpi"><strong style="color:var(--green)">${counts.stable ?? 0}</strong><span>Stables</span></div>
+      <div class="report-kpi"><strong style="color:var(--yellow)">${counts.surveillance ?? 0}</strong><span>Surveillance</span></div>
+      <div class="report-kpi"><strong style="color:var(--red)">${counts.urgent ?? 0}</strong><span>Prioritaires</span></div>
+    </div>
+    <table class="handover-table">
+      <thead><tr><th>Ch.</th><th>Résident</th><th>Niveau</th><th>Transmission</th><th>À surveiller</th></tr></thead>
+      <tbody>
+        ${rows.map(r => `
+          <tr class="handover-row" onclick="selectReportResident('${r.resident_id}')">
+            <td>${r.room || '—'}</td>
+            <td><b>${r.resident_name || r.resident_id}</b><br><span style="color:var(--text3)">${r.location || 'zone inconnue'}</span></td>
+            <td style="color:${getMLRiskColor(r.risk || 0)};font-weight:700">${r.level}<br>${Math.round((r.risk || 0) * 100)}%</td>
+            <td>${r.summary || ''}</td>
+            <td style="color:var(--text2)">${r.watch || ''}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function selectReportResident(rid) {
+  const select = document.getElementById('report-resident-select');
+  if (select) select.value = rid;
+  currentDetailResident = rid;
+  loadResidentDpi(rid);
+}
+
+function renderResidentDpi(report) {
+  const panel = document.getElementById('resident-dpi');
+  if (!panel || !report) return;
+  const v = report.current?.vitals || {};
+  const hist = report.history_30d || {};
+  const avg = hist.avg_vitals || {};
+  const alerts = report.alerts_today || [];
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:10px">
+      <div>
+        <div style="font-weight:800">${report.resident_name}</div>
+        <div style="font-size:12px;color:var(--text2)">Ch. ${report.room || '—'} · ${report.profile?.age || '?'} ans · ${report.profile?.mobility || 'mobilité inconnue'}</div>
+      </div>
+      <button class="filter-btn" onclick="openDetail('${report.resident_id}')">Live</button>
+    </div>
+    <div class="dpi-grid">
+      <div class="dpi-row"><span>Position</span><b>${report.current?.location || '—'}</b></div>
+      <div class="dpi-row"><span>Risque actuel</span><b style="color:${getMLRiskColor(report.risk?.ml_risk || 0)}">${Math.round((report.risk?.ml_risk || 0) * 100)}% · ${report.risk?.alert_level_name || 'Stable'}</b></div>
+      <div class="dpi-row"><span>Tendance 30 jours</span><b>${report.risk?.trend_30d || 'stable'}</b></div>
+      <div class="dpi-row"><span>FC / SpO2</span><b>${v.heart_rate ?? '—'} bpm · ${v.spo2 ?? '—'}%</b></div>
+      <div class="dpi-row"><span>PA / Temp.</span><b>${v.blood_pressure_sys ?? '—'} mmHg · ${v.temperature ?? '—'}°C</b></div>
+      <div class="dpi-row"><span>Moyennes 30j</span><b>FC ${avg.heart_rate ?? '—'} · SpO2 ${avg.spo2 ?? '—'} · PA ${avg.blood_pressure_sys ?? '—'}</b></div>
+      <div class="dpi-row"><span>Alertes du jour</span><b>${alerts.length}</b></div>
+      <div class="dpi-row"><span>Evénements 30j</span><b>${hist.alerts_count ?? 0}</b></div>
+    </div>
+    <div class="section-sub">Transmission</div>
+    <div style="font-size:13px;line-height:1.45;color:var(--text2)">${report.transmission_summary || ''}</div>
+    <div class="section-sub">Risque à venir</div>
+    <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('')}</div>
+    <div class="section-sub">Actions soignantes</div>
+    <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('')}</div>
+  `;
+}
+
+async function setSimulatorSpeed(value) {
+  const speed = Math.max(1, Math.min(30, Number(value) || 1));
+  simulatorSpeed = speed;
+  document.getElementById('sim-speed-label').textContent = `${speed}x`;
+  updateTimeRibbon();
+  try {
+    await fetch(`${BACKEND_HTTP}/api/simulator/speed?speed=${speed}`, { method: 'POST' });
+  } catch (err) {
+    console.warn('Vitesse simulateur non appliquee', err);
+  }
+}
+
+async function loadSimulatorSpeed() {
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/simulator/speed`);
+    const data = await res.json();
+    const speed = Math.round(Number(data.speed) || 1);
+    simulatorSpeed = speed;
+    const input = document.getElementById('sim-speed');
+    if (input) input.value = speed;
+    document.getElementById('sim-speed-label').textContent = `${speed}x`;
+    updateTimeRibbon();
+  } catch (_) {}
+}
+
+function exportAlertsCSV() {
+  const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
+  const rows = [['Date', 'Heure', 'Résident', 'Chambre', 'Position', 'Niveau', 'Raison', 'Capteurs', 'Acquittée']];
+  historyData.forEach(a => {
+    const d = new Date(a.created_at);
+    rows.push([
+      d.toLocaleDateString('fr'),
+      d.toLocaleTimeString('fr'),
+      a.resident_name,
+      a.room,
+      formatAlertLocation(a),
+      levelNames[a.level] || a.level,
+      `"${(a.reason || '').replace(/"/g, '""')}"`,
+      formatSensorEvents(a.sensor_events),
+      a.acknowledged_at ? 'Oui' : 'Non'
+    ]);
+  });
+  const csv = rows.map(r => r.join(';')).join('\n');
+  const blob = new Blob(['' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ehpad_alertes_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// Floor plan SVG
+// ============================================================
+const ROOMS_BY_FLOOR = {
+  0: ['101','102','103','104','105','106','107','108'],
+  1: ['201','202','203','204','208','209','210','211','212','213','214','215','216','217','218','219','220'],
+};
+const DINING_TABLES_2D = [
+  { id: 'T1', x: 450, y: 266, seats: 5 },
+  { id: 'T2', x: 506, y: 266, seats: 5 },
+  { id: 'T3', x: 450, y: 300, seats: 5 },
+  { id: 'T4', x: 506, y: 300, seats: 5 },
+  { id: 'T5', x: 478, y: 330, seats: 5 },
+];
+
+function showFloor(floor, btn) {
+  currentFloor = floor;
+  document.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFloorPlan(floor);
+}
+
+function renderFloorPlan(floor) {
+  const svg = document.getElementById('floor-svg');
+  const rooms = ROOMS_BY_FLOOR[floor] || [];
+  const layout = getPlanRoomLayout(floor);
+  const svgH = floor === 0 ? 560 : 620;
+  svg.setAttribute('viewBox', `0 0 760 ${svgH}`);
+
+  let html = `
+    <rect x="0" y="0" width="760" height="${svgH}" fill="#1a1d2e" rx="8"/>
+    <text x="380" y="24" fill="#94a3b8" font-size="13" text-anchor="middle" font-family="system-ui">
+      ${floor === 0 ? 'RDC' : '1er etage'} - ${rooms.length} chambres
+    </text>
+    ${renderPlanSpaces(floor)}
+    ${renderDiningOverlay(floor)}
+  `;
+
+  rooms.forEach((room, i) => {
+    const box = layout[room] || { x: 20 + (i % 4) * 176, y: 330 + Math.floor(i / 4) * 86, w: 160, h: 70 };
+    const { x, y, w: rw, h: rh } = box;
+
+    // Trouver le résident dans cette chambre
+    const resident = Object.values(residents).find(r => r.room === room);
+    const level = resident ? getAlertLevel(resident.id) : 0;
+    const mlRisk = resident ? (resident.ml_risk || 0) : 0;
+    const isPresent = resident && resident.current_zone === `ch${room}`;
+    const isMoving = resident && resident.activity === 'deplacement';
+    const occupancyColor = isPresent ? '#10b981' : isMoving ? '#f59e0b' : '#64748b';
+    const occupancyText = isPresent ? 'Dans chambre' : isMoving ? 'En deplacement' : 'Hors chambre';
+
+    const colors = ['#2d3748', '#1e3a5f', '#3d2e00', '#3d1a00', '#3d0000', '#1a0000'];
+    const borderColors = ['#4a5568', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
+    const fillColor = colors[level];
+    const borderColor = borderColors[level];
+
+    html += `
+      <g style="cursor:pointer" onclick="openDetail('${resident?.id || ''}')">
+        <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="${fillColor}" rx="6" stroke="${borderColor}" stroke-width="${level > 0 ? 2 : 1}"/>
+        <text x="${x + rw/2}" y="${y + 18}" fill="#e2e8f0" font-size="12" font-weight="600" text-anchor="middle" font-family="system-ui">Ch. ${room}</text>
+        ${resident ? `
+          <text x="${x + rw/2}" y="${y + 32}" fill="#94a3b8" font-size="10" text-anchor="middle" font-family="system-ui">${resident.name?.split(' ')[0] || ''}</text>
+          <circle cx="${x + 10}" cy="${y + 48}" r="4" fill="${occupancyColor}"/>
+          <text x="${x + 18}" y="${y + 51}" fill="${occupancyColor}" font-size="9" font-family="system-ui">${occupancyText}</text>
+          <text x="${x + 8}" y="${y + 63}" fill="#94a3b8" font-size="9" font-family="system-ui">${resident.current_zone || 'zone ?'}</text>
+          <rect x="${x + 8}" y="${y + rh - 12}" width="${(rw-16) * mlRisk}" height="4" fill="${getMLRiskColor(mlRisk)}" rx="2"/>
+        ` : `<text x="${x + rw/2}" y="${y + 44}" fill="#4a5568" font-size="11" text-anchor="middle" font-family="system-ui">Libre</text>`}
+      </g>
+    `;
+  });
+
+  html += renderPlanLiveDots(floor, layout);
+
+  // Légende
+  const ly = svgH - 28;
+  html += `
+    <text x="20" y="${ly}" fill="#64748b" font-size="10" font-family="system-ui">Légende :</text>
+    ${[['OK','#4a5568'],['Info','#3b82f6'],['Attention','#f59e0b'],['Alerte','#f97316'],['Urgence','#ef4444'],['Danger','#ff0000']].map((l, i) =>
+      `<rect x="${80 + i*90}" y="${ly - 10}" width="12" height="12" fill="${l[1]}" rx="2"/>
+       <text x="${98 + i*90}" y="${ly}" fill="#94a3b8" font-size="10" font-family="system-ui">${l[0]}</text>`
+    ).join('')}
+  `;
+
+  svg.innerHTML = html;
+}
+
+function planCoordsForZone(zone, floor, layout) {
+  if (!zone) return null;
+  if (zone.startsWith('ch')) {
+    const room = zone.slice(2);
+    const box = layout[room];
+    return box ? { x: box.x + box.w / 2, y: box.y + box.h / 2 } : null;
+  }
+  const map0 = {
+    entree: [88, 75], infirmerie_rdc: [216, 75], pharmacie_admin: [348, 75], salle_commune: [493, 75],
+    salle_activites: [644, 75], hors_ehpad: [101, 147], escalier: [236, 147], ascenseur: [342, 147],
+    couloir_principal: [370, 210], patio: [309, 286], salle_manger: [499, 283], office_cuisine: [643, 283],
+    jardin: [350, 367], couloir_aile_rdc: [370, 408],
+  };
+  const map1 = {
+    escalier: [82, 75], ascenseur: [130, 75], poste_infirmier_etage: [265, 75], kinesitherapie: [416, 75],
+    salle_repos: [572, 75], palier_etage: [106, 157], couloir_aile_a_etage: [370, 290],
+    couloir_aile_b_etage: [370, 440],
+  };
+  const coords = (floor === 0 ? map0 : map1)[zone];
+  return coords ? { x: coords[0], y: coords[1] } : null;
+}
+
+function renderPlanLiveDots(floor, layout) {
+  const people = Object.values(residents).filter(r => Number(r.position?.floor ?? r.floor) === floor);
+  const grouped = new Map();
+  people.forEach((r) => {
+    const coords = planCoordsForZone(r.current_zone, floor, layout);
+    if (!coords) return;
+    const key = `${Math.round(coords.x)}:${Math.round(coords.y)}`;
+    const group = grouped.get(key) || { ...coords, residents: [] };
+    group.residents.push(r);
+    grouped.set(key, group);
+  });
+  return [...grouped.values()].map((group) => group.residents.map((r, i) => {
+    const level = getAlertLevel(r.id);
+    const color = level >= 4 ? '#ef4444' : r.activity === 'deplacement' ? '#f59e0b' : '#10b981';
+    const dx = ((i % 5) - 2) * 7;
+    const dy = Math.floor(i / 5) * 7;
+    return `
+      <g onclick="openDetail('${r.id}')" style="cursor:pointer">
+        <circle cx="${group.x + dx}" cy="${group.y + dy}" r="6" fill="${color}" stroke="#e2e8f0" stroke-width="1.2"/>
+        <title>${r.name} · ${r.current_zone} · ${r.activity || 'repos'}</title>
+      </g>
+    `;
+  }).join('')).join('');
+}
+
+function getPlanRoomLayout(floor) {
+  if (floor === 0) {
+    return Object.fromEntries(['101','102','103','104','105','106','107','108'].map((room, i) => [
+      room,
+      { x: 34 + i * 86, y: 424, w: 76, h: 72 }
+    ]));
+  }
+  const top = ['201','202','203','204','208','209','210','211'];
+  const bottom = ['212','213','214','215','216','217','218','219','220'];
+  const entries = [];
+  top.forEach((room, i) => entries.push([room, { x: 34 + i * 86, y: 320, w: 76, h: 70 }]));
+  bottom.forEach((room, i) => entries.push([room, { x: 20 + i * 80, y: 470, w: 72, h: 70 }]));
+  return Object.fromEntries(entries);
+}
+
+function renderPlanSpaces(floor) {
+  const spaces = floor === 0 ? [
+    ['Entree / Accueil', 28, 48, 120, 54, '#263344'],
+    ['Infirmerie', 160, 48, 112, 54, '#29324f'],
+    ['Pharmacie / Admin', 284, 48, 128, 54, '#29324f'],
+    ['Salle commune / TV', 424, 48, 138, 54, '#263344'],
+    ['Salle activites', 574, 48, 140, 54, '#263344'],
+    ['Sortie hors EHPAD', 28, 124, 146, 46, '#5c1f1f'],
+    ['Escalier', 190, 124, 92, 46, '#31394b'],
+    ['Ascenseur', 296, 124, 92, 46, '#31394b'],
+    ['Couloir principal', 28, 194, 686, 32, '#242840'],
+    ['Patio', 220, 250, 178, 72, '#244139'],
+    ['Salle a manger', 424, 250, 150, 66, '#2a3544'],
+    ['Office / Cuisine', 590, 250, 106, 66, '#3a2d24'],
+    ['Jardin therapeutique', 220, 344, 260, 46, '#1f5b3b'],
+    ['Couloir chambres RDC', 28, 396, 686, 24, '#242840'],
+  ] : [
+    ['Escalier / Ascenseur', 28, 48, 156, 54, '#31394b'],
+    ['Poste infirmier', 200, 48, 130, 54, '#29324f'],
+    ['Kinesitherapie', 346, 48, 140, 54, '#263344'],
+    ['Salle de repos', 502, 48, 140, 54, '#263344'],
+    ['Vue patio', 288, 136, 172, 86, '#1e302c'],
+    ['Palier etage', 28, 136, 156, 42, '#31394b'],
+    ['Couloir Aile A', 28, 276, 686, 28, '#242840'],
+    ['Couloir Aile B', 28, 426, 686, 28, '#242840'],
+  ];
+  return spaces.map(([label, x, y, w, h, color]) => `
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" rx="6" stroke="#4a5568" stroke-width="1"/>
+    <text x="${x + w/2}" y="${y + h/2 + 4}" fill="#cbd5e1" font-size="10" text-anchor="middle" font-family="system-ui">${label}</text>
+  `).join('');
+}
+
+function renderDiningOverlay(floor) {
+  if (floor !== 0) return '';
+  const seated = Object.values(residents).filter(r => r.current_zone === 'salle_manger');
+  const byTable = Object.fromEntries(DINING_TABLES_2D.map(t => [t.id, seated.filter(r => r.dining_table === t.id)]));
+  return `
+    <g>
+      <text x="499" y="260" fill="#fbbf24" font-size="9" text-anchor="middle" font-family="system-ui">Tables repas</text>
+      ${DINING_TABLES_2D.map((t) => {
+        const count = byTable[t.id]?.length || 0;
+        return `
+          <rect x="${t.x}" y="${t.y}" width="34" height="18" fill="#594331" rx="5" stroke="#f59e0b" stroke-width="1"/>
+          <text x="${t.x + 17}" y="${t.y + 13}" fill="#fde68a" font-size="8" text-anchor="middle" font-family="system-ui">${t.id} · ${count}</text>
+          ${Array.from({ length: t.seats }).map((_, i) => {
+            const sx = t.x + 4 + (i % 3) * 12;
+            const sy = t.y + (i < 3 ? -7 : 22);
+            const r = byTable[t.id]?.[i];
+            return `<circle cx="${sx}" cy="${sy}" r="4" fill="${r ? '#10b981' : '#334155'}" stroke="${r ? '#d1fae5' : '#64748b'}" stroke-width="1">
+              <title>${r ? r.name : 'Place libre'} · ${t.id}</title>
+            </circle>`;
+          }).join('')}
+        `;
+      }).join('')}
+      <text x="499" y="356" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="system-ui">
+        Regroupement repas: petit dej, dejeuner, gouter, diner
+      </text>
+    </g>
+  `;
+}
+
+// ============================================================
+// Detail panel
+// ============================================================
+function openDetail(rid) {
+  if (!rid) return;
+  const r = residents[rid];
+  if (!r) return;
+
+  currentDetailResident = rid;
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('dp-name').textContent = r.name || rid;
+  document.getElementById('dp-info').textContent = `Chambre ${r.room} · ${r.caregiver || ''}`;
+
+  const v = r.vitals || {};
+  const m = r.movement || {};
+  const alert = activeAlerts[rid];
+  const buf = historyBuffer[rid] || {};
+
+  let html = '';
+
+  // Alerte active
+  if (alert && !alert.resolved) {
+    const levelColors = ['', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
+    html += `
+      <div style="background:${levelColors[alert.level]}22;border:1px solid ${levelColors[alert.level]};border-radius:8px;padding:10px;margin-bottom:12px">
+        <div style="font-weight:700;color:${levelColors[alert.level]}">⚠ Niveau ${alert.level} — ${alert.level_name}</div>
+        <div style="font-size:12px;margin-top:4px">${alert.reason}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Position: ${formatAlertLocation(alert)}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Capteurs actifs: ${formatSensorEvents(alert.sensor_events)}</div>
+      </div>
+      <button class="ack-btn" onclick="acknowledgeAlert('${rid}')">✓ Acquitter l'alerte</button>
+    `;
+  }
+
+  const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario;
+  if (rid === 'R005' || scenario) {
+    html += `
+      <div style="background:rgba(249,115,22,0.10);border:1px solid rgba(249,115,22,0.45);border-radius:8px;padding:10px;margin-bottom:12px">
+        <div style="font-weight:700;color:var(--orange)">Scénario démo${scenario ? ` · ${scenario}` : ''}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">ML signalé 30 min avant l'alerte clinique forte.</div>
+      </div>
+    `;
+  }
+
+  html += renderMonitorScope(rid, r);
+
+  html += `
+    <div class="section-sub">Vie quotidienne simulée</div>
+    <div class="vital-row"><span style="color:var(--text2)">Heure simulée</span><span>${r.time_label || '--:--'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Phase</span><span>${r.routine_label || r.time_of_day || 'routine'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Autonomie</span><span>${r.care_level || 'autonome'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Repas</span><span>${r.meal_mode === 'chambre' ? 'Servi en chambre' : (r.dining_table ? `${r.meal_mode === 'accompagne' ? 'Accompagne · ' : ''}${r.dining_table}, place ${r.dining_seat || '?'}` : '—')}</span></div>
+  `;
+
+  // Vitaux
+  html += `<div class="section-sub">Constantes vitales</div>`;
+  [
+    ['Fréquence cardiaque', v.heart_rate, 'bpm', 'heart_rate'],
+    ['SpO2', v.spo2, '%', 'spo2'],
+    ['Pression artérielle', v.blood_pressure_sys, 'mmHg', 'blood_pressure_sys'],
+    ['Température', v.temperature, '°C', 'temperature'],
+  ].forEach(([label, val, unit, type]) => {
+    const cls = vitalColor(type, val);
+    const colors = { ok: '#10b981', warn: '#f59e0b', danger: '#ef4444' };
+    html += `
+      <div class="vital-row">
+        <span style="color:var(--text2)">${label}</span>
+        <span style="font-weight:700;color:${colors[cls]}">${val ?? '—'} ${unit}</span>
+      </div>
+    `;
+  });
+
+  // ML Risk
+  const mlRisk = r.ml_risk || 0;
+  html += `
+    <div class="section-sub">Prédiction IA</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="flex:1;background:var(--bg3);height:8px;border-radius:4px;overflow:hidden">
+        <div style="width:${mlRisk*100}%;height:100%;background:${getMLRiskColor(mlRisk)};border-radius:4px;transition:width 0.5s"></div>
+      </div>
+      <span style="font-weight:700;color:${getMLRiskColor(mlRisk)}">${(mlRisk*100).toFixed(1)}%</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2)">Risque de malaise dans les 30-60 min</div>
+  `;
+
+  // Mouvement
+  html += `
+    <div class="section-sub">Mouvement</div>
+    <div class="vital-row"><span style="color:var(--text2)">Zone actuelle</span><span>${r.current_zone || r.zone || '—'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Activité</span><span>${r.activity || '—'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Dernière activité</span><span>${m.last_movement_ago_s ? Math.round(m.last_movement_ago_s/60) + ' min' : '—'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Chute détectée</span><span style="color:${m.is_fall_detected ? 'var(--red)' : 'var(--green)'}">${m.is_fall_detected ? '⚠ OUI' : 'Non'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Accélération</span><span>${m.accel_magnitude?.toFixed(2) ?? '—'} g</span></div>
+  `;
+  const sensorEvents = r.sensor_events || m.sensor_events || {};
+  html += `
+    <div class="section-sub">Capteurs chambre / zone</div>
+    <div class="vital-row"><span style="color:var(--text2)">Porte</span><span>${sensorEvents.door_open ? 'Ouverte' : 'Fermee / repos'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Matelas / lit</span><span>${sensorEvents.bed_occupied ? 'Occupe' : sensorEvents.mattress_exit ? 'Sortie du lit' : 'Inactif'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Sol / pression</span><span style="color:${sensorEvents.floor_pressure_event ? 'var(--red)' : 'var(--text2)'}">${sensorEvents.floor_pressure_event ? 'Evenement detecte' : 'Normal'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Radar / PIR</span><span>${sensorEvents.room_radar_presence ? 'Presence radar' : sensorEvents.room_pir_motion ? 'Mouvement PIR' : 'Repos'}</span></div>
+  `;
+
+  // Sparklines multi-métriques
+  html += `<div class="section-sub">Tendances (60 dernières secondes)</div>`;
+  const sparkDefs = [
+    { key: 'hr',   label: 'Fréq. Cardiaque (bpm)', color: '#3b82f6' },
+    { key: 'spo2', label: 'SpO2 (%)',               color: '#10b981' },
+    { key: 'temp', label: 'Température (°C)',        color: '#f59e0b' },
+  ];
+  sparkDefs.forEach(({ key, label }) => {
+    if (buf[key]?.length > 2) {
+      html += `
+        <div style="font-size:11px;color:var(--text3);margin-top:8px">${label}</div>
+        <div class="chart-container" style="height:70px">
+          <canvas id="spark-${key}" class="sparkline"></canvas>
+        </div>
+      `;
+    }
+  });
+
+  document.getElementById('dp-content').innerHTML = html;
+
+  // Dessiner les sparklines après rendu
+  setTimeout(() => {
+    drawMonitorScope(rid, r);
+    sparkDefs.forEach(({ key, color }) => {
+      if (buf[key]?.length > 2) drawSparkline(`spark-${key}`, buf[key], color);
+    });
+  }, 50);
+}
+
+function renderMonitorScope(rid, r) {
+  const v = r.vitals || {};
+  const hr = Math.round(v.heart_rate ?? 0);
+  const spo2 = Math.round(v.spo2 ?? 0);
+  const bp = Math.round(v.blood_pressure_sys ?? 0);
+  const temp = Number.isFinite(v.temperature) ? Number(v.temperature).toFixed(1) : '—';
+  return `
+    <div class="section-sub">Scope clinique live</div>
+    <div class="monitor-scope">
+      <div class="monitor-head">
+        <div class="monitor-title">Monitoring ${rid}</div>
+        <div class="monitor-live">LIVE MQTT</div>
+      </div>
+      <div class="monitor-values">
+        ${monitorValue('FC', hr || '—', 'bpm', '#2dd36f')}
+        ${monitorValue('SpO2', spo2 || '—', '%', '#3ea7ff')}
+        ${monitorValue('PA', bp || '—', 'mmHg', '#ff5a5f')}
+        ${monitorValue('Temp', temp, '°C', '#b86bff')}
+      </div>
+      ${monitorWaveRow('ECG', `scope-${rid}-ecg`)}
+      ${monitorWaveRow('SpO2', `scope-${rid}-pleth`)}
+      ${monitorWaveRow('Resp', `scope-${rid}-resp`)}
+    </div>
+  `;
+}
+
+function monitorValue(label, value, unit, color) {
+  return `
+    <div class="monitor-value">
+      <div class="monitor-label">${label}</div>
+      <div class="monitor-number" style="color:${color}">${value}</div>
+      <div class="monitor-unit">${unit}</div>
+    </div>
+  `;
+}
+
+function monitorWaveRow(label, id) {
+  return `
+    <div class="monitor-row">
+      <div class="monitor-wave-label">${label}</div>
+      <canvas id="${id}" class="monitor-wave"></canvas>
+    </div>
+  `;
+}
+
+function drawSparkline(canvasId, data, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const w = canvas.width, h = canvas.height;
+  const min = Math.min(...data) - 5;
+  const max = Math.max(...data) + 5;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((v - min) / (max - min)) * h;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Fill
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = color + '22';
+  ctx.fill();
+}
+
+function drawMonitorScope(rid, r) {
+  const v = r.vitals || {};
+  const hr = clampNumber(v.heart_rate ?? 72, 45, 160);
+  const spo2 = clampNumber(v.spo2 ?? 96, 75, 100);
+  const bp = clampNumber(v.blood_pressure_sys ?? 130, 70, 220);
+  const rr = Math.round(14 + Math.max(0, 96 - spo2) * 0.45);
+  const now = Date.now() / 1000;
+  drawWaveCanvas(`scope-${rid}-ecg`, '#2dd36f', (t) => ecgWave(t + now, hr));
+  drawWaveCanvas(`scope-${rid}-pleth`, '#3ea7ff', (t) => plethWave(t + now, hr, rr, spo2));
+  drawWaveCanvas(`scope-${rid}-resp`, '#f7d046', (t) => respirationWave(t + now, rr));
+  // The blood pressure value still influences the ECG cadence through the readout;
+  // keeping this local avoids extra DOM noise while preserving a clinical feel.
+  void bp;
+}
+
+function drawWaveCanvas(canvasId, color, sampler) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  const samples = 180;
+  for (let i = 0; i <= samples; i++) {
+    const x = (i / samples) * w;
+    const t = (i / samples) * 5.8;
+    const y = h - clampNumber(sampler(t), 0, 1) * (h - 8) - 4;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+function ecgWave(time, hr) {
+  const cycle = 60 / hr;
+  const phase = (time % cycle) / cycle;
+  const baseline = 0.48 + 0.012 * Math.sin((time / cycle) * Math.PI);
+  if (phase < 0.18) return baseline;
+  if (phase < 0.26) return baseline + 0.06 * smoothPulse((phase - 0.18) / 0.08);
+  if (phase < 0.33) return baseline;
+  if (phase < 0.365) return baseline - 0.10 * ((phase - 0.33) / 0.035);
+  if (phase < 0.395) return baseline + 0.96 * ((phase - 0.365) / 0.03);
+  if (phase < 0.43) return baseline + 0.96 - 0.82 * ((phase - 0.395) / 0.035);
+  if (phase < 0.52) return baseline;
+  if (phase < 0.72) return baseline + 0.14 * smoothPulse((phase - 0.52) / 0.20);
+  return baseline;
+}
+
+function plethWave(time, hr, rr, spo2) {
+  const cycle = 60 / hr;
+  const phase = (time % cycle) / cycle;
+  const respMod = 0.92 + 0.08 * Math.sin((time / (60 / rr)) * Math.PI * 2);
+  const amplitude = clampNumber(((spo2 - 82) / 18) * respMod, 0.22, 1);
+  const floor = 0.08;
+  if (phase < 0.16) return floor + amplitude * 0.92 * easeOutCubic(phase / 0.16);
+  if (phase < 0.34) return floor + amplitude * (0.92 - 0.2 * ((phase - 0.16) / 0.18));
+  if (phase < 0.56) return floor + amplitude * (0.72 - 0.42 * ((phase - 0.34) / 0.22));
+  return floor + amplitude * 0.24 * (1 - ((phase - 0.56) / 0.44));
+}
+
+function respirationWave(time, rr) {
+  const cycle = 60 / rr;
+  const phase = (time % cycle) / cycle;
+  if (phase < 0.44) return 0.32 + 0.30 * easeInOutSine(phase / 0.44);
+  if (phase < 0.88) return 0.62 - 0.32 * easeInOutSine((phase - 0.44) / 0.44);
+  return 0.30 + 0.04 * ((phase - 0.88) / 0.12);
+}
+
+function smoothPulse(value) {
+  return Math.sin(Math.PI * clampNumber(value, 0, 1));
+}
+
+function easeOutCubic(value) {
+  const v = clampNumber(value, 0, 1);
+  return 1 - Math.pow(1 - v, 3);
+}
+
+function easeInOutSine(value) {
+  const v = clampNumber(value, 0, 1);
+  return -(Math.cos(Math.PI * v) - 1) / 2;
+}
+
+function clampNumber(value, min, max) {
+  return Math.max(min, Math.min(max, Number(value) || 0));
+}
+
+function closeDetail() {
+  currentDetailResident = null;
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+function acknowledgeAlert(rid) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: 'acknowledge', resident_id: rid, by: 'soignant_dashboard' }));
+    if (activeAlerts[rid]) {
+      activeAlerts[rid].acknowledged = true;
+      activeAlerts[rid].resolved = true;
+    }
+    updateAlertSidebar();
+    openDetail(rid);
+  }
+}
+
+// ============================================================
+// Toast notifications
+// ============================================================
+function showToast(alert) {
+  if (alert.level < 3) return;
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  const levelNames = ['', '', '', 'Alerte', 'URGENCE', 'DANGER VITAL'];
+  toast.className = `toast toast-${alert.level}`;
+  toast.innerHTML = `<strong>${levelNames[alert.level]}</strong> — ${alert.resident_name}<br><small>${formatAlertLocation(alert)} · ${alert.reason}</small>`;
+  container.appendChild(toast);
+  if (alert.level >= 4) {
+    document.body.style.borderTop = `3px solid ${alert.level >= 5 ? '#ff0000' : '#ef4444'}`;
+    setTimeout(() => document.body.style.borderTop = '', 3000);
+  }
+  setTimeout(() => toast.remove(), 8000);
+
+  // Annonce vocale via Web Speech API
+  if ('speechSynthesis' in window && alert.level >= 3) {
+    const msgs = ['', '', '', 'Alerte', 'Urgence', 'Danger vital'];
+    const text = `${msgs[alert.level]}. ${alert.resident_name}. ${formatAlertLocation(alert)}.`;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = alert.level >= 4 ? 1.2 : 1.0;
+    utterance.volume = alert.level >= 4 ? 1.0 : 0.8;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+// ============================================================
+// UI helpers
+// ============================================================
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const names = ['grid', 'plan', 'model3d', 'night', 'reports', 'history'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach((c, i) => {
+    const names = ['tab-grid', 'tab-plan', 'tab-model3d', 'tab-night', 'tab-reports', 'tab-history'];
+    c.classList.toggle('active', names[i] === `tab-${name}`);
+  });
+  if (name === 'plan') renderFloorPlan(currentFloor);
+  if (name === 'model3d') initEHPAD3D();
+  if (name === 'night') renderNightView();
+  if (name === 'reports') {
+    updateReportResidentSelect();
+    if (!currentDailyReport) loadDailyReport();
+  }
+  if (name === 'history') {
+    fetch(`${BACKEND_HTTP}/api/alerts`)
+      .then(r => r.json())
+      .then(d => { historyData = d.history || []; renderHistoryTab(); updateQuickHistory(); if (!document.getElementById('simulated-history').innerHTML.trim()) loadSimulatedHistory(); })
+      .catch(() => {});
+  }
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const grid = document.getElementById('resident-grid');
+  grid.innerHTML = '';
+  renderGrid();
+}
+
+function focusDemoResident(btn) {
+  setFilter('demo', btn);
+  openDetail('R005');
+}
+
+// ============================================================
+// Vue 3D EHPAD
+// ============================================================
+let model3D = {
+  ready: false, loading: false, THREE: null, controls: null, renderer: null,
+  scene: null, camera: null, raycaster: null, pointer: null,
+  residentsGroup: null, sensorsGroup: null, wallsGroup: null,
+  residentMeshes: {}, residentTargets: {}, interactives: [], selected: null, floorMode: 'all',
+};
+window.model3D = model3D;
+
+const FACILITY_3D = {
+  rooms: [
+    ['101', -18, -8, 4, 4, 0, ['wearable', 'pir', 'matelas']],
+    ['102', -13.5, -8, 4, 4, 0, ['wearable', 'radar', 'porte']],
+    ['103', -9, -8, 4, 4, 0, ['wearable', 'pir', 'matelas']],
+    ['104', -4.5, -8, 4, 4, 0, ['wearable', 'radar', 'porte']],
+    ['105', 4.5, -8, 4, 4, 0, ['wearable', 'pir', 'matelas']],
+    ['106', 9, -8, 4, 4, 0, ['wearable', 'radar', 'porte']],
+    ['107', 13.5, -8, 4, 4, 0, ['wearable', 'pir', 'matelas']],
+    ['108', 18, -8, 4, 4, 0, ['wearable', 'radar', 'porte']],
+    ['201', -18, -8, 4, 4, 1, ['wearable', 'pir']],
+    ['202', -13.5, -8, 4, 4, 1, ['wearable', 'radar']],
+    ['203', -9, -8, 4, 4, 1, ['wearable', 'pir']],
+    ['204', -4.5, -8, 4, 4, 1, ['wearable', 'radar']],
+    ['208', 4.5, -8, 4, 4, 1, ['wearable', 'pir']],
+    ['209', 9, -8, 4, 4, 1, ['wearable', 'radar']],
+    ['210', 13.5, -8, 4, 4, 1, ['wearable', 'pir']],
+    ['211', 18, -8, 4, 4, 1, ['wearable', 'radar']],
+    ['212', -13.5, 8, 4, 4, 1, ['wearable', 'pir']],
+    ['213', -9, 8, 4, 4, 1, ['wearable', 'radar']],
+    ['214', 9, 8, 4, 4, 1, ['wearable', 'pir']],
+    ['215', 13.5, 8, 4, 4, 1, ['wearable', 'radar']],
+    ['216', 18, 8, 4, 4, 1, ['wearable', 'pir']],
+    ['217', -18, 8, 4, 4, 1, ['wearable', 'radar']],
+    ['218', -4.5, 8, 4, 4, 1, ['wearable', 'pir']],
+    ['219', 4.5, 8, 4, 4, 1, ['wearable', 'radar']],
+    ['220', 0, 8, 4, 4, 1, ['wearable', 'pir', 'matelas']],
+  ],
+  zones: [
+    ['Entree / Accueil', -18, 8, 6, 4, 0, ['rfid', 'ir']],
+    ['Sortie hors EHPAD', -27, 12, 7, 4, 0, ['gps', 'rfid', 'sos']],
+    ['Infirmerie', -11, 8, 5.5, 4, 0, ['dashboard', 'sos']],
+    ['Pharmacie / Admin', -4.5, 8, 5.5, 4, 0, ['dashboard']],
+    ['Salle commune / TV', 8, 8, 8, 4, 0, ['pir', 'co2', 'son']],
+    ['Salle activites', 17, 8, 5, 4, 0, ['pir', 'ambient']],
+    ['Salle a manger', 10, 1, 9, 4, 0, ['presence', 'sol']],
+    ['Office / Cuisine', 18.5, 1, 4.5, 4, 0, ['fumee', 'co', 'temp']],
+    ['Patio central', 0, 0, 8, 7, 0, ['gps', 'rfid']],
+    ['Jardin therapeutique', 0, 15, 22, 7, 0, ['gps', 'rfid', 'pir']],
+    ['Escalier securise', -21, 0, 2.4, 5, 0, ['pir', 'radar']],
+    ['Ascenseur', -18, 0, 2.4, 3.4, 0, ['badge', 'pir']],
+    ['Poste infirmier', -18, 8, 6, 4, 1, ['dashboard']],
+    ['Kinesitherapie', -7, 8, 7, 4, 1, ['pir', 'sol', 'wearable']],
+    ['Salle de repos', 7, 8, 7, 4, 1, ['pir', 'co2', 'son']],
+    ['Vide patio', 0, 0, 8, 7, 1, ['garde_corps']],
+    ['Palier ascenseur', -18, 0, 5, 4, 1, ['badge', 'pir', 'radar']],
+    ['Escalier etage', -21, 0, 2.4, 5, 1, ['pir', 'radar']],
+  ]
+};
+const DINING_TABLES_3D = [
+  ['T1', 8.0, 0.7], ['T2', 10.7, 0.7], ['T3', 13.4, 0.7],
+  ['T4', 8.8, 3.4], ['T5', 12.3, 3.4],
+];
+
+const SENSOR_STYLE = {
+  pir: ['PIR', 0x3b82f6], presence: ['Presence', 0x3b82f6],
+  radar: ['Radar mmWave', 0x8b5cf6], wearable: ['Wearable BLE', 0x10b981], gps: ['GPS bracelet', 0x10b981],
+  matelas: ['Matelas', 0xf59e0b], sol: ['Sol intelligent', 0xf59e0b],
+  porte: ['Porte', 0xef4444], rfid: ['RFID', 0xef4444], ir: ['IR', 0xef4444], sos: ['SOS', 0xef4444],
+  co2: ['CO2', 0x22d3ee], son: ['Son', 0x22d3ee], ambient: ['Ambiant', 0x22d3ee], fumee: ['Fumee', 0xef4444], co: ['CO', 0xef4444], temp: ['Temperature', 0x22d3ee],
+  dashboard: ['Dashboard', 0xffffff], garde_corps: ['Garde-corps', 0x94a3b8],
+};
+
+async function initEHPAD3D() {
+  if (model3D.ready || model3D.loading) {
+    resizeEHPAD3D();
+    return;
+  }
+  model3D.loading = true;
+  const detail = document.getElementById('model-3d-detail');
+  try {
+    const THREE = await import('three');
+    const { MapControls } = await import('three/addons/controls/MapControls.js');
+    model3D.THREE = THREE;
+    const canvas = document.getElementById('ehpad-3d');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b1018);
+    scene.fog = new THREE.Fog(0x0b1018, 42, 95);
+    const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 180);
+    camera.position.set(0, 34, 26);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true;
+    const controls = new MapControls(camera, renderer.domElement);
+    controls.target.set(0, 0, 1.5);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.zoomToCursor = true;
+    controls.minDistance = 7;
+    controls.maxDistance = 75;
+    controls.maxPolarAngle = Math.PI * 0.47;
+    controls.panSpeed = 1.2;
+    controls.zoomSpeed = 1.15;
+    scene.add(new THREE.HemisphereLight(0xb9d7ff, 0x162033, 1.9));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+    sun.position.set(14, 28, 18);
+    sun.castShadow = true;
+    scene.add(sun);
+    model3D.scene = scene; model3D.camera = camera; model3D.renderer = renderer; model3D.controls = controls;
+    model3D.raycaster = new THREE.Raycaster();
+    model3D.pointer = new THREE.Vector2();
+    buildEHPAD3D();
+    set3DFloorMode('all');
+    renderer.domElement.addEventListener('pointerdown', pickEHPAD3D);
+    renderer.domElement.addEventListener('pointermove', hoverEHPAD3D);
+    renderer.domElement.addEventListener('pointerleave', hideResidentTooltip3D);
+    window.addEventListener('resize', resizeEHPAD3D);
+    model3D.ready = true;
+    model3D.loading = false;
+    resizeEHPAD3D();
+    animateEHPAD3D();
+    updateEHPAD3D();
+  } catch (err) {
+    model3D.loading = false;
+    detail.textContent = `Vue 3D indisponible: ${err.message}`;
+  }
+}
+
+function buildEHPAD3D() {
+  const THREE = model3D.THREE;
+  const scene = model3D.scene;
+  model3D.residentsGroup = new THREE.Group();
+  model3D.sensorsGroup = new THREE.Group();
+  model3D.wallsGroup = new THREE.Group();
+  scene.add(model3D.wallsGroup, model3D.sensorsGroup, model3D.residentsGroup);
+  addFloor3D(0, 'RDC', 0);
+  addFloor3D(1, '1er etage', 6);
+  FACILITY_3D.rooms.forEach(([room, x, z, w, d, floor, sensors]) => addRoom3D(room, x, z, w, d, floor, sensors));
+  FACILITY_3D.zones.forEach(([name, x, z, w, d, floor, sensors]) => addZone3D(name, x, z, w, d, floor, sensors));
+  addVerticalCirculation3D();
+  addGardenDetails3D();
+  addDiningRoomDetails3D();
+}
+
+function addFloor3D(floor, label, y) {
+  const THREE = model3D.THREE;
+  const base = new THREE.Mesh(
+    new THREE.BoxGeometry(44, 0.18, 24),
+    new THREE.MeshStandardMaterial({ color: floor ? 0x172033 : 0x141b29, roughness: 0.82 })
+  );
+  base.position.set(0, y, 0);
+  base.receiveShadow = true;
+  base.userData.floor = floor;
+  model3D.wallsGroup.add(base);
+  const text = makeLabelSprite(label, floor ? 0x9fb9d7 : 0xe2e8f0);
+  text.position.set(-20, y + 0.25, -11.5);
+  text.userData.floor = floor;
+  model3D.wallsGroup.add(text);
+  addCorridor3D(y, floor, 0, -2.5, 41, 2.2, 'Couloir principal');
+  addCorridor3D(y, floor, 0, 5.2, 30, 1.7, floor ? 'Couloir A/B etage' : 'Couloir aile RDC');
+}
+
+function addCorridor3D(y, floor, x, z, w, d, label) {
+  const THREE = model3D.THREE;
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w, 0.08, d),
+    new THREE.MeshStandardMaterial({ color: 0x253149, roughness: 0.75 })
+  );
+  mesh.position.set(x, y + 0.14, z);
+  mesh.userData.floor = floor;
+  model3D.wallsGroup.add(mesh);
+  const tag = makeLabelSprite(label, 0x64748b, 0.75);
+  tag.position.set(x, y + 0.28, z);
+  tag.userData.floor = floor;
+  model3D.wallsGroup.add(tag);
+}
+
+function addVerticalCirculation3D() {
+  const THREE = model3D.THREE;
+  const shaftMat = new THREE.MeshStandardMaterial({ color: 0x64748b, transparent: true, opacity: 0.28, roughness: 0.7 });
+  const shaft = new THREE.Mesh(new THREE.BoxGeometry(2.1, 6.4, 2.1), shaftMat);
+  shaft.position.set(-18, 3.1, 0);
+  shaft.userData.alwaysVisible = true;
+  model3D.wallsGroup.add(shaft);
+  const stairsMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.46, roughness: 0.8 });
+  for (let i = 0; i < 9; i++) {
+    const step = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.16, 0.46), stairsMat);
+    step.position.set(-21, 0.5 + i * 0.55, -1.9 + i * 0.45);
+    step.userData.alwaysVisible = true;
+    model3D.wallsGroup.add(step);
+  }
+  const label = makeLabelSprite('Escalier / Ascenseur', 0xe2e8f0, 0.72);
+  label.position.set(-19.7, 6.9, 0);
+  label.userData.alwaysVisible = true;
+  model3D.wallsGroup.add(label);
+}
+
+function addGardenDetails3D() {
+  const THREE = model3D.THREE;
+  const y = 0.38;
+  const treeMat = new THREE.MeshStandardMaterial({ color: 0x2f8f46, roughness: 0.9 });
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.85 });
+  [[-9, 16.8], [-4, 13.8], [5, 16.5], [10, 13.6]].forEach(([x, z]) => {
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.8, 10), trunkMat);
+    trunk.position.set(x, y + 0.42, z);
+    trunk.userData.floor = 0;
+    const crown = new THREE.Mesh(new THREE.SphereGeometry(0.62, 18, 12), treeMat);
+    crown.position.set(x, y + 1.05, z);
+    crown.userData.floor = 0;
+    model3D.wallsGroup.add(trunk, crown);
+  });
+  const path = new THREE.Mesh(
+    new THREE.BoxGeometry(18, 0.05, 1.2),
+    new THREE.MeshStandardMaterial({ color: 0x9ca36f, roughness: 0.95 })
+  );
+  path.position.set(0, y + 0.03, 15);
+  path.userData.floor = 0;
+  model3D.wallsGroup.add(path);
+}
+
+function addDiningRoomDetails3D() {
+  const THREE = model3D.THREE;
+  const tableMat = new THREE.MeshStandardMaterial({ color: 0x6b4f35, roughness: 0.65 });
+  const chairMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.78 });
+  DINING_TABLES_3D.forEach(([id, x, z]) => {
+    const table = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.18, 0.9), tableMat);
+    table.position.set(x, 0.64, z);
+    table.userData = { type: 'dining_table', name: `Table ${id}`, floor: 0 };
+    model3D.wallsGroup.add(table);
+    model3D.interactives.push(table);
+    [[-0.55, -0.68], [0.55, -0.68], [-0.55, 0.68], [0.55, 0.68], [0, 1.0]].forEach(([dx, dz], i) => {
+      const chair = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.28, 0.32), chairMat);
+      chair.position.set(x + dx, 0.55, z + dz);
+      chair.userData = { type: 'dining_seat', name: `Table ${id} place ${i + 1}`, floor: 0 };
+      model3D.wallsGroup.add(chair);
+      model3D.interactives.push(chair);
+    });
+    const label = makeLabelSprite(id, 0xfde68a, 0.46);
+    label.position.set(x, 1.02, z);
+    label.userData.floor = 0;
+    model3D.wallsGroup.add(label);
+  });
+}
+
+function addRoom3D(room, x, z, w, d, floor, sensors) {
+  addSpace3D({ type: 'room', name: `Ch. ${room}`, room, x, z, w, d, floor, sensors, color: 0x253149 });
+}
+
+function addZone3D(name, x, z, w, d, floor, sensors) {
+  const color = name.includes('hors EHPAD') ? 0x5c1f1f : name.includes('Jardin') ? 0x1f5b3b : name.includes('Patio') || name.includes('Vide') ? 0x244139 : name.includes('Infirmerie') ? 0x29324f : 0x263344;
+  addSpace3D({ type: 'zone', name, x, z, w, d, floor, sensors, color });
+}
+
+function addSpace3D(space) {
+  const THREE = model3D.THREE;
+  const y = space.floor * 6;
+  const mat = new THREE.MeshStandardMaterial({ color: space.color, transparent: true, opacity: 0.9, roughness: 0.72 });
+  const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(space.w, 0.16, space.d), mat);
+  floorMesh.position.set(space.x, y + 0.22, space.z);
+  floorMesh.userData = space;
+  floorMesh.userData.floor = space.floor;
+  model3D.wallsGroup.add(floorMesh);
+  model3D.interactives.push(floorMesh);
+
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0x7b8ba6, transparent: true, opacity: 0.25, roughness: 0.8 });
+  [[0, -space.d/2, space.w, 0.12], [0, space.d/2, space.w, 0.12], [-space.w/2, 0, 0.12, space.d], [space.w/2, 0, 0.12, space.d]].forEach(([dx, dz, w, d]) => {
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(w, 1.15, d), wallMat);
+    wall.position.set(space.x + dx, y + 0.85, space.z + dz);
+    wall.userData.floor = space.floor;
+    model3D.wallsGroup.add(wall);
+  });
+
+  const label = makeLabelSprite(space.name, 0xe2e8f0, 0.7);
+  label.position.set(space.x, y + 1.55, space.z);
+  label.userData.floor = space.floor;
+  model3D.wallsGroup.add(label);
+  if (space.type === 'room') addBed3D(space);
+  placeSensors3D(space);
+}
+
+function addBed3D(space) {
+  const THREE = model3D.THREE;
+  const y = space.floor * 6;
+  const bedMat = new THREE.MeshStandardMaterial({ color: 0xdbeafe, roughness: 0.65 });
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.78 });
+  const bed = new THREE.Mesh(new THREE.BoxGeometry(space.w * 0.46, 0.22, space.d * 0.34), bedMat);
+  bed.position.set(space.x - space.w * 0.18, y + 0.46, space.z + space.d * 0.12);
+  const frame = new THREE.Mesh(new THREE.BoxGeometry(space.w * 0.5, 0.12, space.d * 0.38), frameMat);
+  frame.position.set(bed.position.x, y + 0.34, bed.position.z);
+  const pillow = new THREE.Mesh(new THREE.BoxGeometry(space.w * 0.18, 0.12, space.d * 0.26), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.7 }));
+  pillow.position.set(space.x - space.w * 0.34, y + 0.62, space.z + space.d * 0.12);
+  [frame, bed, pillow].forEach(obj => { obj.userData.floor = space.floor; });
+  model3D.wallsGroup.add(frame, bed, pillow);
+}
+
+function placeSensors3D(space) {
+  const THREE = model3D.THREE;
+  const y = space.floor * 6 + 1.35;
+  const radius = Math.min(space.w, space.d) * 0.32;
+  space.sensors.forEach((sensor, i) => {
+    const style = SENSOR_STYLE[sensor] || [sensor, 0xffffff];
+    const angle = (Math.PI * 2 * i) / Math.max(space.sensors.length, 1);
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 16, 10),
+      new THREE.MeshStandardMaterial({ color: style[1], emissive: style[1], emissiveIntensity: 0.35 })
+    );
+    mesh.position.set(space.x + Math.cos(angle) * radius, y, space.z + Math.sin(angle) * radius);
+    mesh.userData = { type: 'sensor', sensor, label: style[0], location: space.name, room: space.room, floor: space.floor };
+    model3D.sensorsGroup.add(mesh);
+    model3D.interactives.push(mesh);
+  });
+}
+
+function updateEHPAD3D() {
+  if (!model3D.ready) return;
+  const THREE = model3D.THREE;
+  Object.values(residents).forEach((r) => {
+    const roomSpec = FACILITY_3D.rooms.find(([room]) => room === r.room);
+    const livePos = r.position;
+    if (!roomSpec && !livePos) return;
+    const [, roomX, roomZ, , , roomFloor] = roomSpec || [];
+    const x = Number.isFinite(livePos?.x) ? livePos.x : roomX;
+    const z = Number.isFinite(livePos?.z) ? livePos.z : roomZ;
+    const floor = Number.isFinite(livePos?.floor) ? livePos.floor : roomFloor;
+    let mesh = model3D.residentMeshes[r.id];
+    if (!mesh) {
+      mesh = makeResidentAvatar3D(r);
+      model3D.residentsGroup.add(mesh);
+      model3D.residentMeshes[r.id] = mesh;
+      mesh.position.set(x, floor * 6 + 1.05, z + 0.2);
+    }
+    const level = getAlertLevel(r.id);
+    const color = [0x10b981, 0x3b82f6, 0xf59e0b, 0xf97316, 0xef4444, 0xff0000][level] || 0x10b981;
+    mesh.traverse((obj) => {
+      if (obj.userData?.avatarColor && obj.material) {
+        obj.material.color.setHex(color);
+        if (obj.material.emissive) obj.material.emissive.setHex(level >= 3 ? color : 0x052e23);
+      }
+      obj.userData.floor = floor;
+    });
+    model3D.residentTargets[r.id] = { x, y: floor * 6 + 1.05, z: z + 0.2, floor };
+    mesh.scale.setScalar(1 + Math.min(0.45, r.ml_risk || 0));
+    mesh.visible = model3D.floorMode === 'all' || String(floor) === model3D.floorMode;
+  });
+}
+
+function makeResidentAvatar3D(r) {
+  const THREE = model3D.THREE;
+  const group = new THREE.Group();
+  group.userData = { type: 'resident', resident_id: r.id };
+  const uniform = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x052e23, roughness: 0.45 });
+  const skin = new THREE.MeshStandardMaterial({ color: 0xf4c7a1, roughness: 0.65 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.7 });
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.5, 5, 12), uniform);
+  body.position.y = 0.1; body.userData = { type: 'resident', resident_id: r.id, avatarColor: true };
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.17, 18, 12), skin);
+  head.position.y = 0.58; head.userData = { type: 'resident', resident_id: r.id };
+  const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.38, 0.08), dark);
+  leftArm.position.set(-0.24, 0.15, 0); leftArm.rotation.z = -0.28; leftArm.userData = { type: 'resident', resident_id: r.id };
+  const rightArm = leftArm.clone();
+  rightArm.position.x = 0.24; rightArm.rotation.z = 0.28; rightArm.userData = { type: 'resident', resident_id: r.id };
+  const badge = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x10b981, emissiveIntensity: 0.4 }));
+  badge.position.set(0.1, 0.22, 0.19); badge.userData = { type: 'resident', resident_id: r.id, avatarColor: true };
+  group.add(body, head, leftArm, rightArm, badge);
+  [body, head, leftArm, rightArm, badge].forEach(part => model3D.interactives.push(part));
+  return group;
+}
+
+function makeLabelSprite(text, color, scale = 0.85) {
+  const THREE = model3D.THREE;
+  const canvas = document.createElement('canvas');
+  canvas.width = 256; canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(15,17,23,0.72)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = '700 22px system-ui';
+  ctx.fillStyle = `#${color.toString(16).padStart(6, '0')}`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 128, 32);
+  const texture = new THREE.CanvasTexture(canvas);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+  sprite.scale.set(3.2 * scale, 0.8 * scale, 1);
+  return sprite;
+}
+
+function pickEHPAD3D(event) {
+  const THREE = model3D.THREE;
+  const rect = model3D.renderer.domElement.getBoundingClientRect();
+  model3D.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  model3D.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  model3D.raycaster.setFromCamera(model3D.pointer, model3D.camera);
+  const hit = model3D.raycaster.intersectObjects(model3D.interactives, false).find(h => h.object.visible);
+  if (!hit) return;
+  const data = hit.object.userData;
+  const detail = document.getElementById('model-3d-detail');
+  if (data.type === 'resident') {
+    const r = residents[data.resident_id];
+    openDetail(data.resident_id);
+    detail.innerHTML = `<strong>${r.name}</strong><br>Chambre ${r.room} · risque ML ${((r.ml_risk || 0) * 100).toFixed(0)}%<br>FC ${r.vitals?.heart_rate || '—'} · SpO2 ${r.vitals?.spo2 || '—'}%`;
+    if (r.current_zone) detail.innerHTML += `<br>Zone actuelle: ${r.current_zone}<br>Activite: ${r.activity || '—'}<br>${r.time_label || '--:--'} · ${r.routine_label || 'routine'}<br>Autonomie: ${r.care_level || 'autonome'}${r.meal_mode === 'chambre' ? '<br>Repas servi en chambre' : (r.dining_table ? `<br>Table repas: ${r.dining_table}, place ${r.dining_seat || '?'}` : '')}`;
+  } else if (data.type === 'sensor') {
+    detail.innerHTML = `<strong>${data.label}</strong><br>${data.location}<br>Topic MQTT: ehpad/${data.room ? 'ch' + data.room + '/resident_id' : data.location.toLowerCase().replaceAll(' ', '_')}/...`;
+  } else if (data.type === 'dining_table' || data.type === 'dining_seat') {
+    const table = (data.name || '').match(/T\d/)?.[0];
+    const seated = Object.values(residents).filter(r => r.current_zone === 'salle_manger' && (!table || r.dining_table === table));
+    detail.innerHTML = `<strong>${data.name}</strong><br>Salle a manger detaillee<br>Residents presents: ${seated.length}<br>${seated.map(r => `${r.name} (${r.time_label || '--:--'})`).join('<br>') || 'Aucun resident assis'}`;
+  } else {
+    detail.innerHTML = `<strong>${data.name}</strong><br>${data.floor === 0 ? 'RDC' : '1er etage'}${data.room ? `<br>Chambre ${data.room}` : ''}<br>Capteurs: ${(data.sensors || []).join(', ')}`;
+  }
+}
+
+function hoverEHPAD3D(event) {
+  if (!model3D.ready) return;
+  const rect = model3D.renderer.domElement.getBoundingClientRect();
+  model3D.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  model3D.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  model3D.raycaster.setFromCamera(model3D.pointer, model3D.camera);
+  const hit = model3D.raycaster.intersectObjects(model3D.interactives, false)
+    .find(h => h.object.visible && h.object.userData?.type === 'resident');
+  const tooltip = document.getElementById('resident-tooltip-3d');
+  if (!hit || !tooltip) {
+    hideResidentTooltip3D();
+    return;
+  }
+  const r = residents[hit.object.userData.resident_id];
+  if (!r) {
+    hideResidentTooltip3D();
+    return;
+  }
+  tooltip.style.display = 'block';
+  tooltip.style.left = `${event.clientX - rect.left}px`;
+  tooltip.style.top = `${event.clientY - rect.top}px`;
+  tooltip.innerHTML = `
+    <strong>${r.name || r.id}</strong>
+    Chambre ${r.room || '—'} · ${r.current_zone || r.zone || 'zone inconnue'}<br>
+    ${r.current_zone === 'hors_ehpad' ? 'HORS EHPAD' : (r.activity || 'repos')} · ${r.time_label || '--:--'} · ${r.routine_label || 'routine'}<br>
+    ${r.meal_mode === 'chambre' ? 'Repas en chambre<br>' : (r.dining_table ? `Table ${r.dining_table}, place ${r.dining_seat || '?'}<br>` : '')}
+    FC ${r.vitals?.heart_rate || '—'} · SpO2 ${r.vitals?.spo2 || '—'}%
+  `;
+}
+
+function hideResidentTooltip3D() {
+  const tooltip = document.getElementById('resident-tooltip-3d');
+  if (tooltip) tooltip.style.display = 'none';
+}
+
+function set3DLayer(layer, visible) {
+  if (!model3D.ready) return;
+  if (layer === 'residents') model3D.residentsGroup.visible = visible;
+  if (layer === 'sensors') model3D.sensorsGroup.visible = visible;
+  if (layer === 'walls') model3D.wallsGroup.children.forEach((obj) => { if (obj.material?.transparent) obj.visible = visible; });
+  apply3DFloorVisibility();
+}
+
+function set3DFloorMode(mode, btn) {
+  model3D.floorMode = mode;
+  document.querySelectorAll('.model-overlay .filter-btn').forEach(b => {
+    if (['Tout', 'RDC', '1er'].includes(b.textContent.trim())) b.classList.remove('active');
+  });
+  if (btn) btn.classList.add('active');
+  else {
+    const wanted = mode === 'all' ? 'Tout' : mode === '0' ? 'RDC' : '1er';
+    [...document.querySelectorAll('.model-overlay .filter-btn')].find(b => b.textContent.trim() === wanted)?.classList.add('active');
+  }
+  apply3DFloorVisibility();
+  focus3DView(mode);
+}
+
+function apply3DFloorVisibility() {
+  if (!model3D.ready) return;
+  const allowed = (obj) => obj.userData?.alwaysVisible || model3D.floorMode === 'all' || String(obj.userData?.floor) === model3D.floorMode || obj.userData?.floor === undefined;
+  [model3D.wallsGroup, model3D.sensorsGroup].forEach(group => group?.children.forEach(obj => { obj.visible = allowed(obj); }));
+  Object.values(model3D.residentMeshes).forEach(group => {
+    const floor = model3D.residentTargets[group.userData?.resident_id]?.floor ?? group.children?.[0]?.userData?.floor;
+    group.visible = model3D.floorMode === 'all' || String(floor) === model3D.floorMode;
+  });
+}
+
+function focus3DView(mode = model3D.floorMode) {
+  if (!model3D.ready) return;
+  const y = mode === '1' ? 6 : mode === 'all' ? 3 : 0;
+  const z = mode === '0' ? 4 : 0;
+  model3D.controls.target.set(0, y, z);
+  model3D.camera.position.set(mode === 'all' ? 24 : 0, mode === 'all' ? 28 : 32, mode === 'all' ? 30 : 22);
+  model3D.controls.update();
+}
+
+function resizeEHPAD3D() {
+  if (!model3D.ready) return;
+  const canvas = model3D.renderer.domElement;
+  const box = canvas.parentElement.getBoundingClientRect();
+  if (!box.width || !box.height) return;
+  model3D.camera.aspect = box.width / box.height;
+  model3D.camera.updateProjectionMatrix();
+  model3D.renderer.setSize(box.width, box.height, false);
+}
+
+function animateEHPAD3D() {
+  if (!model3D.ready) return;
+  requestAnimationFrame(animateEHPAD3D);
+  Object.values(model3D.residentMeshes).forEach((group, i) => {
+    const target = model3D.residentTargets[group.userData?.resident_id];
+    if (target) {
+      group.position.x += (target.x - group.position.x) * 0.16;
+      group.position.y += (target.y - group.position.y) * 0.16;
+      group.position.z += (target.z - group.position.z) * 0.16;
+      const dx = target.x - group.position.x;
+      const dz = target.z - group.position.z;
+      if (Math.abs(dx) + Math.abs(dz) > 0.01) group.rotation.y = Math.atan2(dx, dz);
+    }
+    const moving = residents[group.userData?.resident_id]?.activity === 'deplacement';
+    const armSwing = moving ? Math.sin(Date.now() * 0.012 + i) * 0.42 : 0;
+    const parts = group.children || [];
+    if (parts[2]) parts[2].rotation.z = -0.28 + armSwing;
+    if (parts[3]) parts[3].rotation.z = 0.28 - armSwing;
+    group.children.forEach(part => { part.position.y += Math.sin(Date.now() * 0.006 + i) * (moving ? 0.0009 : 0.0002); });
+  });
+  model3D.controls.update();
+  model3D.renderer.render(model3D.scene, model3D.camera);
+}
+
+// ============================================================
+// Init
+// ============================================================
+connect();
+loadSimulatorSpeed();
+updateWallClock();
+updateReportResidentSelect();
+setInterval(updateTimeRibbon, 1000);
+
+// Fetch initial data via REST aussi (en cas de WS lent)
+setTimeout(() => {
+  if (Object.keys(residents).length === 0) {
+    fetch(`${BACKEND_HTTP}/api/residents`)
+      .then(r => r.json())
+      .then(d => {
+        (d.residents || []).forEach(r => residents[r.id] = r);
+        fetch(`${BACKEND_HTTP}/api/alerts`).then(r => r.json()).then(a => {
+          (a.active || []).forEach(al => activeAlerts[al.resident_id] = al);
+          renderAll();
+        });
+      }).catch(() => {});
+  }
+}, 2000);
+
+// Refresh sidebar alertes toutes les 10s
+setInterval(() => {
+  updateAlertSidebar();
+  updateQuickHistory();
+  // Update time_since in alerts
+  Object.values(activeAlerts).forEach(a => {
+    if (a.created_at) {
+      a.time_since_s = Math.round((Date.now() - new Date(a.created_at).getTime()) / 1000);
+    }
+  });
+}, 10000);
+</script>
+</body>
+</html>
