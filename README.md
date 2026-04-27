@@ -1,271 +1,286 @@
-# EHPAD Monitor - Detection de malaise intelligente
+# EHPAD Monitor — Detection et prediction de malaise
 
 Systeme IoT/IA de detection et prediction de malaises pour EHPAD.
+Projet Epitech MBA1 — 100 points.
 
-**20 residents simules - Plan RDC + 1er etage - Alertes 5 niveaux - Prediction ML - Dashboard temps reel - Demo R005 declenchable**
+**25 residents · 2 niveaux · Alertes 5 niveaux · NEWS2 · ML GradientBoost · KB clinique HAS/RCP · Espace famille · LLM Meditron**
 
 ---
 
 ## Demarrage rapide
 
 ```powershell
+ollama serve          # requis pour les rapports LLM (optionnel)
 docker compose up --build -d
 docker compose ps
 ```
 
-Services exposes sur la machine hote :
-
 | Service | URL |
 |---|---|
-| Dashboard | http://localhost:3002 |
+| Dashboard soignant | http://localhost:3002 |
+| Espace famille | http://localhost:3002/famille.html |
+| Admin comptes famille | http://localhost:3002/admin_famille.html |
 | Backend API | http://localhost:8001 |
-| Healthcheck API | http://localhost:8001/health |
-| Metriques ML | http://localhost:8001/api/ml/metrics |
+| API docs (Swagger) | http://localhost:8001/docs |
 | InfluxDB | http://localhost:8086 |
 | MQTT | localhost:1883 |
 
-Arret :
-
 ```powershell
-docker compose down
+docker compose down   # arret
 ```
-
----
-
-## Scenario demo garanti
-
-Le mode demo est active dans `docker-compose.yml` :
-
-```yaml
-DEMO_RESIDENT=R005
-```
-
-Effet attendu :
-
-1. Le simulateur force le scenario `hypoxie` sur R005.
-2. Les constantes de R005 se degradent progressivement.
-3. Le backend force un risque ML visible (`0.72`) pour illustrer "ML signale le risque 30 min avant".
-4. Le dashboard affiche un bouton `Demo R005`, un bandeau de suivi, le scenario actif, le niveau d'alerte et un scope clinique live.
-
-Pour la presentation :
-
-1. Ouvrir http://localhost:3002.
-2. Cliquer sur `Demo R005`.
-3. Montrer `ML 72% signale 30 min avant`.
-4. Montrer `scenario_active: hypoxie` via http://localhost:8001/api/residents/R005.
-5. Montrer les alertes et l'escalade si elles ne sont pas acquittees.
 
 ---
 
 ## Architecture
 
 ```text
-Simulateur Python
-  - 20 residents sur 2 niveaux
-  - constantes vitales
-  - accelerometre
-  - capteurs ambiants
-  - scenario demo R005
+Simulateur Python (25 residents)
+  - profils cliniques + pathologies
+  - rythme circadien (BP/HR/Temp/SpO2 sur 24h)
+  - 18 scenarios (chute, hypoxie, fugue, sepsis...)
+  - ponderation temporelle des risques de chute
+  - capteurs vitaux + ambiants + QoS MQTT
         |
-        v MQTT
-Mosquitto
+        v MQTT QoS 0/1/2
+Mosquitto (broker)
         |
         v
 Backend FastAPI
-  - prediction ML
-  - moteur alertes 5 niveaux
-  - escalade automatique
-  - stockage Redis
-  - historique InfluxDB
-  - WebSocket dashboard
+  - moteur d'alertes 5 niveaux + escalade automatique
+  - score NEWS2 clinique (HAS/RCP)
+  - mode nuit (seuils SpO2 adaptes au sommeil)
+  - deviation de routine C4 (Redis, fenetre 100 mesures)
+  - prediction ML GradientBoost (30-60 min)
+  - KB clinique v2 (15 scenarios HAS, 8 archetypes)
+  - authentification famille (comptes Redis, tokens 24h)
+  - rapport LLM quotidien (Meditron:7b via Ollama)
+  - stockage Redis (etat courant) + InfluxDB (historique)
+  - WebSocket dashboard temps reel
         |
         v
 Dashboard HTML/JS
-  - grille residents
-  - detail resident
-  - plan EHPAD
-  - sparklines multi-metriques
-  - scope clinique live inspire d'un moniteur patient
-  - toasts et annonce vocale
+  - grille 25 residents avec alertes live
+  - detail resident + sparklines + scope clinique
+  - plan SVG RDC + 1er etage
+  - vue 3D Three.js avec localisation
+  - interface famille (acces restreint par compte)
+  - interface admin comptes famille
+  - panneau transmissions IDE / mini DPI
+  - validation pro + scenarios declenchables
 ```
 
 ---
 
-## Fonctionnalites couvertes
+## Fonctionnalites
 
 ### Must have
 
 | Critere | Implementation |
 |---|---|
-| Simulateur 20 residents | 20 residents avec profils cliniques alignes sur le plan Word |
-| Capteurs ambiants | Zones RDC + 1er etage : entree, patio, couloirs, salles, cuisine, soins |
-| Communication MQTT | Mosquitto, mapping `ehpad/{zone}/{resident_id}/{type_capteur}` + compatibilite dashboard |
-| Dashboard multi-residents | Grille, detail, plan, alertes |
-| Alertes 5 niveaux | Information, Attention, Alerte, Urgence, Danger vital |
-| Docker Compose | Stack complete avec healthchecks |
-| Documentation | README, architecture, script demo |
+| Simulateur 25 residents | Profils cliniques, pathologies, mobilite, facteur risque |
+| Capteurs vitaux | FC, SpO2, PA, Temp, FR via MQTT |
+| Capteurs ambiants | Temperature, humidite, CO2, mouvement, portes |
+| MQTT QoS | Vitaux QoS 1, chutes/SOS QoS 2, ambiants QoS 0 |
+| Alertes 5 niveaux | Information → Danger vital, escalade auto |
+| Dashboard temps reel | WebSocket, grille, detail, plan, sparklines |
+| Docker Compose | 6 services avec healthchecks |
+| Documentation | README, architecture, demo, comptes famille |
 
 ### Should have
 
 | Critere | Implementation |
 |---|---|
-| Prediction ML | GradientBoostingClassifier scikit-learn |
-| Metriques ML | Endpoint `/api/ml/metrics` |
-| Plan etablissement | SVG interactif RDC + 1er etage |
-| Historique comportemental | Buffer 60s et sparklines |
-| Escalade automatique | Niveau 2 -> 3 -> 4 -> 5 |
-| Gestion personnel | Soignant assigne par resident |
+| Prediction ML 30-60 min | GradientBoostingClassifier, 9 features, AUC expose |
+| Metriques ML medicales | Sensibilite, specificite, matrice confusion, feature importance |
+| Score NEWS2 | 6 parametres cliniques, 3 niveaux de risque |
+| Mode nuit | Seuils SpO2 adaptes au sommeil (92%/89% vs 95%/93%) |
+| Rythme circadien | BP/HR/Temp/SpO2 suivent un cycle physiologique 24h |
+| Plan etablissement | SVG interactif + vue 3D Three.js |
+| Escalade automatique | Niveau 2→3→4→5 avec delais configures |
+| KB clinique v2 | 15 scenarios (HAS, RCP, WHO), 8 archetypes, 13 classes med. |
 
 ### Could have
 
 | Critere | Implementation |
 |---|---|
-| Detection fugue | Alerte entree hors horaires |
-| Rapport resident | Endpoint `/api/llm/report/{id}` |
-| Interface famille | Detail resident filtre via API |
-| Tests automatises | 25 tests pytest dont tests API httpx |
+| Rapport LLM quotidien (C2) | Meditron:7b via Ollama local, RGPD-compliant |
+| Espace famille (C3) | Comptes individuels, token 24h, vue sans donnees medicales |
+| Admin comptes famille | Creation / suppression de comptes via interface web |
+| Analyse de routine (C4) | Detection deviation >2.5 sigma vs baseline Redis |
+| Archetypes KB par resident | Chaque resident lie a un archetype clinique + scenarios preferes |
+| Tests automatises | 60+ tests pytest : alertes, ML, NEWS2, auth famille, API |
 
 ---
 
-## API REST
+## Espace Famille (C3)
 
-| Endpoint | Description |
-|---|---|
-| `GET /health` | Etat backend + Redis |
-| `GET /api/residents` | Tous les residents + etat courant |
-| `GET /api/residents/{id}` | Detail d'un resident |
-| `GET /api/residents/{id}/history?minutes=60` | Historique InfluxDB |
-| `GET /api/alerts` | Alertes actives + historique |
-| `POST /api/alerts/{id}/acknowledge?by=nom` | Acquitter une alerte |
-| `GET /api/zones` | Etat des zones ambiantes |
-| `GET /api/summary` | Resume global EHPAD |
-| `GET /api/ml/metrics` | Accuracy, AUC, F1 et features ML |
-| `GET /api/llm/report/{id}` | Rapport quotidien resident |
-| `WS /ws` | Flux temps reel dashboard |
+Chaque famille dispose d'un compte individuel donnant acces **uniquement** a son proche.
 
-Exemples :
+URL : http://localhost:3002/famille.html
 
-```powershell
-Invoke-RestMethod http://localhost:8001/health
-Invoke-RestMethod http://localhost:8001/api/ml/metrics
-Invoke-RestMethod http://localhost:8001/api/residents/R005
-```
+Codes de demonstration (generes au demarrage) :
 
----
-
-## Alertes
-
-| Niveau | Nom | Declencheurs principaux | Escalade |
+| Utilisateur | Mot de passe | Resident | Chambre |
 |---|---|---|---|
-| 1 | Information | Inactivite | - |
-| 2 | Attention | SpO2 < 95, FC > 100, ML > 50% | vers 3 en 10 min |
-| 3 | Alerte | SpO2 < 93, FC > 120, ML > 75% | vers 4 en 5 min |
-| 4 | Urgence | Chute, SpO2 < 88, FC > 140 | vers 5 en 3 min |
-| 5 | Danger vital | SpO2 < 85 + FC > 130, PA critique | notification maximale |
+| dupont | dupont101 | Marguerite Dupont | 101 |
+| martin | martin105 | Yvette Martin | 105 |
+| robert | robert201 | Jeanne Robert | 201 |
+| girard | girard219 | Leon Girard | 219 |
+| ... | ... | 25 comptes au total | voir docs/comptes_famille_demo.md |
+
+Ce qui est visible : statut general, activite en cours, soignant referent, heure.
+Ce qui est masque : FC, SpO2, PA, temperature, scores cliniques, alertes brutes.
+
+### Interface admin
+
+URL : http://localhost:3002/admin_famille.html
+Token : `ADMIN_EHPAD_2024` (configurable via env `FAMILLE_ADMIN_TOKEN`)
+
+L'admin peut creer, lister et supprimer des comptes famille.
+
+---
+
+## Base de connaissances clinique (KB v2)
+
+Fichier : `backend/kb/ehpad_watch_kb.json`
+
+| Element | Contenu |
+|---|---|
+| Sources | HAS, RCP NEWS2, WHO, CDC, Ameli, NCBI, Doloplus, VIDAL |
+| Scenarios | 15 scenarios cliniques (SCN001 a SCN015) |
+| Archetypes | 8 profils residents (ARCH_ALZ_FALL, ARCH_BPCO, ARCH_CARDIAC...) |
+| Medicaments | 13 classes a risque avec facteurs de boost pour le moteur |
+| Transmission | Format SBAR pour les transmissions IDE |
+
+Chaque resident est automatiquement associe a un archetype et a ses scenarios preferes au demarrage.
+
+Endpoints KB :
+
+```
+GET /api/kb/scenarios         — liste des 15 scenarios
+GET /api/kb/scenarios/{id}    — detail complet d'un scenario
+GET /api/kb/archetypes         — les 8 archetypes
+GET /api/kb/residents          — residents enrichis KB
+```
 
 ---
 
 ## Modele ML
 
-- Algorithme : `GradientBoostingClassifier` — choisi pour sa robustesse sur données tabulaires médicales hétérogènes, sa résistance aux outliers et l'interprétabilité via feature importance (vs. SVM ou réseau de neurones).
-- Pipeline : `StandardScaler` → classifieur (100 estimateurs, lr=0.1, max_depth=4).
-- Données : 5000 exemples synthétiques générés au premier démarrage.
-- Features (9) : FC, SpO2, PA systolique, température, inactivité, tendances FC/SpO2 sur 10 min, facteur âge, facteur risque pathologies.
-- Métriques exposées : accuracy, AUC-ROC, F1, **sensibilité** (recall classe 1 — faux négatif = malaise manqué), **spécificité** (recall classe 0 — faux positif = fatigue du personnel), matrice de confusion, importance des features.
-- Persistance : `/app/ml_model.joblib`.
-- Endpoint : `GET /api/ml/metrics`.
-- Note split : entraînement sur données i.i.d. synthétiques → split aléatoire acceptable. Sur données réelles, un **split temporel** serait obligatoire pour éviter le data leakage.
+- Algorithme : `GradientBoostingClassifier` (scikit-learn)
+- Justification : robustesse sur donnees tabulaires medicales heterogenes, resistance aux outliers, interpretabilite via feature importance (superieur a SVM ou reseau de neurones sur ce volume)
+- Pipeline : `StandardScaler` → classifieur (100 estimateurs, lr=0.1, max_depth=4)
+- 9 features : FC, SpO2, PA systolique, temperature, inactivite, delta FC/SpO2 sur 10 min, facteur age, facteur risque
+- Metriques : accuracy, AUC-ROC, F1, **sensibilite**, **specificite**, matrice de confusion, importance des features
+- Endpoint : `GET /api/ml/metrics`
+- Note : split aleatoire acceptable sur donnees synthetiques i.i.d. — split temporel obligatoire sur donnees reelles
 
 ---
 
-## Redis et persistance
+## Score NEWS2
 
-Redis est configure avec AOF :
-
-```yaml
-command: redis-server --appendonly yes --appendfsync everysec
-volumes:
-  - redis_data:/data
-```
-
-Objectif : conserver les donnees importantes et les alertes actives malgre un redemarrage de conteneur.
-
----
-
-## Tests
-
-Installation locale si besoin :
-
-```powershell
-py -m pip install -r backend/requirements.txt
-py -m pip install pytest httpx
-```
-
-Execution :
-
-```powershell
-py -m pytest .\tests -q
-```
-
-Etat actuel valide :
-
-```text
-Non relance ici : Python indisponible dans le shell courant.
-```
-
-Couverture :
-
-- moteur d'alertes,
-- prediction ML,
-- simulateur,
-- tests d'integration API avec `httpx`.
-
----
-
-## Structure
-
-```text
-.
-|-- docker-compose.yml
-|-- backend/
-|   |-- main.py
-|   |-- alert_engine.py
-|   |-- ml_model.py
-|   |-- ws_manager.py
-|   `-- requirements.txt
-|-- simulator/
-|   |-- main.py
-|   |-- profiles.py
-|   |-- patients.json
-|   `-- requirements.txt
-|-- dashboard/
-|   `-- public/index.html
-|-- mosquitto/config/
-|-- docs/
-|   |-- architecture.md
-|   `-- demo.md
-`-- tests/test_ehpad.py
-```
+Calcule a chaque evaluation, base sur 6 parametres (FC, FR, SpO2, PA, Temp, conscience).
+Seuils d'alerte additionnels : NEWS2 ≥ 3 → L2, ≥ 5 → L3, ≥ 7 → L4, ≥ 9 → L5.
+Documente par le Royal College of Physicians (RCP 2017), utilise dans les EHPAD francais.
 
 ---
 
 ## Rapport LLM quotidien (C2)
 
-L'endpoint `GET /api/llm/report/{id}` appelle **Meditron:7b via Ollama** (local), un LLM open-source fine-tuné sur PubMed et des guidelines médicales. Aucune donnée patient ne quitte le système — conformité RGPD. Si Ollama n'est pas joignable, un résumé textuel de secours est retourné.
+Endpoint : `GET /api/llm/report/{resident_id}`
 
-Prérequis : Ollama doit tourner sur la machine hôte (`ollama serve`) avant `docker compose up`.
+Utilise **Meditron:7b via Ollama** (local), LLM open-source fine-tune sur PubMed et guidelines medicales.
+Aucune donnee ne quitte la machine — conformite RGPD.
+Repli automatique si Ollama indisponible.
+
+Prerequis : `ollama serve` avant `docker compose up`.
 
 ---
 
-## Securite — Note importante
+## API REST — Endpoints principaux
 
-> **Configuration développement uniquement.**
-> Les credentials suivants sont intentionnellement simplifiés pour faciliter le démarrage :
-> - Token InfluxDB : `ehpad-super-secret-token`
-> - Redis : sans mot de passe
-> - MQTT : sans authentification
->
-> En production : activer TLS sur MQTT (port 8883), configurer `requirepass` Redis, remplacer le token InfluxDB par une variable d'environnement injectée via un secret manager (Vault, Docker Secrets).
+| Endpoint | Description |
+|---|---|
+| `GET /health` | Etat backend + Redis |
+| `GET /api/residents` | Tous les residents + etat courant |
+| `GET /api/residents/{id}` | Detail resident |
+| `GET /api/residents/{id}/routine` | Analyse de routine (deviation sigma) |
+| `GET /api/alerts` | Alertes actives + historique |
+| `POST /api/alerts/{id}/acknowledge` | Acquitter une alerte |
+| `GET /api/ml/metrics` | Metriques ML (sensibilite, specificite...) |
+| `GET /api/kb/scenarios` | Liste des 15 scenarios KB |
+| `GET /api/kb/residents` | Residents enrichis avec archetype KB |
+| `POST /api/famille/login` | Connexion espace famille |
+| `GET /api/famille/{id}` | Vue famille (token requis) |
+| `GET /api/admin/famille/accounts` | Liste comptes famille (admin) |
+| `POST /api/admin/famille/accounts` | Creer un compte famille (admin) |
+| `GET /api/llm/report/{id}` | Rapport LLM quotidien |
+| `WS /ws` | Flux WebSocket temps reel |
+
+---
+
+## Tests
+
+```powershell
+py -m pip install pytest httpx
+py -m pytest tests/ -v
+```
+
+Couverture (60+ tests) :
+
+- `TestAlertEngine` — moteur d'alertes 5 niveaux
+- `TestMLModel` — prediction, metriques, features
+- `TestAPIIntegration` — endpoints REST
+- `TestSimulator` — scenarios, rythme circadien
+- `TestNEWSScore` — calcul NEWS2
+- `TestNightMode` — seuils SpO2 nuit vs jour
+- `TestFamilleAuth` — auth.py avec FakeRedis (25 comptes parametrises)
+- `TestFamilleAPI` — endpoints famille et admin
+
+---
+
+## Structure du projet
+
+```text
+.
+├── docker-compose.yml
+├── backend/
+│   ├── main.py                  # FastAPI — routes, WebSocket, MQTT
+│   ├── alert_engine.py          # Moteur alertes 5 niveaux + NEWS2
+│   ├── ml_model.py              # GradientBoost + metriques medicales
+│   ├── auth.py                  # Comptes famille (hash SHA-256, tokens Redis)
+│   ├── kb_loader.py             # Chargeur KB clinique v2
+│   ├── resident_profiles.py     # 25 profils + enrichissement KB
+│   ├── ws_manager.py            # Gestionnaire WebSocket
+│   ├── kb/
+│   │   └── ehpad_watch_kb.json  # KB clinique v2 (15 scenarios, 8 archetypes)
+│   └── requirements.txt
+├── simulator/
+│   ├── main.py                  # Simulateur 25 residents + rythme circadien
+│   └── profiles.py
+├── dashboard/
+│   ├── public/
+│   │   ├── index.html           # Dashboard soignant principal
+│   │   ├── famille.html         # Espace famille (login par compte)
+│   │   └── admin_famille.html   # Administration comptes famille
+│   └── server.js
+├── mosquitto/config/
+├── docs/
+│   ├── architecture.md          # Architecture technique detaillee
+│   ├── demo.md                  # Guide de demonstration oral
+│   └── comptes_famille_demo.md  # Identifiants demo famille
+└── tests/
+    └── test_ehpad.py            # 60+ tests pytest
+```
+
+---
+
+## Securite
+
+> **Configuration developpement uniquement.**
+> - Token InfluxDB, Redis sans mot de passe, MQTT sans auth : intentionnel pour le demo.
+> - Mots de passe famille : haches SHA-256 + sel dans Redis (non stockes en clair).
+> - En production : TLS MQTT (8883), `requirepass` Redis, token InfluxDB via secret manager, bcrypt pour les mots de passe, HTTPS, rate limiting sur /login.
 
 ---
 
@@ -275,14 +290,11 @@ Prérequis : Ollama doit tourner sur la machine hôte (`ollama serve`) avant `do
 docker compose down
 docker compose up --build -d
 docker compose ps
-py -m pytest .\tests -q
+py -m pytest tests/ -q
+Invoke-RestMethod http://localhost:8001/health
 Invoke-RestMethod http://localhost:8001/api/ml/metrics
+Invoke-RestMethod http://localhost:8001/api/kb/scenarios
 Invoke-RestMethod http://localhost:8001/api/residents/R005
 ```
 
-Tout doit montrer :
-
-- services Docker `healthy`,
-- tests pytest a relancer des que Python est disponible,
-- metriques ML disponibles,
-- R005 avec `scenario_active = hypoxie` et `ml_risk = 0.72`.
+Attendu : services `healthy`, 25 residents charges, 15 scenarios KB, metriques ML avec sensibilite/specificite.

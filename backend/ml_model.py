@@ -157,6 +157,78 @@ class MalaisePredictor:
 
         return hr_trend, spo2_trend
 
+    def predict_horizons(self, resident_id: str, vitals: dict, movement: dict,
+                         age: int, base_risk: float) -> dict:
+        """Prediction prospective 30-60 min, pas detection apres coup."""
+        v = vitals
+        hr = v.get("heart_rate", 72)
+        spo2 = v.get("spo2", 96)
+        bp = v.get("blood_pressure_sys", 130)
+        temp = v.get("temperature", 36.7)
+        last_mv = movement.get("last_movement_ago_s", 0)
+
+        hr_trend, spo2_trend = self._get_trends(resident_id, {"heart_rate": hr, "spo2": spo2})
+        age_factor = min(1.0, (age - 60) / 40) if age > 60 else 0.0
+        features = np.array([[hr, spo2, bp, temp, last_mv, hr_trend, spo2_trend, age_factor, base_risk]])
+        try:
+            model_proba = float(self.model.predict_proba(features)[0][1])
+        except Exception as e:
+            log.error(f"Erreur prediction ML: {e}")
+            model_proba = 0.0
+
+        early = 0.0
+        signals = []
+        if spo2 <= 94:
+            early += 0.12
+            signals.append("SpO2 limite")
+        if spo2_trend <= -0.08:
+            early += min(0.22, abs(spo2_trend) * 0.12)
+            signals.append("SpO2 en baisse")
+        if hr >= 100:
+            early += 0.10
+            signals.append("FC elevee")
+        if hr_trend >= 0.35:
+            early += min(0.18, hr_trend * 0.08)
+            signals.append("FC en hausse")
+        if bp >= 165 or bp <= 95:
+            early += 0.08
+            signals.append("PA en tension")
+        if temp >= 38.1:
+            early += 0.08
+            signals.append("temperature en hausse")
+        if 1800 < last_mv < 5400:
+            early += 0.08
+            signals.append("inactivite prolongee")
+
+        frailty = 0.08 * max(0.0, min(1.0, float(base_risk))) + 0.04 * age_factor
+        risk_30 = min(0.98, model_proba * 0.55 + early * 0.35 + frailty)
+        deterioration = max(0.0, hr_trend / 6.0) + max(0.0, -spo2_trend / 2.0)
+        risk_60 = min(0.98, risk_30 + 0.05 + min(0.18, deterioration * 0.08))
+        if movement.get("is_fall_detected") or movement.get("sos_pressed"):
+            signals.append("evenement aigu gere par le moteur d'alertes")
+
+        return {
+            "horizon": "30-60min",
+            "risk_30min": round(float(risk_30), 3),
+            "risk_60min": round(float(risk_60), 3),
+            "risk": round(float(risk_60), 3),
+            "model_probability": round(float(model_proba), 3),
+            "early_signal_score": round(float(min(0.98, early)), 3),
+            "signals": signals or ["aucun signal faible significatif"],
+            "features": {
+                "heart_rate": hr,
+                "spo2": spo2,
+                "blood_pressure_sys": bp,
+                "temperature": temp,
+                "last_movement_ago_s": last_mv,
+                "hr_trend_10m": round(hr_trend, 3),
+                "spo2_trend_10m": round(spo2_trend, 3),
+                "age_factor": round(age_factor, 3),
+                "risk_factor": round(float(base_risk), 3),
+            },
+            "intent": "prediction avant malaise, pas detection apres coup",
+        }
+
     def predict(self, resident_id: str, vitals: dict, movement: dict,
                 age: int, base_risk: float) -> float:
         """

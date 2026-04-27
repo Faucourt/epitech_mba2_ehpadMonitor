@@ -8,6 +8,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a2533; min-height: 100vh; }
 
+    /* ---- Login ---- */
     .login-screen {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-height: 100vh; gap: 24px;
@@ -31,88 +32,92 @@
     .login-card button:hover { background: #154360; }
     .error-msg { color: #e74c3c; font-size: 0.85rem; text-align: center; display: none; }
 
-    .app-screen { display: none; }
+    /* ---- App ---- */
+    .app-screen { display: none; flex-direction: column; min-height: 100vh; }
 
     header {
       background: #1a5276; color: white; padding: 16px 24px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    header h1 { font-size: 1.2rem; font-weight: 600; }
-    header span { font-size: 0.85rem; opacity: 0.8; }
+    header h1 { font-size: 1.15rem; font-weight: 600; }
+    header span { font-size: 0.82rem; opacity: 0.8; }
     .logout-btn {
       background: rgba(255,255,255,0.15); border: none; color: white;
       padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
     }
     .logout-btn:hover { background: rgba(255,255,255,0.25); }
 
-    .search-bar {
-      padding: 20px 24px; background: white; border-bottom: 1px solid #e0e8f0;
-      display: flex; gap: 12px; align-items: center;
+    /* ---- Resident card ---- */
+    .resident-wrapper {
+      flex: 1; display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 24px;
     }
-    .search-bar input {
-      flex: 1; padding: 10px 14px; border: 1.5px solid #dce3ea; border-radius: 8px;
-      font-size: 0.95rem; outline: none;
-    }
-    .search-bar input:focus { border-color: #1a5276; }
-
-    .residents-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px; padding: 24px;
-    }
-
     .resident-card {
-      background: white; border-radius: 12px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #27ae60;
-      transition: transform .15s, box-shadow .15s;
+      background: white; border-radius: 16px; padding: 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      border-left: 6px solid #27ae60;
+      width: 100%; max-width: 480px;
     }
-    .resident-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-    .resident-card.status-surveillance { border-left-color: #f39c12; }
-    .resident-card.status-renforce    { border-left-color: #e74c3c; }
+    .resident-card.surveillance { border-left-color: #f39c12; }
+    .resident-card.renforce     { border-left-color: #e74c3c; }
 
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-    .resident-name { font-size: 1.05rem; font-weight: 600; color: #1a2533; }
-    .resident-room { font-size: 0.8rem; color: #888; margin-top: 2px; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .resident-name { font-size: 1.4rem; font-weight: 700; color: #1a2533; }
+    .resident-room { font-size: 0.88rem; color: #888; margin-top: 4px; }
 
     .status-badge {
-      padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-      background: #eafaf1; color: #27ae60;
+      padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+      background: #eafaf1; color: #27ae60; white-space: nowrap;
     }
     .status-badge.surveillance { background: #fef9e7; color: #e67e22; }
     .status-badge.renforce     { background: #fdf2f2; color: #e74c3c; }
 
-    .card-body { display: flex; flex-direction: column; gap: 8px; }
-    .info-row { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #555; }
-    .info-icon { font-size: 1rem; width: 20px; text-align: center; }
+    .info-list { display: flex; flex-direction: column; gap: 14px; }
+    .info-row {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.95rem; color: #444;
+      padding: 10px 14px; background: #f8fafc; border-radius: 8px;
+    }
+    .info-icon { font-size: 1.2rem; width: 26px; text-align: center; flex-shrink: 0; }
 
-    .last-update { font-size: 0.75rem; color: #aaa; margin-top: 10px; text-align: right; }
-
-    .note { text-align: center; padding: 60px 24px; color: #999; font-size: 0.95rem; }
-    .note strong { display: block; font-size: 1.1rem; color: #666; margin-bottom: 8px; }
+    .last-update { font-size: 0.75rem; color: #bbb; margin-top: 20px; text-align: right; }
 
     .disclaimer {
-      margin: 0 24px 24px; padding: 14px 18px; background: #eaf4fb; border-radius: 8px;
-      font-size: 0.82rem; color: #555; line-height: 1.5;
+      margin-top: 16px; padding: 12px 16px; background: #eaf4fb; border-radius: 8px;
+      font-size: 0.8rem; color: #555; line-height: 1.5;
       border-left: 3px solid #1a5276;
     }
-    .refresh-info { text-align: center; padding: 8px; font-size: 0.78rem; color: #aaa; }
+
+    .refresh-info { text-align: center; padding: 10px; font-size: 0.78rem; color: #aaa; }
+
+    .loading { text-align: center; padding: 60px; color: #999; font-size: 0.95rem; }
   </style>
 </head>
 <body>
 
-<!-- Écran de connexion -->
+<!-- Ecran de connexion -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
-    <div style="text-align:center; font-size:2rem;">🏥</div>
+    <div style="text-align:center; font-size:2.5rem;">&#127968;</div>
     <h1>Espace Famille</h1>
-    <p>Cet espace vous permet de consulter l'état général de votre proche en toute sécurité. Aucune information médicale confidentielle n'est partagée.</p>
+    <p>Connectez-vous avec les identifiants remis par l'etablissement pour consulter l'etat general de votre proche.</p>
     <div>
-      <label style="font-size:0.85rem;color:#555;margin-bottom:6px;display:block;">Code famille</label>
-      <input type="password" id="codeInput" placeholder="Entrez votre code famille" maxlength="20"
+      <label style="font-size:0.85rem;color:#555;margin-bottom:6px;display:block;">Nom d'utilisateur</label>
+      <input type="text" id="usernameInput" placeholder="Ex : dupont"
+             autocomplete="username" maxlength="40"
+             onkeydown="if(event.key==='Enter') document.getElementById('passwordInput').focus()">
+    </div>
+    <div>
+      <label style="font-size:0.85rem;color:#555;margin-bottom:6px;display:block;">Mot de passe</label>
+      <input type="password" id="passwordInput" placeholder="Mot de passe"
+             autocomplete="current-password" maxlength="40"
              onkeydown="if(event.key==='Enter') doLogin()">
     </div>
-    <button onclick="doLogin()">Accéder à l'espace famille</button>
-    <div class="error-msg" id="errorMsg">Code incorrect. Contactez l'établissement.</div>
-    <p style="font-size:0.75rem;color:#aaa;">Code de démonstration : FAMILLE</p>
+    <button onclick="doLogin()">Acceder a l'espace famille</button>
+    <div class="error-msg" id="errorMsg">Identifiants incorrects. Contactez l'etablissement.</div>
+    <p style="font-size:0.75rem;color:#aaa;">
+      Demo : utilisateur <strong>dupont</strong> · mot de passe <strong>dupont101</strong>
+    </p>
   </div>
 </div>
 
@@ -120,112 +125,98 @@
 <div class="app-screen" id="appScreen">
   <header>
     <div>
-      <h1>🏥 Espace Famille — EHPAD Monitor</h1>
-      <span>Vue générale · Mise à jour toutes les 10s</span>
+      <h1>&#127968; Espace Famille — EHPAD Monitor</h1>
+      <span id="headerSub">Mise a jour toutes les 30s</span>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+    <button class="logout-btn" onclick="doLogout()">Deconnexion</button>
   </header>
 
-  <div class="search-bar">
-    <span>🔍</span>
-    <input type="text" id="searchInput" placeholder="Rechercher par nom ou chambre..." oninput="filterResidents()">
+  <div class="resident-wrapper">
+    <div style="width:100%;max-width:480px;">
+      <div id="residentContainer" class="loading">Chargement…</div>
+      <div class="disclaimer">
+        &#8505;&#65039; Cet espace affiche uniquement l'etat general de votre proche.
+        Pour tout renseignement medical, contactez directement l'equipe soignante.
+      </div>
+      <div class="refresh-info" id="refreshInfo"></div>
+    </div>
   </div>
-
-  <div class="disclaimer">
-    ℹ️ <strong>Information :</strong> Cet espace affiche uniquement l'état général de votre proche.
-    Pour tout renseignement médical, contactez directement l'équipe soignante.
-  </div>
-
-  <div class="residents-grid" id="residentsGrid">
-    <div class="note"><strong>Chargement…</strong>Récupération des données en cours.</div>
-  </div>
-
-  <div class="refresh-info" id="refreshInfo">—</div>
 </div>
 
 <script>
 const API = window.location.origin.replace(':3002', ':8001');
-let allResidents = [];
 let familleCode = '';
+let residentId  = '';
+let residentName = '';
+let refreshTimer = null;
 
-function doLogin() {
-  const code = document.getElementById('codeInput').value.trim();
-  if (code === 'FAMILLE') {
-    familleCode = code;
+async function doLogin() {
+  const username = document.getElementById('usernameInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  if (!username || !password) return;
+  try {
+    const resp = await fetch(`${API}/api/famille/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    if (!resp.ok) {
+      document.getElementById('errorMsg').style.display = 'block';
+      return;
+    }
+    const data = await resp.json();
+    familleCode  = data.token;
+    residentId   = data.resident_id;
+    residentName = data.name;
+
+    document.getElementById('errorMsg').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appScreen').style.display = 'block';
-    loadResidents();
-    setInterval(loadResidents, 10000);
-  } else {
+    document.getElementById('appScreen').style.display  = 'flex';
+    document.getElementById('headerSub').textContent =
+      `Votre proche : ${residentName} · Mise a jour toutes les 30s`;
+
+    loadResident();
+    refreshTimer = setInterval(loadResident, 30000);
+  } catch (e) {
     document.getElementById('errorMsg').style.display = 'block';
   }
 }
 
 function doLogout() {
-  familleCode = '';
+  clearInterval(refreshTimer);
+  familleCode = residentId = residentName = '';
   document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('codeInput').value = '';
+  document.getElementById('appScreen').style.display   = 'none';
+  document.getElementById('usernameInput').value = '';
+  document.getElementById('passwordInput').value = '';
   document.getElementById('errorMsg').style.display = 'none';
-  allResidents = [];
+  document.getElementById('residentContainer').innerHTML = '<div class="loading">Chargement…</div>';
 }
 
-async function loadResidents() {
+async function loadResident() {
   try {
-    const resp = await fetch(`${API}/api/residents`);
-    if (!resp.ok) return;
-    const data = await resp.json();
-    allResidents = (data.residents || []).sort((a, b) =>
-      (a.name || '').localeCompare(b.name || '', 'fr')
-    );
-    renderResidents(allResidents);
+    const resp = await fetch(`${API}/api/famille/${residentId}`, {
+      headers: { Authorization: `Bearer ${familleCode}` }
+    });
+    if (!resp.ok) { doLogout(); return; }
+    const r = await resp.json();
+    renderResident(r);
     document.getElementById('refreshInfo').textContent =
-      `Dernière mise à jour : ${new Date().toLocaleTimeString('fr-FR')} · ${allResidents.length} résidents`;
+      `Derniere mise a jour : ${new Date().toLocaleTimeString('fr-FR')}`;
   } catch (e) {
-    console.error('Erreur chargement résidents', e);
+    console.error('Erreur chargement', e);
   }
 }
 
-function filterResidents() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = q
-    ? allResidents.filter(r =>
-        (r.name || '').toLowerCase().includes(q) ||
-        String(r.room || '').includes(q)
-      )
-    : allResidents;
-  renderResidents(filtered);
-}
-
-function statusClass(alertLevel) {
-  if (alertLevel >= 4) return 'renforce';
-  if (alertLevel >= 2) return 'surveillance';
+function statusClass(level) {
+  if (level >= 4) return 'renforce';
+  if (level >= 2) return 'surveillance';
   return '';
-}
-
-function statusLabel(alertLevel) {
-  if (alertLevel >= 4) return 'Surveillance renforcée';
-  if (alertLevel >= 2) return 'Sous surveillance';
-  return 'Situation stable';
-}
-
-function statusBadgeClass(alertLevel) {
-  if (alertLevel >= 4) return 'renforce';
-  if (alertLevel >= 2) return 'surveillance';
-  return '';
-}
-
-function activityIcon(activity) {
-  const map = {
-    'deplacement': '🚶', 'repos': '🛋️', 'repos_chambre': '🛋️',
-    'immobile': '💤', 'repas_en_chambre': '🍽️',
-    'immobilite_anormale': '⚠️', 'default': '📍'
-  };
-  return map[activity] || map['default'];
 }
 
 function floorLabel(floor) {
-  return floor === 0 ? 'Rez-de-chaussée' : `${floor}er étage`;
+  if (floor === 0 || floor === '0') return 'Rez-de-chaussee';
+  return `${floor}er etage`;
 }
 
 function formatTime(iso) {
@@ -234,42 +225,46 @@ function formatTime(iso) {
   catch { return '—'; }
 }
 
-function renderResidents(residents) {
-  const grid = document.getElementById('residentsGrid');
-  if (!residents.length) {
-    grid.innerHTML = '<div class="note"><strong>Aucun résultat</strong>Modifiez votre recherche.</div>';
-    return;
-  }
-  grid.innerHTML = residents.map(r => {
-    const alertLevel = r.alert ? r.alert.level : 0;
-    const sc  = statusClass(alertLevel);
-    const lbl = statusLabel(alertLevel);
-    const badgeCls = statusBadgeClass(alertLevel);
-    const tod = r.routine_label || r.time_label || '';
-    const act = r.activity || 'repos';
+function activityIcon(activity) {
+  const map = {
+    'deplacement': '🚶', 'repos': '🛋️', 'repos_chambre': '🛋️',
+    'immobile': '💤', 'repas_en_chambre': '🍽️',
+    'immobilite_anormale': '⚠️'
+  };
+  return map[activity] || '📍';
+}
 
-    return `
-    <div class="resident-card ${sc ? 'status-' + sc : ''}">
-      <div class="card-header">
+function renderResident(r) {
+  const level = r.alert_level || 0;
+  const sc    = statusClass(level);
+  const badge = r.general_status || 'Situation stable';
+  const act   = r.activity || 'repos';
+
+  document.getElementById('residentContainer').innerHTML = `
+    <div class="resident-card ${sc}">
+      <div class="card-top">
         <div>
-          <div class="resident-name">${r.name || r.id}</div>
-          <div class="resident-room">Chambre ${r.room || '—'} · ${floorLabel(r.floor || 0)}</div>
+          <div class="resident-name">${r.name}</div>
+          <div class="resident-room">Chambre ${r.room || '—'} &middot; ${floorLabel(r.floor)}</div>
         </div>
-        <span class="status-badge ${badgeCls}">${lbl}</span>
+        <span class="status-badge ${sc}">${badge}</span>
       </div>
-      <div class="card-body">
+      <div class="info-list">
         <div class="info-row">
           <span class="info-icon">${activityIcon(act)}</span>
-          <span>${tod || act}</span>
+          <span>${act}</span>
         </div>
         <div class="info-row">
-          <span class="info-icon">👤</span>
-          <span>Soignant référent : ${r.caregiver || '—'}</span>
+          <span class="info-icon">&#128100;</span>
+          <span>Soignant referent : ${r.caregiver || '—'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-icon">&#128336;</span>
+          <span>Derniere activite enregistree : ${formatTime(r.last_update)}</span>
         </div>
       </div>
-      <div class="last-update">Mis à jour à ${formatTime(r.last_update)}</div>
+      <div class="last-update">Donnees mises a jour a ${formatTime(r.last_update)}</div>
     </div>`;
-  }).join('');
 }
 </script>
 </body>

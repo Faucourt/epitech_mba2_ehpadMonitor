@@ -1,161 +1,229 @@
-# Script de demonstration - EHPAD Monitor
+# Demonstration guidee - rendu pro EHPAD
 
-Objectif de la demo : montrer un resident dont les constantes se degradent, avec une prediction ML visible avant l'alerte clinique forte.
+## Objectif oral
 
-Resident de demo : `R005`  
-Scenario force : `hypoxie`  
-Dashboard : http://localhost:3002  
-Backend : http://localhost:8001
+Montrer que le projet n'est pas seulement un dashboard, mais une chaine complete:
 
----
+```text
+simulation EHPAD -> IoT MQTT -> prediction -> alertes -> DPI -> transmission soignante
+```
 
-## 1. Demarrage propre
+## 1. Demarrage
 
 ```powershell
-docker compose down
 docker compose up --build -d
 docker compose ps
 ```
 
-Point a montrer :
+Validation:
 
-- tous les services sont `healthy`,
-- Redis, Mosquitto, InfluxDB, backend, dashboard et simulateur sont lances,
-- le simulateur a `DEMO_RESIDENT=R005`.
+- backend healthy;
+- dashboard healthy;
+- simulator healthy;
+- Redis, MQTT, InfluxDB healthy.
 
-Phrase possible :
+## 2. Onglet Validation pro
 
-> La stack est entierement dockerisee. Les services ne demarrent que quand leurs dependances sont healthy.
-
----
-
-## 2. Verification API
-
-```powershell
-Invoke-RestMethod http://localhost:8001/health
-Invoke-RestMethod http://localhost:8001/api/ml/metrics
-Invoke-RestMethod http://localhost:8001/api/residents/R005
-```
-
-Points a montrer :
-
-- `/health` renvoie `status: ok`,
-- `/api/ml/metrics` expose `accuracy`, `auc`, `f1`, l'algorithme et les features,
-- R005 contient `scenario_active: hypoxie`,
-- R005 contient `ml_risk: 0.72`.
-
-Phrase possible :
-
-> Le backend enrichit les donnees IoT avec une prediction ML et evalue ensuite les alertes.
-
----
-
-## 3. Dashboard temps reel
-
-Ouvrir :
+Ouvrir:
 
 ```text
 http://localhost:3002
 ```
 
-Actions :
+Aller dans `Validation pro`.
 
-1. Montrer la grille des 25 residents.
-2. Cliquer sur `Demo R005`.
-3. Montrer le bandeau de demo.
-4. Ouvrir le detail resident.
-5. Montrer le scope clinique live, les constantes, le risque ML, les sparklines et l'alerte active.
+Points a montrer:
 
-Points a dire :
+- 25 residents, compatible objectif 20-50;
+- profils de vie differencies;
+- prediction ML/A2A 30-60 min;
+- alertes 5 niveaux;
+- capteurs vitaux + ambiants;
+- capteurs avec statut, batterie et qualite signal;
+- debit MQTT et cible de scalabilite;
+- mini DPI et transmissions;
+- axes encore a renforcer pour un niveau industriel.
 
-- le scenario `hypoxie` fait baisser progressivement la SpO2,
-- le risque ML est visible avant l'alerte clinique forte,
-- le dashboard recoit les mises a jour en WebSocket,
-- le scope clinique live rend la demo plus lisible, comme un moniteur patient,
-- les cartes changent de couleur selon le niveau d'alerte.
+Phrase possible:
 
-Phrase possible :
+> Cet onglet sert de matrice de validation. Il separe ce qui est deja implemente de ce qui resterait a industrialiser.
 
-> Ici R005 est en hypoxie forcee. Le ML signale un risque a 72%, ce qui materialise la detection predictive avant la degradation clinique severe.
+## 3. Vie quotidienne et scenarios
 
----
+Aller dans `Grille residents`, puis ouvrir plusieurs residents.
 
-## 4. Alertes et escalade
+Montrer:
+
+- heure simulee;
+- phase: nuit, repas, soin, animation, trajet;
+- profil de vie;
+- surveillance adaptee;
+- repas en chambre ou salle a manger;
+- scenario assigne.
+
+Phrase possible:
+
+> Les residents ne bougent pas tous pareil. Certains restent en chambre, certains vont au repas, d'autres ont un risque de fugue ou de fatigue respiratoire.
+
+## 4. Plan 2D et 3D
+
+Aller dans `Plan EHPAD` puis `Vue 3D`.
+
+Montrer:
+
+- chambres;
+- salle a manger avec tables;
+- ascenseur;
+- escalier;
+- jardin;
+- sortie hors EHPAD;
+- residents localises;
+- capteurs visibles;
+- nom au survol en 3D.
+
+Phrase possible:
+
+> L'alerte donne une position fonctionnelle: chambre, couloir, salle a manger, jardin ou sortie, pas seulement un numero de chambre.
+
+## 5. Prediction malaise
+
+Aller dans `Transmissions`, choisir un resident.
+
+Montrer:
+
+- risque 30 min;
+- risque 60 min;
+- tendance predictive;
+- delta 15 min;
+- actions soignantes.
+
+Phrase possible:
+
+> La prediction est relancee toutes les 5 minutes. La nouvelle evaluation tient compte de la tendance precedente.
+
+## 6. Alertes
+
+Ouvrir le panneau `Alertes`.
+
+Montrer:
+
+- niveau;
+- raison;
+- position precise;
+- capteurs actifs;
+- explication structuree via `/api/alerts/explain/{resident_id}`;
+- acquittement.
+
+Phrase possible:
+
+> Les alertes sont graduees de 1 a 5, filtrees pour limiter les fausses alertes et escaladees si elles ne sont pas acquittees.
+
+## 7. Mini DPI et transmission
+
+Dans `Transmissions`, montrer:
+
+- fiche globale soignants;
+- mini DPI par resident;
+- constantes actuelles;
+- historique 30 jours;
+- alertes du jour;
+- points de vigilance;
+- actions a faire.
+
+Phrase possible:
+
+> Le LLM ou la synthese agentique ne decide pas l'alerte. Il transforme les donnees en transmission lisible pour les soignants.
+
+## 8. Scalabilite
+
+Expliquer le calcul:
+
+```text
+20 residents x 6 constantes x 1 mesure/seconde = 120 messages/seconde
+```
+
+Ce qui est fait:
+
+- MQTT pour le flux;
+- Redis pour l'etat courant;
+- InfluxDB pour l'historique;
+- WebSocket limite;
+- ML toutes les 5 minutes;
+- LLM hors boucle seconde.
+- endpoint `/api/ops/scalability` pour suivre messages/s, WebSocket et cible 120 msg/s.
+
+## 8 bis. Scenarios de validation
+
+Dans `Validation pro`, utiliser les boutons:
+
+- Hypoxie R005;
+- Chute couloir;
+- Fugue;
+- Malaise repas;
+- Risque nuit;
+- Jardin;
+- Chute jardin;
+- x30 puis x1.
+
+Point a dire:
+
+> Les scenarios sont declenches par le dashboard via le backend puis MQTT. Cela valide la chaine complete, pas seulement l'affichage.
+
+Ce qui resterait a faire pour industrialiser:
+
+- benchmark 50 residents;
+- latence p95;
+- monitoring capteurs hors ligne;
+- retention long terme;
+- calibration sur donnees reelles.
+
+## 9. Espace famille (C3)
+
+Ouvrir:
+
+```text
+http://localhost:3002/famille.html
+```
+
+Montrer le login avec un compte demo :
+
+| Utilisateur | Mot de passe | Resident |
+|-------------|-------------|---------|
+| `dupont`    | `dupont101` | Marguerite Dupont — Chambre 101 |
+| `martin`    | `martin105` | Yvette Martin — Chambre 105 |
+| `robert`    | `robert201` | Jeanne Robert — Chambre 201 |
 
 Points a montrer :
 
-- sidebar des alertes actives,
-- niveau d'alerte sur la carte resident,
-- bouton d'acquittement,
-- historique alertes.
+- chaque compte donne acces a **un seul resident**;
+- aucune valeur medicale affichee (FC, SpO2, TA absents);
+- badge de statut : Situation stable / Sous surveillance / Surveillance renforcee;
+- soignant referent et heure de derniere activite;
+- token de session 24h, invalide apres deconnexion.
 
 Phrase possible :
 
-> Les alertes sont graduees sur 5 niveaux. Si une alerte n'est pas acquittee, le moteur l'escalade automatiquement.
+> La famille voit l'etat general de leur proche, pas ses constantes. La confidentialite medicale est respectee par conception, pas par une simple suppression d'affichage.
 
----
-
-## 5. Architecture technique
-
-Resume a presenter :
+Montrer ensuite l'interface admin :
 
 ```text
-Simulateur -> MQTT Mosquitto -> Backend FastAPI -> Redis/InfluxDB -> WebSocket -> Dashboard
+http://localhost:3002/admin_famille.html
 ```
 
-Points forts :
+Token admin : `ADMIN_EHPAD_2024`
 
-- MQTT pour le flux IoT,
-- Redis pour l'etat courant et les alertes actives,
-- InfluxDB pour l'historique temporel,
-- WebSocket pour le temps reel,
-- Docker Compose avec healthchecks,
-- tests unitaires et tests d'integration API.
+- lister les comptes existants;
+- creer un nouveau compte pour un resident;
+- supprimer un compte.
 
----
+## 10. Validation finale
 
-## 6. Tests qualite
-
-Commande :
+Commandes utiles:
 
 ```powershell
-py -m pytest .\tests -q
+Invoke-RestMethod http://localhost:8001/health
+Invoke-RestMethod http://localhost:8001/api/project/readiness
+Invoke-RestMethod http://localhost:8001/api/a2a/predictions
+Invoke-RestMethod http://localhost:8001/api/reports/today
 ```
-
-Resultat attendu :
-
-```text
-25 passed
-```
-
-Phrase possible :
-
-> Les tests couvrent le moteur d'alertes, le modele ML, le simulateur et plusieurs endpoints API avec httpx.
-
----
-
-## 7. Captures conseillees pour le rendu
-
-Faire une capture de :
-
-- `docker compose ps` avec tous les services healthy,
-- dashboard avec le bandeau `Demo R005`,
-- detail R005 avec ML et constantes,
-- `/api/ml/metrics`,
-- `25 passed`,
-- extrait `docker-compose.yml` montrant Redis AOF et `DEMO_RESIDENT=R005`.
-
----
-
-## 8. Plan oral en 2 minutes
-
-1. **Contexte** : detection de malaise en EHPAD, suivi de 25 residents.
-2. **Architecture** : simulateur IoT, MQTT, backend, Redis, InfluxDB, dashboard.
-3. **Prediction** : ML calcule un risque de malaise 30-60 minutes.
-4. **Demo** : R005 en hypoxie, ML a 72%, constantes qui se degradent.
-5. **Alertes** : niveaux 1 a 5, escalade, acquittement.
-6. **Qualite** : Docker healthchecks, Redis persistant, tests automatises.
-
-Conclusion possible :
-
-> Le projet couvre la chaine complete : simulation de donnees, detection temps reel, prediction, alertes, visualisation et verification technique.

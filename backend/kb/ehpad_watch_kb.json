@@ -1,0 +1,3656 @@
+{
+  "metadata": {
+    "project": "EHPAD Watch",
+    "file_name": "ehpad_watch_kb_v2.json",
+    "version": "2.0.0",
+    "generated_at": "2026-04-27T15:58:46.722055+00:00",
+    "language": "fr-FR",
+    "purpose": "Base de connaissances clinique/IoT pour simulateur, moteur de règles, prédiction et dashboard d'alertes EHPAD.",
+    "clinical_status": "Démonstrateur pédagogique. Ne pas utiliser comme dispositif médical, diagnostic, prescription ou décision clinique réelle sans validation médicale, réglementaire et cybersécurité.",
+    "integration_target": {
+      "suggested_path": "backend/kb/ehpad_watch_kb.json",
+      "load_strategy": "Charger au démarrage FastAPI, valider le JSON avec Pydantic, puis exposer les scénarios au moteur d'alertes et au simulateur.",
+      "engine_frequency_seconds": 1,
+      "recommended_windows_seconds": [
+        60,
+        300,
+        900,
+        1800,
+        3600
+      ]
+    },
+    "v2_positioning": "Version enrichie pour viser un projet EHPAD Watch très solide : référentiels santé, iatrogénie, douleur, confusion, AVC, insuffisance cardiaque, dénutrition, transmissions IDE, montre résident, montre soignant et moteur de décision explicable."
+  },
+  "sources": [
+    {
+      "id": "HAS_CHUTES_REPETEES_2009",
+      "type": "recommandation",
+      "organization": "Haute Autorité de Santé / SFGG",
+      "title": "Évaluation et prise en charge des personnes âgées faisant des chutes répétées",
+      "url": "https://www.has-sante.fr/jcms/c_793371/evaluation-et-prise-en-charge-des-personnes-agees-faisant-des-chutes-repetees",
+      "used_for": [
+        "facteurs de risque de chute",
+        "signes de gravité après chute",
+        "hypotension orthostatique, confusion, hypoglycémie comme facteurs précipitants",
+        "actions de prévention"
+      ]
+    },
+    {
+      "id": "HAS_ALZHEIMER_TCP_2012",
+      "type": "recommandation",
+      "organization": "Haute Autorité de Santé",
+      "title": "Maladie d'Alzheimer et maladies apparentées : prise en charge des troubles du comportement perturbateurs",
+      "url": "https://www.has-sante.fr/jcms/c_819667/fr/maladie-d-alzheimer-et-maladies-apparentees-prise-en-charge-des-troubles-du-comportement-perturbateurs",
+      "used_for": [
+        "agitation",
+        "déambulation / comportements moteurs aberrants",
+        "troubles veille-sommeil",
+        "recherche de cause somatique, iatrogène ou environnementale"
+      ]
+    },
+    {
+      "id": "RCP_NEWS2_2017",
+      "type": "score_clinique",
+      "organization": "Royal College of Physicians",
+      "title": "National Early Warning Score 2",
+      "url": "https://www.rcp.ac.uk/improving-care/resources/national-early-warning-score-news-2/",
+      "used_for": [
+        "fréquence respiratoire",
+        "SpO2",
+        "pression artérielle systolique",
+        "pouls",
+        "conscience/confusion nouvelle",
+        "température"
+      ]
+    },
+    {
+      "id": "HL7_FHIR_R4_VITAL_SIGNS",
+      "type": "standard_interoperabilite",
+      "organization": "HL7",
+      "title": "FHIR R4 Vital Signs Observation Profile",
+      "url": "https://www.hl7.org/fhir/R4/observation-vitalsigns.html",
+      "used_for": [
+        "mapping LOINC des constantes",
+        "interopérabilité FHIR Observation"
+      ]
+    },
+    {
+      "id": "WHO_SEPSIS_2024",
+      "type": "fact_sheet",
+      "organization": "World Health Organization",
+      "title": "Sepsis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/sepsis",
+      "used_for": [
+        "signes de sepsis",
+        "risque chez les personnes âgées",
+        "urgence vitale"
+      ]
+    },
+    {
+      "id": "CDC_HYPOGLYCEMIA_2024",
+      "type": "clinical_public_health",
+      "organization": "CDC",
+      "title": "Low Blood Sugar (Hypoglycemia)",
+      "url": "https://www.cdc.gov/diabetes/about/low-blood-sugar-hypoglycemia.html",
+      "used_for": [
+        "seuil <70 mg/dL",
+        "seuil sévère <54 mg/dL",
+        "symptômes hypoglycémie"
+      ]
+    },
+    {
+      "id": "NCBI_ORTHOSTATIC_HYPOTENSION_2025",
+      "type": "clinical_reference",
+      "organization": "NCBI Bookshelf / StatPearls",
+      "title": "Orthostatic Hypotension",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK448192/",
+      "used_for": [
+        "définition chute PAS >=20 mmHg ou PAD >=10 mmHg dans les 3 minutes suivant le lever",
+        "facteurs favorisants : déshydratation, médicaments, neuropathie, pathologies cardiovasculaires"
+      ]
+    },
+    {
+      "id": "MSD_DEHYDRATION_2026",
+      "type": "clinical_reference",
+      "organization": "MSD Manual",
+      "title": "Dehydration",
+      "url": "https://www.msdmanuals.com/home/quick-facts-hormonal-and-metabolic-disorders/water-balance/dehydration",
+      "used_for": [
+        "risque de déshydratation chez les personnes âgées",
+        "signes graves : confusion, hypotension, syncope, faiblesse"
+      ]
+    },
+    {
+      "id": "AMELI_IATROGENIE_PA_2025",
+      "type": "clinical_public_health",
+      "organization": "Assurance Maladie / Ameli",
+      "title": "Prévention du risque iatrogénique chez la personne âgée",
+      "url": "https://www.ameli.fr/medecin/sante-prevention/medicaments/risque-iatrogenique-prevention-chez-la-personne-agee-de-65-ans-et-plus/prevention-du-risque-iatrogenique-l-essentiel",
+      "used_for": [
+        "classes médicamenteuses à risque : psychotropes, antalgiques, antihypertenseurs/diurétiques, anticoagulants",
+        "chutes, confusion, hypotension, rétention urinaire, amaigrissement, hémorragie digestive",
+        "médicaments anticholinergiques et vasoconstricteurs alpha-stimulants pouvant favoriser la rétention urinaire"
+      ]
+    },
+    {
+      "id": "AMELI_PSYCHOTROPES_PA_2025",
+      "type": "clinical_public_health",
+      "organization": "Assurance Maladie / Ameli",
+      "title": "Les psychotropes chez la personne âgée",
+      "url": "https://www.ameli.fr/medecin/sante-prevention/medicaments/risque-iatrogenique-prevention-chez-la-personne-agee-de-65-ans-et-plus/focus-sur-les-classes-medicamenteuses-risque-iatrogenique/psychotropes",
+      "used_for": [
+        "risques de chute, étourdissements, hyponatrémie, QT, syndrome sérotoninergique, effets anticholinergiques"
+      ]
+    },
+    {
+      "id": "AMELI_ANTALGIQUES_PA_2025",
+      "type": "clinical_public_health",
+      "organization": "Assurance Maladie / Ameli",
+      "title": "Les antalgiques chez la personne âgée",
+      "url": "https://www.ameli.fr/medecin/sante-prevention/medicaments/risque-iatrogenique-prevention-chez-la-personne-agee-de-65-ans-et-plus/focus-sur-les-classes-medicamenteuses-risque-iatrogenique/antalgiques",
+      "used_for": [
+        "opioïdes : chute, somnolence, confusion, constipation, nausées, rétention urinaire",
+        "tramadol : troubles psychiques, hallucinations, délire, interactions"
+      ]
+    },
+    {
+      "id": "HAS_AVC_SIGNES_ALERTE_2025",
+      "type": "patient_safety",
+      "organization": "Haute Autorité de Santé",
+      "title": "Accident vasculaire cérébral - Des signes d’alerte à votre retour à domicile",
+      "url": "https://www.has-sante.fr/jcms/r_1501300/en/accident-vasculaire-cerebral-avc",
+      "used_for": [
+        "signes FAST : visage, bras, parole, temps",
+        "faiblesse d’un côté, trouble parole, trouble équilibre, perte de vision, céphalée brutale",
+        "appel 15 immédiat"
+      ]
+    },
+    {
+      "id": "AMELI_AVC_2024",
+      "type": "clinical_public_health",
+      "organization": "Assurance Maladie / Ameli",
+      "title": "AVC : que faire ?",
+      "url": "https://www.ameli.fr/assure/sante/urgence/pathologies/avc",
+      "used_for": [
+        "symptômes brutaux d'AVC/AIT",
+        "VITE/FAST",
+        "appel 15 ou 112"
+      ]
+    },
+    {
+      "id": "AMELI_INSUFFISANCE_CARDIAQUE_2025",
+      "type": "clinical_public_health",
+      "organization": "Assurance Maladie / Ameli",
+      "title": "Symptômes, diagnostic et évolution de l'insuffisance cardiaque",
+      "url": "https://www.ameli.fr/assure/sante/themes/insuffisance-cardiaque/symptomes-diagnotic-evolution",
+      "used_for": [
+        "4 signes d'alerte : essoufflement, œdèmes, prise de poids rapide, fatigue",
+        "symptômes souvent atypiques chez la personne âgée : confusion, chutes, perte d'autonomie"
+      ]
+    },
+    {
+      "id": "AMELI_DENUTRITION_PA_2025",
+      "type": "clinical_public_health",
+      "organization": "Assurance Maladie / Ameli",
+      "title": "Dénutrition : la repérer rapidement",
+      "url": "https://www.ameli.fr/assure/sante/themes/amaigrissement-et-denutrition/denutrition-la-reperer-rapidement",
+      "used_for": [
+        "personnes >70 ans : perte de poids >=5% en 1 mois ou >=10% en 6 mois, IMC <22, réduction force/masse musculaire",
+        "cause associée : apports réduits, malabsorption, maladie aiguë/chronique"
+      ]
+    },
+    {
+      "id": "DOLOPLUS_ALGOPLUS",
+      "type": "scale",
+      "organization": "Doloplus / Algoplus",
+      "title": "Échelle ALGOPLUS",
+      "url": "https://www.doloplus.fr/lechelle-algoplus/",
+      "used_for": [
+        "évaluation comportementale de la douleur aiguë chez personne âgée avec communication verbale limitée",
+        "domaines : visage, regard, plaintes, corps, comportement"
+      ]
+    },
+    {
+      "id": "VIDAL_CONFUSION_AIGUE",
+      "type": "clinical_reference",
+      "organization": "VIDAL Recos",
+      "title": "Confusion aiguë",
+      "url": "https://www.vidal.fr/maladies/recommandations/confusion-aigue-3591.html",
+      "used_for": [
+        "causes organiques : hypoglycémie, hyponatrémie, déshydratation, infection, rétention urinaire, fécalome, AVC, douleur",
+        "confusion médicamenteuse : psychotropes, benzodiazépines, neuroleptiques, antidépresseurs, morphiniques, anticholinergiques"
+      ]
+    }
+  ],
+  "alert_levels": {
+    "1": {
+      "name": "Information",
+      "color": "blue",
+      "priority": 1,
+      "default_action": "Log + icône dashboard",
+      "notify": [
+        "dashboard"
+      ],
+      "requires_ack": false,
+      "escalate_after_minutes": null
+    },
+    "2": {
+      "name": "Attention",
+      "color": "yellow",
+      "priority": 2,
+      "default_action": "Notification soignant assigné",
+      "notify": [
+        "caregiver_watch",
+        "dashboard"
+      ],
+      "requires_ack": true,
+      "escalate_after_minutes": 10
+    },
+    "3": {
+      "name": "Alerte",
+      "color": "orange",
+      "priority": 3,
+      "default_action": "Notification + alerte sonore poste de soins",
+      "notify": [
+        "caregiver_watch",
+        "nurse_station",
+        "dashboard"
+      ],
+      "requires_ack": true,
+      "escalate_after_minutes": 5
+    },
+    "4": {
+      "name": "Urgence",
+      "color": "red",
+      "priority": 4,
+      "default_action": "Tous soignants + alerte sonore forte",
+      "notify": [
+        "all_caregiver_watches",
+        "nurse_station",
+        "dashboard"
+      ],
+      "requires_ack": true,
+      "escalate_after_minutes": 3
+    },
+    "5": {
+      "name": "Danger vital",
+      "color": "black",
+      "priority": 5,
+      "default_action": "SAMU 15 selon protocole établissement + direction + tous soignants",
+      "notify": [
+        "all_caregiver_watches",
+        "nurse_station",
+        "direction",
+        "emergency_protocol"
+      ],
+      "requires_ack": true,
+      "escalate_after_minutes": null
+    }
+  },
+  "measurements": {
+    "heart_rate": {
+      "label": "Fréquence cardiaque",
+      "unit": "bpm",
+      "source_sensors": [
+        "resident_watch"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "8867-4",
+        "display": "Heart rate",
+        "ucum": "/min"
+      },
+      "quality": {
+        "max_age_seconds": 90,
+        "min_plausible": 25,
+        "max_plausible": 220
+      },
+      "news2_scale": [
+        {
+          "score": 3,
+          "op": "<=",
+          "value": 40
+        },
+        {
+          "score": 1,
+          "range": [
+            41,
+            50
+          ]
+        },
+        {
+          "score": 0,
+          "range": [
+            51,
+            90
+          ]
+        },
+        {
+          "score": 1,
+          "range": [
+            91,
+            110
+          ]
+        },
+        {
+          "score": 2,
+          "range": [
+            111,
+            130
+          ]
+        },
+        {
+          "score": 3,
+          "op": ">=",
+          "value": 131
+        }
+      ],
+      "trend_rules": [
+        {
+          "id": "hr_rise_from_baseline",
+          "description": "FC +20 bpm vs baseline pendant 10 min",
+          "delta_from_baseline_gte": 20,
+          "duration_seconds": 600,
+          "suggested_level": 2
+        },
+        {
+          "id": "hr_extreme",
+          "description": "FC >=131 ou <=40",
+          "suggested_level": 4
+        }
+      ]
+    },
+    "spo2": {
+      "label": "Saturation en oxygène",
+      "unit": "%",
+      "source_sensors": [
+        "resident_watch",
+        "finger_pulse_oximeter_optional"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "2708-6",
+        "display": "Oxygen saturation in Arterial blood",
+        "ucum": "%"
+      },
+      "quality": {
+        "max_age_seconds": 90,
+        "min_plausible": 50,
+        "max_plausible": 100
+      },
+      "news2_scale_1": [
+        {
+          "score": 3,
+          "op": "<=",
+          "value": 91
+        },
+        {
+          "score": 2,
+          "range": [
+            92,
+            93
+          ]
+        },
+        {
+          "score": 1,
+          "range": [
+            94,
+            95
+          ]
+        },
+        {
+          "score": 0,
+          "op": ">=",
+          "value": 96
+        }
+      ],
+      "news2_scale_2_for_hypercapnic_risk_only": [
+        {
+          "score": 3,
+          "op": "<=",
+          "value": 83
+        },
+        {
+          "score": 2,
+          "range": [
+            84,
+            85
+          ]
+        },
+        {
+          "score": 1,
+          "range": [
+            86,
+            87
+          ]
+        },
+        {
+          "score": 0,
+          "range": [
+            88,
+            92
+          ]
+        },
+        {
+          "score": 0,
+          "condition": ">=93 on air"
+        },
+        {
+          "score": 1,
+          "condition": "93-94 on oxygen"
+        },
+        {
+          "score": 2,
+          "condition": "95-96 on oxygen"
+        },
+        {
+          "score": 3,
+          "condition": ">=97 on oxygen"
+        }
+      ],
+      "trend_rules": [
+        {
+          "id": "spo2_slow_drop",
+          "description": "SpO2 baisse >=3 points vs baseline sur 30 min",
+          "delta_from_baseline_lte": -3,
+          "duration_seconds": 1800,
+          "suggested_level": 2
+        },
+        {
+          "id": "spo2_alert",
+          "description": "SpO2 92-93%",
+          "range": [
+            92,
+            93
+          ],
+          "duration_seconds": 120,
+          "suggested_level": 3
+        },
+        {
+          "id": "spo2_critical",
+          "description": "SpO2 <=91%",
+          "op": "<=",
+          "value": 91,
+          "duration_seconds": 60,
+          "suggested_level": 4
+        }
+      ]
+    },
+    "respiratory_rate": {
+      "label": "Fréquence respiratoire",
+      "unit": "/min",
+      "source_sensors": [
+        "resident_watch_optional",
+        "bed_sensor_optional",
+        "manual_input"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "9279-1",
+        "display": "Respiratory rate",
+        "ucum": "/min"
+      },
+      "quality": {
+        "max_age_seconds": 180,
+        "min_plausible": 4,
+        "max_plausible": 60
+      },
+      "news2_scale": [
+        {
+          "score": 3,
+          "op": "<=",
+          "value": 8
+        },
+        {
+          "score": 1,
+          "range": [
+            9,
+            11
+          ]
+        },
+        {
+          "score": 0,
+          "range": [
+            12,
+            20
+          ]
+        },
+        {
+          "score": 2,
+          "range": [
+            21,
+            24
+          ]
+        },
+        {
+          "score": 3,
+          "op": ">=",
+          "value": 25
+        }
+      ]
+    },
+    "systolic_bp": {
+      "label": "Pression artérielle systolique",
+      "unit": "mmHg",
+      "source_sensors": [
+        "bp_cuff_optional",
+        "manual_input"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "8480-6",
+        "display": "Systolic blood pressure",
+        "ucum": "mm[Hg]"
+      },
+      "quality": {
+        "max_age_seconds": 900,
+        "min_plausible": 50,
+        "max_plausible": 260
+      },
+      "news2_scale": [
+        {
+          "score": 3,
+          "op": "<=",
+          "value": 90
+        },
+        {
+          "score": 2,
+          "range": [
+            91,
+            100
+          ]
+        },
+        {
+          "score": 1,
+          "range": [
+            101,
+            110
+          ]
+        },
+        {
+          "score": 0,
+          "range": [
+            111,
+            219
+          ]
+        },
+        {
+          "score": 3,
+          "op": ">=",
+          "value": 220
+        }
+      ]
+    },
+    "diastolic_bp": {
+      "label": "Pression artérielle diastolique",
+      "unit": "mmHg",
+      "source_sensors": [
+        "bp_cuff_optional",
+        "manual_input"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "8462-4",
+        "display": "Diastolic blood pressure",
+        "ucum": "mm[Hg]"
+      },
+      "quality": {
+        "max_age_seconds": 900,
+        "min_plausible": 30,
+        "max_plausible": 160
+      }
+    },
+    "body_temperature": {
+      "label": "Température corporelle",
+      "unit": "°C",
+      "source_sensors": [
+        "resident_watch_estimated",
+        "thermometer_manual"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "8310-5",
+        "display": "Body temperature",
+        "ucum": "Cel"
+      },
+      "quality": {
+        "max_age_seconds": 1800,
+        "min_plausible": 32.0,
+        "max_plausible": 42.5
+      },
+      "news2_scale": [
+        {
+          "score": 3,
+          "op": "<=",
+          "value": 35.0
+        },
+        {
+          "score": 1,
+          "range": [
+            35.1,
+            36.0
+          ]
+        },
+        {
+          "score": 0,
+          "range": [
+            36.1,
+            38.0
+          ]
+        },
+        {
+          "score": 1,
+          "range": [
+            38.1,
+            39.0
+          ]
+        },
+        {
+          "score": 2,
+          "op": ">=",
+          "value": 39.1
+        }
+      ],
+      "infection_rules": [
+        {
+          "id": "fever_absolute",
+          "description": "Température >=37.8 °C chez personne âgée fragile",
+          "op": ">=",
+          "value": 37.8,
+          "suggested_level": 2
+        },
+        {
+          "id": "fever_vs_baseline",
+          "description": "Température +1.1 °C vs baseline individuel",
+          "delta_from_baseline_gte": 1.1,
+          "suggested_level": 2
+        }
+      ]
+    },
+    "glucose": {
+      "label": "Glycémie",
+      "unit": "mg/dL",
+      "source_sensors": [
+        "cgm_optional",
+        "manual_input"
+      ],
+      "fhir": {
+        "resource": "Observation",
+        "loinc": "2339-0",
+        "display": "Glucose [Mass/volume] in Blood",
+        "ucum": "mg/dL"
+      },
+      "quality": {
+        "max_age_seconds": 900,
+        "min_plausible": 20,
+        "max_plausible": 600
+      },
+      "thresholds": [
+        {
+          "severity": "low",
+          "op": "<",
+          "value": 70,
+          "suggested_level": 3
+        },
+        {
+          "severity": "severe_low",
+          "op": "<",
+          "value": 54,
+          "suggested_level": 4
+        }
+      ]
+    },
+    "movement": {
+      "label": "Activité / mouvement",
+      "unit": "a.u.",
+      "source_sensors": [
+        "resident_watch_accelerometer",
+        "room_motion_sensor",
+        "bed_sensor"
+      ],
+      "quality": {
+        "max_age_seconds": 60
+      },
+      "rules": [
+        {
+          "id": "inactivity_30min",
+          "description": "Inactivité inhabituelle 30 min",
+          "duration_seconds": 1800,
+          "suggested_level": 1
+        },
+        {
+          "id": "no_movement_60min",
+          "description": "Aucun mouvement 60 min hors période de sommeil habituelle",
+          "duration_seconds": 3600,
+          "suggested_level": 3
+        },
+        {
+          "id": "impact_then_immobility",
+          "description": "Impact/choc suivi d'immobilité",
+          "impact_gte_g": 2.5,
+          "immobility_seconds": 60,
+          "suggested_level": 4
+        }
+      ]
+    },
+    "location": {
+      "label": "Localisation EHPAD",
+      "unit": "zone_id",
+      "source_sensors": [
+        "BLE_gateway",
+        "room_presence_sensor",
+        "door_sensor"
+      ],
+      "quality": {
+        "max_age_seconds": 120
+      },
+      "zones": [
+        "chambre",
+        "couloir",
+        "salle_commune",
+        "salle_manger",
+        "jardin",
+        "entree",
+        "exterieur"
+      ]
+    },
+    "pain_algoplus": {
+      "label": "Douleur aiguë comportementale ALGOPLUS",
+      "unit": "score_0_5",
+      "source_sensors": [
+        "caregiver_input",
+        "ai_observation_optional"
+      ],
+      "quality": {
+        "max_age_seconds": 14400,
+        "min_plausible": 0,
+        "max_plausible": 5
+      },
+      "items": [
+        "visage",
+        "regard",
+        "plaintes_orales",
+        "corps",
+        "comportement"
+      ],
+      "thresholds": [
+        {
+          "severity": "possible_pain",
+          "op": ">=",
+          "value": 2,
+          "suggested_level": 2
+        },
+        {
+          "severity": "pain_with_agitation_or_vital_change",
+          "op": ">=",
+          "value": 2,
+          "suggested_level": 3
+        }
+      ]
+    },
+    "weight": {
+      "label": "Poids",
+      "unit": "kg",
+      "source_sensors": [
+        "connected_scale_optional",
+        "manual_input"
+      ],
+      "quality": {
+        "max_age_seconds": 604800,
+        "min_plausible": 25,
+        "max_plausible": 180
+      },
+      "nutrition_rules": [
+        {
+          "id": "weight_loss_1_month",
+          "description": "Perte de poids >=5% en 1 mois",
+          "percent_loss_gte": 5,
+          "window_days": 30,
+          "suggested_level": 2
+        },
+        {
+          "id": "weight_loss_6_months",
+          "description": "Perte de poids >=10% en 6 mois",
+          "percent_loss_gte": 10,
+          "window_days": 180,
+          "suggested_level": 3
+        },
+        {
+          "id": "heart_failure_gain",
+          "description": "Prise de poids rapide 2-3 kg en quelques jours",
+          "delta_kg_gte": 2,
+          "window_days": 3,
+          "suggested_level": 3
+        }
+      ]
+    },
+    "meal_intake": {
+      "label": "Prise alimentaire",
+      "unit": "percent_meal",
+      "source_sensors": [
+        "caregiver_input",
+        "meal_tracking_optional"
+      ],
+      "quality": {
+        "max_age_seconds": 86400,
+        "min_plausible": 0,
+        "max_plausible": 100
+      },
+      "rules": [
+        {
+          "id": "intake_half_one_week",
+          "description": "Apports réduits >=50% pendant 1 semaine",
+          "percent_drop_gte": 50,
+          "window_days": 7,
+          "suggested_level": 3
+        },
+        {
+          "id": "skipped_meal_diabetes",
+          "description": "Repas sauté chez diabétique traité",
+          "suggested_level": 2
+        }
+      ]
+    },
+    "urine_output": {
+      "label": "Diurèse / mictions",
+      "unit": "event_or_ml",
+      "source_sensors": [
+        "caregiver_input",
+        "toilet_sensor_optional"
+      ],
+      "quality": {
+        "max_age_seconds": 43200
+      },
+      "rules": [
+        {
+          "id": "no_urination_8h",
+          "description": "Absence de miction tracée >8h si suivi disponible",
+          "duration_seconds": 28800,
+          "suggested_level": 2
+        },
+        {
+          "id": "possible_urinary_retention",
+          "description": "Agitation/douleur + absence miction",
+          "suggested_level": 3
+        }
+      ]
+    },
+    "stool": {
+      "label": "Transit / constipation",
+      "unit": "event",
+      "source_sensors": [
+        "caregiver_input"
+      ],
+      "quality": {
+        "max_age_seconds": 86400
+      },
+      "rules": [
+        {
+          "id": "no_stool_72h",
+          "description": "Pas de selles >72h si suivi disponible",
+          "duration_seconds": 259200,
+          "suggested_level": 2
+        },
+        {
+          "id": "fecaloma_suspicion",
+          "description": "Agitation/douleur + constipation prolongée",
+          "suggested_level": 3
+        }
+      ]
+    },
+    "neurological_signs": {
+      "label": "Signes neurologiques observés",
+      "unit": "categorical",
+      "source_sensors": [
+        "caregiver_input",
+        "speech_or_camera_optional_not_required"
+      ],
+      "quality": {
+        "max_age_seconds": 600
+      },
+      "fast_items": [
+        "face_asymmetry",
+        "arm_weakness",
+        "speech_disorder",
+        "time_of_onset"
+      ],
+      "red_flags": [
+        "sudden_face_asymmetry",
+        "sudden_arm_or_leg_weakness",
+        "sudden_speech_disorder",
+        "sudden_balance_disorder",
+        "sudden_vision_loss",
+        "sudden_severe_headache"
+      ]
+    },
+    "edema": {
+      "label": "Œdèmes membres inférieurs",
+      "unit": "boolean_or_grade",
+      "source_sensors": [
+        "caregiver_input"
+      ],
+      "quality": {
+        "max_age_seconds": 86400
+      }
+    }
+  },
+  "news2": {
+    "enabled": true,
+    "scope": "Dégradation aiguë, non diagnostic. À utiliser comme score de priorisation interne au démonstrateur.",
+    "parameters": [
+      "respiratory_rate",
+      "spo2",
+      "oxygen_therapy",
+      "systolic_bp",
+      "heart_rate",
+      "consciousness_or_new_confusion",
+      "body_temperature"
+    ],
+    "score_interpretation_for_project": [
+      {
+        "condition": "total_score == 0",
+        "suggested_level": 1,
+        "label": "stable"
+      },
+      {
+        "condition": "total_score in [1,2,3,4]",
+        "suggested_level": 2,
+        "label": "surveillance renforcée"
+      },
+      {
+        "condition": "single_parameter_score == 3",
+        "suggested_level": 3,
+        "label": "paramètre rouge isolé"
+      },
+      {
+        "condition": "total_score in [5,6]",
+        "suggested_level": 4,
+        "label": "risque clinique élevé"
+      },
+      {
+        "condition": "total_score >= 7",
+        "suggested_level": 5,
+        "label": "risque clinique majeur / urgence"
+      }
+    ],
+    "engine_notes": [
+      "Calculer NEWS2 uniquement si les données sont suffisamment récentes.",
+      "Si fréquence respiratoire ou pression artérielle absente, calculer un score partiel et signaler missing_data.",
+      "Ne jamais masquer une règle critique directe : chute + immobilité, SpO2 très basse, perte de conscience, hypoglycémie sévère."
+    ]
+  },
+  "resident_risk_factors": {
+    "fall_predisposing_factors": [
+      "age_80_plus",
+      "female",
+      "previous_traumatic_fracture",
+      "polypharmacy",
+      "psychotropic_drug",
+      "diuretic",
+      "digoxin_or_class1_antiarrhythmic",
+      "gait_disorder",
+      "balance_disorder",
+      "timed_up_and_go_gte_20s",
+      "single_leg_stance_lte_5s",
+      "lower_limb_weakness",
+      "bmi_lt_21",
+      "lower_limb_or_spine_osteoarthritis",
+      "foot_disorder",
+      "lower_limb_sensory_disorder",
+      "visual_acuity_loss",
+      "depressive_syndrome",
+      "cognitive_decline"
+    ],
+    "fall_precipitating_factors": [
+      "malaise_or_loss_of_consciousness",
+      "orthostatic_hypotension",
+      "neurological_deficit",
+      "confusion",
+      "vertigo",
+      "hyponatremia",
+      "hypoglycemia",
+      "hypoglycemic_drug",
+      "excessive_alcohol_use",
+      "poor_lighting",
+      "cluttered_environment",
+      "unsafe_footwear"
+    ],
+    "severe_fall_contexts": [
+      "known_osteoporosis",
+      "anticoagulant_treatment",
+      "social_isolation",
+      "inability_to_get_up",
+      "floor_time_gt_1h",
+      "moderate_or_severe_trauma",
+      "loss_of_consciousness",
+      "new_neurological_sign",
+      "new_confusion"
+    ],
+    "cognitive_behavioral_risks": [
+      "alzheimer_or_related_disorder",
+      "agitation",
+      "aggressiveness",
+      "opposition",
+      "wandering",
+      "disinhibition",
+      "sleep_wake_rhythm_disorder",
+      "hallucinations_or_delusions",
+      "pain",
+      "infection",
+      "urinary_retention",
+      "fecal_impaction",
+      "iatrogenic_factor"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+      "name": "Chute nocturne chez résident Alzheimer sous anticoagulant",
+      "category": [
+        "fall",
+        "wandering",
+        "night"
+      ],
+      "clinical_rationale": "Personne âgée avec trouble cognitif, déambulation nocturne, anticoagulant et chute avec immobilité : risque traumatique et délai au sol critique.",
+      "resident_profile_match": {
+        "any": [
+          "alzheimer_or_related_disorder",
+          "cognitive_decline"
+        ],
+        "boost_if": [
+          "anticoagulant_treatment",
+          "age_80_plus",
+          "previous_fall",
+          "balance_disorder"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "sortie_lit_hors_routine",
+          "weight": 0.15
+        },
+        {
+          "signal": "déambulation_couloir_nuit",
+          "weight": 0.15
+        },
+        {
+          "signal": "pas_instables_ou_vitesse_marche_basse",
+          "weight": 0.15
+        },
+        {
+          "signal": "fc_plus_20_vs_baseline",
+          "weight": 0.1
+        },
+        {
+          "signal": "absence_retour_chambre_apres_15min",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "fall_confirmed",
+          "if": {
+            "all": [
+              {
+                "measurement": "movement",
+                "feature": "impact_g",
+                "op": ">=",
+                "value": 2.5
+              },
+              {
+                "measurement": "movement",
+                "feature": "immobility_seconds",
+                "op": ">=",
+                "value": 60
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.88,
+          "message": "Chute probable avec immobilité."
+        },
+        {
+          "id": "fall_vital_danger",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "fall_confirmed"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 91
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "op": "<=",
+                    "value": 40
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "op": ">=",
+                    "value": 131
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "in",
+                    "value": [
+                      "new_confusion",
+                      "unresponsive"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 5,
+          "confidence": 0.95,
+          "message": "Chute + signe critique : danger vital possible."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "envoyer_soignant_assigné",
+          "ouvrir_fiche_résident",
+          "vérifier_localisation"
+        ],
+        "level_4": [
+          "alerter_tous_soignants",
+          "afficher_itinéraire",
+          "préparer_paramètres_vitaux_et_anticoagulant"
+        ],
+        "level_5": [
+          "protocole_urgence_établissement",
+          "appel_15_si_critères_confirmés",
+          "prévenir_direction"
+        ]
+      },
+      "family_visibility": "restricted_general_status_only",
+      "demo_sequence_seconds": [
+        {
+          "t": 0,
+          "event": "résident dort, constantes stables"
+        },
+        {
+          "t": 20,
+          "event": "sortie de lit inhabituelle"
+        },
+        {
+          "t": 45,
+          "event": "déambulation couloir"
+        },
+        {
+          "t": 70,
+          "event": "impact + immobilité"
+        },
+        {
+          "t": 75,
+          "event": "alerte niveau 4 sur montre soignant"
+        },
+        {
+          "t": 255,
+          "event": "si non acquittée, escalade niveau 5"
+        }
+      ]
+    },
+    {
+      "id": "SCN002_ORTHOSTATIC_HYPOTENSION_TOILETS",
+      "name": "Hypotension orthostatique au lever / toilettes",
+      "category": [
+        "malaise",
+        "orthostatic_hypotension",
+        "fall_risk"
+      ],
+      "clinical_rationale": "Une chute de pression artérielle après passage debout augmente le risque de vertige, malaise et chute.",
+      "resident_profile_match": {
+        "boost_if": [
+          "age_80_plus",
+          "diuretic",
+          "antihypertensive_drug",
+          "parkinson",
+          "dehydration_risk",
+          "polypharmacy"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "lever_apres_longue_inactivité",
+          "weight": 0.2
+        },
+        {
+          "signal": "post_repas_0_2h",
+          "weight": 0.1
+        },
+        {
+          "signal": "marche_plus_lente_vs_baseline",
+          "weight": 0.15
+        },
+        {
+          "signal": "fc_compensatrice_plus_15",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "orthostatic_bp_drop",
+          "if": {
+            "any": [
+              {
+                "measurement": "systolic_bp",
+                "feature": "drop_within_3min_standing",
+                "op": ">=",
+                "value": 20
+              },
+              {
+                "measurement": "diastolic_bp",
+                "feature": "drop_within_3min_standing",
+                "op": ">=",
+                "value": 10
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.82,
+          "message": "Hypotension orthostatique probable."
+        },
+        {
+          "id": "orthostatic_with_fall",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "orthostatic_bp_drop"
+              },
+              {
+                "measurement": "movement",
+                "feature": "impact_g",
+                "op": ">=",
+                "value": 2.5
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.9,
+          "message": "Malaise/chute probable après hypotension orthostatique."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "envoyer_soignant_assigné",
+          "contrôle_tension_couché_debout",
+          "aide_au_retour_assis_ou_couché"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "contrôle_conscience",
+          "contrôle_traumatisme"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA",
+      "name": "Hypoxie progressive BPCO / pneumonie / insuffisance cardiaque",
+      "category": [
+        "respiratory",
+        "hypoxemia",
+        "clinical_deterioration"
+      ],
+      "clinical_rationale": "La baisse de SpO2, l'augmentation de fréquence respiratoire et la confusion nouvelle peuvent signaler une dégradation aiguë.",
+      "resident_profile_match": {
+        "boost_if": [
+          "copd",
+          "heart_failure",
+          "recent_respiratory_infection",
+          "pneumonia_history",
+          "oxygen_therapy"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "spo2_drop_3_points_vs_baseline",
+          "weight": 0.25
+        },
+        {
+          "signal": "respiratory_rate_21_24",
+          "weight": 0.2
+        },
+        {
+          "signal": "heart_rate_91_110_or_more",
+          "weight": 0.1
+        },
+        {
+          "signal": "activity_drop",
+          "weight": 0.1
+        },
+        {
+          "signal": "new_confusion",
+          "weight": 0.2
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "hypoxemia_alert",
+          "if": {
+            "all": [
+              {
+                "measurement": "spo2",
+                "op": "<=",
+                "value": 93,
+                "duration_seconds": 120
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "heart_rate",
+                    "op": ">=",
+                    "value": 91
+                  },
+                  {
+                    "measurement": "respiratory_rate",
+                    "op": ">=",
+                    "value": 21
+                  },
+                  {
+                    "measurement": "activity",
+                    "feature": "drop_vs_baseline_percent",
+                    "op": ">=",
+                    "value": 40
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.8,
+          "message": "Hypoxie probable, surveillance renforcée."
+        },
+        {
+          "id": "hypoxemia_emergency",
+          "if": {
+            "any": [
+              {
+                "measurement": "spo2",
+                "op": "<=",
+                "value": 91,
+                "duration_seconds": 60
+              },
+              {
+                "measurement": "respiratory_rate",
+                "op": ">=",
+                "value": 25
+              },
+              {
+                "measurement": "consciousness",
+                "op": "in",
+                "value": [
+                  "new_confusion",
+                  "unresponsive"
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.9,
+          "message": "Dégradation respiratoire aiguë possible."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "contrôle_SpO2_au_doigt",
+          "contrôle_FR",
+          "évaluer_dyspnée"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "protocole_respiratoire",
+          "prévenir_médecin_selon_protocole"
+        ]
+      },
+      "family_visibility": "general_status_after_validation"
+    },
+    {
+      "id": "SCN004_UTI_SEPSIS_EARLY_DETERIORATION",
+      "name": "Infection urinaire / sepsis débutant avec confusion",
+      "category": [
+        "infection",
+        "sepsis",
+        "delirium",
+        "clinical_deterioration"
+      ],
+      "clinical_rationale": "Chez la personne âgée, infection, confusion, fièvre ou hypothermie, tachycardie, tachypnée et hypotension peuvent indiquer une dégradation aiguë.",
+      "resident_profile_match": {
+        "boost_if": [
+          "age_80_plus",
+          "cognitive_decline",
+          "urinary_catheter",
+          "recurrent_uti",
+          "immunosuppression",
+          "frailty"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "temperature_gte_37_8_or_plus_1_1_baseline",
+          "weight": 0.2
+        },
+        {
+          "signal": "new_confusion_or_agitation",
+          "weight": 0.25
+        },
+        {
+          "signal": "activity_drop",
+          "weight": 0.1
+        },
+        {
+          "signal": "heart_rate_gte_91",
+          "weight": 0.1
+        },
+        {
+          "signal": "respiratory_rate_gte_21",
+          "weight": 0.15
+        },
+        {
+          "signal": "systolic_bp_lte_100",
+          "weight": 0.2
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "infection_suspicion",
+          "if": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "measurement": "body_temperature",
+                    "op": ">=",
+                    "value": 37.8
+                  },
+                  {
+                    "measurement": "body_temperature",
+                    "feature": "delta_from_baseline",
+                    "op": ">=",
+                    "value": 1.1
+                  },
+                  {
+                    "measurement": "body_temperature",
+                    "op": "<=",
+                    "value": 35.0
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  },
+                  {
+                    "measurement": "activity",
+                    "feature": "drop_vs_baseline_percent",
+                    "op": ">=",
+                    "value": 40
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.78,
+          "message": "Suspicion infection / confusion nouvelle."
+        },
+        {
+          "id": "sepsis_red_flags",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "infection_suspicion"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 100
+                  },
+                  {
+                    "measurement": "respiratory_rate",
+                    "op": ">=",
+                    "value": 25
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "op": ">=",
+                    "value": 131
+                  },
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 91
+                  },
+                  {
+                    "measurement": "urine_output",
+                    "op": "==",
+                    "value": "low_if_available"
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.88,
+          "message": "Signaux de gravité infectieuse / sepsis possible."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "contrôle_température",
+          "contrôle_conscience",
+          "rechercher_douleur_rétention_fécalome_selon_protocole"
+        ],
+        "level_4": [
+          "alerte_médecin_selon_protocole",
+          "surveillance_vitale_rapprochée",
+          "préparer_transmission_structurée"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN005_DEHYDRATION_HEATWAVE_DIURETICS",
+      "name": "Déshydratation / canicule / diurétiques",
+      "category": [
+        "dehydration",
+        "heatwave",
+        "malaise",
+        "fall_risk"
+      ],
+      "clinical_rationale": "Déshydratation chez sujet âgé : confusion, faiblesse, hypotension, malaise ou syncope ; risque augmenté par chaleur, fièvre, diarrhée/vomissements, diurétiques.",
+      "resident_profile_match": {
+        "boost_if": [
+          "age_80_plus",
+          "diuretic",
+          "dementia",
+          "dependency",
+          "low_fluid_intake",
+          "heatwave_context",
+          "diarrhea_or_vomiting",
+          "fever"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "room_temperature_high",
+          "weight": 0.1
+        },
+        {
+          "signal": "no_drink_trace_4h_if_available",
+          "weight": 0.2
+        },
+        {
+          "signal": "heart_rate_plus_20_baseline",
+          "weight": 0.15
+        },
+        {
+          "signal": "activity_drop",
+          "weight": 0.1
+        },
+        {
+          "signal": "orthostatic_bp_drop",
+          "weight": 0.25
+        },
+        {
+          "signal": "new_confusion_or_weakness",
+          "weight": 0.2
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "dehydration_suspicion",
+          "if": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "context": "heatwave",
+                    "op": "==",
+                    "value": true
+                  },
+                  {
+                    "measurement": "room_temperature",
+                    "op": ">=",
+                    "value": 28
+                  },
+                  {
+                    "profile_factor": "diuretic"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "heart_rate",
+                    "feature": "delta_from_baseline",
+                    "op": ">=",
+                    "value": 20
+                  },
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 100
+                  },
+                  {
+                    "rule_ref": "orthostatic_bp_drop"
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.78,
+          "message": "Déshydratation/malaise possible."
+        },
+        {
+          "id": "dehydration_emergency",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "dehydration_suspicion"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 90
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "in",
+                    "value": [
+                      "unresponsive",
+                      "new_confusion"
+                    ]
+                  },
+                  {
+                    "measurement": "movement",
+                    "feature": "fall_detected",
+                    "op": "==",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.88,
+          "message": "Déshydratation sévère / malaise / chute possible."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_soignant",
+          "proposer_hydratation_selon_protocole",
+          "contrôle_tension",
+          "vérifier_température_chambre"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "contrôle_conscience",
+          "prévenir_IDE_médecin_selon_protocole"
+        ]
+      },
+      "family_visibility": "general_preventive_message_only"
+    },
+    {
+      "id": "SCN006_HYPOGLYCEMIA_DIABETES",
+      "name": "Hypoglycémie chez résident diabétique",
+      "category": [
+        "diabetes",
+        "hypoglycemia",
+        "malaise",
+        "fall_risk"
+      ],
+      "clinical_rationale": "Hypoglycémie <70 mg/dL, sévère <54 mg/dL, peut provoquer tachycardie, sueurs, confusion, difficulté à marcher, convulsions ou perte de connaissance.",
+      "resident_profile_match": {
+        "any": [
+          "diabetes"
+        ],
+        "boost_if": [
+          "insulin",
+          "sulfonylurea",
+          "skipped_meal",
+          "unusual_activity",
+          "nighttime",
+          "beta_blocker"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "glucose_trend_down_if_cgm",
+          "weight": 0.35
+        },
+        {
+          "signal": "skipped_meal_if_available",
+          "weight": 0.15
+        },
+        {
+          "signal": "heart_rate_rise",
+          "weight": 0.1
+        },
+        {
+          "signal": "tremor_or_activity_instability_if_available",
+          "weight": 0.1
+        },
+        {
+          "signal": "confusion_or_agitation",
+          "weight": 0.3
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "hypoglycemia_low",
+          "if": {
+            "measurement": "glucose",
+            "op": "<",
+            "value": 70
+          },
+          "level": 3,
+          "confidence": 0.92,
+          "message": "Hypoglycémie détectée."
+        },
+        {
+          "id": "hypoglycemia_severe",
+          "if": {
+            "any": [
+              {
+                "measurement": "glucose",
+                "op": "<",
+                "value": 54
+              },
+              {
+                "all": [
+                  {
+                    "rule_ref": "hypoglycemia_low"
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "in",
+                    "value": [
+                      "new_confusion",
+                      "seizure",
+                      "unresponsive"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.96,
+          "message": "Hypoglycémie sévère ou symptomatique."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "vérifier_glycémie_capillaire",
+          "application_protocole_resucrage_si_confirmé"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "contrôle_conscience",
+          "protocole_hypoglycémie_sévère"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN007_WANDERING_ELOPEMENT_ALZHEIMER",
+      "name": "Errance / fugue résident désorienté",
+      "category": [
+        "wandering",
+        "elopement",
+        "alzheimer",
+        "safety"
+      ],
+      "clinical_rationale": "Les troubles du comportement Alzheimer peuvent inclure comportements moteurs aberrants, agitation et troubles du rythme veille-sommeil ; en EHPAD, la sortie de zone autorisée est un risque de sécurité.",
+      "resident_profile_match": {
+        "any": [
+          "alzheimer_or_related_disorder",
+          "cognitive_decline"
+        ],
+        "boost_if": [
+          "wandering_history",
+          "sleep_wake_rhythm_disorder",
+          "agitation",
+          "new_confusion"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "déambulation_hors_routine",
+          "weight": 0.2
+        },
+        {
+          "signal": "sortie_chambre_nuit",
+          "weight": 0.15
+        },
+        {
+          "signal": "passage_zone_entree",
+          "weight": 0.25
+        },
+        {
+          "signal": "absence_retour_zone_attendue",
+          "weight": 0.15
+        },
+        {
+          "signal": "agitation_or_confusion",
+          "weight": 0.25
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "wandering_internal",
+          "if": {
+            "all": [
+              {
+                "profile_factor": "cognitive_decline"
+              },
+              {
+                "measurement": "location",
+                "feature": "outside_expected_zone",
+                "op": "==",
+                "value": true
+              },
+              {
+                "measurement": "time",
+                "feature": "night",
+                "op": "==",
+                "value": true
+              }
+            ]
+          },
+          "level": 2,
+          "confidence": 0.75,
+          "message": "Déambulation inhabituelle."
+        },
+        {
+          "id": "elopement_risk",
+          "if": {
+            "all": [
+              {
+                "profile_factor": "cognitive_decline"
+              },
+              {
+                "measurement": "location",
+                "op": "in",
+                "value": [
+                  "entree",
+                  "jardin",
+                  "exterieur"
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.85,
+          "message": "Risque de sortie non accompagnée."
+        },
+        {
+          "id": "elopement_confirmed",
+          "if": {
+            "all": [
+              {
+                "profile_factor": "cognitive_decline"
+              },
+              {
+                "measurement": "door_sensor",
+                "feature": "exit_opened",
+                "op": "==",
+                "value": true
+              },
+              {
+                "measurement": "location",
+                "op": "==",
+                "value": "exterieur"
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.93,
+          "message": "Sortie EHPAD probable."
+        }
+      ],
+      "actions": {
+        "level_2": [
+          "notification_soignant_assigné",
+          "vérifier_plan_EHPAD"
+        ],
+        "level_3": [
+          "envoyer_soignant_proche",
+          "prévenir_poste_soins"
+        ],
+        "level_4": [
+          "alerter_tous_soignants",
+          "sécuriser_sorties",
+          "protocole_recherche_interne_externe"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION",
+      "name": "Rupture de routine / isolement / baisse d'activité",
+      "category": [
+        "routine",
+        "frailty",
+        "behavior_change"
+      ],
+      "clinical_rationale": "Un changement de routine peut être un signal faible : infection, douleur, déshydratation, dépression, iatrogénie ou fatigue.",
+      "resident_profile_match": {
+        "boost_if": [
+          "frailty",
+          "depression",
+          "cognitive_decline",
+          "recent_medication_change",
+          "pain_history"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "activité_moins_50_percent_vs_baseline",
+          "weight": 0.3
+        },
+        {
+          "signal": "absence_repas_if_available",
+          "weight": 0.25
+        },
+        {
+          "signal": "sommeil_diurne_plus_long",
+          "weight": 0.15
+        },
+        {
+          "signal": "pas_de_sortie_chambre",
+          "weight": 0.2
+        },
+        {
+          "signal": "constantes_légèrement_anormales",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "routine_change_attention",
+          "if": {
+            "all": [
+              {
+                "measurement": "activity",
+                "feature": "drop_vs_baseline_percent",
+                "op": ">=",
+                "value": 50
+              },
+              {
+                "duration_seconds": 3600
+              }
+            ]
+          },
+          "level": 2,
+          "confidence": 0.65,
+          "message": "Changement de routine inhabituel."
+        },
+        {
+          "id": "routine_change_with_vital_abnormality",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "routine_change_attention"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "body_temperature",
+                    "feature": "delta_from_baseline",
+                    "op": ">=",
+                    "value": 1.1
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "feature": "delta_from_baseline",
+                    "op": ">=",
+                    "value": 20
+                  },
+                  {
+                    "measurement": "spo2",
+                    "feature": "delta_from_baseline",
+                    "op": "<=",
+                    "value": -3
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.78,
+          "message": "Rupture de routine + signe clinique."
+        }
+      ],
+      "actions": {
+        "level_2": [
+          "notification_soignant_assigné",
+          "vérifier_douleur_repas_hydratation"
+        ],
+        "level_3": [
+          "contrôle_constantes",
+          "évaluation_IDE",
+          "transmission_ciblée"
+        ]
+      },
+      "family_visibility": "general_status_only"
+    },
+    {
+      "id": "SCN009_IATROGENIC_FALL_CONFUSION_AFTER_MED_CHANGE",
+      "name": "Iatrogénie médicamenteuse : chute / confusion après changement de traitement",
+      "category": [
+        "iatrogenic",
+        "medication",
+        "fall",
+        "confusion"
+      ],
+      "clinical_rationale": "Chez la personne âgée, psychotropes, opioïdes, antihypertenseurs/diurétiques, anticholinergiques, anticoagulants et antidiabétiques peuvent favoriser chute, malaise, confusion, rétention urinaire, constipation ou hémorragie.",
+      "resident_profile_match": {
+        "boost_if": [
+          "polypharmacy",
+          "recent_medication_change_lt_7d",
+          "renal_impairment",
+          "cognitive_decline",
+          "fall_history"
+        ],
+        "medication_classes": [
+          "benzodiazepines",
+          "psychotropes",
+          "neuroleptics",
+          "opioids",
+          "tramadol",
+          "antihypertensives",
+          "diuretics",
+          "anticholinergics",
+          "anticoagulants_or_antiplatelets",
+          "antidiabetics_insulin_sulfonylurea"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "somnolence_or_reduced_activity",
+          "weight": 0.2
+        },
+        {
+          "signal": "new_confusion_or_agitation",
+          "weight": 0.25
+        },
+        {
+          "signal": "gait_instability",
+          "weight": 0.2
+        },
+        {
+          "signal": "orthostatic_bp_drop",
+          "weight": 0.15
+        },
+        {
+          "signal": "no_urination_or_constipation_if_available",
+          "weight": 0.1
+        },
+        {
+          "signal": "hypoglycemia_if_diabetic",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "iatrogenic_attention",
+          "if": {
+            "all": [
+              {
+                "profile_factor": "recent_medication_change_lt_7d"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  },
+                  {
+                    "measurement": "activity",
+                    "feature": "drop_vs_baseline_percent",
+                    "op": ">=",
+                    "value": 50
+                  },
+                  {
+                    "rule_ref": "orthostatic_bp_drop"
+                  },
+                  {
+                    "measurement": "movement",
+                    "feature": "gait_instability",
+                    "op": "==",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.78,
+          "message": "Suspicion d'effet indésirable médicamenteux avec risque chute/confusion."
+        },
+        {
+          "id": "iatrogenic_emergency",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "iatrogenic_attention"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "movement",
+                    "feature": "fall_detected",
+                    "op": "==",
+                    "value": true
+                  },
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 90
+                  },
+                  {
+                    "measurement": "glucose",
+                    "op": "<",
+                    "value": 54
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "in",
+                    "value": [
+                      "unresponsive",
+                      "severe_confusion"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.88,
+          "message": "Iatrogénie possible avec critère de gravité."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "ouvrir_liste_traitements",
+          "contrôler_derniers_changements",
+          "contrôle_tension_glycémie_si_pertinent"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "évaluation_clinique_IDE_médecin_selon_protocole",
+          "préparer_transmission_médicamenteuse"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN010_PAIN_URINARY_RETENTION_FECALOMA_AGITATION",
+      "name": "Douleur non verbalisée / rétention urinaire / fécalome",
+      "category": [
+        "pain",
+        "delirium",
+        "urinary_retention",
+        "fecaloma",
+        "behavior_change"
+      ],
+      "clinical_rationale": "Chez un résident avec trouble de communication, une agitation, opposition ou déambulation nouvelle peut traduire une douleur, une rétention urinaire, un fécalome ou une autre cause somatique.",
+      "resident_profile_match": {
+        "boost_if": [
+          "cognitive_decline",
+          "communication_disorder",
+          "opioids",
+          "anticholinergics",
+          "constipation_history",
+          "prostate_disorder",
+          "immobility"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "agitation_or_opposition_new",
+          "weight": 0.25
+        },
+        {
+          "signal": "algoplus_score_gte_2",
+          "weight": 0.25
+        },
+        {
+          "signal": "no_urination_8h",
+          "weight": 0.15
+        },
+        {
+          "signal": "no_stool_72h",
+          "weight": 0.15
+        },
+        {
+          "signal": "heart_rate_rise_or_sleep_disruption",
+          "weight": 0.1
+        },
+        {
+          "signal": "wandering_or_repeated_bathroom_visits",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "pain_behavioral_alert",
+          "if": {
+            "all": [
+              {
+                "measurement": "pain_algoplus",
+                "op": ">=",
+                "value": 2
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  },
+                  {
+                    "measurement": "behavior",
+                    "op": "in",
+                    "value": [
+                      "agitation",
+                      "opposition",
+                      "cries",
+                      "wandering"
+                    ]
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "feature": "delta_from_baseline",
+                    "op": ">=",
+                    "value": 20
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.82,
+          "message": "Douleur aiguë ou cause somatique probable."
+        },
+        {
+          "id": "retention_or_fecaloma_suspicion",
+          "if": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "measurement": "urine_output",
+                    "feature": "no_urination_hours",
+                    "op": ">=",
+                    "value": 8
+                  },
+                  {
+                    "measurement": "stool",
+                    "feature": "no_stool_hours",
+                    "op": ">=",
+                    "value": 72
+                  }
+                ]
+              },
+              {
+                "measurement": "behavior",
+                "op": "in",
+                "value": [
+                  "agitation",
+                  "opposition",
+                  "wandering",
+                  "pain_behavior"
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.8,
+          "message": "Rétention urinaire ou fécalome possible."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "évaluer_douleur_ALGOPLUS",
+          "vérifier_miction_transit",
+          "rechercher_fécalome_rétention_selon_protocole"
+        ],
+        "level_4": [
+          "si_douleur_intense_ou_chute_alerter_médecin_selon_protocole"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN011_ACUTE_CONFUSION_DELIRIUM",
+      "name": "Syndrome confusionnel aigu / delirium",
+      "category": [
+        "delirium",
+        "confusion",
+        "clinical_deterioration"
+      ],
+      "clinical_rationale": "Une confusion aiguë chez la personne âgée est souvent multifactorielle : infection, hypoxie, hypoglycémie, déshydratation, troubles ioniques, douleur, rétention urinaire, fécalome, AVC ou médicament.",
+      "resident_profile_match": {
+        "boost_if": [
+          "age_80_plus",
+          "cognitive_decline",
+          "dementia",
+          "polypharmacy",
+          "recent_medication_change_lt_7d",
+          "infection_context",
+          "dehydration_risk"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "new_confusion",
+          "weight": 0.3
+        },
+        {
+          "signal": "sleep_wake_disruption",
+          "weight": 0.1
+        },
+        {
+          "signal": "agitation_or_apathy",
+          "weight": 0.15
+        },
+        {
+          "signal": "temperature_abnormal",
+          "weight": 0.15
+        },
+        {
+          "signal": "spo2_low_or_rr_high",
+          "weight": 0.15
+        },
+        {
+          "signal": "hypoglycemia_or_hypotension",
+          "weight": 0.15
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "delirium_attention",
+          "if": {
+            "all": [
+              {
+                "measurement": "consciousness",
+                "op": "==",
+                "value": "new_confusion"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "body_temperature",
+                    "op": ">=",
+                    "value": 37.8
+                  },
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 93
+                  },
+                  {
+                    "measurement": "glucose",
+                    "op": "<",
+                    "value": 70
+                  },
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 100
+                  },
+                  {
+                    "profile_factor": "recent_medication_change_lt_7d"
+                  },
+                  {
+                    "measurement": "pain_algoplus",
+                    "op": ">=",
+                    "value": 2
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.85,
+          "message": "Confusion aiguë avec facteur déclenchant probable."
+        },
+        {
+          "id": "delirium_red_flags",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "delirium_attention"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "neurological_signs",
+                    "feature": "sudden_focal_deficit",
+                    "op": "==",
+                    "value": true
+                  },
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 91
+                  },
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 90
+                  },
+                  {
+                    "measurement": "glucose",
+                    "op": "<",
+                    "value": 54
+                  },
+                  {
+                    "measurement": "movement",
+                    "feature": "fall_detected",
+                    "op": "==",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.92,
+          "message": "Confusion aiguë avec signe de gravité."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "contrôle_constantes",
+          "glycémie_si_diabète_ou_doute",
+          "revue_traitements",
+          "rechercher_douleur_infection_rétention_fécalome"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "médecin/SAMU_selon_protocole",
+          "transmission_structurée_ABCDE_NEWS2"
+        ]
+      },
+      "family_visibility": "not_visible_until_caregiver_validation"
+    },
+    {
+      "id": "SCN012_STROKE_FAST_SUSPECTED",
+      "name": "Suspicion AVC/AIT - FAST/VITE",
+      "category": [
+        "stroke",
+        "neurological_emergency",
+        "fall"
+      ],
+      "clinical_rationale": "Déficit neurologique brutal, trouble parole, asymétrie visage, faiblesse d'un bras/jambe, trouble équilibre, perte de vision ou céphalée brutale : urgence temps-dépendante.",
+      "resident_profile_match": {
+        "boost_if": [
+          "atrial_fibrillation",
+          "hypertension",
+          "diabetes",
+          "previous_stroke_TIA",
+          "anticoagulant_treatment",
+          "fall_with_head_trauma"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "sudden_balance_disorder",
+          "weight": 0.2
+        },
+        {
+          "signal": "fall_without_clear_mechanical_cause",
+          "weight": 0.2
+        },
+        {
+          "signal": "new_confusion",
+          "weight": 0.1
+        },
+        {
+          "signal": "speech_disorder_observed",
+          "weight": 0.25
+        },
+        {
+          "signal": "arm_or_leg_weakness_observed",
+          "weight": 0.25
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "fast_positive",
+          "if": {
+            "any": [
+              {
+                "measurement": "neurological_signs",
+                "feature": "sudden_face_asymmetry",
+                "op": "==",
+                "value": true
+              },
+              {
+                "measurement": "neurological_signs",
+                "feature": "sudden_arm_or_leg_weakness",
+                "op": "==",
+                "value": true
+              },
+              {
+                "measurement": "neurological_signs",
+                "feature": "sudden_speech_disorder",
+                "op": "==",
+                "value": true
+              },
+              {
+                "measurement": "neurological_signs",
+                "feature": "sudden_vision_loss",
+                "op": "==",
+                "value": true
+              },
+              {
+                "measurement": "neurological_signs",
+                "feature": "sudden_severe_headache",
+                "op": "==",
+                "value": true
+              }
+            ]
+          },
+          "level": 5,
+          "confidence": 0.95,
+          "message": "Suspicion AVC/AIT : alerte temps-dépendante."
+        }
+      ],
+      "actions": {
+        "level_5": [
+          "appel_15_immédiat_selon_protocole",
+          "noter_heure_début_symptômes",
+          "ne_pas_donner_à_boire_ou_manger",
+          "préparer_traitements_anticoagulants",
+          "surveillance_conscience"
+        ]
+      },
+      "family_visibility": "handled_by_establishment_protocol"
+    },
+    {
+      "id": "SCN013_HEART_FAILURE_DECOMPENSATION",
+      "name": "Décompensation insuffisance cardiaque",
+      "category": [
+        "heart_failure",
+        "respiratory",
+        "edema",
+        "clinical_deterioration"
+      ],
+      "clinical_rationale": "Dyspnée, fatigue, œdèmes, prise de poids rapide et, chez la personne âgée, confusion/chutes/perte d'autonomie peuvent signaler une aggravation cardiaque.",
+      "resident_profile_match": {
+        "any": [
+          "heart_failure"
+        ],
+        "boost_if": [
+          "renal_impairment",
+          "diuretic",
+          "recent_infection",
+          "salt_intake_change",
+          "treatment_non_adherence"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "dyspnea_or_rr_high",
+          "weight": 0.25
+        },
+        {
+          "signal": "spo2_drop",
+          "weight": 0.2
+        },
+        {
+          "signal": "heart_rate_rise",
+          "weight": 0.1
+        },
+        {
+          "signal": "activity_drop_fatigue",
+          "weight": 0.15
+        },
+        {
+          "signal": "weight_gain_2kg_3days_if_available",
+          "weight": 0.2
+        },
+        {
+          "signal": "edema_reported",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "hf_decompensation_alert",
+          "if": {
+            "all": [
+              {
+                "profile_factor": "heart_failure"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "respiratory_rate",
+                    "op": ">=",
+                    "value": 21
+                  },
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 93
+                  },
+                  {
+                    "measurement": "weight",
+                    "feature": "delta_kg_3days",
+                    "op": ">=",
+                    "value": 2
+                  },
+                  {
+                    "measurement": "edema",
+                    "op": "==",
+                    "value": true
+                  },
+                  {
+                    "measurement": "activity",
+                    "feature": "drop_vs_baseline_percent",
+                    "op": ">=",
+                    "value": 50
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.82,
+          "message": "Aggravation possible d'insuffisance cardiaque."
+        },
+        {
+          "id": "hf_emergency",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "hf_decompensation_alert"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 91
+                  },
+                  {
+                    "measurement": "respiratory_rate",
+                    "op": ">=",
+                    "value": 25
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  },
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 90
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.9,
+          "message": "Décompensation cardiaque avec signe de gravité."
+        }
+      ],
+      "actions": {
+        "level_3": [
+          "alerter_IDE",
+          "contrôle_SpO2_FR_FC_TA",
+          "rechercher_dyspnée_oedèmes_prise_poids",
+          "prévenir_médecin_selon_protocole"
+        ],
+        "level_4": [
+          "alerte_urgence_soignants",
+          "surveillance_respiratoire_rapprochée",
+          "médecin/SAMU_selon_protocole"
+        ]
+      },
+      "family_visibility": "general_status_after_validation"
+    },
+    {
+      "id": "SCN014_DENUTRITION_FRAILTY_DECLINE",
+      "name": "Dénutrition / fragilité / perte d'autonomie",
+      "category": [
+        "nutrition",
+        "frailty",
+        "functional_decline"
+      ],
+      "clinical_rationale": "Chez les plus de 70 ans, une perte de poids rapide, IMC <22, réduction des apports ou perte de force/masse musculaire doit déclencher une surveillance nutritionnelle.",
+      "resident_profile_match": {
+        "boost_if": [
+          "age_70_plus",
+          "dependency",
+          "dementia",
+          "depression",
+          "poor_dentition",
+          "swallowing_disorder",
+          "recent_hospitalization",
+          "social_isolation"
+        ]
+      },
+      "early_signals_days_weeks": [
+        {
+          "signal": "meal_intake_drop",
+          "weight": 0.3
+        },
+        {
+          "signal": "weight_loss_5_percent_1_month",
+          "weight": 0.3
+        },
+        {
+          "signal": "weight_loss_10_percent_6_months",
+          "weight": 0.3
+        },
+        {
+          "signal": "activity_decline",
+          "weight": 0.1
+        },
+        {
+          "signal": "repeated_infections_or_pressure_ulcer_risk",
+          "weight": 0.1
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "malnutrition_attention",
+          "if": {
+            "any": [
+              {
+                "measurement": "weight",
+                "feature": "percent_loss_1_month",
+                "op": ">=",
+                "value": 5
+              },
+              {
+                "measurement": "weight",
+                "feature": "percent_loss_6_months",
+                "op": ">=",
+                "value": 10
+              },
+              {
+                "measurement": "bmi",
+                "op": "<",
+                "value": 22
+              },
+              {
+                "measurement": "meal_intake",
+                "feature": "drop_percent_7days",
+                "op": ">=",
+                "value": 50
+              }
+            ]
+          },
+          "level": 2,
+          "confidence": 0.8,
+          "message": "Risque de dénutrition / fragilité."
+        },
+        {
+          "id": "malnutrition_with_clinical_decline",
+          "if": {
+            "all": [
+              {
+                "rule_ref": "malnutrition_attention"
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "activity",
+                    "feature": "drop_vs_baseline_percent",
+                    "op": ">=",
+                    "value": 50
+                  },
+                  {
+                    "measurement": "movement",
+                    "feature": "fall_detected",
+                    "op": "==",
+                    "value": true
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 3,
+          "confidence": 0.84,
+          "message": "Dénutrition/fragilité associée à déclin clinique ou chute."
+        }
+      ],
+      "actions": {
+        "level_2": [
+          "alerter_référent_soignant",
+          "vérifier_poids_apports",
+          "surveillance_repas",
+          "transmission_équipe"
+        ],
+        "level_3": [
+          "évaluation_IDE_médecin_coordonnateur_diététique_selon_organisation",
+          "plan_surveillance_7_jours"
+        ]
+      },
+      "family_visibility": "general_preventive_message_only"
+    },
+    {
+      "id": "SCN015_CHEST_PAIN_CARDIAC_MALAISE",
+      "name": "Malaise cardiaque / douleur thoracique suspecte",
+      "category": [
+        "cardiac",
+        "malaise",
+        "emergency"
+      ],
+      "clinical_rationale": "Douleur thoracique, malaise, hypotension, sueurs, dyspnée ou trouble de conscience chez une personne âgée doivent être priorisés comme potentiellement graves.",
+      "resident_profile_match": {
+        "boost_if": [
+          "coronary_disease",
+          "diabetes",
+          "heart_failure",
+          "hypertension",
+          "arrhythmia",
+          "anticoagulant_treatment"
+        ]
+      },
+      "early_signals_30_60min": [
+        {
+          "signal": "heart_rate_abnormal",
+          "weight": 0.2
+        },
+        {
+          "signal": "systolic_bp_low",
+          "weight": 0.2
+        },
+        {
+          "signal": "dyspnea_or_spo2_drop",
+          "weight": 0.2
+        },
+        {
+          "signal": "pain_algoplus_or_chest_pain_reported",
+          "weight": 0.25
+        },
+        {
+          "signal": "new_confusion_or_malaise",
+          "weight": 0.15
+        }
+      ],
+      "trigger_rules": [
+        {
+          "id": "cardiac_malaise_alert",
+          "if": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "measurement": "symptom",
+                    "op": "==",
+                    "value": "chest_pain"
+                  },
+                  {
+                    "measurement": "pain_algoplus",
+                    "op": ">=",
+                    "value": 2
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "measurement": "systolic_bp",
+                    "op": "<=",
+                    "value": 100
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "op": ">=",
+                    "value": 131
+                  },
+                  {
+                    "measurement": "heart_rate",
+                    "op": "<=",
+                    "value": 40
+                  },
+                  {
+                    "measurement": "spo2",
+                    "op": "<=",
+                    "value": 93
+                  },
+                  {
+                    "measurement": "consciousness",
+                    "op": "==",
+                    "value": "new_confusion"
+                  }
+                ]
+              }
+            ]
+          },
+          "level": 4,
+          "confidence": 0.82,
+          "message": "Malaise cardiaque ou douleur thoracique suspecte."
+        }
+      ],
+      "actions": {
+        "level_4": [
+          "alerte_urgence_soignants",
+          "contrôle_constantes",
+          "repos_position_confort",
+          "médecin/SAMU_selon_protocole",
+          "préparer_antécédents_traitements"
+        ],
+        "level_5": [
+          "si_perte_conscience_ou_arrêt_circulatoire_protocole_urgence"
+        ]
+      },
+      "family_visibility": "handled_by_establishment_protocol"
+    }
+  ],
+  "predictive_model_features": {
+    "target": "risk_malaise_30_60min",
+    "feature_groups": {
+      "vitals": [
+        "heart_rate_current",
+        "heart_rate_delta_10min",
+        "heart_rate_delta_baseline",
+        "spo2_current",
+        "spo2_delta_30min",
+        "respiratory_rate_current",
+        "systolic_bp_current",
+        "temperature_current",
+        "temperature_delta_baseline",
+        "glucose_current_if_available"
+      ],
+      "activity": [
+        "steps_last_30min",
+        "activity_drop_vs_baseline_percent",
+        "immobility_duration_seconds",
+        "night_wandering_count",
+        "bed_exit_count_24h"
+      ],
+      "context": [
+        "hour_of_day",
+        "meal_window",
+        "post_prandial_0_2h",
+        "room_temperature",
+        "heatwave_context",
+        "location_zone",
+        "outside_expected_zone"
+      ],
+      "profile": [
+        "age",
+        "fall_history",
+        "polypharmacy",
+        "psychotropic_drug",
+        "diuretic",
+        "anticoagulant_treatment",
+        "cognitive_decline",
+        "copd",
+        "diabetes",
+        "heart_failure",
+        "dehydration_risk"
+      ],
+      "data_quality": [
+        "missing_vitals_count",
+        "last_watch_seen_seconds",
+        "sensor_battery_percent",
+        "signal_quality_spo2"
+      ]
+    },
+    "recommended_outputs": {
+      "risk_score": "0.0-1.0",
+      "risk_label": [
+        "low",
+        "moderate",
+        "high",
+        "critical"
+      ],
+      "top_reasons": "Liste courte de 3 à 5 raisons explicables pour le dashboard.",
+      "suggested_alert_level": "1-5",
+      "confidence": "0.0-1.0",
+      "missing_data": "Liste des capteurs absents ou obsolètes."
+    }
+  },
+  "anti_false_positive_rules": {
+    "principles": [
+      "Ne pas déclencher une urgence sur une seule mesure instable sauf seuil critique vital.",
+      "Favoriser la concordance de plusieurs signaux : constante + mouvement + contexte + profil.",
+      "Utiliser la persistance temporelle : 60s, 120s, 5min selon gravité.",
+      "Afficher les données manquantes et baisser la confiance si capteurs obsolètes.",
+      "Toujours permettre l'acquittement et la justification soignante."
+    ],
+    "sensor_quality": [
+      {
+        "condition": "last_watch_seen_seconds > 120",
+        "level": 2,
+        "message": "Montre résident non vue depuis >2 min."
+      },
+      {
+        "condition": "sensor_battery_percent < 10",
+        "level": 2,
+        "message": "Batterie capteur faible."
+      },
+      {
+        "condition": "spo2_signal_quality == 'poor'",
+        "level": 1,
+        "message": "Signal SpO2 peu fiable."
+      }
+    ]
+  },
+  "family_interface_policy": {
+    "principle": "L'interface famille ne doit pas afficher les détails médicaux bruts ni les alertes non validées.",
+    "allowed_status": [
+      "stable",
+      "surveillance_en_cours",
+      "prise_en_charge_par_l_equipe",
+      "information_par_l_etablissement_si_necessaire"
+    ],
+    "forbidden_fields": [
+      "diagnosis",
+      "raw_vitals",
+      "medications",
+      "NEWS2_score",
+      "clinical_notes",
+      "unvalidated_alerts"
+    ]
+  },
+  "implementation_notes": {
+    "pydantic_models": [
+      "KnowledgeBase",
+      "MeasurementRule",
+      "Scenario",
+      "TriggerRule",
+      "AlertLevel",
+      "Source"
+    ],
+    "suggested_services": {
+      "kb_loader": "backend/kb_loader.py",
+      "rules_engine": "backend/rules_engine.py",
+      "news2": "backend/news2.py",
+      "predictor": "backend/predictor.py",
+      "alert_router": "backend/alert_router.py"
+    },
+    "mqtt_topics": {
+      "vitals": "ehpad/{facility_id}/resident/{resident_id}/vitals",
+      "movement": "ehpad/{facility_id}/resident/{resident_id}/movement",
+      "location": "ehpad/{facility_id}/resident/{resident_id}/location",
+      "ambient": "ehpad/{facility_id}/zone/{zone_id}/ambient",
+      "alerts": "ehpad/{facility_id}/alerts/{resident_id}",
+      "ack": "ehpad/{facility_id}/alerts/{alert_id}/ack"
+    },
+    "redis_keys": {
+      "resident_state": "resident:{resident_id}:state",
+      "resident_baseline": "resident:{resident_id}:baseline",
+      "active_alert": "alert:{alert_id}:active",
+      "facility_grid": "facility:{facility_id}:grid"
+    },
+    "minimal_engine_pseudocode": [
+      "1. recevoir payload MQTT",
+      "2. valider schéma + qualité capteur",
+      "3. mettre à jour état Redis",
+      "4. calculer features fenêtre 1/5/30/60 min",
+      "5. calculer NEWS2 partiel si possible",
+      "6. évaluer scénarios KB",
+      "7. générer alerte avec niveau, confiance, preuves, données manquantes",
+      "8. envoyer WebSocket dashboard + montre soignant",
+      "9. escalader si non acquitté"
+    ],
+    "alert_object_schema_v2": {
+      "alert_id": "string",
+      "resident_id": "string",
+      "created_at": "ISO-8601",
+      "level": "1-5",
+      "scenario_id": "string",
+      "title": "string",
+      "message": "string",
+      "confidence": "0.0-1.0",
+      "evidence": [
+        {
+          "type": "vital|movement|location|profile|medication|routine",
+          "label": "string",
+          "value": "any",
+          "weight": "float"
+        }
+      ],
+      "missing_data": [
+        "string"
+      ],
+      "recommended_actions": [
+        "string"
+      ],
+      "routing": {
+        "caregiver_watch": true,
+        "dashboard": true,
+        "nurse_station_sound": true,
+        "family_visible": false
+      },
+      "ack": {
+        "required": true,
+        "deadline_seconds": 300,
+        "escalate_to": 4
+      }
+    },
+    "rule_engine_priority_v2": [
+      "1. Niveau 5 direct : AVC FAST positif, danger vital, perte conscience, chute + constantes critiques.",
+      "2. Niveau 4 : chute, hypoxie sévère, NEWS2 haut, sepsis red flags, malaise cardiaque.",
+      "3. Niveau 3 : prédiction 30-60 min haute, iatrogénie, infection, douleur, hypoglycémie, déshydratation.",
+      "4. Niveau 2 : changement de routine, risque nutrition, capteur dégradé, errance interne.",
+      "5. Niveau 1 : information non urgente."
+    ]
+  },
+  "device_layer": {
+    "resident_watch": {
+      "name": "EHPAD Watch Résident",
+      "role": "Collecter signaux physiologiques et comportementaux.",
+      "example_form_factor": "montre connectée type Apple Watch / Wear OS / prototype BLE",
+      "sensors": [
+        "heart_rate",
+        "spo2_optional_or_estimated",
+        "skin_temperature_trend",
+        "accelerometer",
+        "gyroscope",
+        "step_count",
+        "sleep_activity",
+        "fall_detection",
+        "BLE_location"
+      ],
+      "limitations": [
+        "SpO2 poignet variable selon perfusion, mouvement, serrage et qualité signal.",
+        "Température poignet différente de température centrale.",
+        "Ne pas présenter comme dispositif diagnostique sans certification."
+      ],
+      "mqtt_publish_topics": [
+        "ehpad/{facility_id}/resident/{resident_id}/vitals",
+        "ehpad/{facility_id}/resident/{resident_id}/movement",
+        "ehpad/{facility_id}/resident/{resident_id}/location",
+        "ehpad/{facility_id}/resident/{resident_id}/battery"
+      ],
+      "payload_minimal": {
+        "resident_id": "R005",
+        "timestamp": "ISO-8601",
+        "hr": 92,
+        "spo2": 94,
+        "skin_temp": 36.8,
+        "activity_level": 0.23,
+        "impact_g": 0.1,
+        "posture": "standing|sitting|lying|unknown",
+        "battery": 82,
+        "signal_quality": "good|medium|poor"
+      }
+    },
+    "caregiver_watch": {
+      "name": "EHPAD Watch Soignant",
+      "role": "Recevoir, prioriser, acquitter et escalader les alertes.",
+      "alert_payload": {
+        "alert_id": "A-2026-00042",
+        "level": 4,
+        "level_name": "Urgence",
+        "resident_id": "R005",
+        "resident_display": "Chambre 104",
+        "scenario": "Chute nocturne",
+        "message": "Chute probable + immobilité",
+        "confidence": 0.91,
+        "top_evidence": [
+          "impact 2.8g",
+          "immobilité 90 secondes",
+          "sortie lit nocturne"
+        ],
+        "actions": [
+          "Voir itinéraire",
+          "Acquitter",
+          "Appeler renfort"
+        ],
+        "ack_required": true
+      },
+      "ux_rules": [
+        "Une alerte niveau 4/5 doit vibrer fortement et rester visible jusqu'à acquittement.",
+        "Un seul bouton principal : 'J'y vais / acquitter'.",
+        "Afficher chambre + niveau + raison + action, pas de surcharge."
+      ]
+    },
+    "gateway_room": {
+      "name": "Passerelle chambre / étage",
+      "role": "Relais BLE/Wi-Fi/4G vers MQTT sécurisé.",
+      "features": [
+        "buffer local si réseau indisponible",
+        "horodatage",
+        "chiffrement transport",
+        "contrôle batterie/signal",
+        "last will MQTT capteur offline"
+      ]
+    },
+    "ambient_sensors": {
+      "name": "Capteurs ambiants EHPAD",
+      "sensors": [
+        "bed_exit",
+        "door_open",
+        "room_motion",
+        "corridor_motion",
+        "room_temperature",
+        "bathroom_presence",
+        "optional_floor_pressure_or_radar"
+      ]
+    }
+  },
+  "medication_risk_library": {
+    "high_risk_classes_for_elderly": {
+      "benzodiazepines": {
+        "risks": [
+          "chute",
+          "somnolence",
+          "confusion",
+          "trouble_vigilance",
+          "dépendance"
+        ],
+        "engine_boosts": {
+          "fall": 0.15,
+          "confusion": 0.2,
+          "night_fall": 0.2
+        }
+      },
+      "psychotropes": {
+        "risks": [
+          "chute",
+          "étourdissements",
+          "hyponatrémie",
+          "confusion",
+          "QT"
+        ],
+        "engine_boosts": {
+          "fall": 0.15,
+          "confusion": 0.2
+        }
+      },
+      "neuroleptics": {
+        "risks": [
+          "sédation",
+          "syndrome_extrapyramidal",
+          "chute",
+          "confusion",
+          "QT"
+        ],
+        "engine_boosts": {
+          "fall": 0.15,
+          "confusion": 0.2
+        }
+      },
+      "antidepressants_ssri_snri": {
+        "risks": [
+          "chute",
+          "nausée",
+          "étourdissement",
+          "hyponatrémie",
+          "syndrome_sérotoninergique"
+        ],
+        "engine_boosts": {
+          "fall": 0.1,
+          "confusion": 0.1,
+          "hyponatremia": 0.15
+        }
+      },
+      "opioids": {
+        "risks": [
+          "somnolence",
+          "confusion",
+          "constipation",
+          "rétention_urinaire",
+          "chute",
+          "nausées"
+        ],
+        "engine_boosts": {
+          "fall": 0.2,
+          "confusion": 0.2,
+          "urinary_retention": 0.2,
+          "constipation": 0.2
+        }
+      },
+      "tramadol": {
+        "risks": [
+          "confusion",
+          "hallucination",
+          "délire",
+          "convulsions",
+          "interactions"
+        ],
+        "engine_boosts": {
+          "confusion": 0.25,
+          "fall": 0.15
+        }
+      },
+      "antihypertensives": {
+        "risks": [
+          "hypotension",
+          "lipothymie",
+          "chute",
+          "malaise"
+        ],
+        "engine_boosts": {
+          "orthostatic_hypotension": 0.25,
+          "fall": 0.15
+        }
+      },
+      "diuretics": {
+        "risks": [
+          "déshydratation",
+          "hyponatrémie",
+          "hypotension",
+          "chute"
+        ],
+        "engine_boosts": {
+          "dehydration": 0.25,
+          "orthostatic_hypotension": 0.2,
+          "fall": 0.15
+        }
+      },
+      "anticoagulants_or_antiplatelets": {
+        "risks": [
+          "hémorragie",
+          "gravité_post_chute",
+          "anémie"
+        ],
+        "engine_boosts": {
+          "severe_fall": 0.3,
+          "bleeding_risk": 0.25
+        }
+      },
+      "anticholinergics": {
+        "risks": [
+          "confusion",
+          "rétention_urinaire",
+          "sécheresse_buccale",
+          "constipation",
+          "trouble_vision"
+        ],
+        "engine_boosts": {
+          "confusion": 0.25,
+          "urinary_retention": 0.3,
+          "constipation": 0.2
+        }
+      },
+      "laxatives_excess": {
+        "risks": [
+          "déshydratation",
+          "troubles_ioniques",
+          "malaise"
+        ],
+        "engine_boosts": {
+          "dehydration": 0.15,
+          "confusion": 0.1
+        }
+      },
+      "antidiabetics_insulin_sulfonylurea": {
+        "risks": [
+          "hypoglycémie",
+          "malaise",
+          "chute",
+          "confusion"
+        ],
+        "engine_boosts": {
+          "hypoglycemia": 0.35,
+          "fall": 0.1
+        }
+      }
+    },
+    "recent_change_window_days": 7,
+    "engine_rule": "Si ajout, arrêt, changement dose ou interaction dans les 7 jours, augmenter la vigilance sur scénarios confusion, chute, hypotension, rétention, constipation, hypoglycémie."
+  },
+  "nursing_transmission": {
+    "daily_summary_template": {
+      "title": "Transmission EHPAD Watch - Synthèse 24h",
+      "sections": [
+        "résidents_stables",
+        "alertes_non_acquittées",
+        "alertes_niveau_3_4_5",
+        "changements_de_routine",
+        "risques_30_60min",
+        "capteurs_hs_ou_batterie_faible",
+        "points_médicamenteux",
+        "surveillance_nutrition_hydratation"
+      ],
+      "example": {
+        "date": "2026-03-17",
+        "facility": "EHPAD Démo",
+        "summary": "25 résidents surveillés, 3 sous surveillance renforcée, 1 urgence chute acquittée.",
+        "priority_residents": [
+          {
+            "resident_id": "R005",
+            "room": "104",
+            "reason": "Chute nocturne acquittée, anticoagulant",
+            "next_action": "Surveillance douleur/traumatisme selon protocole"
+          },
+          {
+            "resident_id": "R012",
+            "room": "212",
+            "reason": "SpO2 en baisse, BPCO",
+            "next_action": "Contrôle SpO2 doigt + FR"
+          }
+        ]
+      }
+    },
+    "alert_transmission_format": {
+      "S": "Situation : niveau, résident, chambre, scénario probable",
+      "B": "Background : antécédents, facteurs de risque, traitements critiques",
+      "A": "Assessment : constantes, NEWS2, preuves capteurs, données manquantes",
+      "R": "Recommendation : action attendue, délai, escalade"
+    }
+  },
+  "demo_pack_v2": {
+    "recommended_demo_order": [
+      "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+      "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA",
+      "SCN009_IATROGENIC_FALL_CONFUSION_AFTER_MED_CHANGE",
+      "SCN012_STROKE_FAST_SUSPECTED",
+      "SCN014_DENUTRITION_FRAILTY_DECLINE"
+    ],
+    "winning_pitch": [
+      "La montre résident capte les signaux faibles.",
+      "La plateforme corrèle capteurs, routine, facteurs de risque et référentiels.",
+      "La montre soignant reçoit une alerte courte, priorisée et actionnable.",
+      "Le dashboard donne la vision globale de l'EHPAD.",
+      "La transmission IDE transforme les alertes en suivi exploitable."
+    ],
+    "evaluator_message": "Le projet ne remplace pas le jugement soignant : il réduit le délai de détection, priorise les urgences et structure la transmission."
+  },
+  "simulator_resident_archetypes_v2": [
+    {
+      "id": "ARCH_ALZ_FALL",
+      "name": "Alzheimer + errance + risque chute",
+      "risk_factors": [
+        "age_80_plus",
+        "cognitive_decline",
+        "alzheimer_or_related_disorder",
+        "wandering_history",
+        "night_wandering",
+        "anticoagulant_treatment"
+      ],
+      "baseline": {
+        "hr": 74,
+        "spo2": 96,
+        "systolic_bp": 132,
+        "temperature": 36.6,
+        "activity_level": "variable"
+      },
+      "preferred_scenarios": [
+        "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+        "SCN007_WANDERING_ELOPEMENT_ALZHEIMER"
+      ]
+    },
+    {
+      "id": "ARCH_BPCO",
+      "name": "BPCO / infection respiratoire",
+      "risk_factors": [
+        "copd",
+        "recent_respiratory_infection",
+        "oxygen_therapy_optional"
+      ],
+      "baseline": {
+        "hr": 82,
+        "spo2": 93,
+        "respiratory_rate": 19,
+        "temperature": 36.7
+      },
+      "preferred_scenarios": [
+        "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA"
+      ]
+    },
+    {
+      "id": "ARCH_DIABETES",
+      "name": "Diabète insulinotraité",
+      "risk_factors": [
+        "diabetes",
+        "insulin",
+        "hypoglycemia_history",
+        "fall_history"
+      ],
+      "baseline": {
+        "hr": 78,
+        "spo2": 96,
+        "glucose": 115
+      },
+      "preferred_scenarios": [
+        "SCN006_HYPOGLYCEMIA_DIABETES"
+      ]
+    },
+    {
+      "id": "ARCH_CARDIAC",
+      "name": "Insuffisance cardiaque fragile",
+      "risk_factors": [
+        "heart_failure",
+        "diuretic",
+        "renal_impairment",
+        "age_80_plus"
+      ],
+      "baseline": {
+        "hr": 86,
+        "spo2": 95,
+        "respiratory_rate": 18,
+        "systolic_bp": 118
+      },
+      "preferred_scenarios": [
+        "SCN013_HEART_FAILURE_DECOMPENSATION",
+        "SCN005_DEHYDRATION_HEATWAVE_DIURETICS"
+      ]
+    },
+    {
+      "id": "ARCH_POLYMED",
+      "name": "Polymédication / iatrogénie",
+      "risk_factors": [
+        "polypharmacy",
+        "recent_medication_change_lt_7d",
+        "benzodiazepines",
+        "opioids",
+        "antihypertensives"
+      ],
+      "baseline": {
+        "hr": 72,
+        "spo2": 97,
+        "systolic_bp": 110,
+        "activity_level": "low"
+      },
+      "preferred_scenarios": [
+        "SCN009_IATROGENIC_FALL_CONFUSION_AFTER_MED_CHANGE",
+        "SCN011_ACUTE_CONFUSION_DELIRIUM"
+      ]
+    },
+    {
+      "id": "ARCH_NUTRITION",
+      "name": "Fragilité / dénutrition",
+      "risk_factors": [
+        "age_70_plus",
+        "dependency",
+        "poor_dentition",
+        "depression",
+        "meal_intake_drop"
+      ],
+      "baseline": {
+        "hr": 76,
+        "spo2": 96,
+        "weight": 52,
+        "bmi": 21.5,
+        "activity_level": "low"
+      },
+      "preferred_scenarios": [
+        "SCN014_DENUTRITION_FRAILTY_DECLINE",
+        "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+      ]
+    },
+    {
+      "id": "ARCH_STROKE_RISK",
+      "name": "Risque AVC/AIT",
+      "risk_factors": [
+        "atrial_fibrillation",
+        "hypertension",
+        "diabetes",
+        "previous_stroke_TIA"
+      ],
+      "baseline": {
+        "hr": 88,
+        "spo2": 96,
+        "systolic_bp": 145
+      },
+      "preferred_scenarios": [
+        "SCN012_STROKE_FAST_SUSPECTED"
+      ]
+    },
+    {
+      "id": "ARCH_PAIN_RETENTION",
+      "name": "Douleur non verbalisée / rétention",
+      "risk_factors": [
+        "cognitive_decline",
+        "communication_disorder",
+        "anticholinergics",
+        "opioids",
+        "constipation_history"
+      ],
+      "baseline": {
+        "hr": 80,
+        "spo2": 97,
+        "temperature": 36.8,
+        "activity_level": "variable"
+      },
+      "preferred_scenarios": [
+        "SCN010_PAIN_URINARY_RETENTION_FECALOMA_AGITATION"
+      ]
+    }
+  ]
+}

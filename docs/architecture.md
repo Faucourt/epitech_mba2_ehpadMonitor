@@ -1,166 +1,255 @@
-# Documentation technique — EHPAD Monitor
+# Architecture technique — EHPAD Monitor
 
-## Alignement plan
+## Vue d'ensemble
 
-Le projet couvre 25 résidents sur 2 niveaux (RDC chambres 101-108, 1er étage chambres 201-220).
-Le simulateur publie le mapping MQTT `ehpad/{zone}/{resident_id}/{type_capteur}` pour `vitals`, `motion`, `bp_temp`, `sos`, `ambient/env` et `door/ambient`.
-
-## 1. Flux de données
-
-```
+```text
 [Simulateur Python]
-  ResidentSimulator.tick() → état JSON
-    └─ publish MQTT → ehpad/residents/R001/vitals  (QoS 1)
-                    → ehpad/residents/R001/critical (QoS 2, si chute/SOS)
-
-[Backend FastAPI — thread MQTT]
-  on_message() → _handle_vitals(state)
-    ├─ ml_predictor.predict() → ml_risk (float 0-1)
-    ├─ redis.setex(resident:R001:state, 30s, json)
-    ├─ alert_engine.evaluate(state) → Alert|None
-    │     └─ règles vitaux → niveau 1-5
-    ├─ write_influx(state) → séries temporelles
-    └─ ws_manager.broadcast() → dashboard WebSocket
-
-[Thread d'escalade — toutes les 15s]
-  alert_engine.check_escalations()
-    └─ alertes non acquittées depuis X min → niveau+1
-
-[Rapport LLM — à la demande]
-  GET /api/llm/report/{id}
-    └─ appel Ollama local (Meditron:7b) → rapport médical en français
+        |  MQTT QoS 0/1/2
+        v
+[Mosquitto]
+        |
+        v
+[Backend FastAPI]  <-->  [Redis]
+        |            <-->  [InfluxDB]
+        |
+        +---> [Dashboard soignant]
+        +---> [Espace famille]
+        +---> [Admin famille]
+        +---> [LLM Meditron via Ollama]
 ```
 
-## 2. Modèle de données
+---
 
-### Message MQTT vitaux
-```json
-{
-  "resident_id": "R001",
-  "name": "Marguerite Dupont",
-  "room": "101",
-  "timestamp": "2026-03-15T14:32:01Z",
-  "vitals": {
-    "heart_rate": 82,
-    "spo2": 94.2,
-    "blood_pressure_sys": 148,
-    "temperature": 37.1
-  },
-  "movement": {
-    "accel_magnitude": 0.42,
-    "is_fall_detected": false,
-    "last_movement_ago_s": 120,
-    "is_sleeping": false
-  },
-  "location": "chambre_101",
-  "scenario_active": null,
-  "caregiver": "soignant_A"
-}
+## 1. Simulateur (`simulator/main.py`)
+
+### Residents
+
+25 residents sur 2 niveaux avec profils cliniques complets :
+pathologies, mobilite, facteur de risque, soignant referent, code famille, archetype KB.
+
+### Rythme circadien
+
+Chaque constante suit un cycle physiologique 24h modelise par des gaussiennes :
+
+- BP : +12 mmHg a 8h, +6 mmHg a 14h, -10 mmHg a 4h
+- HR : -8 bpm a 4h, +5 bpm a midi, +4 bpm a 18h30
+- Temp : -0.4 C a 4h, +0.4 C a 17h
+- SpO2 : cycles d'apnee du sommeil si risque > 0.4
+
+### Scenarios (18)
+
+Declenchement par probabilite x ponderation temporelle :
+
+| Periode | Poids chute |
+|---|---|
+| lever_toilette | 2.5x |
+| coucher | 2.2x |
+| trajet_dejeuner / diner | 2.0x |
+| nuit | 1.8x |
+| sieste | 0.3x |
+
+Scenarios : hypoxie, chute, fugue, malaise_repas, hypotension, infection, deshydratation, AVC suspect...
+
+### MQTT
+
+| Topic | QoS | Contenu |
+|---|---|---|
+| `ehpad/resident/{id}/vitals` | 1 | FC, SpO2, PA, Temp, FR |
+| `ehpad/resident/{id}/fall` | 2 | Impact g, position |
+| `ehpad/resident/{id}/sos` | 2 | Declenchement manuel |
+| `ehpad/zone/{zone}/ambient` | 0 | Temp, humidite, CO2, mouvement |
+
+---
+
+## 2. Backend (`backend/main.py`)
+
+Framework : FastAPI + Pydantic + asyncio
+
+### Moteur d'alertes (`alert_engine.py`)
+
+5 niveaux avec escalade automatique :
+
+| Niveau | Nom | Declencheurs principaux | Escalade |
+|---|---|---|---|
+| 1 | Information | Inactivite inhabituelle 30 min | — |
+| 2 | Attention | SpO2 < 95%, FC > 100, NEWS2 >= 3 | → L3 en 10 min |
+| 3 | Alerte | SpO2 < 93%, FC > 120, chute legere, NEWS2 >= 5 | → L4 en 5 min |
+| 4 | Urgence | Chute + immobilite, SpO2 < 88%, NEWS2 >= 7 | → L5 en 3 min |
+| 5 | Danger vital | SpO2 < 85% + FC > 130, PA critique, NEWS2 >= 9 | — |
+
+**Mode nuit** : seuils SpO2 assouplis pendant le sommeil (SpO2 L2=92% vs 95% le jour).
+
+### Score NEWS2
+
+National Early Warning Score 2 (Royal College of Physicians, 2017).
+6 parametres : FC, FR, SpO2, PA systolique, temperature, conscience/confusion.
+Ajoute comme condition OR sur les niveaux d'alerte — ne remplace pas les regles directes.
+
+### Modele ML (`ml_model.py`)
+
+Algorithme : `GradientBoostingClassifier` (scikit-learn)
+
+Justification du choix vs alternatives :
+
+| Algorithme | Avantage | Inconvenient retenu |
+|---|---|---|
+| GradientBoosting | Robuste, interpretable, performant sur tabular | Plus lent a entrainer |
+| Random Forest | Stable | Moins performant sur desequilibre de classes |
+| SVM | Bon en haute dimension | Peu interpretable, lent sur gros volumes |
+| Reseau de neurones | Tres puissant | Necessite beaucoup de donnees reelles |
+| Logistic Regression | Simple | Insuffisant pour interactions non lineaires |
+
+9 features : FC, SpO2, PA, Temp, inactivite, delta FC 10 min, delta SpO2 10 min, age_factor, risk_factor.
+
+Metriques medicales exposees :
+- **Sensibilite** (recall malaise) : minimise les malaises manques
+- **Specificite** (recall normal) : minimise les fausses alarmes (fatigue soignants)
+- AUC-ROC, F1, matrice de confusion, importance des features
+
+### Analyse de routine (`_track_routine`)
+
+Par resident et par periode de la journee, stocke les 100 dernieres valeurs de FC dans Redis.
+Alerte si deviation > 2.5 sigma (et ecart-type > 2 bpm pour eviter les faux positifs).
+Cle Redis : `routine:{resident_id}:{time_of_day}`, TTL 7 jours.
+
+### Base de connaissances clinique (`kb_loader.py`)
+
+Fichier : `backend/kb/ehpad_watch_kb.json`
+
+| Section | Contenu |
+|---|---|
+| sources | 16 references (HAS, RCP, WHO, CDC, Ameli, VIDAL, NCBI, HL7/FHIR) |
+| scenarios | 15 scenarios cliniques avec regles de declenchement et signaux precoces |
+| archetypes | 8 profils residents avec baseline et scenarios preferes |
+| medication_risk_library | 13 classes medicamenteuses avec facteurs de boost |
+| family_interface_policy | Champs interdits pour l'espace famille |
+| nursing_transmission | Format SBAR pour les transmissions IDE |
+
+Chargement unique au demarrage (`@lru_cache`).
+Chaque resident est enrichi automatiquement : `archetype_id`, `likely_medications`, `preferred_scenarios`.
+
+### Authentification famille (`auth.py`)
+
+- Comptes stockes dans Redis : `famille:account:{username}`
+- Mot de passe hache : SHA-256 + sel aleatoire (16 octets)
+- Token de session : `secrets.token_urlsafe(32)`, TTL 24h dans Redis
+- Cle token : `famille:token:{token}`
+- 25 comptes demo crees au demarrage (`seed_demo_accounts`)
+- Admin protege par token env `FAMILLE_ADMIN_TOKEN`
+
+En production : remplacer SHA-256 par bcrypt (cost=12), ajouter rate limiting (5 req/min sur /login), HTTPS obligatoire.
+
+### Rapport LLM (`/api/llm/report/{id}`)
+
+Modele : **Meditron:7b** via Ollama (local, `http://host.docker.internal:11434`).
+Meditron est un LLM open-source fine-tune sur PubMed et guidelines medicales (EPFL, 2023).
+Aucune donnee ne quitte la machine — conformite RGPD / HDS.
+Repli automatique si Ollama indisponible.
+
+---
+
+## 3. Persistance
+
+### Redis
+
+| Cle | Type | Contenu | TTL |
+|---|---|---|---|
+| `resident:{id}:state` | String JSON | Etat courant complet | — |
+| `alert:{id}:active` | String JSON | Alerte active | — |
+| `routine:{id}:{period}` | List | 100 derniers HR | 7 jours |
+| `famille:account:{username}` | String JSON | Hash + sel + resident_id | — |
+| `famille:token:{token}` | String JSON | resident_id + username | 24h |
+
+### InfluxDB
+
+Historique des constantes vitales echantillonne toutes les 5 secondes.
+Bucket : `residents`, organisation : `ehpad`.
+
+---
+
+## 4. Dashboard (`dashboard/public/`)
+
+| Fichier | Description |
+|---|---|
+| `index.html` | Dashboard soignant : grille, detail, plan SVG, vue 3D, alertes, transmissions |
+| `famille.html` | Espace famille : login par compte, vue unique resident sans donnees medicales |
+| `admin_famille.html` | Administration : creation/suppression comptes famille |
+
+Transport : WebSocket (`/ws`) pour les mises a jour temps reel.
+Acces famille : `POST /api/famille/login` → token → `GET /api/famille/{id}` avec `Authorization: Bearer`.
+
+---
+
+## 5. Structure des fichiers
+
+```text
+.
+├── docker-compose.yml
+├── .gitignore
+├── README.md
+├── backend/
+│   ├── main.py                  # FastAPI — routes, WebSocket, MQTT, auth, KB
+│   ├── alert_engine.py          # Alertes 5 niveaux + NEWS2 + mode nuit
+│   ├── ml_model.py              # GradientBoost + metriques medicales
+│   ├── auth.py                  # Comptes famille (SHA-256+sel, tokens Redis)
+│   ├── kb_loader.py             # Chargeur KB clinique v2 (lru_cache)
+│   ├── resident_profiles.py     # 25 profils + enrichissement KB auto
+│   ├── ws_manager.py            # Gestionnaire WebSocket broadcast
+│   ├── a2a_agents.py            # Agents A2A (predictions aggregees)
+│   ├── kb/
+│   │   └── ehpad_watch_kb.json  # KB clinique v2 (15 scenarios, 8 archetypes)
+│   └── requirements.txt
+├── simulator/
+│   ├── main.py                  # 25 residents, rythme circadien, 18 scenarios
+│   ├── profiles.py              # Profils physiologiques
+│   └── requirements.txt
+├── dashboard/
+│   ├── public/
+│   │   ├── index.html           # Dashboard soignant
+│   │   ├── famille.html         # Espace famille
+│   │   └── admin_famille.html   # Admin comptes famille
+│   ├── server.js
+│   └── package.json
+├── mosquitto/
+│   └── config/mosquitto.conf
+├── docs/
+│   ├── architecture.md          # Ce fichier
+│   ├── demo.md                  # Guide demo oral (10 etapes)
+│   └── comptes_famille_demo.md  # Identifiants demo famille (25 comptes)
+└── tests/
+    └── test_ehpad.py            # 60+ tests pytest
 ```
 
-### Alerte (Redis + WebSocket)
-```json
-{
-  "id": "ALT-1710507121-0003",
-  "resident_id": "R001",
-  "resident_name": "Marguerite Dupont",
-  "room": "101",
-  "caregiver": "soignant_A",
-  "level": 3,
-  "level_name": "Alerte",
-  "color": "orange",
-  "reason": "SpO2 < 93% — SpO2=91.5%, FC=118, PA=148",
-  "trigger_data": { "vitals": {}, "ml_risk": 0.72 },
-  "created_at": "2026-03-15T14:32:01Z",
-  "acknowledged": false,
-  "escalated_from": 2,
-  "resolved": false,
-  "time_since_s": 45
-}
+---
+
+## 6. Flux de donnees complet
+
+```text
+1. Simulateur publie vitaux toutes les 2s (MQTT QoS 1)
+2. Backend recoit via paho-mqtt (thread dedie)
+3. Etat mis a jour dans Redis
+4. Moteur d'alertes evalue :
+   a. Regles directes (SpO2, FC, chute...)
+   b. Score NEWS2 (6 parametres)
+   c. Prediction ML (toutes les 5 min)
+   d. Deviation de routine (sigma Redis)
+   e. Mode nuit (seuils adaptes)
+5. Si alerte : stockage Redis + broadcast WebSocket
+6. Si non acquittee : escalade automatique apres delai
+7. Dashboard rafraichi en temps reel via WebSocket
+8. Espace famille : polling toutes les 30s via API REST
 ```
 
-## 3. Modèle ML
+---
 
-### Choix algorithmique — pourquoi GradientBoostingClassifier
+## 7. Scalabilite
 
-| Critère | GradientBoosting | Random Forest | SVM | LSTM |
-|---------|-----------------|---------------|-----|------|
-| Données tabulaires hétérogènes | Excellent | Bon | Sensible à l'échelle | Nécessite séquences longues |
-| Robustesse aux outliers vitaux | Oui (résidus) | Oui | Non | Non |
-| Interprétabilité (feature importance) | Native | Native | Limitée | Boîte noire |
-| Inférence <1ms (25 résidents/s) | Oui | Oui | Oui | GPU recommandé |
-| Gestion déséquilibre classes | Via subsample | Oui | Partiel | Partiel |
+Capacite theorique actuelle :
 
-**Conclusion** : GradientBoosting est le meilleur compromis pour des données vitales tabulaires avec 9 features, une inférence temps réel à 25 prédictions/s, et une nécessité d'interprétabilité médicale (feature importance compréhensible par les soignants).
+```
+25 residents x 6 constantes x 1 mesure/seconde = 150 messages/seconde
+```
 
-### Features (9 dimensions)
+Endpoint de suivi : `GET /api/ops/scalability`
 
-| Feature | Description | Plage typique |
-|---------|-------------|---------------|
-| heart_rate | FC en bpm | 40-180 |
-| spo2 | Saturation O2 % | 70-100 |
-| blood_pressure_sys | PA systolique mmHg | 60-220 |
-| temperature | T° corporelle °C | 35-41 |
-| last_movement_ago_s | Inactivité en secondes | 0-7200 |
-| hr_trend_10m | Tendance FC sur 10 mesures (polyfit slope) | -10 à +10 |
-| spo2_trend_10m | Tendance SpO2 sur 10 mesures | -2 à +2 |
-| age_factor | (age-60)/40 normalisé | 0-1 |
-| risk_factor | Risque profil pathologies | 0-1 |
-
-### Entraînement et métriques
-
-- 5000 exemples synthétiques (seed=42, reproductible), split 80/20
-- Pipeline : StandardScaler → GradientBoostingClassifier (100 estimateurs, lr=0.1, max_depth=4)
-- **Split aléatoire** : acceptable sur données i.i.d. synthétiques. Sur données réelles, utiliser un **split temporel** (ex. : J-90→J-7 pour train, J-7→J pour test) afin d'éviter le data leakage.
-- Métriques exposées via `GET /api/ml/metrics` :
-  - **Sensibilité** (recall classe 1) : priorité absolue — un faux négatif = malaise non détecté
-  - **Spécificité** (recall classe 0) : évite la fatigue des soignants par sur-alarmes
-  - Accuracy, AUC-ROC, F1, precision, matrice de confusion complète
-  - **Feature importance** : quelles variables influencent le plus la prédiction
-- Persisté dans `/app/ml_model.joblib` (volume Docker)
-
-## 4. Redis — schéma des clés
-
-| Clé | TTL | Contenu |
-|-----|-----|---------|
-| `resident:{id}:state` | 30s | JSON état complet |
-| `residents:all` | hash | Map id→JSON résumé |
-| `alert:{id}:active` | 24h | JSON alerte active |
-| `alerts:history` | liste | 1000 dernières alertes |
-| `zone:{id}:state` | 30s | JSON zone ambiante |
-| `zones:all` | hash | Map id→JSON zone |
-| `ehpad:summary` | 5s | JSON résumé global |
-| `alerts:elopement` | 1h | Liste alertes fugue |
-
-## 5. Topics MQTT et stratégie QoS
-
-| Topic | QoS | Justification | Fréquence | Publisher |
-|-------|-----|---------------|-----------|-----------|
-| `ehpad/residents/+/vitals` | 1 | Livraison garantie au moins une fois | 1/s/résident | simulator |
-| `ehpad/residents/+/critical` | 2 | Chute détectée — exactement une fois, critique | À l'événement | simulator |
-| `ehpad/{zone}/{id}/sos` | 2 | SOS appuyé — exactement une fois, critique | À l'événement | simulator |
-| `ehpad/residents/+/location` | 0 | Position approximative, perte acceptable | 1/s/résident | simulator |
-| `ehpad/zones/+/ambient` | 0 | Données environnementales, perte acceptable | 1/5s/zone | simulator |
-| `ehpad/summary` | 0 | Agrégat global non critique | 1/s | simulator |
-
-**Rationale QoS** :
-- **QoS 0** (at most once) : données continues où une perte occasionnelle est tolérée (position, ambiant).
-- **QoS 1** (at least once) : vitaux — on préfère un doublon à une perte.
-- **QoS 2** (exactly once) : événements critiques irréversibles (chute, SOS) — aucune perte, aucun doublon.
-
-## 6. Scalabilité
-
-- **25 résidents × 3 topics × 1/s = 75 msg/s** → Mosquitto gère >100k msg/s
-- Redis TTL évite l'accumulation : état courant toujours < 1 MB
-- WebSocket broadcast unique (1 connexion par dashboard client)
-- InfluxDB optimisé séries temporelles (compression, rétention configurable)
-- Thread MQTT non-bloquant, escalade en thread séparé (toutes les 15s)
-- Prédiction ML : ~0.5ms/inférence → 25 prédictions/s sans impact CPU
-
-## 7. Rapport LLM (C2)
-
-- Modèle : **Meditron:7b** via Ollama (local, no cloud)
-- Fine-tuné sur PubMed + guidelines médicales → compréhension native des constantes vitales
-- Aucune donnée patient ne quitte le système → **conformité RGPD**
-- Fallback automatique si Ollama indisponible (résumé textuel)
-- Endpoint : `GET /api/llm/report/{resident_id}`
+Pour 50 residents industriels : MQTT cluster, Redis Cluster, InfluxDB retention policies, ML inference asynchrone, WebSocket sharding.

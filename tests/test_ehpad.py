@@ -66,60 +66,70 @@ def make_state(hr=72, spo2=96, bp=130, temp=36.7, last_mv=60, is_fall=False,
     }
 
 
+def evaluate_until_alert(engine, state, attempts=5):
+    """Le moteur anti-bruit attend une persistance avant les alertes non urgentes."""
+    alert = None
+    for _ in range(attempts):
+        alert = engine.evaluate(state)
+        if alert is not None:
+            return alert
+    return alert
+
+
 class TestAlertEngine:
 
     def test_no_alert_normal_state(self):
         engine = make_alert_engine()
         state = make_state()
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         assert alert is None, "Pas d'alerte pour constantes normales"
 
     def test_level_2_attention_spo2(self):
         engine = make_alert_engine()
-        state = make_state(spo2=94)  # < 95 → niveau 2
-        alert = engine.evaluate(state)
+        state = make_state(spo2=93)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level == 2, f"Attendu niveau 2, obtenu {alert.level}"
 
     def test_level_3_alert_spo2(self):
         engine = make_alert_engine()
-        state = make_state(spo2=92)  # < 93 → niveau 3
-        alert = engine.evaluate(state)
+        state = make_state(spo2=91)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level == 3, f"Attendu niveau 3, obtenu {alert.level}"
 
     def test_level_4_urgence_fall(self):
         engine = make_alert_engine()
         state = make_state(is_fall=True)
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level == 4, "Chute doit déclencher niveau 4"
 
     def test_level_5_danger_vital(self):
         engine = make_alert_engine()
         state = make_state(spo2=84, hr=135)  # SpO2 < 85 ET FC > 130 → niveau 5
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level == 5, f"Attendu niveau 5, obtenu {alert.level}"
 
     def test_level_4_critical_hr(self):
         engine = make_alert_engine()
         state = make_state(hr=142)  # > 140 → niveau 4
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level == 4
 
     def test_ml_risk_triggers_alert(self):
         engine = make_alert_engine()
-        state = make_state(ml_risk=0.8)  # > 0.75 → niveau 3
-        alert = engine.evaluate(state)
+        state = make_state(ml_risk=0.86, spo2=93)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level >= 3
 
     def test_acknowledge_alert(self):
         engine = make_alert_engine()
-        state = make_state(spo2=92)
-        engine.evaluate(state)
+        state = make_state(spo2=91)
+        evaluate_until_alert(engine, state)
         ok = engine.acknowledge("R001", "soignant_test")
         assert ok is True
 
@@ -130,8 +140,8 @@ class TestAlertEngine:
 
     def test_escalation_timer(self):
         engine = make_alert_engine()
-        state = make_state(spo2=94)  # niveau 2
-        alert = engine.evaluate(state)
+        state = make_state(spo2=93)
+        alert = evaluate_until_alert(engine, state)
         assert alert.level == 2
 
         # Simuler que l'alerte date de plus de 600s
@@ -146,16 +156,16 @@ class TestAlertEngine:
 
     def test_get_all_active_returns_list(self):
         engine = make_alert_engine()
-        state = make_state(spo2=92)
-        engine.evaluate(state)
+        state = make_state(spo2=91)
+        evaluate_until_alert(engine, state)
         active = engine.get_all_active()
         assert isinstance(active, list)
         assert len(active) == 1
 
     def test_alert_has_required_fields(self):
         engine = make_alert_engine()
-        state = make_state(spo2=92)
-        alert = engine.evaluate(state)
+        state = make_state(spo2=91)
+        alert = evaluate_until_alert(engine, state)
         d = alert.to_dict()
         for field in ['id', 'resident_id', 'level', 'reason', 'created_at', 'acknowledged']:
             assert field in d, f"Champ manquant: {field}"
@@ -163,7 +173,7 @@ class TestAlertEngine:
     def test_inactivity_level_1(self):
         engine = make_alert_engine()
         state = make_state(last_mv=2000)  # > 1800s → niveau 1
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         # Niveau 1 Info, ou None selon le seuil exact
         if alert:
             assert alert.level <= 2
@@ -171,7 +181,7 @@ class TestAlertEngine:
     def test_fever_triggers_alert(self):
         engine = make_alert_engine()
         state = make_state(temp=40.1)  # > 39.5 → niveau 3+
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level >= 3
 
@@ -306,8 +316,12 @@ class TestSimulator:
             "risk_factor": 0.1, "caregiver": "soignant_A"
         }
         sim = ResidentSimulator(profile)
-        sim.accel_magnitude = 10.0  # Chute simulée
-        state = sim.tick()
+        sim.start_scenario("chute", duration=30)
+        state = None
+        for _ in range(4):
+            state = sim.tick()
+            if state["movement"]["is_fall_detected"]:
+                break
         assert state["movement"]["is_fall_detected"] is True
 
 
@@ -340,7 +354,7 @@ class TestNEWSScore:
     def test_news_score_in_alert_trigger_data(self):
         engine = make_alert_engine()
         state = make_state(spo2=91, hr=115, rr=22)
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert "news" in alert.trigger_data
         assert "score" in alert.trigger_data["news"]
@@ -357,7 +371,7 @@ class TestNightMode:
         engine = make_alert_engine()
         state = make_state(spo2=93, time_of_day="nuit")
         state["movement"]["is_sleeping"] = True
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         # Niveau 3 de jour (spo2 < 93), mais pas la nuit (seuil = 89)
         if alert:
             assert alert.level < 3, f"Nuit: spo2=93 ne doit pas déclencher niveau 3, obtenu {alert.level}"
@@ -367,7 +381,7 @@ class TestNightMode:
         engine = make_alert_engine()
         state = make_state(last_mv=2000, time_of_day="nuit")
         state["movement"]["is_sleeping"] = True
-        alert = engine.evaluate(state)
+        alert = evaluate_until_alert(engine, state)
         # Niveau 1 ne doit pas déclencher si le résident dort
         assert alert is None or alert.level > 1
 
@@ -389,11 +403,14 @@ class TestAPINewEndpoints:
     def test_api_famille_requires_code(self):
         with get_api_client() as client:
             r = client.get("/api/famille/R001")
-        assert r.status_code == 403
+        assert r.status_code == 401
 
-    def test_api_famille_valid_code(self):
+    def test_api_famille_login_then_view(self):
         with get_api_client() as client:
-            r = client.get("/api/famille/R001?code=FAMILLE")
+            login = client.post("/api/famille/login", json={"username": "dupont", "password": "dupont101"})
+            assert login.status_code == 200
+            token = login.json()["token"]
+            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
         assert r.status_code == 200
         data = r.json()
         assert "name" in data
@@ -410,6 +427,329 @@ class TestAPINewEndpoints:
         assert "sensitivity" in metrics, "Sensibilité manquante dans les métriques ML"
         assert "specificity" in metrics, "Spécificité manquante dans les métriques ML"
         assert "feature_importance" in metrics
+
+
+    def test_api_project_readiness(self):
+        with get_api_client() as client:
+            r = client.get("/api/project/readiness")
+        assert r.status_code == 200
+        data = r.json()
+        assert "readiness" in data
+        assert "resident_profile_counts" in data
+
+    def test_api_life_plan(self):
+        with get_api_client() as client:
+            r = client.get("/api/scenarios/life-plan")
+        assert r.status_code == 200
+        data = r.json()
+        assert "day_template" in data
+        assert "fugue_hors_ehpad" in data["scenario_types"]
+
+    def test_api_sensors_health(self):
+        with get_api_client() as client:
+            r = client.get("/api/sensors/health")
+        assert r.status_code == 200
+        data = r.json()
+        assert "count" in data
+        assert "sensors" in data
+
+    def test_api_scalability_metrics(self):
+        with get_api_client() as client:
+            r = client.get("/api/ops/scalability")
+        assert r.status_code == 200
+        data = r.json()
+        assert "mqtt" in data
+        assert data["mqtt"]["target_20_residents_6_constants_s"] == 120
+
+    def test_api_trigger_validation_scenario(self):
+        with get_api_client() as client:
+            r = client.post("/api/simulator/scenario?resident_id=R005&scenario=jardin")
+        assert r.status_code == 200
+        assert r.json()["ok"] is True
+
+    def test_api_staff_roster(self):
+        with get_api_client() as client:
+            r = client.get("/api/staff")
+        assert r.status_code == 200
+        data = r.json()
+        assert data["count"] >= 3
+        assert "routing_rules" in data
+        assert any(s["id"] == "soignant_A" for s in data["staff"])
+
+    def test_api_staff_status_update(self):
+        with get_api_client() as client:
+            r = client.post("/api/staff/soignant_A/status?status=occupe")
+        assert r.status_code == 200
+        data = r.json()
+        assert data["ok"] is True
+        assert data["staff"]["status"] == "occupe"
+
+    def test_api_assign_caregiver(self):
+        with get_api_client() as client:
+            r = client.post("/api/residents/R005/assign-caregiver?caregiver_id=soignant_C")
+        assert r.status_code == 200
+        data = r.json()
+        assert data["ok"] is True
+        assert data["caregiver_id"] == "soignant_C"
+
+    def test_api_notification_traceability(self):
+        payload = {
+            "caregiver_id": "soignant_C",
+            "action": "seen",
+            "notification_key": "test-trace-r005",
+            "resident_id": "R005",
+            "resident_name": "Yvette Martin",
+            "level": 3,
+            "reason": "test notification",
+            "location": "couloir principal",
+        }
+        with get_api_client() as client:
+            r = client.post("/api/notifications/action", json=payload)
+            assert r.status_code == 200
+            data = r.json()
+            assert data["ok"] is True
+            assert data["trace"]["action"] == "vue"
+
+            audit = client.get("/api/notifications/audit?caregiver_id=soignant_C&limit=5")
+            assert audit.status_code == 200
+            rows = audit.json()["audit"]
+            assert any(row["notification_key"] == "test-trace-r005" for row in rows)
+
+
+# ============================================================
+# Tests authentification famille (C3)
+# ============================================================
+
+# Comptes demo attendus apres seed — reference pour tous les tests famille
+FAMILLE_DEMO_ACCOUNTS = [
+    ("dupont",    "dupont101",    "R001"),
+    ("moreau",    "moreau102",    "R002"),
+    ("bernard",   "bernard103",   "R003"),
+    ("leroy",     "leroy104",     "R004"),
+    ("martin",    "martin105",    "R005"),
+    ("petit",     "petit106",     "R006"),
+    ("durand",    "durand107",    "R007"),
+    ("thomas",    "thomas108",    "R008"),
+    ("robert",    "robert201",    "R009"),
+    ("richard",   "richard202",   "R010"),
+    ("simon",     "simon203",     "R011"),
+    ("michel",    "michel204",    "R012"),
+    ("lefebvre",  "lefebvre208",  "R013"),
+    ("leblanc",   "leblanc209",   "R014"),
+    ("fontaine",  "fontaine210",  "R015"),
+    ("rousseau",  "rousseau211",  "R016"),
+    ("morel",     "morel212",     "R017"),
+    ("garnier",   "garnier213",   "R018"),
+    ("chevalier", "chevalier214", "R019"),
+    ("mercier",   "mercier215",   "R020"),
+    ("blanc",     "blanc216",     "R021"),
+    ("caron",     "caron217",     "R022"),
+    ("fournier",  "fournier218",  "R023"),
+    ("girard",    "girard219",    "R024"),
+    ("perrin",    "perrin220",    "R025"),
+]
+
+
+class _FakeRedis:
+    """Redis minimaliste en memoire pour les tests unitaires."""
+    def __init__(self):
+        self._d = {}
+
+    def get(self, k):
+        return self._d.get(k)
+
+    def set(self, k, v):
+        self._d[k] = v
+
+    def setex(self, k, ttl, v):
+        self._d[k] = v
+
+    def exists(self, k):
+        return int(k in self._d)
+
+    def delete(self, k):
+        removed = k in self._d
+        self._d.pop(k, None)
+        return int(removed)
+
+    def keys(self, pattern):
+        import fnmatch
+        return [x for x in self._d if fnmatch.fnmatch(x, pattern)]
+
+
+class TestFamilleAuth:
+    """Tests unitaires sur auth.py — pas d'API necessaire."""
+
+    def setup_method(self):
+        import auth
+        self.auth = auth
+        self.rc = _FakeRedis()
+
+    def test_create_account_ok(self):
+        ok = self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        assert ok is True
+
+    def test_create_account_duplicate(self):
+        self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        ok = self.auth.create_account(self.rc, "testuser", "autremot", "R002")
+        assert ok is False
+
+    def test_authenticate_valid(self):
+        self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        result = self.auth.authenticate(self.rc, "testuser", "motdepasse")
+        assert result is not None
+        token, rid = result
+        assert rid == "R001"
+        assert len(token) > 20
+
+    def test_authenticate_wrong_password(self):
+        self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        result = self.auth.authenticate(self.rc, "testuser", "mauvais")
+        assert result is None
+
+    def test_authenticate_unknown_user(self):
+        result = self.auth.authenticate(self.rc, "inconnu", "n'importe")
+        assert result is None
+
+    def test_token_validation(self):
+        self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        token, _ = self.auth.authenticate(self.rc, "testuser", "motdepasse")
+        session = self.auth.validate_token(self.rc, token)
+        assert session is not None
+        assert session["resident_id"] == "R001"
+        assert session["username"] == "testuser"
+
+    def test_token_invalid_after_revoke(self):
+        self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        token, _ = self.auth.authenticate(self.rc, "testuser", "motdepasse")
+        self.auth.revoke_token(self.rc, token)
+        assert self.auth.validate_token(self.rc, token) is None
+
+    def test_delete_account(self):
+        self.auth.create_account(self.rc, "testuser", "motdepasse", "R001")
+        assert self.auth.delete_account(self.rc, "testuser") is True
+        assert self.auth.authenticate(self.rc, "testuser", "motdepasse") is None
+
+    def test_password_is_not_stored_in_clear(self):
+        """Le mot de passe ne doit jamais apparaitre en clair dans Redis."""
+        self.auth.create_account(self.rc, "testuser", "motdepasse_secret", "R001")
+        stored = str(self.rc._d)
+        assert "motdepasse_secret" not in stored
+
+    def test_seed_creates_all_25_accounts(self):
+        from resident_profiles import RESIDENTS_LIST
+        self.auth.seed_demo_accounts(self.rc, RESIDENTS_LIST)
+        accounts = self.auth.list_accounts(self.rc)
+        assert len(accounts) == 25
+
+    @pytest.mark.parametrize("username,password,resident_id", FAMILLE_DEMO_ACCOUNTS)
+    def test_seed_account_credentials(self, username, password, resident_id):
+        """Verifie que chaque compte demo est utilisable avec les bons identifiants."""
+        from resident_profiles import RESIDENTS_LIST
+        self.auth.seed_demo_accounts(self.rc, RESIDENTS_LIST)
+        result = self.auth.authenticate(self.rc, username, password)
+        assert result is not None, f"Echec auth pour {username}/{password}"
+        token, rid = result
+        assert rid == resident_id, f"{username} devrait pointer vers {resident_id}, obtenu {rid}"
+
+    def test_username_case_insensitive(self):
+        self.auth.create_account(self.rc, "Dupont", "dupont101", "R001")
+        result = self.auth.authenticate(self.rc, "DUPONT", "dupont101")
+        assert result is not None
+
+    def test_wrong_resident_cannot_access_other(self):
+        """Un token R001 ne doit pas valider une session R002."""
+        self.auth.create_account(self.rc, "user1", "pass1", "R001")
+        self.auth.create_account(self.rc, "user2", "pass2", "R002")
+        token1, _ = self.auth.authenticate(self.rc, "user1", "pass1")
+        session = self.auth.validate_token(self.rc, token1)
+        assert session["resident_id"] != "R002"
+
+
+class TestFamilleAPI:
+    """Tests d'integration sur les endpoints famille — necessite l'API en cours."""
+
+    def _login(self, client, username, password):
+        r = client.post("/api/famille/login", json={"username": username, "password": password})
+        return r
+
+    def test_login_valid(self):
+        with get_api_client() as client:
+            r = self._login(client, "dupont", "dupont101")
+        assert r.status_code == 200
+        data = r.json()
+        assert "token" in data
+        assert data["resident_id"] == "R001"
+
+    def test_login_wrong_password(self):
+        with get_api_client() as client:
+            r = self._login(client, "dupont", "mauvais")
+        assert r.status_code == 401
+
+    def test_login_unknown_user(self):
+        with get_api_client() as client:
+            r = self._login(client, "inconnu", "motdepasse")
+        assert r.status_code == 401
+
+    def test_view_requires_token(self):
+        with get_api_client() as client:
+            r = client.get("/api/famille/R001")
+        assert r.status_code == 401
+
+    def test_view_correct_resident(self):
+        with get_api_client() as client:
+            login = self._login(client, "dupont", "dupont101")
+            token = login.json()["token"]
+            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
+        assert r.status_code == 200
+        data = r.json()
+        assert "name" in data
+        assert "general_status" in data
+        assert "heart_rate" not in data
+        assert "spo2" not in data
+
+    def test_view_wrong_resident_forbidden(self):
+        """dupont (R001) ne peut pas acceder a R002."""
+        with get_api_client() as client:
+            login = self._login(client, "dupont", "dupont101")
+            token = login.json()["token"]
+            r = client.get("/api/famille/R002", headers={"Authorization": f"Bearer {token}"})
+        assert r.status_code == 403
+
+    def test_logout_invalidates_token(self):
+        with get_api_client() as client:
+            login = self._login(client, "dupont", "dupont101")
+            token = login.json()["token"]
+            client.post("/api/famille/logout", headers={"Authorization": f"Bearer {token}"})
+            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
+        assert r.status_code == 401
+
+    def test_admin_list_accounts(self):
+        with get_api_client() as client:
+            r = client.get("/api/admin/famille/accounts",
+                           headers={"Authorization": "Bearer ADMIN_EHPAD_2024"})
+        assert r.status_code == 200
+        data = r.json()
+        assert len(data["accounts"]) >= 25
+
+    def test_admin_create_and_delete(self):
+        with get_api_client() as client:
+            r = client.post("/api/admin/famille/accounts",
+                            headers={"Authorization": "Bearer ADMIN_EHPAD_2024"},
+                            json={"username": "test_tmp", "password": "azerty99", "resident_id": "R010"})
+            assert r.status_code == 200
+            login = self._login(client, "test_tmp", "azerty99")
+            assert login.status_code == 200
+            client.delete("/api/admin/famille/accounts/test_tmp",
+                          headers={"Authorization": "Bearer ADMIN_EHPAD_2024"})
+            login2 = self._login(client, "test_tmp", "azerty99")
+            assert login2.status_code == 401
+
+    def test_admin_wrong_token_forbidden(self):
+        with get_api_client() as client:
+            r = client.get("/api/admin/famille/accounts",
+                           headers={"Authorization": "Bearer MAUVAIS_TOKEN"})
+        assert r.status_code == 403
 
 
 if __name__ == "__main__":

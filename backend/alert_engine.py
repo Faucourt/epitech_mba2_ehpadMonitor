@@ -168,6 +168,7 @@ class Alert:
     level: AlertLevel
     reason: str
     trigger_data: dict
+    notified_staff: list = field(default_factory=list)
     created_at: float = field(default_factory=time.time)
     acknowledged: bool = False
     acknowledged_at: Optional[float] = None
@@ -193,6 +194,7 @@ class Alert:
             "action": LEVEL_CONFIG[self.level]["action"],
             "reason": self.reason,
             "trigger_data": self.trigger_data,
+            "notified_staff": self.notified_staff,
             "created_at": datetime.fromtimestamp(self.created_at, timezone.utc).isoformat().replace("+00:00", "Z"),
             "acknowledged": self.acknowledged,
             "acknowledged_by": self.acknowledged_by,
@@ -212,6 +214,8 @@ class AlertEngine:
         self.alert_history: list[Alert] = []
         self._alert_counter = 0
         self._escalation_thread_running = False
+        self._pending: dict[str, dict] = {}
+        self._resolved_recently: dict[str, float] = {}
 
     def _new_id(self):
         self._alert_counter += 1
@@ -226,6 +230,34 @@ class AlertEngine:
         if alert.trigger_data is not None:
             alert.trigger_data["sensor_events"] = alert.sensor_events
         self._save_to_redis(alert)
+
+    def _notification_targets(self, state: dict, level: AlertLevel) -> list[dict]:
+        staff_directory = state.get("staff_directory") or {}
+        caregiver = state.get("caregiver", "")
+        targets = []
+
+        def add(staff_id: str, reason: str):
+            if not staff_id or staff_id in {t["id"] for t in targets}:
+                return
+            staff = staff_directory.get(staff_id, {})
+            targets.append({
+                "id": staff_id,
+                "name": staff.get("name", staff_id),
+                "role": staff.get("role"),
+                "status": staff.get("status"),
+                "sector": staff.get("sector"),
+                "reason": reason,
+            })
+
+        add("dashboard", "affichage central")
+        if level >= AlertLevel.ATTENTION:
+            add(caregiver, "soignant assigne")
+        if level >= AlertLevel.URGENCE:
+            for staff_id in ("soignant_A", "soignant_B", "soignant_C", "chef_garde"):
+                add(staff_id, "urgence tous soignants")
+        if level >= AlertLevel.DANGER_VITAL:
+            add("direction", "danger vital direction")
+        return targets
 
     def evaluate(self, state: dict) -> Optional[Alert]:
         """
@@ -254,6 +286,12 @@ class AlertEngine:
             "malaise_retour_repas",
         }
         current_zone = state.get("current_zone") or state.get("zone")
+        pathologies = set(state.get("pathologies") or state.get("profile", {}).get("pathologies") or [])
+        mobility = state.get("mobility") or state.get("profile", {}).get("mobility")
+        baseline = state.get("baseline") or {}
+        baseline_spo2 = float(baseline.get("spo2", 96) or 96)
+        cognitive_risk = bool(pathologies.intersection({"alzheimer", "dementia", "demence"}))
+        frail_risk = cognitive_risk or mobility == "tres_faible"
 
         # Mode nuit : seuils adaptés (désaturation nocturne = normale, inactivité = sommeil)
         is_night = state.get("time_of_day") in {"nuit", "coucher", "sieste"}
@@ -261,10 +299,20 @@ class AlertEngine:
         night_sleep = is_night or is_sleeping
 
         # Seuils SpO2 adaptés (plus tolérants la nuit — désaturation attendue)
-        spo2_thr_2 = 92 if night_sleep else 95
-        spo2_thr_3 = 89 if night_sleep else 93
+        spo2_thr_2 = 91 if night_sleep else 94
+        spo2_thr_3 = 88 if night_sleep else 92
         spo2_thr_4 = 84 if night_sleep else 88
         spo2_thr_5 = 82 if night_sleep else 85
+        if "bpco" in pathologies:
+            spo2_thr_2 = 88 if night_sleep else 90
+            spo2_thr_3 = 86 if night_sleep else 88
+            spo2_thr_4 = 83 if night_sleep else 85
+            spo2_thr_5 = 80 if night_sleep else 82
+        if baseline_spo2 < 95:
+            spo2_thr_2 = min(spo2_thr_2, baseline_spo2 - 1.5)
+            spo2_thr_3 = min(spo2_thr_3, baseline_spo2 - 2.5)
+            spo2_thr_4 = min(spo2_thr_4, baseline_spo2 - 4.0)
+            spo2_thr_5 = min(spo2_thr_5, baseline_spo2 - 6.0)
         # Inactivité : ignorer niveau 1 si le résident dort (comportement normal)
         immobility_thr_1 = 99999 if night_sleep else 1800
         immobility_thr_3 = 5400 if night_sleep else 3600
@@ -272,17 +320,36 @@ class AlertEngine:
         # Calcul NEWS2
         news = compute_news_score(v, m)
         news_score = news["score"]
+        if baseline_spo2 < 95 and spo2 >= baseline_spo2 - 2.5:
+            news_score = max(0, news_score - news["breakdown"].get("spo2", 0))
 
         level = None
         reason = ""
+        evidence = []
+        if current_zone:
+            evidence.append(f"zone={location_label(current_zone, state.get('room'))}")
+        if sensor_events:
+            active_sensors = [k for k, enabled in sensor_events.items() if enabled]
+            evidence.append(f"capteurs_actifs={','.join(active_sensors) if active_sensors else 'aucun'}")
+        if state.get("sensor_health"):
+            weak = [
+                s.get("id", s.get("type", "capteur"))
+                for s in state.get("sensor_health", [])
+                if s.get("status") == "offline" or float(s.get("quality_pct", 100)) < 65
+            ]
+            evidence.append(f"qualite_capteurs={'ok' if not weak else 'a_verifier:' + ','.join(weak[:3])}")
+        evidence.append(f"NEWS={news_score}")
+        evidence.append(f"ML={ml_risk:.0%}")
+        if state.get("routine_label"):
+            evidence.append(f"routine={state.get('routine_label')}")
 
         # --- NIVEAU 5 : Danger vital ---
-        if (last_mv > immobility_thr_3 and ((spo2 < spo2_thr_4) or (hr > 140) or (bp < 70))) or (spo2 < spo2_thr_5 and hr > 130) or (hr > 150) or (bp < 60) or (bp > 220) or news_score >= 9:
+        if (last_mv > immobility_thr_3 and ((spo2 < spo2_thr_4) or (hr > 140) or (bp < 70))) or (spo2 < spo2_thr_5 and hr > 130) or (hr > 150) or (bp < 60) or (bp > 240) or news_score >= 10:
             level = AlertLevel.DANGER_VITAL
             reason = f"Constantes critiques — SpO2={spo2}%, FC={hr}, PA={bp} [NEWS={news_score}]"
 
         # --- NIVEAU 4 : Urgence ---
-        elif current_zone == "hors_ehpad" or state.get("movement_scenario") == "fugue_hors_ehpad" or sos_pressed or is_fall or ambient_fall or (spo2 < spo2_thr_4) or (hr > 140) or (bp < 70) or (bp > 200) or (temp > 40.0) or (rr and rr > 30) or news_score >= 7:
+        elif current_zone == "hors_ehpad" or state.get("movement_scenario") == "fugue_hors_ehpad" or sos_pressed or is_fall or ambient_fall or (spo2 < spo2_thr_4) or (hr > 140) or (bp < 70) or (bp > 220) or (temp > 40.0) or (rr and rr > 30) or news_score >= 8:
             level = AlertLevel.URGENCE
             if current_zone == "hors_ehpad" or state.get("movement_scenario") == "fugue_hors_ehpad":
                 reason = "Fugue detectee: resident en sortie hors EHPAD"
@@ -296,9 +363,9 @@ class AlertEngine:
                 reason = f"Constantes dangereuses — SpO2={spo2}%, FC={hr}, PA={bp}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 3 : Alerte ---
-        elif (spo2 < spo2_thr_3) or (hr > 120) or (hr < 45) or (bp > 180) or (bp < 80) or (temp > 39.5) or (rr and rr > 24) or (last_mv > immobility_thr_3) or (ml_risk > 0.75) or news_score >= 5:
+        elif (spo2 < spo2_thr_3) or (hr > 125) or (hr < 45) or (bp > 200) or (bp < 80) or (temp > 39.3) or (rr and rr > 24) or (last_mv > immobility_thr_3) or (ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2)) or news_score >= 6:
             level = AlertLevel.ALERT
-            if ml_risk > 0.75:
+            if ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2):
                 reason = f"IA predit risque de malaise eleve ({ml_risk:.0%}) [NEWS={news_score}]"
             elif last_mv > immobility_thr_3:
                 reason = f"Absence de mouvement depuis {last_mv//60} min"
@@ -306,9 +373,9 @@ class AlertEngine:
                 reason = f"Constantes anormales — SpO2={spo2}%, FC={hr}, PA={bp}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 2 : Attention ---
-        elif (spo2 < spo2_thr_2) or (hr > 100) or (hr < 50) or (bp > 160) or (bp < 90) or (temp > 38.5) or routine_change or (ml_risk > 0.5) or news_score >= 3:
+        elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or (routine_change and frail_risk) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
             level = AlertLevel.ATTENTION
-            if ml_risk > 0.5:
+            if ml_risk > 0.65 and (news_score >= 2 or routine_change):
                 reason = f"IA detecte un risque modere ({ml_risk:.0%}) [NEWS={news_score}]"
             elif routine_change:
                 reason = f"Changement de routine detecte: {state.get('movement_scenario')}"
@@ -323,7 +390,11 @@ class AlertEngine:
         if level is None:
             # Résoudre l'alerte existante si les constantes sont revenues à la normale
             if rid in self.active_alerts:
-                self._resolve_alert(rid)
+                self._mark_stable_or_resolve(rid)
+            self._pending.pop(rid, None)
+            return None
+
+        if not self._passes_persistence(rid, level, reason):
             return None
 
         existing = self.active_alerts.get(rid)
@@ -349,7 +420,15 @@ class AlertEngine:
             level=level,
             reason=reason,
             trigger_data={"vitals": v, "movement": m, "ml_risk": ml_risk, "sensor_events": sensor_events, "news": news},
+            notified_staff=self._notification_targets(state, level),
         )
+        alert.trigger_data["evidence"] = evidence
+        alert.trigger_data["location_precision"] = {
+            "zone": alert.current_zone,
+            "label": alert.location_label,
+            "floor": alert.floor,
+            "position": alert.position,
+        }
         if existing:
             alert.escalated_from = int(existing.level)
 
@@ -371,10 +450,57 @@ class AlertEngine:
         except Exception as e:
             log.error(f"Redis save error: {e}")
 
+    def _passes_persistence(self, resident_id: str, level: AlertLevel, reason: str) -> bool:
+        """Filtre anti-bruit: seules les urgences sont immediates, le reste doit persister."""
+        if level >= AlertLevel.URGENCE:
+            self._pending.pop(resident_id, None)
+            return True
+
+        now = time.time()
+        cooldown = 240 if level == AlertLevel.ATTENTION else 180
+        if now - self._resolved_recently.get(resident_id, 0) < cooldown:
+            return False
+
+        family = reason.split("—", 1)[0].split(":", 1)[0].strip()
+        required = 2 if level == AlertLevel.ALERT else 4
+        pending = self._pending.get(resident_id)
+        if not pending or pending.get("level") != int(level) or pending.get("family") != family:
+            self._pending[resident_id] = {
+                "level": int(level),
+                "family": family,
+                "count": 1,
+                "first_seen": now,
+            }
+            return False
+
+        pending["count"] += 1
+        if pending["count"] < required and now - pending["first_seen"] < 20:
+            return False
+        self._pending.pop(resident_id, None)
+        return True
+
+    def _mark_stable_or_resolve(self, resident_id: str):
+        alert = self.active_alerts.get(resident_id)
+        if not alert:
+            return
+        now = time.time()
+        stable_since = getattr(self, "_stable_since", {})
+        if not hasattr(self, "_stable_since"):
+            self._stable_since = {}
+            stable_since = self._stable_since
+        if resident_id not in stable_since:
+            stable_since[resident_id] = now
+            return
+        stable_delay = 180 if alert.level <= AlertLevel.ATTENTION else 90
+        if now - stable_since[resident_id] >= stable_delay:
+            self._resolve_alert(resident_id)
+            stable_since.pop(resident_id, None)
+
     def _resolve_alert(self, resident_id: str):
         alert = self.active_alerts.pop(resident_id, None)
         if alert:
             alert.resolved = True
+            self._resolved_recently[resident_id] = time.time()
             log.info(f"Alerte résolue pour {resident_id}")
 
     def acknowledge(self, resident_id: str, by: str) -> bool:
@@ -405,6 +531,14 @@ class AlertEngine:
 
         for rid, old_alert, new_level in to_escalate:
             old_alert.resolved = True
+            escalated_targets = list(old_alert.notified_staff)
+            if new_level >= AlertLevel.URGENCE:
+                existing_ids = {t.get("id") for t in escalated_targets}
+                for staff_id in ("soignant_A", "soignant_B", "soignant_C", "chef_garde"):
+                    if staff_id not in existing_ids:
+                        escalated_targets.append({"id": staff_id, "name": staff_id, "reason": "escalade urgence"})
+            if new_level >= AlertLevel.DANGER_VITAL and "direction" not in {t.get("id") for t in escalated_targets}:
+                escalated_targets.append({"id": "direction", "name": "direction", "reason": "danger vital direction"})
             escalated = Alert(
                 id=self._new_id(),
                 resident_id=old_alert.resident_id,
@@ -419,6 +553,7 @@ class AlertEngine:
                 level=new_level,
                 reason=f"[ESCALADE] Non acquitté en temps → {old_alert.reason}",
                 trigger_data=old_alert.trigger_data,
+                notified_staff=escalated_targets,
                 escalated_from=int(old_alert.level),
             )
             self.active_alerts[rid] = escalated
@@ -431,4 +566,3 @@ class AlertEngine:
 
     def get_history(self, limit: int = 50) -> list:
         return [a.to_dict() for a in self.alert_history[-limit:]][::-1]
-

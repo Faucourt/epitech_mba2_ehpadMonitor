@@ -22,12 +22,14 @@ import redis
 import paho.mqtt.client as mqtt
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from alert_engine import AlertEngine
 from ws_manager import WebSocketManager
 from ml_model import MalaisePredictor
+from a2a_agents import agent_card, run_a2a_pipeline
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [BACKEND] %(message)s')
 log = logging.getLogger(__name__)
@@ -46,9 +48,11 @@ INFLUX_SAMPLE_INTERVAL_S = float(os.getenv("INFLUX_SAMPLE_INTERVAL_S", "5"))
 WS_RESIDENT_MIN_INTERVAL_S = float(os.getenv("WS_RESIDENT_MIN_INTERVAL_S", "2"))
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "meditron:7b")
+FAMILLE_ADMIN_TOKEN = os.getenv("FAMILLE_ADMIN_TOKEN", "ADMIN_EHPAD_2024")
 
 # --- Profils résidents (importé depuis le simulateur, ou hardcodé)
-from resident_profiles import RESIDENTS_MAP
+from resident_profiles import RESIDENTS_MAP, RESIDENTS_LIST, FAMILY_CODE_MAP, CAREGIVERS
+import auth as auth_module
 
 # --- Init ---
 app = FastAPI(title="EHPAD API", version="1.0.0")
@@ -77,6 +81,166 @@ _loop: Optional[asyncio.AbstractEventLoop] = None
 _last_influx_write: dict[str, float] = {}
 _last_ws_push: dict[str, float] = {}
 _last_daily_report_date: Optional[str] = None
+_started_at = time.time()
+_mqtt_message_count = 0
+_mqtt_vitals_count = 0
+_mqtt_ambient_count = 0
+_ws_push_count = 0
+_last_mqtt_message_at: Optional[float] = None
+
+RESIDENT_ARCHETYPES = {
+    "autonome": {
+        "label": "Autonome",
+        "daily_focus": "vie sociale, activites, repas en salle",
+        "main_risks": ["chute trajet", "malaise effort", "retard alerte si isolement"],
+        "supervision": "surveillance standard",
+    },
+    "accompagne": {
+        "label": "Deplacement accompagne",
+        "daily_focus": "repas encadre, kine, trajets surveilles",
+        "main_risks": ["chute couloir", "fatigue post-kine", "hypotension post-repas"],
+        "supervision": "surveillance renforcee aux transferts",
+    },
+    "chambre": {
+        "label": "Reste principalement en chambre",
+        "daily_focus": "soins au lit, repas en chambre, prevention escarres",
+        "main_risks": ["inactivite", "sortie de lit", "chute chambre"],
+        "supervision": "passages soignants programmes",
+    },
+    "cognitif": {
+        "label": "Troubles cognitifs / fugue",
+        "daily_focus": "repas et activites securises, controle sorties",
+        "main_risks": ["errance", "fugue", "desorientation escalier/ascenseur"],
+        "supervision": "surveillance sorties et zones sensibles",
+    },
+    "respiratoire": {
+        "label": "Fragilite respiratoire",
+        "daily_focus": "tolerance effort, SpO2 personnalisee, repos",
+        "main_risks": ["desaturation", "fatigue retour repas", "dyspnee nocturne"],
+        "supervision": "seuils SpO2 adaptes au profil",
+    },
+    "cardio": {
+        "label": "Fragilite cardio-metabolique",
+        "daily_focus": "surveillance tension, FC, malaise postural",
+        "main_risks": ["tachycardie", "hypotension", "malaise post-repas"],
+        "supervision": "controle cardio rapproche si tendance monte",
+    },
+}
+
+
+def _resident_archetype(profile: dict) -> str:
+    pathologies = set(profile.get("pathologies", []))
+    mobility = profile.get("mobility", "moyenne")
+    risk = float(profile.get("risk_factor", 0.3))
+    if pathologies.intersection({"alzheimer", "demence", "dementia"}):
+        return "cognitif"
+    if "bpco" in pathologies:
+        return "respiratoire"
+    if pathologies.intersection({"insuffisance_cardiaque", "hypertension"}) and risk >= 0.45:
+        return "cardio"
+    if mobility == "tres_faible" and risk >= 0.6:
+        return "chambre"
+    if mobility in {"faible", "tres_faible"}:
+        return "accompagne"
+    return "autonome"
+
+
+PROJECT_READINESS = [
+    {
+        "axis": "20-50 residents",
+        "status": "done",
+        "proof": "25 residents actifs, extensible par NUM_RESIDENTS et profils",
+        "improve": "tester une charge 50 residents avec seuils WebSocket/Influx adaptes",
+    },
+    {
+        "axis": "Duree continue mois/annees",
+        "status": "partial",
+        "proof": "simulation continue Docker + historique simule 30 jours + InfluxDB",
+        "improve": "ajouter politique retention InfluxDB et sauvegarde Redis planifiee",
+    },
+    {
+        "axis": "IA prediction malaise",
+        "status": "done",
+        "proof": "ML/A2A relance toutes les 5 min, risque 30 et 60 min, memoire de tendance",
+        "improve": "calibrer sur donnees reelles et mesurer recall/specifite par profil",
+    },
+    {
+        "axis": "Alertes 5 niveaux",
+        "status": "done",
+        "proof": "moteur niveaux 1-5, anti-bruit, localisation, escalade et acquittement",
+        "improve": "journaliser le delai d'intervention et les faux positifs par type d'alerte",
+    },
+    {
+        "axis": "Capteurs vitaux + ambiants",
+        "status": "done",
+        "proof": "wearable, SpO2, FC, PA, temperature, respiration, PIR, radar, porte, sol, matelas, BLE/GPS",
+        "improve": "suivre la qualite signal/batterie et les capteurs muets dans le temps",
+    },
+    {
+        "axis": "Vue par resident",
+        "status": "done",
+        "proof": "detail live, mini DPI, historique 30 jours, prediction, transmission",
+        "improve": "ajouter validation soignant et export PDF",
+    },
+    {
+        "axis": "Complexite scale + prediction",
+        "status": "partial",
+        "proof": "MQTT QoS, Redis et WebSocket throttling, Influx echantillonne, LLM pas appele a chaque seconde",
+        "improve": "benchmark 120 msg/s puis 300 msg/s avec p95 latence dashboard",
+    },
+]
+
+STAFF_DEFAULTS = {
+    "soignant_A": {"sector": "RDC + aile A", "shift": "jour", "status": "disponible"},
+    "soignant_B": {"sector": "RDC + aile B", "shift": "jour", "status": "disponible"},
+    "soignant_C": {"sector": "1er etage", "shift": "jour", "status": "disponible"},
+    "chef_garde": {"sector": "tous secteurs", "shift": "astreinte", "status": "disponible"},
+    "direction": {"sector": "administration", "shift": "astreinte", "status": "disponible"},
+}
+
+
+def _staff_status(caregiver_id: str) -> dict:
+    base = {
+        "id": caregiver_id,
+        **CAREGIVERS.get(caregiver_id, {"name": caregiver_id, "role": "soignant", "phone": ""}),
+        **STAFF_DEFAULTS.get(caregiver_id, {"sector": "non defini", "shift": "jour", "status": "disponible"}),
+    }
+    raw = redis_client.get(f"staff:{caregiver_id}:status")
+    if raw:
+        try:
+            base.update(json.loads(raw))
+        except Exception:
+            pass
+    return base
+
+
+def _resident_caregiver(resident_id: str, profile: Optional[dict] = None) -> str:
+    override = redis_client.get(f"resident:{resident_id}:caregiver")
+    return override or (profile or RESIDENTS_MAP.get(resident_id, {})).get("caregiver", "")
+
+
+def _staff_notification_preview(caregiver_id: str, level: int) -> list[dict]:
+    targets = []
+    def add(cid: str, reason: str):
+        if cid and cid not in {t["id"] for t in targets}:
+            staff = _staff_status(cid)
+            targets.append({
+                "id": cid,
+                "name": staff.get("name", cid),
+                "role": staff.get("role"),
+                "status": staff.get("status"),
+                "sector": staff.get("sector"),
+                "reason": reason,
+            })
+    add("dashboard", "affichage central")
+    if level >= 2:
+        add(caregiver_id, "soignant assigne")
+    if level >= 4:
+        for cid in ["soignant_A", "soignant_B", "soignant_C", "chef_garde"]:
+            add(cid, "urgence tous soignants")
+    if level >= 5:
+        add("direction", "danger vital direction")
+    return targets
 
 
 def publish_mqtt_control(topic: str, payload: dict):
@@ -235,10 +399,19 @@ def _safe_state_for_report(resident_id: str) -> dict:
             },
             "movement": {"last_movement_ago_s": latest.get("last_movement_ago_s")},
             "ml_risk": latest.get("ml_risk", profile.get("risk_factor", 0.3)),
-            "caregiver": profile.get("caregiver"),
+            "caregiver": _resident_caregiver(resident_id, profile),
         }
     state["profile"] = profile
     state["resident_name"] = state.get("name", profile.get("name", resident_id))
+    state["caregiver"] = _resident_caregiver(resident_id, profile)
+    archetype = _resident_archetype(profile)
+    state.setdefault("life_profile", {
+        "archetype": archetype,
+        "archetype_label": RESIDENT_ARCHETYPES[archetype]["label"],
+        "daily_focus": RESIDENT_ARCHETYPES[archetype]["daily_focus"],
+        "main_risks": RESIDENT_ARCHETYPES[archetype]["main_risks"],
+        "supervision": RESIDENT_ARCHETYPES[archetype]["supervision"],
+    })
     return state
 
 
@@ -251,6 +424,13 @@ def _alerts_for_resident_on_date(resident_id: str, report_date: str) -> list[dic
         if created.startswith(report_date):
             alerts.append(alert)
     return alerts
+
+
+def _active_alert_for_resident(resident_id: str) -> Optional[dict]:
+    for alert in alert_engine.get_all_active():
+        if alert.get("resident_id") == resident_id and not alert.get("resolved"):
+            return alert
+    return None
 
 
 def _history_summary(resident_id: str) -> dict:
@@ -301,9 +481,55 @@ def _forecast_points(state: dict, hist: dict, alerts_today: list[dict]) -> list[
     return points
 
 
+def _prediction_memory_for_resident(resident_id: str) -> dict:
+    rows = []
+    for raw in redis_client.lrange(f"a2a:prediction_history:{resident_id}", 0, 11):
+        try:
+            rows.append(json.loads(raw))
+        except Exception:
+            pass
+    if len(rows) < 2:
+        return {"trend": "indisponible", "delta_15min": 0.0, "points": rows}
+
+    latest = rows[0]
+    older = rows[min(3, len(rows) - 1)]
+    delta = float(latest.get("risk_60min", 0)) - float(older.get("risk_60min", 0))
+    if delta >= 0.18:
+        trend = "hausse_rapide"
+    elif delta >= 0.07:
+        trend = "hausse"
+    elif delta <= -0.07:
+        trend = "baisse"
+    else:
+        trend = "stable"
+    return {"trend": trend, "delta_15min": round(delta, 3), "points": rows}
+
+
+def _remember_prediction(resident_id: str, result: dict):
+    pred = result.get("prediction", {})
+    row = {
+        "generated_at": result.get("generated_at") or datetime.utcnow().isoformat() + "Z",
+        "risk_30min": pred.get("risk_30min", 0),
+        "risk_60min": pred.get("risk_60min", 0),
+        "recommended_level": pred.get("recommended_level", 0),
+        "recommended_level_name": pred.get("recommended_level_name", "Stable"),
+    }
+    key = f"a2a:prediction_history:{resident_id}"
+    redis_client.lpush(key, json.dumps(row))
+    redis_client.ltrim(key, 0, 287)  # 24h a 5 min
+    redis_client.expire(key, 48 * 3600)
+
+
+def _a2a_prediction_for_resident(state: dict, hist: dict, active_alert: Optional[dict] = None) -> dict:
+    resident_id = state.get("resident_id")
+    history_rows = _simulated_history_rows(resident_id, days=30, step_hours=6) if resident_id else []
+    memory = _prediction_memory_for_resident(resident_id) if resident_id else {}
+    return run_a2a_pipeline(state, hist, history_rows, active_alert=active_alert, prediction_memory=memory)
+
+
 def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = None, force: bool = False) -> dict:
     report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:{report_date}:{resident_id}"
+    redis_key = f"daily_report:v5:{report_date}:{resident_id}"
     if not force:
         cached = redis_client.get(redis_key)
         if cached:
@@ -314,12 +540,12 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
     v = state.get("vitals", {})
     hist = _history_summary(resident_id)
     alerts_today = _alerts_for_resident_on_date(resident_id, report_date)
-    active_alert_raw = redis_client.get(f"alert:{resident_id}:active")
-    active_alert = json.loads(active_alert_raw) if active_alert_raw else None
+    active_alert = _active_alert_for_resident(resident_id)
     risk = float(state.get("ml_risk", 0))
     level = max([a.get("level", 0) for a in alerts_today] + ([active_alert.get("level", 0)] if active_alert else [0]))
     location = state.get("location_label") or state.get("current_zone") or state.get("zone") or f"chambre {state.get('room', profile.get('room'))}"
     forecast = _forecast_points(state, hist, alerts_today)
+    a2a_prediction = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
     pathologies = profile.get("pathologies", [])
 
     report = {
@@ -335,6 +561,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
             "mobility": profile.get("mobility"),
             "pathologies": pathologies,
             "care_level": state.get("care_level"),
+            "life_profile": state.get("life_profile"),
         },
         "current": {
             "location": location,
@@ -348,10 +575,17 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
         "risk": {
             "ml_risk": round(risk, 2),
             "label": _risk_label(risk),
+            "a2a_risk_30min": a2a_prediction["prediction"]["risk_30min"],
+            "a2a_risk_60min": a2a_prediction["prediction"]["risk_60min"],
+            "a2a_label_30min": a2a_prediction["prediction"]["label_30min"],
+            "a2a_label_60min": a2a_prediction["prediction"]["label_60min"],
+            "prediction_trend": a2a_prediction["prediction"].get("prediction_trend"),
+            "risk_delta_15min": a2a_prediction["prediction"].get("risk_delta_15min"),
             "alert_level": level,
             "alert_level_name": _alert_level_name(level),
             "trend_30d": hist.get("risk_trend", "stable"),
         },
+        "a2a_prediction": a2a_prediction,
         "history_30d": hist,
         "alerts_today": alerts_today[-10:],
         "transmission_summary": (
@@ -360,12 +594,18 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
             f"Position actuelle: {location}. "
             f"{len(alerts_today)} alerte(s) ce jour, {hist.get('alerts_count', 0)} evenement(s) sur 30 jours."
         ),
-        "watch_points": forecast,
+        "watch_points": list(dict.fromkeys(a2a_prediction["prediction"].get("watch_points", []) + forecast)),
         "next_actions": [
+            *a2a_prediction["prediction"].get("actions", [])[:2],
             "Controler les constantes selon le niveau de risque.",
             "Verifier la concordance capteurs chambre/sol/porte si anomalie.",
-            "Tracer toute modification de comportement dans la transmission.",
         ],
+        "professional_checks": {
+            "location_precise": bool(location and location != f"chambre {state.get('room', profile.get('room'))}"),
+            "uses_sensor_context": bool(state.get("sensor_events")),
+            "uses_prediction_memory": a2a_prediction["prediction"].get("prediction_trend") is not None,
+            "care_profile": state.get("life_profile", {}).get("archetype_label"),
+        },
     }
     redis_client.setex(redis_key, 45 * 86400, json.dumps(report))
     redis_client.hset(f"daily_reports:{report_date}", resident_id, json.dumps(report))
@@ -375,7 +615,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
 
 def _build_global_daily_report(report_date: Optional[str] = None, force: bool = False) -> dict:
     report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:{report_date}:global"
+    redis_key = f"daily_report:v5:{report_date}:global"
     if not force:
         cached = redis_client.get(redis_key)
         if cached:
@@ -433,13 +673,48 @@ def daily_report_loop():
     while True:
         try:
             today = _local_report_date()
-            existing = redis_client.get(f"daily_report:{today}:global")
+            existing = redis_client.get(f"daily_report:v5:{today}:global")
             if today != _last_daily_report_date and not existing:
                 _build_global_daily_report(today, force=False)
                 _last_daily_report_date = today
                 log.info(f"Rapport quotidien automatise genere pour {today}")
         except Exception as e:
             log.error(f"Rapport quotidien error: {e}")
+        time.sleep(300)
+
+
+def predictive_analysis_loop():
+    """Relance l'analyse ML/A2A toutes les 5 minutes pour ne pas rater un risque montant."""
+    while True:
+        try:
+            predictions = []
+            for resident_id in RESIDENTS_MAP.keys():
+                state = _safe_state_for_report(resident_id)
+                hist = _history_summary(resident_id)
+                active_alert = _active_alert_for_resident(resident_id)
+                result = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
+                _remember_prediction(resident_id, result)
+                result = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
+                redis_client.setex(f"a2a:prediction:{resident_id}", 600, json.dumps(result))
+                pred = result["prediction"]
+                predictions.append({
+                    "resident_id": resident_id,
+                    "resident_name": state.get("resident_name") or state.get("name"),
+                    "room": state.get("room"),
+                    "location": state.get("current_zone") or state.get("zone"),
+                    **pred,
+                })
+            predictions.sort(key=lambda p: (p["recommended_level"], p["risk_60min"], p["risk_30min"]), reverse=True)
+            payload = {
+                "generated_at": datetime.utcnow().isoformat() + "Z",
+                "refresh_interval_s": 300,
+                "count": len(predictions),
+                "predictions": predictions,
+            }
+            redis_client.setex("a2a:predictions:all", 600, json.dumps(payload))
+            log.info("Analyse predictive ML/A2A 30-60 min relancee pour tous les residents")
+        except Exception as e:
+            log.error(f"Analyse predictive loop error: {e}")
         time.sleep(300)
 
 
@@ -462,7 +737,14 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    global _mqtt_message_count, _mqtt_vitals_count, _mqtt_ambient_count, _last_mqtt_message_at
     try:
+        _mqtt_message_count += 1
+        _last_mqtt_message_at = time.time()
+        if msg.topic.endswith("/vitals"):
+            _mqtt_vitals_count += 1
+        if "/ambient" in msg.topic or "/door/" in msg.topic:
+            _mqtt_ambient_count += 1
         payload = json.loads(msg.payload.decode())
         topic = msg.topic
         if topic == "ehpad/summary":
@@ -511,6 +793,7 @@ def _track_routine(state: dict):
 
 
 def _handle_vitals(state: dict):
+    global _ws_push_count
     rid = state.get("resident_id")
     if not rid:
         return
@@ -518,17 +801,37 @@ def _handle_vitals(state: dict):
 
     # Enrichir avec profil résident
     profile = RESIDENTS_MAP.get(rid, {})
+    state["caregiver"] = _resident_caregiver(rid, profile)
+    caregiver_info = _staff_status(state["caregiver"])
+    state["caregiver_name"] = caregiver_info.get("name")
+    state["staff_directory"] = {cid: _staff_status(cid) for cid in CAREGIVERS.keys()}
     age = profile.get("age", 80)
     base_risk = profile.get("risk_factor", 0.3)
 
     # Prédiction ML
-    ml_risk = ml_predictor.predict(
+    ml_prediction = ml_predictor.predict_horizons(
         rid, state["vitals"], state.get("movement", {}), age, base_risk
     )
+    ml_risk = ml_prediction["risk_60min"]
     if rid == DEMO_RESIDENT and state.get("scenario_active") == "hypoxie":
         ml_risk = max(ml_risk, 0.72)
+        ml_prediction["risk_30min"] = max(ml_prediction["risk_30min"], 0.62)
+        ml_prediction["risk_60min"] = ml_risk
+        ml_prediction["signals"] = list(dict.fromkeys(["hypoxie progressive demo"] + ml_prediction.get("signals", [])))
     state["ml_risk"] = ml_risk
+    state["ml_prediction"] = ml_prediction
     state["resident_name"] = state.get("name", profile.get("name", rid))
+    for sensor in state.get("sensor_health", []):
+        sensor_key = sensor.get("id") or f"{rid}-{sensor.get('type', 'sensor')}"
+        redis_client.hset("sensors:health", sensor_key, json.dumps({
+            **sensor,
+            "resident_id": rid,
+            "resident_name": state.get("resident_name"),
+            "room": state.get("room"),
+            "zone_id": state.get("current_zone") or state.get("zone"),
+            "updated_at": state.get("timestamp") or datetime.utcnow().isoformat() + "Z",
+        }))
+        redis_client.expire("sensors:health", 3600)
 
     # Analyse de routine C4 : détecter déviations comportementales
     routine_deviation = _track_routine(state)
@@ -548,10 +851,14 @@ def _handle_vitals(state: dict):
         "position": state.get("position"),
         "activity": state.get("activity"),
         "sensor_events": state.get("sensor_events", {}),
-        "room_sensors": state.get("room_sensors", []),
+        "sensor_health": state.get("sensor_health", []),
+        "life_profile": state.get("life_profile"),
+            "routine_context": state.get("routine_context"),
+            "room_sensors": state.get("room_sensors", []),
         "vitals": state["vitals"],
         "movement": state.get("movement", {}),
         "ml_risk": ml_risk,
+        "ml_prediction": ml_prediction,
         "scenario": state.get("scenario_active"),
         "movement_scenario": state.get("movement_scenario"),
         "assigned_movement_scenario": state.get("assigned_movement_scenario"),
@@ -563,6 +870,7 @@ def _handle_vitals(state: dict):
         "dining_table": state.get("dining_table"),
         "dining_seat": state.get("dining_seat"),
         "caregiver": state.get("caregiver", ""),
+        "caregiver_name": state.get("caregiver_name"),
         "last_update": datetime.utcnow().isoformat() + "Z",
     }))
 
@@ -577,6 +885,7 @@ def _handle_vitals(state: dict):
     # Notifier dashboard via WebSocket
     if _loop and not _loop.is_closed() and (alert is not None or now - _last_ws_push.get(rid, 0) >= WS_RESIDENT_MIN_INTERVAL_S):
         _last_ws_push[rid] = now
+        _ws_push_count += 1
         asyncio.run_coroutine_threadsafe(
             ws_manager.send_state_update({
                 "resident_id": rid,
@@ -589,10 +898,14 @@ def _handle_vitals(state: dict):
                 "position": state.get("position"),
                 "activity": state.get("activity"),
                 "sensor_events": state.get("sensor_events", {}),
+                "sensor_health": state.get("sensor_health", []),
+                "life_profile": state.get("life_profile"),
+                "routine_context": state.get("routine_context"),
                 "room_sensors": state.get("room_sensors", []),
                 "vitals": state["vitals"],
                 "movement": state.get("movement", {}),
                 "ml_risk": ml_risk,
+                "ml_prediction": ml_prediction,
                 "scenario": state.get("scenario_active"),
                 "movement_scenario": state.get("movement_scenario"),
                 "assigned_movement_scenario": state.get("assigned_movement_scenario"),
@@ -603,6 +916,8 @@ def _handle_vitals(state: dict):
                 "meal_mode": state.get("meal_mode"),
                 "dining_table": state.get("dining_table"),
                 "dining_seat": state.get("dining_seat"),
+                "caregiver": state.get("caregiver", ""),
+                "caregiver_name": state.get("caregiver_name"),
                 "alert": alert.to_dict() if alert else None,
             }),
             _loop
@@ -649,6 +964,15 @@ def _handle_ambient(data: dict):
     if zone_id:
         redis_client.setex(f"zone:{zone_id}:state", 30, json.dumps(data))
         redis_client.hset("zones:all", zone_id, json.dumps(data))
+        for sensor in data.get("sensor_health", []):
+            sensor_key = sensor.get("id") or f"{zone_id}-{sensor.get('type', 'sensor')}"
+            redis_client.hset("sensors:health", sensor_key, json.dumps({
+                **sensor,
+                "zone_id": zone_id,
+                "zone_name": data.get("zone_name"),
+                "updated_at": data.get("timestamp") or datetime.utcnow().isoformat() + "Z",
+            }))
+            redis_client.expire("sensors:health", 3600)
 
         # Détection de fugue : résident en zone sortie ou hors site
         if data.get("zone_id") == "hors_ehpad" and data.get("occupancy", 0) > 0:
@@ -743,8 +1067,7 @@ def get_all_residents():
         try:
             r = json.loads(raw)
             # Ajouter l'alerte active si présente
-            alert_raw = redis_client.get(f"alert:{rid}:active")
-            r["active_alert"] = json.loads(alert_raw) if alert_raw else None
+            r["active_alert"] = _active_alert_for_resident(rid)
             residents.append(r)
         except Exception:
             pass
@@ -814,6 +1137,22 @@ def set_simulator_speed(speed: float = 1.0):
     return {"ok": True, "speed": speed}
 
 
+@app.post("/api/simulator/scenario")
+def trigger_simulator_scenario(resident_id: str = DEMO_RESIDENT, scenario: str = "hypoxie"):
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident non trouve")
+    allowed = {
+        "hypoxie", "tachycardie", "chute", "hypotension", "fievre",
+        "chute_couloir", "fugue_hors_ehpad", "malaise_repas", "risque_nuit",
+        "jardin", "chute_jardin",
+    }
+    if scenario not in allowed:
+        raise HTTPException(400, f"Scenario inconnu: {scenario}")
+    payload = {"resident_id": resident_id, "scenario": scenario, "updated_at": datetime.utcnow().isoformat() + "Z"}
+    publish_mqtt_control("ehpad/control/scenario", payload)
+    return {"ok": True, **payload}
+
+
 @app.get("/api/alerts")
 def get_alerts():
     active = alert_engine.get_all_active()
@@ -829,11 +1168,366 @@ def acknowledge_alert(resident_id: str, by: str = "soignant"):
     return {"ok": True, "message": f"Alerte acquittée par {by}"}
 
 
+@app.get("/api/alerts/explain/{resident_id}")
+def explain_alert(resident_id: str):
+    alert = _active_alert_for_resident(resident_id)
+    if not alert:
+        for item in alert_engine.get_history(200):
+            if item.get("resident_id") == resident_id:
+                alert = item
+                break
+    if not alert:
+        raise HTTPException(404, "Aucune alerte connue pour ce resident")
+    trigger = alert.get("trigger_data", {})
+    return {
+        "resident_id": resident_id,
+        "alert_id": alert.get("id"),
+        "level": alert.get("level"),
+        "level_name": alert.get("level_name"),
+        "reason": alert.get("reason"),
+        "location": {
+            "label": alert.get("location_label"),
+            "zone": alert.get("current_zone"),
+            "floor": alert.get("floor"),
+            "position": alert.get("position"),
+        },
+        "clinical": {
+            "news": trigger.get("news"),
+            "ml_risk": trigger.get("ml_risk"),
+            "vitals": trigger.get("vitals"),
+            "movement": trigger.get("movement"),
+        },
+        "sensors": {
+            "events": alert.get("sensor_events") or trigger.get("sensor_events", {}),
+            "evidence": trigger.get("evidence", []),
+        },
+        "action": alert.get("action"),
+        "acknowledged": alert.get("acknowledged"),
+        "notified_staff": alert.get("notified_staff", []),
+        "professional_summary": (
+            f"{alert.get('level_name')} pour {alert.get('resident_name')}: {alert.get('reason')} "
+            f"a {alert.get('location_label') or alert.get('current_zone')}. "
+            f"Verifier constantes, capteurs confirmants et acquitter apres prise en charge."
+        ),
+    }
+
+
 @app.get("/api/zones")
 def get_zones():
     data = redis_client.hgetall("zones:all")
     zones = [json.loads(v) for v in data.values()]
     return {"zones": zones}
+
+
+@app.get("/api/sensors/health")
+def get_sensors_health():
+    raw = redis_client.hgetall("sensors:health")
+    sensors = []
+    for value in raw.values():
+        try:
+            sensors.append(json.loads(value))
+        except Exception:
+            pass
+    sensors.sort(key=lambda s: (s.get("status") != "offline", s.get("quality_pct", 100), s.get("battery_pct", 100)))
+    return {
+        "count": len(sensors),
+        "offline": sum(1 for s in sensors if s.get("status") == "offline"),
+        "weak_signal": sum(1 for s in sensors if float(s.get("quality_pct", 100)) < 70),
+        "low_battery": sum(1 for s in sensors if float(s.get("battery_pct", 100)) < 20),
+        "sensors": sensors[:300],
+    }
+
+
+@app.get("/api/ops/scalability")
+def get_scalability_metrics():
+    uptime = max(1.0, time.time() - _started_at)
+    resident_count = len(redis_client.hgetall("residents:all"))
+    target_messages_s = resident_count * 6
+    return {
+        "uptime_s": round(uptime),
+        "resident_count": resident_count,
+        "mqtt": {
+            "messages_total": _mqtt_message_count,
+            "messages_per_second_avg": round(_mqtt_message_count / uptime, 2),
+            "vitals_total": _mqtt_vitals_count,
+            "ambient_total": _mqtt_ambient_count,
+            "last_message_age_s": round(time.time() - _last_mqtt_message_at, 1) if _last_mqtt_message_at else None,
+            "target_20_residents_6_constants_s": 120,
+            "current_theoretical_constants_s": target_messages_s,
+        },
+        "backend": {
+            "influx_sample_interval_s": INFLUX_SAMPLE_INTERVAL_S,
+            "ws_resident_min_interval_s": WS_RESIDENT_MIN_INTERVAL_S,
+            "ws_push_total": _ws_push_count,
+            "ws_push_per_second_avg": round(_ws_push_count / uptime, 2),
+        },
+        "prediction": {
+            "refresh_interval_s": 300,
+            "cache_ttl_s": 600,
+            "llm_policy": "LLM hors boucle seconde; ML/A2A toutes les 5 minutes",
+        },
+        "pro_recommendations": [
+            "tester NUM_RESIDENTS=50",
+            "surveiller p95 latence API/WebSocket",
+            "alerter si last_message_age_s > 10s pour un capteur critique",
+            "conserver InfluxDB pour historique et Redis pour etat courant",
+        ],
+    }
+
+
+def _staff_snapshot() -> dict:
+    active_alerts = alert_engine.get_all_active()
+    residents_raw = redis_client.hgetall("residents:all")
+    live_residents = {}
+    for rid, raw in residents_raw.items():
+        try:
+            live_residents[rid] = json.loads(raw)
+        except Exception:
+            pass
+
+    staff_history = _staff_simulated_history(days=30, step_hours=6)
+
+    staff = []
+    for caregiver_id in CAREGIVERS.keys():
+        info = _staff_status(caregiver_id)
+        assigned = []
+        for rid, profile in RESIDENTS_MAP.items():
+            if _resident_caregiver(rid, profile) == caregiver_id:
+                live = live_residents.get(rid, {})
+                assigned.append({
+                    "resident_id": rid,
+                    "name": profile.get("name"),
+                    "room": profile.get("room"),
+                    "current_zone": live.get("current_zone"),
+                    "ml_risk": live.get("ml_risk", profile.get("risk_factor", 0)),
+                    "alert_level": (_active_alert_for_resident(rid) or {}).get("level", 0),
+                })
+        notified_alerts = [
+            a for a in active_alerts
+            if caregiver_id in {t.get("id") for t in a.get("notified_staff", [])}
+        ]
+        max_level = max([a.get("level", 0) for a in notified_alerts] + [0])
+        history = staff_history.get(caregiver_id, [])
+        audit_recent = _notification_audit_for_staff(caregiver_id, limit=8)
+        staff.append({
+            **info,
+            "assigned_count": len(assigned),
+            "assigned_residents": assigned,
+            "active_alerts_count": len(notified_alerts),
+            "max_alert_level": max_level,
+            "history_count_30d": len(history),
+            "recent_history": history[:8],
+            "audit_recent": audit_recent,
+            "workload_score": len(assigned) + len(notified_alerts) * 3 + max_level,
+            "notifications": [
+                {
+                    "alert_id": a.get("id"),
+                    "notification_key": _notification_key(a),
+                    "resident_id": a.get("resident_id"),
+                    "resident_name": a.get("resident_name"),
+                    "level": a.get("level"),
+                    "reason": a.get("reason"),
+                    "location": a.get("location_label"),
+                    "status": _notification_status(caregiver_id, _notification_key(a)).get("status", "envoyee"),
+                    "status_at": _notification_status(caregiver_id, _notification_key(a)).get("at"),
+                }
+                for a in notified_alerts
+            ],
+        })
+    staff.sort(key=lambda s: (s["max_alert_level"], s["workload_score"]), reverse=True)
+    return {"staff": staff, "active_alerts": active_alerts}
+
+
+def _staff_simulated_history(days: int = 30, step_hours: int = 6) -> dict[str, list[dict]]:
+    """Historique exploitable par soignant, base sur la simulation 30 jours."""
+    by_staff: dict[str, list[dict]] = {cid: [] for cid in CAREGIVERS.keys()}
+    for rid, profile in RESIDENTS_MAP.items():
+        caregiver_id = _resident_caregiver(rid, profile)
+        try:
+            rows = _simulated_history_rows(rid, days=days, step_hours=step_hours)
+        except Exception:
+            continue
+        for row in rows:
+            level = int(row.get("alert_level") or 0)
+            if level <= 0:
+                continue
+            targets = _staff_notification_preview(caregiver_id, level)
+            target_ids = {t.get("id") for t in targets if t.get("id") != "dashboard"}
+            for staff_id in target_ids:
+                by_staff.setdefault(staff_id, []).append({
+                    "time": row.get("time"),
+                    "resident_id": rid,
+                    "resident_name": profile.get("name", rid),
+                    "room": profile.get("room"),
+                    "level": level,
+                    "level_name": _alert_level_name(level),
+                    "event": row.get("event"),
+                    "routine": row.get("routine"),
+                    "zone": row.get("zone"),
+                    "ml_risk": row.get("ml_risk"),
+                })
+    for events in by_staff.values():
+        events.sort(key=lambda item: item.get("time") or "", reverse=True)
+    return by_staff
+
+
+def _notification_key(alert_or_event: dict) -> str:
+    if alert_or_event.get("alert_id"):
+        return str(alert_or_event["alert_id"])
+    if alert_or_event.get("id"):
+        return str(alert_or_event["id"])
+    parts = [
+        alert_or_event.get("resident_id", "resident"),
+        str(alert_or_event.get("level", 0)),
+        alert_or_event.get("time") or alert_or_event.get("created_at") or "",
+        alert_or_event.get("event") or alert_or_event.get("reason") or "",
+    ]
+    return ":".join(str(p).replace(" ", "_") for p in parts)
+
+
+def _notification_status(caregiver_id: str, notification_key: str) -> dict:
+    raw = redis_client.hget(f"notification:status:{caregiver_id}", notification_key)
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw)
+    except Exception:
+        return {}
+
+
+def _notification_audit_for_staff(caregiver_id: str, limit: int = 20) -> list[dict]:
+    rows = []
+    for raw in redis_client.lrange(f"notifications:audit:{caregiver_id}", 0, max(0, limit - 1)):
+        try:
+            rows.append(json.loads(raw))
+        except Exception:
+            continue
+    return rows
+
+
+class NotificationAction(BaseModel):
+    caregiver_id: str
+    action: str
+    notification_key: Optional[str] = None
+    alert_id: Optional[str] = None
+    resident_id: Optional[str] = None
+    resident_name: Optional[str] = None
+    level: Optional[int] = None
+    reason: Optional[str] = None
+    location: Optional[str] = None
+
+
+@app.post("/api/notifications/action")
+def record_notification_action(payload: NotificationAction):
+    if payload.caregiver_id not in CAREGIVERS:
+        raise HTTPException(404, "Personnel inconnu")
+    action_map = {
+        "seen": "vue",
+        "vu": "vue",
+        "taken": "prise_en_charge",
+        "prise_en_charge": "prise_en_charge",
+        "acknowledged": "acquittee",
+        "acquitte": "acquittee",
+        "resolved": "resolue",
+        "resolu": "resolue",
+        "escalated": "escalade",
+        "escalade": "escalade",
+    }
+    action = action_map.get(payload.action)
+    if not action:
+        raise HTTPException(400, "Action notification invalide")
+
+    now = datetime.utcnow().isoformat() + "Z"
+    key = payload.notification_key or payload.alert_id or _notification_key(payload.dict())
+    staff = _staff_status(payload.caregiver_id)
+    row = {
+        "notification_key": key,
+        "alert_id": payload.alert_id,
+        "caregiver_id": payload.caregiver_id,
+        "caregiver_name": staff.get("name", payload.caregiver_id),
+        "action": action,
+        "resident_id": payload.resident_id,
+        "resident_name": payload.resident_name,
+        "level": payload.level,
+        "reason": payload.reason,
+        "location": payload.location,
+        "at": now,
+    }
+    redis_client.hset(f"notification:status:{payload.caregiver_id}", key, json.dumps(row))
+    redis_client.lpush(f"notifications:audit:{payload.caregiver_id}", json.dumps(row))
+    redis_client.ltrim(f"notifications:audit:{payload.caregiver_id}", 0, 199)
+    redis_client.lpush("notifications:audit:global", json.dumps(row))
+    redis_client.ltrim("notifications:audit:global", 0, 999)
+
+    if action == "acquittee" and payload.resident_id:
+        alert_engine.acknowledge(payload.resident_id, payload.caregiver_id)
+
+    return {"ok": True, "trace": row}
+
+
+@app.get("/api/notifications/audit")
+def get_notification_audit(caregiver_id: Optional[str] = None, limit: int = 50):
+    limit = max(1, min(limit, 200))
+    key = f"notifications:audit:{caregiver_id}" if caregiver_id else "notifications:audit:global"
+    rows = []
+    for raw in redis_client.lrange(key, 0, limit - 1):
+        try:
+            rows.append(json.loads(raw))
+        except Exception:
+            continue
+    return {"count": len(rows), "audit": rows}
+
+
+@app.get("/api/staff")
+def get_staff():
+    snapshot = _staff_snapshot()
+    return {
+        "count": len(snapshot["staff"]),
+        "staff": snapshot["staff"],
+        "routing_rules": {
+            "level_1": "dashboard",
+            "level_2_3": "soignant assigne",
+            "level_4": "tous soignants + chef de garde",
+            "level_5": "tous soignants + chef de garde + direction",
+        },
+    }
+
+
+@app.post("/api/staff/{caregiver_id}/status")
+def set_staff_status(caregiver_id: str, status: str = "disponible", sector: Optional[str] = None, shift: Optional[str] = None):
+    if caregiver_id not in CAREGIVERS:
+        raise HTTPException(404, "Soignant inconnu")
+    allowed = {"disponible", "occupe", "pause", "hors_service", "astreinte"}
+    if status not in allowed:
+        raise HTTPException(400, "Statut invalide")
+    current = _staff_status(caregiver_id)
+    current.update({
+        "status": status,
+        "sector": sector or current.get("sector"),
+        "shift": shift or current.get("shift"),
+        "updated_at": datetime.utcnow().isoformat() + "Z",
+    })
+    redis_client.set(f"staff:{caregiver_id}:status", json.dumps(current))
+    return {"ok": True, "staff": current}
+
+
+@app.post("/api/residents/{resident_id}/assign-caregiver")
+def assign_caregiver(resident_id: str, caregiver_id: str):
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident non trouve")
+    if caregiver_id not in CAREGIVERS:
+        raise HTTPException(404, "Soignant inconnu")
+    redis_client.set(f"resident:{resident_id}:caregiver", caregiver_id)
+    raw = redis_client.hget("residents:all", resident_id)
+    if raw:
+        try:
+            data = json.loads(raw)
+            data["caregiver"] = caregiver_id
+            data["caregiver_name"] = _staff_status(caregiver_id).get("name")
+            redis_client.hset("residents:all", resident_id, json.dumps(data))
+        except Exception:
+            pass
+    return {"ok": True, "resident_id": resident_id, "caregiver_id": caregiver_id, "caregiver": _staff_status(caregiver_id)}
 
 
 @app.get("/api/summary")
@@ -842,6 +1536,63 @@ def get_summary():
     if raw:
         return json.loads(raw)
     return {"error": "Pas encore de données"}
+
+
+@app.get("/api/project/readiness")
+def get_project_readiness():
+    """Matrice de validation pour le rendu pro du projet EHPAD."""
+    residents = []
+    for profile in RESIDENTS_MAP.values():
+        archetype = _resident_archetype(profile)
+        residents.append({
+            "resident_id": profile["id"],
+            "name": profile["name"],
+            "room": profile["room"],
+            "archetype": archetype,
+            **RESIDENT_ARCHETYPES[archetype],
+        })
+    counts = {}
+    for item in residents:
+        counts[item["archetype"]] = counts.get(item["archetype"], 0) + 1
+    return {
+        "project": "EHPAD Monitor",
+        "target": "20-50 residents, surveillance continue, prediction malaise, alertes 5 niveaux",
+        "readiness": PROJECT_READINESS,
+        "resident_profile_counts": counts,
+        "resident_profiles": residents,
+        "validation_order": [
+            "1. profils et scenarios de vie",
+            "2. alertes et localisation",
+            "3. prediction ML/A2A 30-60 min",
+            "4. plan 2D/3D capteurs",
+            "5. mini DPI et transmissions",
+            "6. scalabilite MQTT/Redis/Influx/WebSocket",
+        ],
+    }
+
+
+@app.get("/api/scenarios/life-plan")
+def get_life_plan():
+    return {
+        "day_template": [
+            {"time": "06:00-07:30", "period": "lever_toilette", "zones": ["chambre", "couloir"], "risk": "transfert, chute chambre"},
+            {"time": "07:30-09:00", "period": "petit_dej", "zones": ["salle_manger", "chambre"], "risk": "trajet repas, hypotension posturale"},
+            {"time": "09:00-10:00", "period": "soins_matin", "zones": ["infirmerie", "kinesitherapie", "chambre"], "risk": "fatigue soins"},
+            {"time": "10:00-11:45", "period": "animation_matin", "zones": ["salle_commune", "activites", "jardin"], "risk": "effort, desorientation"},
+            {"time": "11:45-13:15", "period": "trajet_dejeuner/dejeuner", "zones": ["couloirs", "ascenseur", "salle_manger"], "risk": "chute trajet, malaise repas"},
+            {"time": "13:15-15:00", "period": "sieste", "zones": ["chambre", "salle_repos"], "risk": "inactivite normale vs anormale"},
+            {"time": "15:00-16:45", "period": "animation_apres_midi/gouter", "zones": ["salle_commune", "jardin", "salle_manger"], "risk": "fatigue, regroupement"},
+            {"time": "18:00-19:30", "period": "trajet_diner/diner", "zones": ["couloirs", "salle_manger"], "risk": "chute trajet, malaise retour repas"},
+            {"time": "20:30-06:00", "period": "coucher/nuit", "zones": ["chambre", "couloir si errance"], "risk": "sortie de lit, errance, fugue"},
+        ],
+        "scenario_types": [
+            "chute_chambre", "chute_couloir", "chute_trajet_repas", "chute_jardin",
+            "malaise_salle_manger", "malaise_retour_repas", "retour_kine_fatigue",
+            "errance_nuit", "desorientation_ascenseur", "fugue_hors_ehpad",
+            "isolement_chambre", "immobilite_salle_repos", "promenade_jardin",
+        ],
+        "profile_logic": RESIDENT_ARCHETYPES,
+    }
 
 
 @app.post("/api/reports/daily/generate")
@@ -881,6 +1632,50 @@ def get_resident_dpi(resident_id: str, date: Optional[str] = None):
         "date": report_date,
         "mini_dpi": _build_resident_daily_report(resident_id, report_date=report_date, force=False),
     }
+
+
+@app.get("/api/a2a/agents")
+def get_a2a_agents():
+    return agent_card()
+
+
+@app.get("/api/a2a/predict/{resident_id}")
+def get_a2a_prediction(resident_id: str):
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident non trouve")
+    cached = redis_client.get(f"a2a:prediction:{resident_id}")
+    if cached:
+        data = json.loads(cached)
+        data["source"] = "auto_refresh_5min"
+        return data
+    state = _safe_state_for_report(resident_id)
+    hist = _history_summary(resident_id)
+    active_alert = _active_alert_for_resident(resident_id)
+    return _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
+
+
+@app.get("/api/a2a/predictions")
+def get_a2a_predictions():
+    cached = redis_client.get("a2a:predictions:all")
+    if cached:
+        data = json.loads(cached)
+        data["source"] = "auto_refresh_5min"
+        return data
+    predictions = []
+    for resident_id in RESIDENTS_MAP.keys():
+        state = _safe_state_for_report(resident_id)
+        hist = _history_summary(resident_id)
+        active_alert = _active_alert_for_resident(resident_id)
+        pred = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)["prediction"]
+        predictions.append({
+            "resident_id": resident_id,
+            "resident_name": state.get("resident_name") or state.get("name"),
+            "room": state.get("room"),
+            "location": state.get("current_zone") or state.get("zone"),
+            **pred,
+        })
+    predictions.sort(key=lambda p: (p["recommended_level"], p["risk_60min"], p["risk_30min"]), reverse=True)
+    return {"count": len(predictions), "predictions": predictions}
 
 
 @app.get("/api/ml/metrics")
@@ -924,32 +1719,193 @@ def get_resident_routine(resident_id: str):
     return {"resident_id": resident_id, "name": profile.get("name"), "routine": routine}
 
 
+from fastapi import Header as _Header
+from pydantic import BaseModel as _BaseModel
+
+class _LoginBody(_BaseModel):
+    username: str
+    password: str
+
+class _CreateAccountBody(_BaseModel):
+    username: str
+    password: str
+    resident_id: str
+
+
+def _require_famille_token(authorization: str = _Header(None)) -> dict:
+    """Extrait et valide le Bearer token famille. Leve 401 si invalide."""
+    token = None
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+    session = auth_module.validate_token(redis_client, token)
+    if not session:
+        raise HTTPException(401, "Session expiree ou invalide")
+    return session
+
+
+def _require_admin(authorization: str = _Header(None)):
+    token = None
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+    if token != FAMILLE_ADMIN_TOKEN:
+        raise HTTPException(403, "Acces administrateur requis")
+
+
+# ---------- Auth famille ----------
+
+@app.post("/api/famille/login")
+def famille_login(body: _LoginBody):
+    """Authentifie un compte famille, retourne un token de session 24h."""
+    result = auth_module.authenticate(redis_client, body.username, body.password)
+    if not result:
+        raise HTTPException(401, "Identifiants incorrects")
+    token, resident_id = result
+    profile = RESIDENTS_MAP.get(resident_id, {})
+    return {"token": token, "resident_id": resident_id, "name": profile.get("name", resident_id)}
+
+
+@app.post("/api/famille/logout")
+def famille_logout(authorization: str = _Header(None)):
+    """Invalide le token de session."""
+    if authorization and authorization.lower().startswith("bearer "):
+        auth_module.revoke_token(redis_client, authorization[7:].strip())
+    return {"ok": True}
+
+
 @app.get("/api/famille/{resident_id}")
-def get_famille_view(resident_id: str, code: str = ""):
-    """Interface famille C3 — vue générale sans détails médicaux."""
-    if code != "FAMILLE":
-        raise HTTPException(403, "Code famille invalide")
+def get_famille_view(resident_id: str, authorization: str = _Header(None)):
+    """Vue famille C3 — etat general uniquement, sans donnees medicales."""
+    session = _require_famille_token(authorization)
+    if session["resident_id"] != resident_id:
+        raise HTTPException(403, "Acces refuse a ce resident")
+    profile = RESIDENTS_MAP.get(resident_id)
+    if not profile:
+        raise HTTPException(404, "Resident non trouve")
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "Résident non trouvé")
+        raise HTTPException(404, "Donnees non disponibles")
     state = json.loads(raw)
-    profile = RESIDENTS_MAP.get(resident_id, {})
-    alert_raw = redis_client.get(f"alert:{resident_id}:active")
-    alert_level = json.loads(alert_raw).get("level", 0) if alert_raw else 0
+    active_alert = _active_alert_for_resident(resident_id)
+    alert_level = active_alert.get("level", 0) if active_alert else 0
     if alert_level >= 4:
-        general_status = "Surveillance renforcée"
+        general_status = "Surveillance renforcee"
     elif alert_level >= 2:
         general_status = "Sous surveillance"
     else:
         general_status = "Situation stable"
+    from resident_profiles import CAREGIVERS
+    caregiver_name = CAREGIVERS.get(profile.get("caregiver", ""), {}).get("name", "")
     return {
         "name": profile.get("name", resident_id),
         "room": state.get("room"),
         "floor": state.get("floor"),
         "general_status": general_status,
-        "activity": state.get("routine_label", state.get("activity", "")),
+        "alert_level": alert_level,
+        "activity": state.get("routine_label") or state.get("time_label") or state.get("activity", ""),
+        "caregiver": caregiver_name,
         "last_update": state.get("timestamp", ""),
     }
+
+
+# ---------- Admin comptes famille ----------
+
+@app.get("/api/admin/famille/accounts")
+def admin_list_accounts(authorization: str = _Header(None)):
+    _require_admin(authorization)
+    accounts = auth_module.list_accounts(redis_client)
+    for acc in accounts:
+        p = RESIDENTS_MAP.get(acc["resident_id"], {})
+        acc["resident_name"] = p.get("name", acc["resident_id"])
+        acc["room"] = p.get("room", "")
+    return {"accounts": accounts}
+
+
+@app.post("/api/admin/famille/accounts")
+def admin_create_account(body: _CreateAccountBody, authorization: str = _Header(None)):
+    _require_admin(authorization)
+    if body.resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident inconnu")
+    ok = auth_module.create_account(redis_client, body.username, body.password, body.resident_id)
+    if not ok:
+        raise HTTPException(409, "Ce nom d'utilisateur existe deja")
+    return {"ok": True, "username": body.username.lower()}
+
+
+@app.delete("/api/admin/famille/accounts/{username}")
+def admin_delete_account(username: str, authorization: str = _Header(None)):
+    _require_admin(authorization)
+    if not auth_module.delete_account(redis_client, username):
+        raise HTTPException(404, "Compte introuvable")
+    return {"ok": True}
+
+
+@app.put("/api/admin/famille/accounts/{username}")
+def admin_update_account(username: str, body: _CreateAccountBody, authorization: str = _Header(None)):
+    _require_admin(authorization)
+    ok = auth_module.update_account(redis_client, username,
+                                    password=body.password or None,
+                                    resident_id=body.resident_id or None)
+    if not ok:
+        raise HTTPException(404, "Compte introuvable")
+    return {"ok": True}
+
+
+# ---------- KB clinique ----------
+
+@app.get("/api/kb/scenarios")
+def kb_scenarios():
+    """Liste tous les scenarios cliniques de la KB (15 scenarios HAS/RCP/WHO)."""
+    import kb_loader
+    scenarios = kb_loader.get_scenarios()
+    return {
+        "count": len(scenarios),
+        "scenarios": [
+            {
+                "id": s["id"],
+                "name": s["name"],
+                "category": s["category"],
+                "clinical_rationale": s.get("clinical_rationale", ""),
+                "family_visibility": s.get("family_visibility", ""),
+            }
+            for s in scenarios
+        ],
+    }
+
+
+@app.get("/api/kb/scenarios/{scenario_id}")
+def kb_scenario_detail(scenario_id: str):
+    """Detail complet d'un scenario KB."""
+    import kb_loader
+    s = kb_loader.get_scenario(scenario_id)
+    if not s:
+        raise HTTPException(404, "Scenario inconnu")
+    return s
+
+
+@app.get("/api/kb/archetypes")
+def kb_archetypes():
+    """Liste les archetypes residents de la KB avec baseline et scenarios associes."""
+    import kb_loader
+    return {"count": len(kb_loader.get_archetypes()), "archetypes": kb_loader.get_archetypes()}
+
+
+@app.get("/api/kb/residents")
+def kb_residents_enriched():
+    """Residents enrichis : archetype KB, medicaments probables, scenarios preferes."""
+    result = [
+        {
+            "id": r["id"],
+            "name": r["name"],
+            "room": r["room"],
+            "pathologies": r["pathologies"],
+            "archetype_id": r.get("archetype_id", ""),
+            "likely_medications": r.get("likely_medications", []),
+            "preferred_scenarios": r.get("preferred_scenarios", []),
+            "risk_factor": r["risk_factor"],
+        }
+        for r in RESIDENTS_LIST
+    ]
+    return {"count": len(result), "residents": result}
 
 
 @app.get("/api/llm/report/{resident_id}")
@@ -1064,6 +2020,11 @@ async def startup():
     global _loop
     _loop = asyncio.get_event_loop()
     redis_client.delete("residents:all", "zones:all")
+    try:
+        auth_module.seed_demo_accounts(redis_client, RESIDENTS_LIST)
+        log.info("Comptes famille demo amorces")
+    except Exception as e:
+        log.warning(f"Seed comptes famille echoue : {e}")
 
     # Connexion MQTT en thread séparé
     def mqtt_thread():
@@ -1086,5 +2047,6 @@ async def startup():
     # Thread d'escalade
     threading.Thread(target=escalation_loop, daemon=True).start()
     threading.Thread(target=daily_report_loop, daemon=True).start()
+    threading.Thread(target=predictive_analysis_loop, daemon=True).start()
 
     log.info("Backend EHPAD démarré ✓")
