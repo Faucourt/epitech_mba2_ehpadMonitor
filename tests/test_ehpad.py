@@ -41,22 +41,26 @@ def make_alert_engine():
     return AlertEngine(redis_mock, ws_mock)
 
 
-def make_state(hr=72, spo2=96, bp=130, temp=36.7, last_mv=60, is_fall=False, ml_risk=0.0):
+def make_state(hr=72, spo2=96, bp=130, temp=36.7, last_mv=60, is_fall=False,
+               ml_risk=0.0, time_of_day="animation_matin", rr=14):
     return {
         "resident_id": "R001",
         "resident_name": "Test Résident",
         "room": "101",
         "caregiver": "soignant_A",
+        "time_of_day": time_of_day,   # requis pour le mode nuit
         "vitals": {
             "heart_rate": hr,
             "spo2": spo2,
             "blood_pressure_sys": bp,
             "temperature": temp,
+            "respiratory_rate": rr,
         },
         "movement": {
             "last_movement_ago_s": last_mv,
             "is_fall_detected": is_fall,
             "accel_magnitude": 0.1,
+            "is_sleeping": False,
         },
         "ml_risk": ml_risk,
     }
@@ -305,6 +309,107 @@ class TestSimulator:
         sim.accel_magnitude = 10.0  # Chute simulée
         state = sim.tick()
         assert state["movement"]["is_fall_detected"] is True
+
+
+# ============================================================
+# Tests score NEWS2
+# ============================================================
+
+class TestNEWSScore:
+
+    def test_news_normal_returns_zero(self):
+        from alert_engine import compute_news_score
+        vitals = {"heart_rate": 75, "spo2": 97, "blood_pressure_sys": 125, "temperature": 36.8, "respiratory_rate": 14}
+        news = compute_news_score(vitals, {"is_fall_detected": False})
+        assert news["score"] == 0
+        assert news["risk_level"] == "low"
+
+    def test_news_critical_values_high_score(self):
+        from alert_engine import compute_news_score
+        vitals = {"heart_rate": 135, "spo2": 88, "blood_pressure_sys": 88, "temperature": 39.5, "respiratory_rate": 26}
+        news = compute_news_score(vitals, {"is_fall_detected": True})
+        assert news["score"] >= 9
+        assert news["risk_level"] == "high"
+
+    def test_news_fall_adds_consciousness_point(self):
+        from alert_engine import compute_news_score
+        base = compute_news_score({"heart_rate": 75, "spo2": 97, "blood_pressure_sys": 125, "temperature": 36.8, "respiratory_rate": 14}, {"is_fall_detected": False})
+        fall = compute_news_score({"heart_rate": 75, "spo2": 97, "blood_pressure_sys": 125, "temperature": 36.8, "respiratory_rate": 14}, {"is_fall_detected": True})
+        assert fall["score"] == base["score"] + 1
+
+    def test_news_score_in_alert_trigger_data(self):
+        engine = make_alert_engine()
+        state = make_state(spo2=91, hr=115, rr=22)
+        alert = engine.evaluate(state)
+        assert alert is not None
+        assert "news" in alert.trigger_data
+        assert "score" in alert.trigger_data["news"]
+
+
+# ============================================================
+# Tests mode nuit
+# ============================================================
+
+class TestNightMode:
+
+    def test_night_spo2_threshold_more_lenient(self):
+        """SpO2=93% ne doit pas déclencher d'alerte la nuit (désaturation normale)."""
+        engine = make_alert_engine()
+        state = make_state(spo2=93, time_of_day="nuit")
+        state["movement"]["is_sleeping"] = True
+        alert = engine.evaluate(state)
+        # Niveau 3 de jour (spo2 < 93), mais pas la nuit (seuil = 89)
+        if alert:
+            assert alert.level < 3, f"Nuit: spo2=93 ne doit pas déclencher niveau 3, obtenu {alert.level}"
+
+    def test_night_inactivity_no_level1(self):
+        """Inactivité 30 min pendant le sommeil = normal, pas d'alerte."""
+        engine = make_alert_engine()
+        state = make_state(last_mv=2000, time_of_day="nuit")
+        state["movement"]["is_sleeping"] = True
+        alert = engine.evaluate(state)
+        # Niveau 1 ne doit pas déclencher si le résident dort
+        assert alert is None or alert.level > 1
+
+
+# ============================================================
+# Tests endpoints API (nécessitent la stack Docker)
+# ============================================================
+
+class TestAPINewEndpoints:
+
+    def test_api_routine_endpoint(self):
+        with get_api_client() as client:
+            r = client.get("/api/residents/R001/routine")
+        assert r.status_code == 200
+        data = r.json()
+        assert "routine" in data
+        assert "resident_id" in data
+
+    def test_api_famille_requires_code(self):
+        with get_api_client() as client:
+            r = client.get("/api/famille/R001")
+        assert r.status_code == 403
+
+    def test_api_famille_valid_code(self):
+        with get_api_client() as client:
+            r = client.get("/api/famille/R001?code=FAMILLE")
+        assert r.status_code == 200
+        data = r.json()
+        assert "name" in data
+        assert "general_status" in data
+        # Pas de données médicales brutes
+        assert "heart_rate" not in data
+        assert "spo2" not in data
+
+    def test_api_ml_metrics_has_sensitivity(self):
+        with get_api_client() as client:
+            r = client.get("/api/ml/metrics")
+        assert r.status_code == 200
+        metrics = r.json().get("metrics", {})
+        assert "sensitivity" in metrics, "Sensibilité manquante dans les métriques ML"
+        assert "specificity" in metrics, "Spécificité manquante dans les métriques ML"
+        assert "feature_importance" in metrics
 
 
 if __name__ == "__main__":
