@@ -1,0 +1,147 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: ehpad_mqtt
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    networks:
+      - ehpad_net
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-p", "1883", "-t", "health/check", "-m", "ping", "-q", "0"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: ehpad_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --appendfsync everysec
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ehpad_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: ehpad_influx
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=ehpad2024
+      - DOCKER_INFLUXDB_INIT_ORG=ehpad
+      - DOCKER_INFLUXDB_INIT_BUCKET=residents
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=ehpad-super-secret-token
+    volumes:
+      - influx_data:/var/lib/influxdb2
+    networks:
+      - ehpad_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  simulator:
+    build: ./simulator
+    container_name: ehpad_simulator
+    restart: unless-stopped
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - NUM_RESIDENTS=25
+      - DEMO_RESIDENT=R005
+    networks:
+      - ehpad_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os, socket; s=socket.create_connection((os.getenv('MQTT_HOST', 'mosquitto'), int(os.getenv('MQTT_PORT', '1883'))), 3); s.close()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    build: ./backend
+    container_name: ehpad_backend
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - INFLUX_HOST=http://influxdb:8086
+      - INFLUX_TOKEN=ehpad-super-secret-token
+      - INFLUX_ORG=ehpad
+      - INFLUX_BUCKET=residents
+      - DEMO_RESIDENT=R005
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - OLLAMA_MODEL=meditron:7b
+    networks:
+      - ehpad_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  dashboard:
+    build: ./dashboard
+    container_name: ehpad_dashboard
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - BACKEND_URL=http://backend:8000
+    networks:
+      - ehpad_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  ehpad_net:
+    driver: bridge
+
+volumes:
+  influx_data:
+  redis_data:
+  mosquitto_data:
+  mosquitto_logs:
