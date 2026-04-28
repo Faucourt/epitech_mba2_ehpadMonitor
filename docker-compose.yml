@@ -110,6 +110,7 @@ services:
       - DEMO_RESIDENT=R005
       - OLLAMA_HOST=http://host.docker.internal:11434
       - OLLAMA_MODEL=meditron:7b
+      - LLM_DAILY_AUTO_ENABLED=false
       - PATIENT_DATA_DIR=/app/data/patients
     volumes:
       - ./data:/app/data
@@ -121,6 +122,37 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  llm_worker:
+    build: ./backend
+    container_name: ehpad_llm_worker
+    restart: unless-stopped
+    command: ["python", "worker.py"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - INFLUX_HOST=http://influxdb:8086
+      - INFLUX_TOKEN=ehpad-super-secret-token
+      - INFLUX_ORG=ehpad
+      - INFLUX_BUCKET=residents
+      - DEMO_RESIDENT=R005
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - OLLAMA_MODEL=meditron:7b
+      - LLM_DAILY_AUTO_ENABLED=true
+      - PATIENT_DATA_DIR=/app/data/patients
+    volumes:
+      - ./data:/app/data
+    networks:
+      - ehpad_net
 
   dashboard:
     build: ./dashboard

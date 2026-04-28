@@ -284,13 +284,29 @@ function renderResident(r) {
 
         <section class="book-page right" data-tab="photos">
           <h2>Album des activites</h2>
-          <div class="photo-grid">
-            <div class="photo-card"><div class="photo-image p-theatre">Theatre</div><p>Atelier theatre et expression corporelle.</p></div>
-            <div class="photo-card"><div class="photo-image p-dominos">Dominos</div><p>Jeux de table en petit groupe.</p></div>
-            <div class="photo-card"><div class="photo-image p-loto">Loto</div><p>Loto de l'apres-midi en salle commune.</p></div>
-            <div class="photo-card"><div class="photo-image p-dessin">Dessin</div><p>Atelier dessin et couleurs.</p></div>
-            <div class="photo-card"><div class="photo-image p-jardin">Jardin</div><p>Promenade accompagnee au jardin therapeutique.</p></div>
-            <div class="photo-card"><div class="photo-image p-chorale">Chorale</div><p>Chorale et chansons partagees.</p></div>
+          <div class="photo-grid" id="photo-album-grid">
+            ${[
+              {file:'01_theatre_scene.png', nom:'Theatre',  desc:'Atelier theatre et expression corporelle.', fallback:'p-theatre'},
+              {file:'02_dominos_scene.png', nom:'Dominos',  desc:'Jeux de table en petit groupe.',            fallback:'p-dominos'},
+              {file:'03_loto_scene.png',    nom:'Loto',     desc:"Loto de l'apres-midi en salle commune.",    fallback:'p-loto'},
+              {file:'04_dessin_scene.png',  nom:'Dessin',   desc:'Atelier dessin et couleurs.',               fallback:'p-dessin'},
+              {file:'05_jardin_scene.png',  nom:'Jardin',   desc:'Promenade au jardin therapeutique.',         fallback:'p-jardin'},
+              {file:'06_chorale_scene.png', nom:'Chorale',  desc:'Chants en choeur pour tous.',               fallback:'p-chorale'},
+            ].map(a => `
+              <div class="photo-card">
+                <img src="/activites/${a.file}" alt="${a.nom}"
+                  style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+                <div class="photo-image ${a.fallback}" style="display:none">${a.nom}</div>
+                <p style="margin-top:6px;font-weight:700;font-size:.85rem">${a.nom}</p>
+                <p>${a.desc}</p>
+              </div>`).join('')}
+          </div>
+          <div style="text-align:center;margin-top:16px">
+            <a id="album-link" href="/album-activites"
+              style="display:inline-block;background:#b8870b;color:#fff;font-family:'Segoe UI',sans-serif;font-size:.85rem;font-weight:700;padding:9px 20px;border-radius:8px;text-decoration:none;letter-spacing:.02em">
+              Voir l'album complet ✦
+            </a>
           </div>
         </section>
       </div>

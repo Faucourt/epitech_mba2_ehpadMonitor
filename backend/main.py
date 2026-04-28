@@ -424,6 +424,12 @@ def _risk_label(score: float) -> str:
 
 def _safe_state_for_report(resident_id: str) -> dict:
     raw = redis_client.get(f"resident:{resident_id}:state")
+    if not raw and resident_id in RESIDENTS_MAP:
+        state = _safe_state_for_report(resident_id)
+        state["profile"] = RESIDENTS_MAP.get(resident_id, {})
+        state["active_alert"] = _active_alert_for_resident(resident_id)
+        state["source"] = "fallback_profile_history"
+        return state
     profile = RESIDENTS_MAP.get(resident_id, {})
     if raw:
         state = json.loads(raw)
@@ -1599,7 +1605,13 @@ def explain_alert(resident_id: str):
                 alert = item
                 break
     if not alert:
-        raise HTTPException(404, "Aucune alerte connue pour ce resident")
+        return {
+            "resident_id": resident_id,
+            "alert": None,
+            "active": False,
+            "known": False,
+            "professional_summary": "Aucune alerte active ou recente pour ce resident.",
+        }
     trigger = alert.get("trigger_data", {})
     return {
         "resident_id": resident_id,

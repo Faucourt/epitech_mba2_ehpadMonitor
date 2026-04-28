@@ -110,7 +110,7 @@
   .alert-item.level-2 { border-color: var(--yellow); }
   .alert-item.level-3 { border-color: var(--orange); }
   .alert-item.level-4 { border-color: var(--red); }
-  .alert-item.level-5 { border-color: #ff0000; background: #1a0505; animation: blink 1s infinite; }
+  .alert-item.level-5 { border-color: #ff0000; background: #000000; color: #ff3333; animation: blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.7} }
   .alert-name { font-weight: 600; font-size: 13px; }
   .alert-reason { font-size: 11px; color: var(--text2); margin-top: 2px; }
@@ -120,7 +120,7 @@
   .badge-2 { background: #3d2e00; color: var(--yellow); }
   .badge-3 { background: #3d1a00; color: var(--orange); }
   .badge-4 { background: #3d0000; color: var(--red); }
-  .badge-5 { background: #1a0000; color: #ff3333; }
+  .badge-5 { background: #000000; color: #ff3333; border: 1px solid #ff0000; }
 
   /* Resident grid */
   .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -132,7 +132,9 @@
   .demo-banner.active { display: flex; }
   .demo-title { font-size: 13px; font-weight: 700; color: var(--orange); }
   .demo-meta { font-size: 12px; color: var(--text2); }
-  .scenario-chip { display: inline-block; margin-top: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(249,115,22,0.18); color: var(--orange); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .scenario-chip { display: inline-block; margin-top: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(59,130,246,0.12); color: #93c5fd; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .scenario-chip.live { background: rgba(249,115,22,0.18); color: var(--orange); }
+  .scenario-chip.danger { background: rgba(239,68,68,0.18); color: #fecaca; }
 
   .resident-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
   .resident-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
@@ -141,7 +143,7 @@
   .resident-card.alert-2 { border-color: var(--yellow); }
   .resident-card.alert-3 { border-color: var(--orange); box-shadow: 0 0 8px rgba(249,115,22,0.3); }
   .resident-card.alert-4 { border-color: var(--red); box-shadow: 0 0 12px rgba(239,68,68,0.4); }
-  .resident-card.alert-5 { border-color: #ff0000; box-shadow: 0 0 16px rgba(255,0,0,0.5); animation: blink 1s infinite; }
+  .resident-card.alert-5 { border-color: #ff0000; background: #000000; color: #ff3333; box-shadow: 0 0 20px rgba(255,0,0,0.6); animation: blink 1s infinite; }
   .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
   .card-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .card-avatar { width: 38px; height: 38px; border-radius: 10px; overflow: hidden; background: var(--bg3); border: 1px solid var(--border); flex: 0 0 auto; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: var(--blue); }
@@ -225,7 +227,7 @@
   @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   .toast-3 { background: #1a1000; border-color: var(--orange); }
   .toast-4 { background: #1a0000; border-color: var(--red); }
-  .toast-5 { background: #0a0000; border-color: #ff0000; color: #ff6666; }
+  .toast-5 { background: #000000; border-color: #ff0000; color: #ff3333; font-weight: 700; }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -466,6 +468,7 @@
             <div class="sensor-key"><span class="sensor-dot" style="color:#f59e0b;background:#f59e0b"></span>Sol / matelas</div>
             <div class="sensor-key"><span class="sensor-dot" style="color:#ef4444;background:#ef4444"></span>Porte / RFID / SOS</div>
             <div class="sensor-key"><span class="sensor-dot" style="color:#22d3ee;background:#22d3ee"></span>CO2 / son / environnement</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#22d3ee;background:#22d3ee"></span>Salle de bain / mouvement</div>
           </div>
           <div class="model-controls">
             <label>Residents <input id="toggle-residents-3d" type="checkbox" checked onchange="set3DLayer('residents', this.checked)"></label>
@@ -595,6 +598,7 @@ let currentDailyReport = null;
 let alertPanelOpen = false;
 let _llmReportCache = {};  // resident_id → rendered HTML
 let lastToastByAlert = {};
+let demoModeActive = false;
 
 // ============================================================
 // WebSocket
@@ -623,8 +627,9 @@ function connect() {
       const r = msg.data;
       residents[r.resident_id] = { ...residents[r.resident_id], ...r, id: r.resident_id };
       if (r.alert) activeAlerts[r.resident_id] = r.alert;
-      else if (activeAlerts[r.resident_id] && !activeAlerts[r.resident_id].acknowledged) {
-        // Keep alert
+      else if (r.active_alert) activeAlerts[r.resident_id] = r.active_alert;
+      else if (Object.prototype.hasOwnProperty.call(r, 'active_alert') || Number(r.alert_level || 0) === 0) {
+        delete activeAlerts[r.resident_id];
       }
       updateResidentCard(r.resident_id);
       updateStats();
@@ -799,15 +804,62 @@ function openResidentDossier(rid) {
   window.open(`/resident/${rid}`, '_blank');
 }
 
+function renderNightBlock(r) {
+  const isNight = ['nuit', 'coucher', 'sieste'].includes(r.time_of_day);
+  const m = r.movement || {};
+  const isSleeping = m.is_sleeping;
+  if (!isNight && !isSleeping) return '';
+
+  const inactMin = Math.round((m.last_movement_ago_s || 0) / 60);
+  const isFall = m.is_fall_detected;
+  const isErrance = r.movement_scenario === 'errance_nuit' || r.current_zone === 'hors_ehpad';
+  const inRoom = !r.current_zone || r.current_zone.startsWith('ch') || r.current_zone === 'chambre';
+
+  let sleepLabel, sleepColor;
+  if (isFall)             { sleepLabel = '⚠ Chute';          sleepColor = '#ef4444'; }
+  else if (isErrance)     { sleepLabel = '⚠ Errance';        sleepColor = '#f97316'; }
+  else if (!inRoom)       { sleepLabel = 'Hors chambre';      sleepColor = '#f59e0b'; }
+  else if (isSleeping)    { sleepLabel = 'Dort';              sleepColor = '#818cf8'; }
+  else if (inactMin > 90) { sleepLabel = 'Immobile ' + inactMin + 'min'; sleepColor = '#f59e0b'; }
+  else                    { sleepLabel = 'Éveillé';           sleepColor = '#10b981'; }
+
+  const pathologies = r.pathologies || r.profile?.pathologies || [];
+  const spo2Thr = pathologies.includes('bpco') ? '89%' : '91%';
+  const locationTxt = r.current_zone === 'hors_ehpad' ? '⚠ HORS EHPAD'
+    : !inRoom ? `Zone: ${r.current_zone}`
+    : 'En chambre';
+
+  return `
+    <div style="margin-top:7px;padding:6px 8px 5px;border-top:1px solid rgba(99,102,241,0.35);background:rgba(30,27,75,0.45);border-radius:0 0 6px 6px;margin-left:-8px;margin-right:-8px;margin-bottom:-8px">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <span style="font-size:11px">🌙</span>
+        <span style="font-size:10px;font-weight:700;color:#818cf8;letter-spacing:.03em">MODE NUIT</span>
+        <span style="font-size:10px;font-weight:600;color:${sleepColor};margin-left:auto">${sleepLabel}</span>
+      </div>
+      <div style="font-size:10px;color:var(--text2)">Inactivité: ${inactMin} min · ${locationTxt}</div>
+      <div style="font-size:10px;color:#6366f1;margin-top:2px">Seuil SpO2 nuit: ${spo2Thr} · SOS: ${m.sos_pressed ? '⚠ ACTIF' : 'inactif'}</div>
+      ${isErrance ? `<div style="font-size:10px;color:#f97316;font-weight:700;margin-top:2px">⚠ Errance nocturne détectée</div>` : ''}
+    </div>`;
+}
+
 function renderCard(card, r) {
   const level = getAlertLevel(r.id);
   card.className = `resident-card ${level > 0 ? 'alert-' + level : ''}`;
   const v = r.vitals || {};
   const mlRisk = r.ml_risk || 0;
-  const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario;
+  const activeScenario = r.movement_scenario || r.scenario_active || null;
+  const clinicalScenario = r.scenario && !activeScenario ? r.scenario : null;
+  const plannedScenario = !activeScenario && !clinicalScenario ? r.assigned_movement_scenario : null;
   const fugue = r.current_zone === 'hors_ehpad' || r.movement_scenario === 'fugue_hors_ehpad';
   const life = r.life_profile || r.routine_context || {};
   const routine = r.routine_analysis || {};
+  const scenarioChip = activeScenario
+    ? `<span class="scenario-chip ${fugue ? 'danger' : 'live'}">${fugue ? 'FUGUE HORS EHPAD' : activeScenario}</span>`
+    : clinicalScenario
+      ? `<span class="scenario-chip">suivi ${clinicalScenario}</span>`
+      : plannedScenario
+        ? `<span class="scenario-chip">profil ${plannedScenario}</span>`
+        : '';
 
   const statusColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
   const statusColor = statusColors[level] || '#10b981';
@@ -820,7 +872,7 @@ function renderCard(card, r) {
         <div>
         <div class="card-name">${r.name || r.id}</div>
         <div class="card-room">Chambre ${r.room || '—'}</div>
-        ${scenario ? `<span class="scenario-chip">${fugue ? 'FUGUE HORS EHPAD' : scenario}</span>` : ''}
+        ${scenarioChip}
         </div>
       </div>
     </div>
@@ -849,6 +901,7 @@ function renderCard(card, r) {
     <div style="font-size:10px;color:${(routine.score || 0) >= .4 ? 'var(--yellow)' : 'var(--text3)'};margin-top:3px">Routine: ${routine.status === 'learning' ? 'apprentissage' : `${Math.round((routine.score || 0) * 100)}%`}</div>
     <div style="font-size:10px;color:var(--text2);margin-top:3px">${life.archetype_label || life.label || 'Profil standard'} · ${life.supervision || 'surveillance'}</div>
     <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.time_label || '--:--'} · ${r.routine_label || 'routine'}${r.meal_mode === 'chambre' ? ' · repas en chambre' : (r.current_zone === 'salle_manger' ? ` · table ${r.dining_table || '?'}` : '')}</div>
+    ${renderNightBlock(r)}
   `;
 }
 
@@ -881,14 +934,14 @@ function updateDemoBanner() {
   const meta = document.getElementById('demo-meta');
   const r = residents.R005;
   if (!banner || !meta) return;
-  if (!r) {
+  if (!r || !demoModeActive) {
     banner.classList.remove('active');
     return;
   }
   const v = r.vitals || {};
   const mlRisk = ((r.ml_risk || 0) * 100).toFixed(0);
   const level = getAlertLevel('R005');
-  const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario || 'hypoxie';
+  const scenario = r.movement_scenario || r.scenario_active || r.scenario || 'démo';
   banner.classList.add('active');
   meta.textContent = `SpO2 ${v.spo2 ?? '—'}% · FC ${v.heart_rate ?? '—'} bpm · ML ${mlRisk}% signalé 30 min avant · alerte niveau ${level || '—'} · ${scenario}`;
 }
@@ -1495,6 +1548,7 @@ async function triggerValidationScenario(scenario) {
   const residentId = currentDetailResident || 'R005';
   try {
     await fetch(`${BACKEND_HTTP}/api/simulator/scenario?resident_id=${residentId}&scenario=${scenario}`, { method: 'POST' });
+    demoModeActive = true;
     currentFilter = 'demo';
     openDetail(residentId);
     setTimeout(() => loadReadiness(false), 800);
@@ -1730,11 +1784,11 @@ const ROOMS_BY_FLOOR = {
   1: ['201','202','203','204','208','209','210','211','212','213','214','215','216','217','218','219','220'],
 };
 const DINING_TABLES_2D = [
-  { id: 'T1', x: 450, y: 266, seats: 5 },
-  { id: 'T2', x: 506, y: 266, seats: 5 },
-  { id: 'T3', x: 450, y: 300, seats: 5 },
-  { id: 'T4', x: 506, y: 300, seats: 5 },
-  { id: 'T5', x: 478, y: 330, seats: 5 },
+  { id: 'T1', x: 438, y: 270, seats: 5 },
+  { id: 'T2', x: 490, y: 270, seats: 5 },
+  { id: 'T3', x: 438, y: 292, seats: 5 },
+  { id: 'T4', x: 490, y: 292, seats: 5 },
+  { id: 'T5', x: 536, y: 280, seats: 5 },
 ];
 
 function showFloor(floor, btn) {
@@ -1781,9 +1835,14 @@ function renderFloorPlan(floor) {
     html += `
       <g style="cursor:pointer" onclick="openDetail('${resident?.id || ''}')">
         <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="${fillColor}" rx="6" stroke="${borderColor}" stroke-width="${level > 0 ? 2 : 1}"/>
-        <text x="${x + rw/2}" y="${y + 18}" fill="#e2e8f0" font-size="12" font-weight="600" text-anchor="middle" font-family="system-ui">Ch. ${room}</text>
+        <rect x="${x + rw - 23}" y="${y + 7}" width="17" height="18" fill="#1f3b4d" rx="3" stroke="#22d3ee" stroke-width="0.8"/>
+        <circle cx="${x + rw - 14.5}" cy="${y + 14}" r="2.8" fill="#22d3ee">
+          <title>Salle de bain chambre ${room} · capteur mouvement</title>
+        </circle>
+        <text x="${x + rw - 14.5}" y="${y + 22}" fill="#67e8f9" font-size="5.8" text-anchor="middle" font-family="system-ui">SDB</text>
+        <text x="${x + rw/2 - 4}" y="${y + 18}" fill="#e2e8f0" font-size="12" font-weight="600" text-anchor="middle" font-family="system-ui">Ch. ${room}</text>
         ${resident ? `
-          <text x="${x + rw/2}" y="${y + 32}" fill="#94a3b8" font-size="10" text-anchor="middle" font-family="system-ui">${resident.name?.split(' ')[0] || ''}</text>
+          <text x="${x + rw/2 - 4}" y="${y + 32}" fill="#94a3b8" font-size="10" text-anchor="middle" font-family="system-ui">${resident.name?.split(' ')[0] || ''}</text>
           <circle cx="${x + 10}" cy="${y + 48}" r="4" fill="${occupancyColor}"/>
           <text x="${x + 18}" y="${y + 51}" fill="${occupancyColor}" font-size="9" font-family="system-ui">${occupancyText}</text>
           <text x="${x + 8}" y="${y + 63}" fill="#94a3b8" font-size="9" font-family="system-ui">${resident.current_zone || 'zone ?'}</text>
@@ -1912,19 +1971,19 @@ function renderDiningOverlay(floor) {
       ${DINING_TABLES_2D.map((t) => {
         const count = byTable[t.id]?.length || 0;
         return `
-          <rect x="${t.x}" y="${t.y}" width="34" height="18" fill="#594331" rx="5" stroke="#f59e0b" stroke-width="1"/>
-          <text x="${t.x + 17}" y="${t.y + 13}" fill="#fde68a" font-size="8" text-anchor="middle" font-family="system-ui">${t.id} · ${count}</text>
+          <rect x="${t.x}" y="${t.y}" width="30" height="14" fill="#594331" rx="4" stroke="#f59e0b" stroke-width="1"/>
+          <text x="${t.x + 15}" y="${t.y + 10}" fill="#fde68a" font-size="7" text-anchor="middle" font-family="system-ui">${t.id} · ${count}</text>
           ${Array.from({ length: t.seats }).map((_, i) => {
-            const sx = t.x + 4 + (i % 3) * 12;
-            const sy = t.y + (i < 3 ? -7 : 22);
+            const sx = t.x + 4 + (i % 3) * 10;
+            const sy = t.y + (i < 3 ? -5 : 18);
             const r = byTable[t.id]?.[i];
-            return `<circle cx="${sx}" cy="${sy}" r="4" fill="${r ? '#10b981' : '#334155'}" stroke="${r ? '#d1fae5' : '#64748b'}" stroke-width="1">
+            return `<circle cx="${sx}" cy="${sy}" r="3.4" fill="${r ? '#10b981' : '#334155'}" stroke="${r ? '#d1fae5' : '#64748b'}" stroke-width="1">
               <title>${r ? r.name : 'Place libre'} · ${t.id}</title>
             </circle>`;
           }).join('')}
         `;
       }).join('')}
-      <text x="499" y="356" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="system-ui">
+      <text x="499" y="312" fill="#94a3b8" font-size="7.5" text-anchor="middle" font-family="system-ui">
         Regroupement repas: petit dej, dejeuner, gouter, diner
       </text>
     </g>
@@ -1958,24 +2017,44 @@ function openDetail(rid) {
   // Alerte active
   if (alert && !alert.resolved) {
     const levelColors = ['', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
+    const isVital = alert.level === 5;
+    const bg = isVital ? '#000000' : `${levelColors[alert.level]}22`;
+    const border = levelColors[alert.level];
     html += `
-      <div style="background:${levelColors[alert.level]}22;border:1px solid ${levelColors[alert.level]};border-radius:8px;padding:10px;margin-bottom:12px">
-        <div style="font-weight:700;color:${levelColors[alert.level]}">⚠ Niveau ${alert.level} — ${alert.level_name}</div>
+      ${isVital ? `
+      <div style="background:#000;border:2px solid #ff0000;border-radius:8px;padding:12px;margin-bottom:10px;animation:blink 1s infinite">
+        <div style="font-size:16px;font-weight:900;color:#ff0000;text-align:center;letter-spacing:.05em">⚠ DANGER VITAL — APPELER LE 15</div>
+        <div style="text-align:center;margin-top:6px">
+          <a href="tel:15" style="display:inline-block;background:#ff0000;color:#fff;font-weight:900;font-size:18px;padding:8px 24px;border-radius:8px;text-decoration:none;letter-spacing:.05em">📞 SAMU 15</a>
+        </div>
+        <div style="font-size:11px;color:#ff6666;text-align:center;margin-top:6px">Direction + tous soignants notifiés</div>
+      </div>` : ''}
+      <div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:10px;margin-bottom:12px${isVital ? ';color:#ff3333' : ''}">
+        <div style="font-weight:700;color:${border}">⚠ Niveau ${alert.level} — ${alert.level_name}</div>
         <div style="font-size:12px;margin-top:4px">${alert.reason}</div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Position: ${formatAlertLocation(alert)}</div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Capteurs actifs: ${formatSensorEvents(alert.sensor_events)}</div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Soignants notifiés: ${formatNotifiedStaff(alert.notified_staff)}</div>
+        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Position: ${formatAlertLocation(alert)}</div>
+        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Capteurs actifs: ${formatSensorEvents(alert.sensor_events)}</div>
+        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Soignants notifiés: ${formatNotifiedStaff(alert.notified_staff)}</div>
       </div>
       <button class="ack-btn" onclick="acknowledgeAlert('${rid}')">✓ Acquitter l'alerte</button>
     `;
   }
 
-  const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario;
-  if (rid === 'R005' || scenario) {
+  const activeScenario = r.movement_scenario || r.scenario_active || null;
+  const clinicalScenario = r.scenario && !activeScenario ? r.scenario : null;
+  const plannedScenario = !activeScenario && !clinicalScenario ? r.assigned_movement_scenario : null;
+  if (activeScenario) {
     html += `
       <div style="background:rgba(249,115,22,0.10);border:1px solid rgba(249,115,22,0.45);border-radius:8px;padding:10px;margin-bottom:12px">
-        <div style="font-weight:700;color:var(--orange)">Scénario démo${scenario ? ` · ${scenario}` : ''}</div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text2)">ML signalé 30 min avant l'alerte clinique forte.</div>
+        <div style="font-weight:700;color:var(--orange)">Scénario actif · ${activeScenario}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Scénario réellement en cours dans le simulateur.</div>
+      </div>
+    `;
+  } else if (clinicalScenario || plannedScenario) {
+    html += `
+      <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.28);border-radius:8px;padding:10px;margin-bottom:12px">
+        <div style="font-weight:700;color:#93c5fd">${clinicalScenario ? 'Suivi clinique' : 'Scénario profil prévu'} · ${clinicalScenario || plannedScenario}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Information de profil, non comptée comme alerte active.</div>
       </div>
     `;
   }
@@ -2383,14 +2462,17 @@ function showTab(name) {
 
 function setFilter(f, btn) {
   currentFilter = f;
+  if (f !== 'demo') demoModeActive = false;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const grid = document.getElementById('resident-grid');
   grid.innerHTML = '';
   renderGrid();
+  updateDemoBanner();
 }
 
 function focusDemoResident(btn) {
+  demoModeActive = true;
   setFilter('demo', btn);
   openDetail('R005');
 }
@@ -2466,6 +2548,7 @@ const SENSOR_STYLE = {
   matelas: ['Matelas', 0xf59e0b], sol: ['Sol intelligent', 0xf59e0b],
   porte: ['Porte', 0xef4444], rfid: ['RFID', 0xef4444], ir: ['IR', 0xef4444], sos: ['SOS', 0xef4444],
   co2: ['CO2', 0x22d3ee], son: ['Son', 0x22d3ee], ambient: ['Ambiant', 0x22d3ee], fumee: ['Fumee', 0xef4444], co: ['CO', 0xef4444], temp: ['Temperature', 0x22d3ee],
+  sdb_pir: ['Mouvement salle de bain', 0x22d3ee],
   dashboard: ['Dashboard', 0xffffff], garde_corps: ['Garde-corps', 0x94a3b8],
 };
 
@@ -2672,8 +2755,40 @@ function addSpace3D(space) {
   label.position.set(space.x, y + 1.55, space.z);
   label.userData.floor = space.floor;
   model3D.wallsGroup.add(label);
-  if (space.type === 'room') addBed3D(space);
+  if (space.type === 'room') {
+    addBed3D(space);
+    addBathroom3D(space);
+  }
   placeSensors3D(space);
+}
+
+function addBathroom3D(space) {
+  const THREE = model3D.THREE;
+  const y = space.floor * 6;
+  const bx = space.x + space.w * 0.28;
+  const bz = space.z - space.d * 0.22;
+  const bathMat = new THREE.MeshStandardMaterial({ color: 0x1f3b4d, transparent: true, opacity: 0.92, roughness: 0.72 });
+  const bath = new THREE.Mesh(new THREE.BoxGeometry(space.w * 0.3, 0.1, space.d * 0.34), bathMat);
+  bath.position.set(bx, y + 0.36, bz);
+  bath.userData = { type: 'sensor_zone', name: `Salle de bain ${space.room}`, room: space.room, floor: space.floor };
+  const bathWallMat = new THREE.MeshStandardMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.18, roughness: 0.8 });
+  [[0, -space.d * 0.17, space.w * 0.3, 0.06], [-space.w * 0.15, 0, 0.06, space.d * 0.34]].forEach(([dx, dz, w, d]) => {
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(w, 0.7, d), bathWallMat);
+    wall.position.set(bx + dx, y + 0.72, bz + dz);
+    wall.userData.floor = space.floor;
+    model3D.wallsGroup.add(wall);
+  });
+  const sensor = new THREE.Mesh(
+    new THREE.SphereGeometry(0.16, 16, 10),
+    new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 0.55 })
+  );
+  sensor.position.set(bx, y + 1.25, bz);
+  sensor.userData = { type: 'sensor', sensor: 'sdb_pir', label: 'Mouvement salle de bain', location: `Salle de bain ${space.room}`, room: space.room, floor: space.floor };
+  const label = makeLabelSprite('SDB', 0x67e8f9, 0.42);
+  label.position.set(bx, y + 1.52, bz);
+  label.userData.floor = space.floor;
+  model3D.wallsGroup.add(bath, sensor, label);
+  model3D.interactives.push(bath, sensor);
 }
 
 function addBed3D(space) {

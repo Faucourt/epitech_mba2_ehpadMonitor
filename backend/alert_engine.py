@@ -267,6 +267,7 @@ class AlertEngine:
                 add(staff_id, "urgence tous soignants")
         if level >= AlertLevel.DANGER_VITAL:
             add("direction", "danger vital direction")
+            add("samu_15", "APPEL SAMU 15 REQUIS — danger vital")
         return targets
 
     def evaluate(self, state: dict) -> Optional[Alert]:

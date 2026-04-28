@@ -36,6 +36,12 @@ app.get('/mobile/resident/:id', (req, res) => {
   });
 });
 
+app.get('/album-activites', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'album_activites.html'), {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  });
+});
+
 app.get('/simulateur/config', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'simulateur_config.html'), {
     headers: { 'Content-Type': 'text/html; charset=utf-8' }
