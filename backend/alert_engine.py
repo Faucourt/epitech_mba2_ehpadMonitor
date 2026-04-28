@@ -177,6 +177,14 @@ class Alert:
     resolved: bool = False
 
     def to_dict(self):
+        now = time.time()
+        elapsed = round(now - self.created_at)
+        cfg = LEVEL_CONFIG[self.level]
+        delay = cfg.get("escalade_delay_s")
+        escalates_in_s = None
+        if delay and not self.acknowledged and not self.resolved:
+            remaining = delay - elapsed
+            escalates_in_s = max(0, round(remaining))
         return {
             "id": self.id,
             "resident_id": self.resident_id,
@@ -189,9 +197,9 @@ class Alert:
             "position": self.position,
             "sensor_events": self.sensor_events,
             "level": int(self.level),
-            "level_name": LEVEL_CONFIG[self.level]["name"],
-            "color": LEVEL_CONFIG[self.level]["color"],
-            "action": LEVEL_CONFIG[self.level]["action"],
+            "level_name": cfg["name"],
+            "color": cfg["color"],
+            "action": cfg["action"],
             "reason": self.reason,
             "trigger_data": self.trigger_data,
             "notified_staff": self.notified_staff,
@@ -200,7 +208,9 @@ class Alert:
             "acknowledged_by": self.acknowledged_by,
             "escalated_from": self.escalated_from,
             "resolved": self.resolved,
-            "time_since_s": round(time.time() - self.created_at),
+            "time_since_s": elapsed,
+            "escalates_in_s": escalates_in_s,
+            "escalation_delay_s": delay,
         }
 
 
@@ -278,13 +288,18 @@ class AlertEngine:
         sos_pressed = m.get("sos_pressed", False)
         sensor_events = state.get("sensor_events", {})
         ml_risk = state.get("ml_risk", 0.0)
-        routine_change = state.get("movement_scenario") in {
-            "errance_nuit", "sortie_patio", "immobilite_salle_repos", "aller_toilettes_nuit",
-            "desorientation_ascenseur", "agitation_couloir", "isolement_chambre", "retour_kine_fatigue",
-            "promenade_jardin", "sortie_jardin_non_accompagnee", "chute_jardin",
-            "fugue_hors_ehpad", "chute_trajet_repas", "desorientation_avant_repas",
-            "malaise_retour_repas",
-        }
+        routine_analysis = state.get("routine_analysis") or {}
+        routine_score = float(routine_analysis.get("score") or 0)
+        routine_change = (
+            routine_analysis.get("alert_level", 0) >= 2
+            or state.get("movement_scenario") in {
+                "errance_nuit", "sortie_patio", "immobilite_salle_repos", "aller_toilettes_nuit",
+                "desorientation_ascenseur", "agitation_couloir", "isolement_chambre", "retour_kine_fatigue",
+                "promenade_jardin", "sortie_jardin_non_accompagnee", "chute_jardin",
+                "fugue_hors_ehpad", "chute_trajet_repas", "desorientation_avant_repas",
+                "malaise_retour_repas",
+            }
+        )
         current_zone = state.get("current_zone") or state.get("zone")
         pathologies = set(state.get("pathologies") or state.get("profile", {}).get("pathologies") or [])
         mobility = state.get("mobility") or state.get("profile", {}).get("mobility")
@@ -300,7 +315,7 @@ class AlertEngine:
 
         # Seuils SpO2 adaptés (plus tolérants la nuit — désaturation attendue)
         spo2_thr_2 = 91 if night_sleep else 94
-        spo2_thr_3 = 88 if night_sleep else 92
+        spo2_thr_3 = 88 if night_sleep else 93
         spo2_thr_4 = 84 if night_sleep else 88
         spo2_thr_5 = 82 if night_sleep else 85
         if "bpco" in pathologies:
@@ -342,6 +357,10 @@ class AlertEngine:
         evidence.append(f"ML={ml_risk:.0%}")
         if state.get("routine_label"):
             evidence.append(f"routine={state.get('routine_label')}")
+        if routine_analysis:
+            evidence.append(f"routine_score={routine_score:.2f}")
+            if routine_analysis.get("flags"):
+                evidence.append("routine_flags=" + " | ".join(routine_analysis.get("flags", [])[:2]))
 
         # --- NIVEAU 5 : Danger vital ---
         if (last_mv > immobility_thr_3 and ((spo2 < spo2_thr_4) or (hr > 140) or (bp < 70))) or (spo2 < spo2_thr_5 and hr > 130) or (hr > 150) or (bp < 60) or (bp > 240) or news_score >= 10:
@@ -363,9 +382,11 @@ class AlertEngine:
                 reason = f"Constantes dangereuses — SpO2={spo2}%, FC={hr}, PA={bp}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 3 : Alerte ---
-        elif (spo2 < spo2_thr_3) or (hr > 125) or (hr < 45) or (bp > 200) or (bp < 80) or (temp > 39.3) or (rr and rr > 24) or (last_mv > immobility_thr_3) or (ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2)) or news_score >= 6:
+        elif (spo2 < spo2_thr_3) or (hr > 125) or (hr < 45) or (bp > 200) or (bp < 80) or (temp > 39.3) or (rr and rr > 24) or (last_mv > immobility_thr_3) or (routine_score >= 0.70 and (news_score >= 2 or ml_risk > 0.55 or frail_risk)) or (ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2)) or news_score >= 6:
             level = AlertLevel.ALERT
-            if ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2):
+            if routine_score >= 0.70 and (news_score >= 2 or ml_risk > 0.55 or frail_risk):
+                reason = f"Rupture de routine importante: {'; '.join(routine_analysis.get('flags', [])[:2])}"
+            elif ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2):
                 reason = f"IA predit risque de malaise eleve ({ml_risk:.0%}) [NEWS={news_score}]"
             elif last_mv > immobility_thr_3:
                 reason = f"Absence de mouvement depuis {last_mv//60} min"
@@ -373,10 +394,12 @@ class AlertEngine:
                 reason = f"Constantes anormales — SpO2={spo2}%, FC={hr}, PA={bp}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 2 : Attention ---
-        elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or (routine_change and frail_risk) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
+        elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or routine_score >= 0.40 or (routine_change and frail_risk) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
             level = AlertLevel.ATTENTION
             if ml_risk > 0.65 and (news_score >= 2 or routine_change):
                 reason = f"IA detecte un risque modere ({ml_risk:.0%}) [NEWS={news_score}]"
+            elif routine_score >= 0.40:
+                reason = f"Changement de routine notable: {'; '.join(routine_analysis.get('flags', [])[:2])}"
             elif routine_change:
                 reason = f"Changement de routine detecte: {state.get('movement_scenario')}"
             else:
@@ -419,7 +442,7 @@ class AlertEngine:
             sensor_events=sensor_events,
             level=level,
             reason=reason,
-            trigger_data={"vitals": v, "movement": m, "ml_risk": ml_risk, "sensor_events": sensor_events, "news": news},
+            trigger_data={"vitals": v, "movement": m, "ml_risk": ml_risk, "sensor_events": sensor_events, "news": news, "routine_analysis": routine_analysis},
             notified_staff=self._notification_targets(state, level),
         )
         alert.trigger_data["evidence"] = evidence
@@ -514,11 +537,15 @@ class AlertEngine:
             return True
         return False
 
-    def check_escalations(self):
-        """Appelé périodiquement pour escalader les alertes non acquittées."""
+    def check_escalations(self) -> list[dict]:
+        """Appelé périodiquement. Escalade les alertes non acquittées et retourne les dicts escaladés."""
         now = time.time()
-        to_escalate = []
 
+        # Purge _resolved_recently (entrées > 15 min)
+        cutoff = now - 900
+        self._resolved_recently = {k: v for k, v in self._resolved_recently.items() if v > cutoff}
+
+        to_escalate = []
         for rid, alert in self.active_alerts.items():
             if alert.acknowledged or alert.resolved:
                 continue
@@ -529,7 +556,9 @@ class AlertEngine:
                 if next_level <= AlertLevel.DANGER_VITAL:
                     to_escalate.append((rid, alert, AlertLevel(next_level)))
 
+        escalated_dicts = []
         for rid, old_alert, new_level in to_escalate:
+            elapsed_min = round((now - old_alert.created_at) / 60)
             old_alert.resolved = True
             escalated_targets = list(old_alert.notified_staff)
             if new_level >= AlertLevel.URGENCE:
@@ -551,7 +580,7 @@ class AlertEngine:
                 position=old_alert.position,
                 sensor_events=old_alert.sensor_events,
                 level=new_level,
-                reason=f"[ESCALADE] Non acquitté en temps → {old_alert.reason}",
+                reason=f"[ESCALADE N{int(old_alert.level)}→N{int(new_level)}] Non acquitté après {elapsed_min} min → {old_alert.reason}",
                 trigger_data=old_alert.trigger_data,
                 notified_staff=escalated_targets,
                 escalated_from=int(old_alert.level),
@@ -559,7 +588,10 @@ class AlertEngine:
             self.active_alerts[rid] = escalated
             self.alert_history.append(escalated)
             self._save_to_redis(escalated)
-            log.warning(f"[ESCALADE] {old_alert.resident_name}: {old_alert.level.name} → {new_level.name}")
+            log.warning(f"[ESCALADE] {old_alert.resident_name}: N{int(old_alert.level)} → N{int(new_level)} après {elapsed_min} min")
+            escalated_dicts.append(escalated.to_dict())
+
+        return escalated_dicts
 
     def get_all_active(self) -> list:
         return [a.to_dict() for a in self.active_alerts.values() if not a.resolved]

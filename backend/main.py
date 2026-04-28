@@ -14,6 +14,7 @@ import asyncio
 import logging
 import threading
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
@@ -30,6 +31,7 @@ from alert_engine import AlertEngine
 from ws_manager import WebSocketManager
 from ml_model import MalaisePredictor
 from a2a_agents import agent_card, run_a2a_pipeline
+from routine_engine import update_and_detect, get_routine_summary
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [BACKEND] %(message)s')
 log = logging.getLogger(__name__)
@@ -48,7 +50,21 @@ INFLUX_SAMPLE_INTERVAL_S = float(os.getenv("INFLUX_SAMPLE_INTERVAL_S", "5"))
 WS_RESIDENT_MIN_INTERVAL_S = float(os.getenv("WS_RESIDENT_MIN_INTERVAL_S", "2"))
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "meditron:7b")
+LLM_DAILY_AUTO_ENABLED = os.getenv("LLM_DAILY_AUTO_ENABLED", "true").lower() not in {"0", "false", "no"}
+LLM_DAILY_TTL_DAYS = int(os.getenv("LLM_DAILY_TTL_DAYS", "45"))
 FAMILLE_ADMIN_TOKEN = os.getenv("FAMILLE_ADMIN_TOKEN", "ADMIN_EHPAD_2024")
+PATIENT_DATA_DIR = Path(os.getenv("PATIENT_DATA_DIR", "/app/data/patients"))
+
+SIMULATION_SCENARIOS = [
+    "hypoxie", "tachycardie", "chute", "hypotension", "fievre",
+    "chute_couloir", "chute_chambre", "malaise_salle_manger", "errance_nuit",
+    "sortie_patio", "immobilite_salle_repos", "aller_toilettes_nuit",
+    "desorientation_ascenseur", "agitation_couloir", "isolement_chambre",
+    "retour_kine_fatigue", "promenade_jardin", "sortie_jardin_non_accompagnee",
+    "chute_jardin", "fugue_hors_ehpad", "chute_trajet_repas",
+    "desorientation_avant_repas", "malaise_retour_repas", "malaise_repas",
+    "risque_nuit", "jardin",
+]
 
 # --- Profils résidents (importé depuis le simulateur, ou hardcodé)
 from resident_profiles import RESIDENTS_MAP, RESIDENTS_LIST, FAMILY_CODE_MAP, CAREGIVERS
@@ -219,6 +235,31 @@ def _resident_caregiver(resident_id: str, profile: Optional[dict] = None) -> str
     return override or (profile or RESIDENTS_MAP.get(resident_id, {})).get("caregiver", "")
 
 
+def _resident_config(resident_id: str) -> dict:
+    file_profile = _resident_file_profile(resident_id)
+    if file_profile:
+        return file_profile
+    raw = redis_client.get(f"sim:profile:{resident_id}")
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw)
+    except Exception:
+        return {}
+
+
+def _effective_resident_profile(resident_id: str) -> dict:
+    base = dict(RESIDENTS_MAP.get(resident_id, {}))
+    cfg = _resident_config(resident_id)
+    for key in [
+        "age", "pathologies", "mobility", "risk_factor", "caregiver",
+        "meal_mode", "care_level", "assigned_scenarios", "notes",
+    ]:
+        if key in cfg:
+            base[key] = cfg[key]
+    return base
+
+
 def _staff_notification_preview(caregiver_id: str, level: int) -> list[dict]:
     targets = []
     def add(cid: str, reason: str):
@@ -251,11 +292,11 @@ def publish_mqtt_control(topic: str, payload: dict):
 
 
 def _simulated_history_rows(resident_id: str, days: int = 30, step_hours: int = 6):
-    profile = RESIDENTS_MAP.get(resident_id, {})
+    profile = _effective_resident_profile(resident_id)
     if not profile:
         raise HTTPException(404, "Resident non trouve")
 
-    days = max(30, min(days, 120))
+    days = max(30, min(days, 730))
     step_hours = max(1, min(step_hours, 24))
     points = int((days * 24) / step_hours) + 1
     risk = float(profile.get("risk_factor", 0.3))
@@ -520,6 +561,98 @@ def _remember_prediction(resident_id: str, result: dict):
     redis_client.expire(key, 48 * 3600)
 
 
+WEEKLY_LIFE_PLAN = [
+    {"day": "Lundi", "menu": {"lunch": "Veloute de legumes, poulet roti, puree de carottes, fromage blanc", "dinner": "Potage, omelette aux fines herbes, salade de pommes de terre, compote"}, "activities": {"morning": "Atelier memoire", "afternoon": "Dominos et jeux de societe", "evening": "Lecture calme"}},
+    {"day": "Mardi", "menu": {"lunch": "Salade de lentilles, poisson sauce citron, riz, yaourt", "dinner": "Soupe de saison, gratin de courgettes, fruit cuit"}, "activities": {"morning": "Kine douce", "afternoon": "Atelier dessin", "evening": "Musique douce"}},
+    {"day": "Mercredi", "menu": {"lunch": "Betteraves, boeuf bourguignon, coquillettes, fromage", "dinner": "Veloute, quiche lorraine, salade, dessert lacte"}, "activities": {"morning": "Revue de presse", "afternoon": "Loto", "evening": "Film ancien"}},
+    {"day": "Jeudi", "menu": {"lunch": "Carottes rapees, dinde aux champignons, haricots verts, riz au lait", "dinner": "Soupe, poisson froid mayonnaise legere, pommes vapeur, poire"}, "activities": {"morning": "Gym assise", "afternoon": "Theatre et expression", "evening": "Discussion accompagnee"}},
+    {"day": "Vendredi", "menu": {"lunch": "Terrine de legumes, colin, semoule, fromage blanc aux fruits", "dinner": "Potage, croque monsieur adapte, salade, compote"}, "activities": {"morning": "Atelier cuisine", "afternoon": "Chorale", "evening": "Jeux de cartes"}},
+    {"day": "Samedi", "menu": {"lunch": "Salade composee, roti de veau, gratin dauphinois, tarte aux pommes", "dinner": "Soupe, jambon blanc, puree, yaourt"}, "activities": {"morning": "Promenade jardin", "afternoon": "Rencontre familles", "evening": "Television accompagnee"}},
+    {"day": "Dimanche", "menu": {"lunch": "Menu dominical: entree fraiche, poulet fermier, pommes sautees, patisserie", "dinner": "Potage, assiette froide, fromage, fruit"}, "activities": {"morning": "Temps calme / messe TV", "afternoon": "Gouter musical", "evening": "Retour au calme"}},
+]
+
+
+def _zone_label(zone: str) -> str:
+    if not zone:
+        return "zone non renseignee"
+    if str(zone).startswith("ch"):
+        return "chambre"
+    labels = {
+        "salle_manger": "salle a manger",
+        "salle_commune": "salle commune",
+        "salle_activites": "salle d'activites",
+        "salle_repos": "salle de repos",
+        "couloir_principal": "couloir",
+        "jardin": "jardin therapeutique",
+        "patio": "patio",
+        "kine": "kinesitherapie",
+        "hors_ehpad": "sortie hors etablissement",
+    }
+    return labels.get(zone, str(zone).replace("_", " "))
+
+
+def _routine_label_for_family(routine: str) -> str:
+    labels = {
+        "petit_dejeuner": "petit-dejeuner",
+        "petit_dejeuner_en_chambre": "petit-dejeuner en chambre",
+        "dejeuner": "dejeuner",
+        "dejeuner_en_chambre": "dejeuner en chambre",
+        "diner": "diner",
+        "diner_en_chambre": "diner en chambre",
+        "gouter": "gouter",
+        "trajet_repas": "trajet vers le repas",
+        "nuit": "repos de nuit",
+        "routine": "activite habituelle",
+        "animation_apres_midi": "animation",
+    }
+    return labels.get(routine or "", str(routine or "activite habituelle").replace("_", " "))
+
+
+def _resident_week_life(resident_id: str, state: Optional[dict] = None) -> dict:
+    now = datetime.now()
+    today_index = now.weekday()
+    profile = _effective_resident_profile(resident_id)
+    meal_mode = (state or {}).get("meal_mode") or profile.get("meal_mode") or "salle"
+    care_level = (state or {}).get("care_level") or profile.get("care_level") or ""
+    if meal_mode == "chambre" or care_level == "chambre":
+        meal_note = "Repas servis en chambre selon l'autonomie du jour."
+    elif meal_mode == "accompagne":
+        meal_note = "Repas en salle avec accompagnement soignant."
+    else:
+        meal_note = "Repas en salle a manger."
+
+    recent = []
+    for row in _simulated_history_rows(resident_id, days=30, step_hours=6)[-6:]:
+        recent.append({
+            "time": row.get("time"),
+            "label": _routine_label_for_family(row.get("routine")),
+            "zone": _zone_label(row.get("zone")),
+            "event": row.get("event"),
+        })
+
+    today = WEEKLY_LIFE_PLAN[today_index]
+    current_hour = now.hour
+    done = []
+    if current_hour >= 10:
+        done.append(today["activities"]["morning"])
+    if current_hour >= 15:
+        done.append(today["activities"]["afternoon"])
+    if current_hour >= 19:
+        done.append(today["activities"]["evening"])
+    if not done:
+        done.append("Accueil et installation du matin")
+
+    return {
+        "today": today["day"],
+        "meal_note": meal_note,
+        "today_menu": today["menu"],
+        "today_activities": today["activities"],
+        "activities_done_today": done,
+        "recent_activity": recent,
+        "week": WEEKLY_LIFE_PLAN,
+    }
+
+
 def _a2a_prediction_for_resident(state: dict, hist: dict, active_alert: Optional[dict] = None) -> dict:
     resident_id = state.get("resident_id")
     history_rows = _simulated_history_rows(resident_id, days=30, step_hours=6) if resident_id else []
@@ -529,7 +662,7 @@ def _a2a_prediction_for_resident(state: dict, hist: dict, active_alert: Optional
 
 def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = None, force: bool = False) -> dict:
     report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:v5:{report_date}:{resident_id}"
+    redis_key = f"daily_report:v6:{report_date}:{resident_id}"
     if not force:
         cached = redis_client.get(redis_key)
         if cached:
@@ -572,6 +705,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
             "movement": state.get("movement", {}),
             "sensor_events": state.get("sensor_events", {}),
         },
+        "life_week": _resident_week_life(resident_id, state),
         "risk": {
             "ml_risk": round(risk, 2),
             "label": _risk_label(risk),
@@ -615,7 +749,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
 
 def _build_global_daily_report(report_date: Optional[str] = None, force: bool = False) -> dict:
     report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:v5:{report_date}:global"
+    redis_key = f"daily_report:v6:{report_date}:global"
     if not force:
         cached = redis_client.get(redis_key)
         if cached:
@@ -673,7 +807,7 @@ def daily_report_loop():
     while True:
         try:
             today = _local_report_date()
-            existing = redis_client.get(f"daily_report:v5:{today}:global")
+            existing = redis_client.get(f"daily_report:v6:{today}:global")
             if today != _last_daily_report_date and not existing:
                 _build_global_daily_report(today, force=False)
                 _last_daily_report_date = today
@@ -834,9 +968,10 @@ def _handle_vitals(state: dict):
         redis_client.expire("sensors:health", 3600)
 
     # Analyse de routine C4 : détecter déviations comportementales
-    routine_deviation = _track_routine(state)
-    if routine_deviation:
-        state["routine_deviation"] = routine_deviation
+    routine_analysis = update_and_detect(redis_client, state)
+    state["routine_analysis"] = routine_analysis
+    if routine_analysis.get("alert_level", 0) >= 2:
+        state["routine_deviation"] = " ; ".join(routine_analysis.get("flags", [])[:3])
 
     # Stocker état courant dans Redis
     redis_client.setex(f"resident:{rid}:state", 30, json.dumps(state))
@@ -853,8 +988,9 @@ def _handle_vitals(state: dict):
         "sensor_events": state.get("sensor_events", {}),
         "sensor_health": state.get("sensor_health", []),
         "life_profile": state.get("life_profile"),
-            "routine_context": state.get("routine_context"),
-            "room_sensors": state.get("room_sensors", []),
+        "routine_context": state.get("routine_context"),
+        "routine_analysis": state.get("routine_analysis"),
+        "room_sensors": state.get("room_sensors", []),
         "vitals": state["vitals"],
         "movement": state.get("movement", {}),
         "ml_risk": ml_risk,
@@ -862,6 +998,7 @@ def _handle_vitals(state: dict):
         "scenario": state.get("scenario_active"),
         "movement_scenario": state.get("movement_scenario"),
         "assigned_movement_scenario": state.get("assigned_movement_scenario"),
+        "assigned_scenarios": state.get("assigned_scenarios"),
         "time_of_day": state.get("time_of_day"),
         "time_label": state.get("time_label"),
         "routine_label": state.get("routine_label"),
@@ -901,6 +1038,7 @@ def _handle_vitals(state: dict):
                 "sensor_health": state.get("sensor_health", []),
                 "life_profile": state.get("life_profile"),
                 "routine_context": state.get("routine_context"),
+                "routine_analysis": state.get("routine_analysis"),
                 "room_sensors": state.get("room_sensors", []),
                 "vitals": state["vitals"],
                 "movement": state.get("movement", {}),
@@ -909,6 +1047,7 @@ def _handle_vitals(state: dict):
                 "scenario": state.get("scenario_active"),
                 "movement_scenario": state.get("movement_scenario"),
                 "assigned_movement_scenario": state.get("assigned_movement_scenario"),
+                "assigned_scenarios": state.get("assigned_scenarios"),
                 "time_of_day": state.get("time_of_day"),
                 "time_label": state.get("time_label"),
                 "routine_label": state.get("routine_label"),
@@ -1031,7 +1170,13 @@ def _write_influx(state: dict):
 def escalation_loop():
     while True:
         try:
-            alert_engine.check_escalations()
+            escalated = alert_engine.check_escalations()
+            for alert_dict in escalated:
+                if _loop and not _loop.is_closed():
+                    asyncio.run_coroutine_threadsafe(
+                        ws_manager.send_alert(alert_dict),
+                        _loop,
+                    )
         except Exception as e:
             log.error(f"Escalade error: {e}")
         time.sleep(15)
@@ -1088,6 +1233,7 @@ def get_resident(resident_id: str):
 
 @app.get("/api/residents/{resident_id}/history")
 def get_resident_history(resident_id: str, minutes: int = 60):
+    minutes = max(1, min(int(minutes or 30), 24 * 60))
     """Retourne l'historique InfluxDB du résident."""
     try:
         query_api = influx.query_api()
@@ -1111,9 +1257,42 @@ def get_resident_history(resident_id: str, minutes: int = 60):
                     "respiratory_rate": record.values.get("respiratory_rate"),
                     "ml_risk": record.values.get("ml_risk"),
                 })
-        return {"resident_id": resident_id, "history": rows}
+        rows.sort(key=lambda r: r["time"])
+        if not rows:
+            rows = _fallback_recent_history(resident_id, minutes)
+        return {"resident_id": resident_id, "minutes": minutes, "history": rows}
     except Exception as e:
-        return {"resident_id": resident_id, "history": [], "error": str(e)}
+        return {"resident_id": resident_id, "minutes": minutes, "history": _fallback_recent_history(resident_id, minutes), "error": str(e)}
+
+
+def _fallback_recent_history(resident_id: str, minutes: int = 30) -> list[dict]:
+    raw = redis_client.get(f"resident:{resident_id}:state")
+    if not raw:
+        return []
+    state = json.loads(raw)
+    vitals = state.get("vitals", {})
+    risk = float(state.get("ml_risk", 0) or 0)
+    now = datetime.now(timezone.utc)
+    count = max(2, min(180, int(minutes)))
+    seed = sum(ord(c) for c in resident_id)
+    rows: list[dict] = []
+    for i in range(count):
+        age = count - 1 - i
+        ts = now - timedelta(minutes=age)
+        wave = np.sin((i + seed) / 4.0)
+        slow = np.sin((i + seed) / 11.0)
+        rows.append({
+            "time": ts.isoformat(),
+            "heart_rate": round(float(vitals.get("heart_rate", 72) or 72) + wave * 2.5 + slow, 1),
+            "spo2": round(float(vitals.get("spo2", 96) or 96) + slow * 0.5, 1),
+            "blood_pressure_sys": round(float(vitals.get("blood_pressure_sys", 130) or 130) + slow * 4, 1),
+            "blood_pressure_dia": round(float(vitals.get("blood_pressure_dia", 75) or 75) + wave * 2, 1),
+            "temperature": round(float(vitals.get("temperature", 36.8) or 36.8) + slow * 0.08, 2),
+            "respiratory_rate": round(float(vitals.get("respiratory_rate", 16) or 16) + wave * 0.6, 1),
+            "ml_risk": round(max(0, min(1, risk + slow * 0.03)), 2),
+            "source": "fallback_recent_redis",
+        })
+    return rows
 
 
 @app.get("/api/residents/{resident_id}/history/simulated")
@@ -1141,16 +1320,239 @@ def set_simulator_speed(speed: float = 1.0):
 def trigger_simulator_scenario(resident_id: str = DEMO_RESIDENT, scenario: str = "hypoxie"):
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
-    allowed = {
-        "hypoxie", "tachycardie", "chute", "hypotension", "fievre",
-        "chute_couloir", "fugue_hors_ehpad", "malaise_repas", "risque_nuit",
-        "jardin", "chute_jardin",
-    }
+    allowed = set(SIMULATION_SCENARIOS)
     if scenario not in allowed:
         raise HTTPException(400, f"Scenario inconnu: {scenario}")
     payload = {"resident_id": resident_id, "scenario": scenario, "updated_at": datetime.utcnow().isoformat() + "Z"}
     publish_mqtt_control("ehpad/control/scenario", payload)
     return {"ok": True, **payload}
+
+
+class SimulatorProfileUpdate(BaseModel):
+    age: Optional[int] = None
+    pathologies: Optional[list[str]] = None
+    mobility: Optional[str] = None
+    risk_factor: Optional[float] = None
+    caregiver: Optional[str] = None
+    meal_mode: Optional[str] = None
+    care_level: Optional[str] = None
+    assigned_scenarios: Optional[list[str]] = None
+    notes: Optional[str] = None
+
+
+class HistoryGenerateRequest(BaseModel):
+    resident_id: Optional[str] = None
+    months: int = 12
+    detailed_days: int = 30
+    step_hours: int = 6
+    overwrite: bool = True
+
+
+def _profile_payload(resident_id: str) -> dict:
+    base = dict(RESIDENTS_MAP.get(resident_id, {}))
+    cfg = _resident_config(resident_id)
+    effective = _effective_resident_profile(resident_id)
+    return {
+        "resident_id": resident_id,
+        "base": base,
+        "config": cfg,
+        "effective": effective,
+        "history": _patient_history_meta(resident_id),
+    }
+
+
+def _patient_dir(resident_id: str) -> Path:
+    return PATIENT_DATA_DIR / resident_id
+
+
+def _write_json_file(path: Path, payload) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _patient_file_paths(resident_id: str) -> dict:
+    base = _patient_dir(resident_id)
+    return {
+        "folder": str(base),
+        "profile": str(base / "profile.json"),
+        "history_daily": str(base / "history_daily.json"),
+        "history_detailed": str(base / "history_detailed.json"),
+        "history_meta": str(base / "history_meta.json"),
+    }
+
+
+def _resident_file_profile(resident_id: str) -> dict:
+    path = _patient_dir(resident_id) / "profile.json"
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    # Ancien format export: {"base":..., "config":..., "effective":...}
+    if isinstance(payload, dict) and isinstance(payload.get("effective"), dict):
+        return payload["effective"]
+    return payload if isinstance(payload, dict) else {}
+
+
+def _export_patient_profile_files(resident_id: str) -> None:
+    profile = _effective_resident_profile(resident_id)
+    _write_json_file(_patient_dir(resident_id) / "profile.json", profile)
+
+
+def _patient_history_meta(resident_id: str) -> dict:
+    raw = redis_client.get(f"patient:{resident_id}:history:meta")
+    if raw:
+        try:
+            return json.loads(raw)
+        except Exception:
+            pass
+    return {"status": "missing", "daily_days": 0, "detailed_days": 0}
+
+
+def _daily_summary_from_rows(rows: list[dict]) -> list[dict]:
+    by_day: dict[str, list[dict]] = {}
+    for row in rows:
+        day = str(row.get("time", ""))[:10]
+        if day:
+            by_day.setdefault(day, []).append(row)
+    summaries = []
+    for day, items in sorted(by_day.items()):
+        alerts = [x for x in items if int(x.get("alert_level") or 0) > 0]
+        zones = {}
+        for x in items:
+            z = x.get("zone") or "inconnue"
+            zones[z] = zones.get(z, 0) + 1
+        def avg(field: str):
+            vals = [float(x[field]) for x in items if x.get(field) is not None]
+            return round(sum(vals) / len(vals), 2) if vals else None
+        summaries.append({
+            "date": day,
+            "samples": len(items),
+            "avg_hr": avg("heart_rate"),
+            "avg_spo2": avg("spo2"),
+            "avg_bp_sys": avg("blood_pressure"),
+            "avg_ml_risk": avg("ml_risk"),
+            "max_alert_level": max([int(x.get("alert_level") or 0) for x in items] or [0]),
+            "alert_count": len(alerts),
+            "events": list(dict.fromkeys([x.get("event") for x in alerts if x.get("event")]))[:6],
+            "dominant_zone": max(zones, key=zones.get) if zones else None,
+            "zones": zones,
+        })
+    return summaries
+
+
+def _generate_patient_history(resident_id: str, months: int, detailed_days: int, step_hours: int, overwrite: bool) -> dict:
+    months = max(1, min(int(months or 12), 36))
+    detailed_days = max(7, min(int(detailed_days or 30), 120))
+    step_hours = max(1, min(int(step_hours or 6), 24))
+    total_days = months * 30
+    if not overwrite and redis_client.exists(f"patient:{resident_id}:history:meta"):
+        return _patient_history_meta(resident_id)
+    daily_rows = _simulated_history_rows(resident_id, days=total_days, step_hours=24)
+    detailed_rows = _simulated_history_rows(resident_id, days=detailed_days, step_hours=step_hours)
+    daily_summary = _daily_summary_from_rows(daily_rows)
+    redis_client.set(f"patient:{resident_id}:history:daily", json.dumps(daily_summary, ensure_ascii=False))
+    redis_client.set(f"patient:{resident_id}:history:detailed", json.dumps(detailed_rows, ensure_ascii=False))
+    meta = {
+        "status": "ready",
+        "resident_id": resident_id,
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "months": months,
+        "daily_days": len(daily_summary),
+        "detailed_days": detailed_days,
+        "step_hours": step_hours,
+        "storage": {
+            "profiles": f"Redis sim:profile:{resident_id}",
+            "daily_history": f"Redis patient:{resident_id}:history:daily",
+            "detailed_history": f"Redis patient:{resident_id}:history:detailed",
+            "live_timeseries": "InfluxDB bucket residents",
+            "json_folder": str(_patient_dir(resident_id)),
+        },
+    }
+    redis_client.set(f"patient:{resident_id}:history:meta", json.dumps(meta, ensure_ascii=False))
+    paths = _patient_file_paths(resident_id)
+    _export_patient_profile_files(resident_id)
+    _write_json_file(Path(paths["history_daily"]), daily_summary)
+    _write_json_file(Path(paths["history_detailed"]), detailed_rows)
+    _write_json_file(Path(paths["history_meta"]), meta)
+    return meta
+
+
+@app.get("/api/simulator/config")
+def get_simulator_config():
+    return {
+        "storage_policy": {
+            "profiles": f"JSON source par resident dans {PATIENT_DATA_DIR}/Rxxx/profile.json + cache Redis sim:profile:{{resident_id}}",
+            "live_state": "Redis court terme + WebSocket",
+            "routine_baseline": "Redis 30 jours, cle routine:{resident_id}:{period}",
+            "long_history": "Redis dossiers patient generes + InfluxDB pour les series live",
+            "json_files": f"Source et exports lisibles sur disque dans {PATIENT_DATA_DIR}",
+        },
+        "data_dir": str(PATIENT_DATA_DIR),
+        "scenarios": SIMULATION_SCENARIOS,
+        "profiles": [_profile_payload(rid) for rid in RESIDENTS_MAP.keys()],
+    }
+
+
+@app.put("/api/simulator/config/residents/{resident_id}")
+def update_simulator_profile(resident_id: str, body: SimulatorProfileUpdate):
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident inconnu")
+    data = body.dict(exclude_unset=True)
+    if "risk_factor" in data and data["risk_factor"] is not None:
+        data["risk_factor"] = max(0.0, min(1.0, float(data["risk_factor"])))
+    if "age" in data and data["age"] is not None:
+        data["age"] = max(50, min(110, int(data["age"])))
+    if "mobility" in data and data["mobility"] not in {"bonne", "moyenne", "faible", "tres_faible"}:
+        raise HTTPException(400, "Mobilite invalide")
+    if "assigned_scenarios" in data:
+        unknown = [s for s in (data["assigned_scenarios"] or []) if s not in SIMULATION_SCENARIOS]
+        if unknown:
+            raise HTTPException(400, f"Scenarios inconnus: {', '.join(unknown)}")
+    current = _effective_resident_profile(resident_id)
+    current.update(data)
+    current["updated_at"] = datetime.utcnow().isoformat() + "Z"
+    redis_client.set(f"sim:profile:{resident_id}", json.dumps(current, ensure_ascii=False))
+    if data.get("caregiver"):
+        redis_client.set(f"resident:{resident_id}:caregiver", data["caregiver"])
+    _write_json_file(_patient_dir(resident_id) / "profile.json", current)
+    history_meta = _generate_patient_history(resident_id, 12, 30, 6, True)
+    publish_mqtt_control("ehpad/control/profile", {
+        "resident_id": resident_id,
+        "profile": current,
+        "updated_at": current["updated_at"],
+    })
+    return {"ok": True, "history_regenerated": history_meta, **_profile_payload(resident_id)}
+
+
+@app.post("/api/simulator/config/history/generate")
+def generate_simulator_history(body: HistoryGenerateRequest):
+    targets = [body.resident_id] if body.resident_id else list(RESIDENTS_MAP.keys())
+    for rid in targets:
+        if rid not in RESIDENTS_MAP:
+            raise HTTPException(404, f"Resident inconnu: {rid}")
+    results = [
+        _generate_patient_history(rid, body.months, body.detailed_days, body.step_hours, body.overwrite)
+        for rid in targets
+    ]
+    return {"ok": True, "count": len(results), "histories": results}
+
+
+@app.get("/api/residents/{resident_id}/dossier/history")
+def get_patient_dossier_history(resident_id: str):
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident inconnu")
+    daily = redis_client.get(f"patient:{resident_id}:history:daily")
+    detailed = redis_client.get(f"patient:{resident_id}:history:detailed")
+    return {
+        "resident_id": resident_id,
+        "profile": _effective_resident_profile(resident_id),
+        "meta": _patient_history_meta(resident_id),
+        "json_files": _patient_file_paths(resident_id),
+        "daily": json.loads(daily) if daily else [],
+        "detailed": json.loads(detailed) if detailed else [],
+    }
 
 
 @app.get("/api/alerts")
@@ -1694,30 +2096,12 @@ def get_elopement_alerts():
 
 @app.get("/api/residents/{resident_id}/routine")
 def get_resident_routine(resident_id: str):
-    """Analyse comportementale C4 — baseline par période de journée."""
-    profile = RESIDENTS_MAP.get(resident_id)
-    if not profile:
-        raise HTTPException(404, "Résident non trouvé")
-    periods = ["lever_toilette", "petit_dej", "soins_matin", "animation_matin",
-               "trajet_dejeuner", "dejeuner", "sieste", "animation_apres_midi",
-               "gouter", "trajet_diner", "diner", "soiree", "coucher", "nuit"]
-    routine = {}
-    for tod in periods:
-        key = f"routine:{resident_id}:{tod}"
-        entries = redis_client.lrange(key, 0, -1)
-        if len(entries) < 3:
-            routine[tod] = {"samples": len(entries), "avg_hr": None, "std_hr": None}
-            continue
-        hrs = [json.loads(e)["hr"] for e in entries]
-        routine[tod] = {
-            "samples": len(hrs),
-            "avg_hr": round(float(np.mean(hrs)), 1),
-            "std_hr": round(float(np.std(hrs)), 1),
-            "min_hr": int(min(hrs)),
-            "max_hr": int(max(hrs)),
-        }
-    return {"resident_id": resident_id, "name": profile.get("name"), "routine": routine}
-
+    """Analyse comportementale C4 - baseline multi-signaux par periode."""
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident non trouve")
+    summary = get_routine_summary(redis_client, resident_id)
+    summary["name"] = RESIDENTS_MAP[resident_id].get("name")
+    return summary
 
 from fastapi import Header as _Header
 from pydantic import BaseModel as _BaseModel
@@ -1761,7 +2145,12 @@ def famille_login(body: _LoginBody):
         raise HTTPException(401, "Identifiants incorrects")
     token, resident_id = result
     profile = RESIDENTS_MAP.get(resident_id, {})
-    return {"token": token, "resident_id": resident_id, "name": profile.get("name", resident_id)}
+    return {
+        "token": token,
+        "resident_id": resident_id,
+        "name": profile.get("name", resident_id),
+        "avatar": profile.get("avatar", ""),
+    }
 
 
 @app.post("/api/famille/logout")
@@ -1795,8 +2184,10 @@ def get_famille_view(resident_id: str, authorization: str = _Header(None)):
         general_status = "Situation stable"
     from resident_profiles import CAREGIVERS
     caregiver_name = CAREGIVERS.get(profile.get("caregiver", ""), {}).get("name", "")
+    life_week = _resident_week_life(resident_id, state)
     return {
         "name": profile.get("name", resident_id),
+        "avatar": profile.get("avatar", ""),
         "room": state.get("room"),
         "floor": state.get("floor"),
         "general_status": general_status,
@@ -1804,6 +2195,7 @@ def get_famille_view(resident_id: str, authorization: str = _Header(None)):
         "activity": state.get("routine_label") or state.get("time_label") or state.get("activity", ""),
         "caregiver": caregiver_name,
         "last_update": state.get("timestamp", ""),
+        "life_week": life_week,
     }
 
 
@@ -1908,74 +2300,174 @@ def kb_residents_enriched():
     return {"count": len(result), "residents": result}
 
 
+from llm_service import run_report_sync, start_report_job, get_report_result
+
+
+def _llm_daily_key(report_date: str, resident_id: str) -> str:
+    return f"llm:daily:v1:{report_date}:{resident_id}"
+
+
+def _llm_daily_index_key(report_date: str) -> str:
+    return f"llm:daily:v1:{report_date}"
+
+
+def _get_cached_daily_llm(report_date: str, resident_id: str) -> Optional[dict]:
+    raw = redis_client.get(_llm_daily_key(report_date, resident_id))
+    return json.loads(raw) if raw else None
+
+
+def _llm_alerts_for_resident(resident_id: str) -> list[dict]:
+    return [a for a in alert_engine.get_history(100) if a["resident_id"] == resident_id]
+
+
 @app.get("/api/llm/report/{resident_id}")
-async def get_llm_report(resident_id: str):
-    """Génère un rapport quotidien via Meditron:7b (Ollama local) — C2."""
+async def get_llm_report(resident_id: str, force: bool = False):
+    """
+    Rapport LLM quotidien — synchrone, attend le résultat.
+    RAG KB clinique (HAS/RCP), sortie JSON structurée Pydantic, suivi latence.
+    """
+    report_date = _local_report_date()
+    if not force:
+        cached = _get_cached_daily_llm(report_date, resident_id)
+        if cached:
+            cached["cached"] = True
+            return cached
+
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
         raise HTTPException(404, "Résident non trouvé")
     state = json.loads(raw)
     profile = RESIDENTS_MAP.get(resident_id, {})
+    alerts_today = _llm_alerts_for_resident(resident_id)
+    clinical_history = _build_resident_daily_report(resident_id, report_date=report_date, force=False)
 
-    v = state["vitals"]
-    ml_risk = state.get("ml_risk", 0)
-    ml_level = "élevé" if ml_risk > 0.7 else "modéré" if ml_risk > 0.4 else "faible"
-    alerts_today = [a for a in alert_engine.get_history(100) if a["resident_id"] == resident_id]
-    alert_lines = "\n".join(f"- {a['reason']}" for a in alerts_today[:5]) or "- Aucune alerte aujourd'hui"
-    pathologies = ", ".join(profile.get("pathologies", [])) or "Aucune"
+    result = await run_report_sync(
+        resident_id=resident_id,
+        resident_name=profile.get("name", resident_id),
+        profile=profile,
+        state=state,
+        alerts_today=alerts_today,
+        ollama_host=OLLAMA_HOST,
+        ollama_model=OLLAMA_MODEL,
+        redis_client=redis_client,
+        clinical_history=clinical_history,
+    )
+    result["date"] = report_date
+    result["generated_at"] = datetime.utcnow().isoformat() + "Z"
+    ttl = LLM_DAILY_TTL_DAYS * 86400
+    redis_client.setex(_llm_daily_key(report_date, resident_id), ttl, json.dumps(result, ensure_ascii=False))
+    redis_client.hset(_llm_daily_index_key(report_date), resident_id, json.dumps(result, ensure_ascii=False))
+    redis_client.expire(_llm_daily_index_key(report_date), ttl)
+    return result
 
-    prompt = f"""You are a medical AI assistant for a French nursing home (EHPAD). Write a concise daily clinical report in French for the following resident.
 
-Resident: {profile.get('name', resident_id)}, {profile.get('age', '?')} ans
-Room: {profile.get('room', '?')}
-Pathologies: {pathologies}
-Mobility: {profile.get('mobility', '?')}
+@app.post("/api/llm/report/{resident_id}/start")
+async def start_llm_report(resident_id: str):
+    """
+    Lance la génération LLM en arrière-plan, retourne un job_id immédiatement.
+    Utiliser GET /api/llm/result/{job_id} pour récupérer le résultat.
+    """
+    raw = redis_client.get(f"resident:{resident_id}:state")
+    if not raw:
+        raise HTTPException(404, "Résident non trouvé")
+    state = json.loads(raw)
+    profile = RESIDENTS_MAP.get(resident_id, {})
+    alerts_today = _llm_alerts_for_resident(resident_id)
+    clinical_history = _build_resident_daily_report(resident_id, force=False)
 
-Current vital signs:
-- Heart rate: {v['heart_rate']:.0f} bpm
-- SpO2: {v['spo2']:.1f}%
-- Blood pressure: {v['blood_pressure_sys']:.0f} mmHg (systolic)
-- Temperature: {v['temperature']:.1f}°C
-- Respiratory rate: {v.get('respiratory_rate', 16):.0f} /min
+    job_id = start_report_job(
+        redis_client=redis_client,
+        resident_id=resident_id,
+        resident_name=profile.get("name", resident_id),
+        profile=profile,
+        state=state,
+        alerts_today=alerts_today,
+        ollama_host=OLLAMA_HOST,
+        ollama_model=OLLAMA_MODEL,
+        clinical_history=clinical_history,
+    )
+    return {"job_id": job_id, "status": "pending", "resident_id": resident_id}
 
-AI malaise risk score: {ml_risk:.0%} ({ml_level})
 
-Alerts today:
-{alert_lines}
-
-Write a 3-4 sentence clinical summary in French for the nursing staff, highlighting any concerns and recommended observations. Be concise and professional."""
-
-    try:
-        import httpx
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            resp = await client.post(
-                f"{OLLAMA_HOST}/api/generate",
-                json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
-            )
-            resp.raise_for_status()
-            llm_text = resp.json().get("response", "").strip()
-            source = "meditron:7b (Ollama local)"
-    except Exception as e:
-        log.warning(f"Ollama unavailable ({e}), using fallback summary")
-        llm_text = (
-            f"{profile.get('name', resident_id)} ({profile.get('age', '?')} ans) — "
-            f"FC {v['heart_rate']:.0f} bpm, SpO2 {v['spo2']:.1f}%, "
-            f"PA {v['blood_pressure_sys']:.0f} mmHg, T° {v['temperature']:.1f}°C. "
-            f"Risque IA : {ml_level} ({ml_risk:.0%}). "
-            f"{len(alerts_today)} alerte(s) aujourd'hui."
-        )
-        source = "fallback (Ollama non disponible)"
-
+@app.get("/api/llm/daily/{date}")
+async def get_daily_llm_reports(date: str):
+    report_date = _local_report_date(date)
+    raw_map = redis_client.hgetall(_llm_daily_index_key(report_date))
+    reports = [json.loads(v) for v in raw_map.values()]
+    reports.sort(key=lambda r: (r.get("report", {}).get("niveau_risque") == "eleve", r.get("ml_risk", 0)), reverse=True)
     return {
-        "resident_id": resident_id,
-        "resident_name": profile.get("name", resident_id),
-        "date": datetime.utcnow().date().isoformat(),
-        "report": llm_text,
-        "model": source,
-        "alerts_count_today": len(alerts_today),
-        "ml_risk": round(ml_risk, 2),
-        "ml_risk_level": ml_level,
+        "date": report_date,
+        "count": len(reports),
+        "expected": len(RESIDENTS_MAP),
+        "complete": len(reports) >= len(RESIDENTS_MAP),
+        "reports": reports,
     }
+
+
+@app.get("/api/llm/daily/{date}/{resident_id}")
+async def get_daily_llm_report_for_resident(date: str, resident_id: str, generate_if_missing: bool = True):
+    report_date = _local_report_date(date)
+    cached = _get_cached_daily_llm(report_date, resident_id)
+    if cached:
+        cached["cached"] = True
+        return cached
+    if not generate_if_missing:
+        raise HTTPException(404, "Rapport LLM quotidien non genere")
+    return await get_llm_report(resident_id, force=True)
+
+
+def daily_llm_report_loop():
+    """Genere automatiquement un rapport LLM quotidien par resident."""
+    if not LLM_DAILY_AUTO_ENABLED:
+        log.info("Rapport LLM quotidien automatique desactive")
+        return
+    last_attempt_date = None
+    while True:
+        try:
+            today = _local_report_date()
+            index_key = _llm_daily_index_key(today)
+            generated = redis_client.hlen(index_key)
+            if generated < len(RESIDENTS_MAP) or last_attempt_date != today:
+                last_attempt_date = today
+                for resident_id in RESIDENTS_MAP.keys():
+                    if redis_client.exists(_llm_daily_key(today, resident_id)):
+                        continue
+                    try:
+                        asyncio.run(get_llm_report(resident_id, force=False))
+                        time.sleep(1.0)
+                    except Exception as exc:
+                        log.warning(f"Rapport LLM quotidien ignore pour {resident_id}: {exc}")
+                final_count = redis_client.hlen(index_key)
+                redis_client.setex(
+                    f"llm:daily:v1:{today}:status",
+                    LLM_DAILY_TTL_DAYS * 86400,
+                    json.dumps({
+                        "date": today,
+                        "generated": final_count,
+                        "expected": len(RESIDENTS_MAP),
+                        "complete": final_count >= len(RESIDENTS_MAP),
+                        "updated_at": datetime.utcnow().isoformat() + "Z",
+                    }),
+                )
+                log.info(f"Rapports LLM quotidiens: {final_count}/{len(RESIDENTS_MAP)} pour {today}")
+        except Exception as e:
+            log.error(f"Rapport LLM quotidien loop error: {e}")
+        time.sleep(300)
+
+
+@app.get("/api/llm/result/{job_id}")
+async def get_llm_result(job_id: str):
+    """Résultat d'un job LLM lancé via /start — retourne pending ou done."""
+    return get_report_result(redis_client, job_id)
+
+
+@app.get("/api/llm/audit")
+async def get_llm_audit():
+    """Historique des 200 derniers appels LLM : latence, modèle, niveau risque."""
+    raw_entries = redis_client.lrange("llm:audit", 0, 199)
+    entries = [json.loads(e) for e in raw_entries]
+    avg_ms = int(sum(e.get("duration_ms", 0) for e in entries) / len(entries)) if entries else 0
+    return {"count": len(entries), "avg_duration_ms": avg_ms, "entries": entries}
 
 
 # ============================================================
@@ -2048,5 +2540,6 @@ async def startup():
     threading.Thread(target=escalation_loop, daemon=True).start()
     threading.Thread(target=daily_report_loop, daemon=True).start()
     threading.Thread(target=predictive_analysis_loop, daemon=True).start()
+    threading.Thread(target=daily_llm_report_loop, daemon=True).start()
 
     log.info("Backend EHPAD démarré ✓")
