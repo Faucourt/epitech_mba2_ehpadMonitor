@@ -22,6 +22,28 @@ Validation:
 - simulator healthy;
 - Redis, MQTT, InfluxDB healthy.
 
+## Identifiants a donner au jury
+
+| Espace | URL | Identifiant | Mot de passe / token |
+|---|---|---|---|
+| Dashboard central | http://localhost:3002 | aucun | aucun |
+| Soignant A | http://localhost:3002/soignant | `soignant_A` | `EHPAD2024!` |
+| Soignant B | http://localhost:3002/soignant | `soignant_B` | `EHPAD2024!` |
+| Soignant C | http://localhost:3002/soignant | `soignant_C` | `EHPAD2024!` |
+| Chef de garde | http://localhost:3002/soignant | `chef_garde` | `EHPAD2024!` |
+| Direction | http://localhost:3002/soignant | `direction` | `EHPAD2024!` |
+| Famille Edith Piaf | http://localhost:3002/famille.html | `piaf` | `piaf105` |
+| Famille Marie Curie | http://localhost:3002/famille.html | `curie` | `curie101` |
+| Admin familles | http://localhost:3002/admin_famille.html | token admin | `ADMIN_EHPAD_2024` |
+
+Patients utiles pour la demo:
+
+| Resident | Chambre | Lien direct |
+|---|---:|---|
+| `R005` Edith Piaf | 105 | http://localhost:3002/resident/R005 |
+| `R019` Dalida | 214 | http://localhost:3002/resident/R019 |
+| `R024` Michel Sardou | 219 | http://localhost:3002/resident/R024 |
+
 ## 2. Onglet Validation pro
 
 Ouvrir:

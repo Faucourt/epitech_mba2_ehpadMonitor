@@ -6,9 +6,10 @@
   <title>EPicare Palace — Intervention</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; background: #0f1422; color: #e5edf8; }
-    .app { max-width: 460px; margin: 0 auto; min-height: 100vh; background: #111827; }
-    header { position: sticky; top: 0; z-index: 2; background: rgba(17,24,39,.97); border-bottom: 1px solid #26334c; padding: 12px; }
+    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; background: #0f1422; color: #e5edf8; display: flex; justify-content: center; align-items: flex-start; padding: 16px; }
+    .app { width: min(390px, 100%); height: min(820px, calc(100vh - 32px)); background: #111827; border: 10px solid #05070c; border-radius: 34px; box-shadow: 0 24px 70px rgba(0,0,0,0.45); overflow-y: auto; position: relative; }
+    .app::before { content: ""; position: sticky; top: 0; left: 50%; transform: translateX(-50%); display: block; width: 112px; height: 24px; margin: 0 auto -24px; background: #05070c; border-radius: 0 0 16px 16px; z-index: 4; }
+    header { position: sticky; top: 0; z-index: 2; background: rgba(17,24,39,.97); border-bottom: 1px solid #26334c; padding: 38px 12px 12px; }
     .topline { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
     .identity { display: flex; gap: 10px; align-items: center; min-width: 0; }
     .avatar { width: 48px; height: 48px; border-radius: 14px; overflow: hidden; background: #26334c; border: 1px solid #334155; flex: 0 0 auto; display: grid; place-items: center; font-weight: 900; }
@@ -16,7 +17,8 @@
     h1, h2, p { margin: 0; }
     h1 { font-size: 18px; }
     h2 { font-size: 12px; color: #9fb0c7; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
-    button, a.button { border: 0; border-radius: 10px; background: #2563eb; color: white; padding: 9px 11px; font-weight: 800; text-decoration: none; cursor: pointer; font-size: 12px; }
+    button, a.button { border: 0; border-radius: 10px; background: #2563eb; color: white; padding: 9px 11px; font-weight: 800; text-decoration: none; cursor: pointer; font-size: 12px; line-height: 1.2; }
+    a.button.secondary-link { background: #26334c; color: #dbeafe; border: 1px solid #334155; }
     .content { padding: 12px; display: grid; gap: 12px; }
     .card { background: #151c2d; border: 1px solid #26334c; border-radius: 12px; padding: 12px; }
     .muted { color: #9fb0c7; }
@@ -37,9 +39,18 @@
     .rows { display: grid; gap: 7px; }
     .row { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid #26334c; padding-bottom: 7px; font-size: 13px; }
     .row:last-child { border-bottom: 0; padding-bottom: 0; }
-    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; }
+    .actions .full-dpi { grid-column: 1 / -1; background: #26334c; color: #dbeafe; border: 1px solid #334155; min-height: 34px; display: grid; place-items: center; font-size: 11px; padding: 7px 9px; }
     .danger { background: #dc2626; }
     .ok { background: #059669; }
+    @media (max-width: 900px) {
+      body { display: block; min-height: 100dvh; padding: 0; background: #111827; }
+      .app { width: 100%; max-width: none; min-height: 100dvh; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; }
+      .app::before { display: none; }
+      header { padding: max(12px, env(safe-area-inset-top)) 12px 12px; }
+      .content { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+      button, a.button { min-height: 36px; padding: 8px 9px; }
+    }
   </style>
 </head>
 <body>
@@ -53,7 +64,7 @@
           <p class="muted small" id="meta">Chargement...</p>
           </div>
         </div>
-        <a class="button" href="/soignant">Retour</a>
+        <a class="button secondary-link" id="back-link" href="/soignant">Retour</a>
       </div>
     </header>
 
@@ -82,7 +93,7 @@
           <button class="ok" onclick="trace('taken')">Je prends</button>
           <button onclick="trace('seen')">Vu</button>
           <button class="danger" onclick="trace('acknowledged')">Acquitter</button>
-          <a class="button" href="#" id="full-link">DPI complet</a>
+          <a class="button full-dpi" href="#" id="full-link">DPI complet</a>
         </div>
       </div>
     </section>
@@ -91,9 +102,56 @@
   <script>
     const BACKEND_HTTP = `${location.protocol}//${location.hostname}:8001`;
     const residentId = location.pathname.split('/').filter(Boolean)[2] || 'R005';
+    const params = new URLSearchParams(location.search);
+    let staffId = params.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
+    let staffToken = params.get('token') || localStorage.getItem('ehpad_staff_token') || '';
+    const returnPath = params.get('return') || (staffId ? `/soignant/${staffId}` : '/soignant');
+    let breakGlassReason = '';
     let state = null;
     let dpi = null;
     let alertExplain = null;
+
+    if (params.get('staff') && params.get('token')) {
+      localStorage.setItem('ehpad_staff_id', staffId);
+      localStorage.setItem('ehpad_staff_token', staffToken);
+    }
+
+    function authHeaders(extra = {}) {
+      const headers = staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
+      if (breakGlassReason) headers['X-Break-Glass-Reason'] = breakGlassReason;
+      return headers;
+    }
+
+    async function ensureStaffSession() {
+      if (staffToken) return true;
+      const id = prompt("Identifiant soignant :");
+      const password = id ? prompt("Mot de passe personnel :") : '';
+      if (!id || !password) return false;
+      const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caregiver_id: id.trim(), password }),
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      staffId = id.trim();
+      staffToken = data.token || '';
+      localStorage.setItem('ehpad_staff_id', staffId);
+      localStorage.setItem('ehpad_staff_token', staffToken);
+      return Boolean(staffToken);
+    }
+
+    async function secureJson(url) {
+      let res = await fetch(url, { headers: authHeaders() });
+      if (res.status === 403 && !breakGlassReason) {
+        const reason = prompt("Acces hors perimetre. Justification bris de glace pour tracer l'ouverture du DPI :");
+        if (reason && reason.trim().length >= 8) {
+          breakGlassReason = reason.trim();
+          res = await fetch(url, { headers: authHeaders() });
+        }
+      }
+      return res.ok ? res.json() : null;
+    }
 
     function levelName(level) {
       return ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][Number(level) || 0] || 'Stable';
@@ -104,10 +162,12 @@
     }
 
     async function loadAll() {
+      const hasSession = await ensureStaffSession();
+      if (!hasSession) return;
       const today = new Date().toISOString().slice(0, 10);
       const calls = await Promise.allSettled([
-        fetch(`${BACKEND_HTTP}/api/residents/${residentId}`).then(r => r.ok ? r.json() : null),
-        fetch(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${today}`).then(r => r.json()),
+        secureJson(`${BACKEND_HTTP}/api/residents/${residentId}`),
+        secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${today}`),
         fetch(`${BACKEND_HTTP}/api/alerts/explain/${residentId}`).then(r => r.ok ? r.json() : null),
       ]);
       state = calls[0].status === 'fulfilled' ? calls[0].value : null;
@@ -137,7 +197,11 @@
       } else {
         avatarEl.textContent = name.split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase();
       }
-      document.getElementById('full-link').href = `/resident/${residentId}`;
+      const fullParams = new URLSearchParams({ staff: staffId, token: staffToken });
+      fullParams.set('return', returnPath);
+      if (breakGlassReason) fullParams.set('break_glass', breakGlassReason);
+      document.getElementById('full-link').href = `/resident/${residentId}?${fullParams.toString()}`;
+      document.getElementById('back-link').href = returnPath;
       renderAlert(alert, level, zone);
       renderPlan(current, room, zone, level, name);
       renderVitals(vitals);
@@ -155,7 +219,19 @@
         <span class="badge red">N${alert.level} ${alert.level_name || levelName(alert.level)}</span>
         <h1 style="margin-top:8px">${alert.reason || 'Alerte active'}</h1>
         <p class="muted small">${alert.location_label || zone}</p>
+        <p class="muted small" style="margin-top:6px">Capteurs: ${formatSensorEvents(alert.sensor_events || alertExplain?.sensors?.events || {})}</p>
       `;
+    }
+
+    function formatSensorEvents(events = {}) {
+      const labels = [];
+      if (events.door_open) labels.push('porte');
+      if (events.floor_pressure_event) labels.push('sol/matelas');
+      if (events.room_radar_presence || events.radar_immobile_low) labels.push('radar');
+      if (events.room_pir_motion) labels.push('PIR');
+      if (events.bed_occupied) labels.push('lit');
+      if (events.mattress_exit) labels.push('sortie lit');
+      return labels.length ? labels.join(', ') : 'aucun capteur actif';
     }
 
     function renderVitals(v) {
@@ -219,9 +295,9 @@
       const alert = alertExplain?.alert || {};
       await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
-          caregiver_id: new URLSearchParams(location.search).get('staff') || 'soignant_mobile',
+          caregiver_id: staffId,
           action,
           notification_key: alert.notification_key || alert.id || `${residentId}-${action}`,
           alert_id: alert.id || null,

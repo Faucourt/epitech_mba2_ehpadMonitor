@@ -23,15 +23,17 @@ services:
     image: redis:7-alpine
     container_name: ehpad_redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --appendfsync everysec
+    command: sh -c 'redis-server --appendonly yes --appendfsync everysec --requirepass "$${REDIS_PASSWORD:-ehpad_redis_dev_change_me}"'
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
       - ehpad_net
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-ehpad_redis_dev_change_me}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD:-ehpad_redis_dev_change_me}\" ping"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -46,10 +48,10 @@ services:
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=ehpad2024
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_INIT_PASSWORD:-ehpad2024}
       - DOCKER_INFLUXDB_INIT_ORG=ehpad
       - DOCKER_INFLUXDB_INIT_BUCKET=residents
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=ehpad-super-secret-token
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN:-ehpad-super-secret-token}
     volumes:
       - influx_data:/var/lib/influxdb2
     networks:
@@ -103,8 +105,9 @@ services:
       - MQTT_PORT=1883
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-ehpad_redis_dev_change_me}
       - INFLUX_HOST=http://influxdb:8086
-      - INFLUX_TOKEN=ehpad-super-secret-token
+      - INFLUX_TOKEN=${INFLUX_TOKEN:-ehpad-super-secret-token}
       - INFLUX_ORG=ehpad
       - INFLUX_BUCKET=residents
       - DEMO_RESIDENT=R005
@@ -112,6 +115,11 @@ services:
       - OLLAMA_MODEL=meditron:7b
       - LLM_DAILY_AUTO_ENABLED=false
       - PATIENT_DATA_DIR=/app/data/patients
+      - SESSION_SECRET=${SESSION_SECRET:-dev-change-me-session-secret}
+      - STAFF_DEMO_PASSWORD=${STAFF_DEMO_PASSWORD:-EHPAD2024!}
+      - FAMILLE_ADMIN_TOKEN=${FAMILLE_ADMIN_TOKEN:-ADMIN_EHPAD_2024}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3002,http://127.0.0.1:3002}
+      - HTTPS_REQUIRED=${HTTPS_REQUIRED:-false}
     volumes:
       - ./data:/app/data
     networks:
@@ -140,8 +148,9 @@ services:
       - MQTT_PORT=1883
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-ehpad_redis_dev_change_me}
       - INFLUX_HOST=http://influxdb:8086
-      - INFLUX_TOKEN=ehpad-super-secret-token
+      - INFLUX_TOKEN=${INFLUX_TOKEN:-ehpad-super-secret-token}
       - INFLUX_ORG=ehpad
       - INFLUX_BUCKET=residents
       - DEMO_RESIDENT=R005
@@ -149,6 +158,9 @@ services:
       - OLLAMA_MODEL=meditron:7b
       - LLM_DAILY_AUTO_ENABLED=true
       - PATIENT_DATA_DIR=/app/data/patients
+      - SESSION_SECRET=${SESSION_SECRET:-dev-change-me-session-secret}
+      - STAFF_DEMO_PASSWORD=${STAFF_DEMO_PASSWORD:-EHPAD2024!}
+      - FAMILLE_ADMIN_TOKEN=${FAMILLE_ADMIN_TOKEN:-ADMIN_EHPAD_2024}
     volumes:
       - ./data:/app/data
     networks:

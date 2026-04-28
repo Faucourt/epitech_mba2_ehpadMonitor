@@ -30,6 +30,18 @@ app.get('/resident/:id', (req, res) => {
   });
 });
 
+app.get('/famille', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'famille.html'), {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  });
+});
+
+app.get('/admin/famille', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin_famille.html'), {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  });
+});
+
 app.get('/mobile/resident/:id', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'mobile_resident.html'), {
     headers: { 'Content-Type': 'text/html; charset=utf-8' }

@@ -13,6 +13,7 @@ import time
 import asyncio
 import logging
 import threading
+from collections import deque
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
@@ -21,7 +22,7 @@ import numpy as np
 
 import redis
 import paho.mqtt.client as mqtt
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -30,7 +31,7 @@ from pydantic import BaseModel
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-from alert_engine import AlertEngine
+from alert_engine import AlertEngine, LEVEL_CONFIG
 from ws_manager import WebSocketManager
 from ml_model import MalaisePredictor
 from a2a_agents import agent_card, run_a2a_pipeline
@@ -44,6 +45,7 @@ MQTT_HOST = os.getenv("MQTT_HOST", "localhost")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
 INFLUX_HOST = os.getenv("INFLUX_HOST", "http://localhost:8086")
 INFLUX_TOKEN = os.getenv("INFLUX_TOKEN", "ehpad-super-secret-token")
 INFLUX_ORG = os.getenv("INFLUX_ORG", "ehpad")
@@ -56,6 +58,12 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "meditron:7b")
 LLM_DAILY_AUTO_ENABLED = os.getenv("LLM_DAILY_AUTO_ENABLED", "true").lower() not in {"0", "false", "no"}
 LLM_DAILY_TTL_DAYS = int(os.getenv("LLM_DAILY_TTL_DAYS", "45"))
 FAMILLE_ADMIN_TOKEN = os.getenv("FAMILLE_ADMIN_TOKEN", "ADMIN_EHPAD_2024")
+SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-change-me-session-secret")
+STAFF_DEMO_PASSWORD = os.getenv("STAFF_DEMO_PASSWORD", "EHPAD2024!")
+ALLOWED_ORIGINS = [x.strip() for x in os.getenv("ALLOWED_ORIGINS", "http://localhost:3002,http://127.0.0.1:3002").split(",") if x.strip()]
+HTTPS_REQUIRED = os.getenv("HTTPS_REQUIRED", "false").lower() in {"1", "true", "yes"}
+RETENTION_ACCESS_LOG_DAYS = int(os.getenv("RETENTION_ACCESS_LOG_DAYS", "365"))
+RETENTION_AUDIT_DAYS = int(os.getenv("RETENTION_AUDIT_DAYS", "365"))
 PATIENT_DATA_DIR = Path(os.getenv("PATIENT_DATA_DIR", "/app/data/patients"))
 
 SIMULATION_SCENARIOS = [
@@ -66,6 +74,8 @@ SIMULATION_SCENARIOS = [
     "retour_kine_fatigue", "promenade_jardin", "sortie_jardin_non_accompagnee",
     "chute_jardin", "fugue_hors_ehpad", "chute_trajet_repas",
     "desorientation_avant_repas", "malaise_retour_repas", "malaise_repas",
+    "chute_salle_bain", "toilette_matinale_fatigue", "desorientation_patio",
+    "regroupement_patio_fatigue", "retour_jardin_fatigue",
     "risque_nuit", "jardin",
 ]
 
@@ -78,18 +88,23 @@ limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="EHPAD API", version="1.0.0")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Authorization", "Content-Type", "X-Break-Glass-Reason"])
 
 
 @app.middleware("http")
 async def force_utf8_charset(request, call_next):
+    if HTTPS_REQUIRED and request.url.scheme != "https" and request.client and request.client.host not in {"127.0.0.1", "localhost"}:
+        raise HTTPException(426, "HTTPS requis")
     response = await call_next(request)
     content_type = response.headers.get("content-type", "")
     if content_type.startswith("application/json") and "charset" not in content_type:
         response.headers["content-type"] = "application/json; charset=utf-8"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "no-referrer"
     return response
 
-redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
+redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD or None, decode_responses=True)
 ws_manager = WebSocketManager()
 alert_engine = AlertEngine(redis_client, ws_manager)
 ml_predictor = MalaisePredictor()
@@ -109,6 +124,7 @@ _mqtt_vitals_count = 0
 _mqtt_ambient_count = 0
 _ws_push_count = 0
 _last_mqtt_message_at: Optional[float] = None
+_mqtt_window: deque[tuple[float, str]] = deque(maxlen=20000)
 
 RESIDENT_ARCHETYPES = {
     "autonome": {
@@ -234,6 +250,82 @@ def _staff_status(caregiver_id: str) -> dict:
         except Exception:
             pass
     return base
+
+
+def _bearer_token(authorization: Optional[str]) -> Optional[str]:
+    if authorization and authorization.lower().startswith("bearer "):
+        return authorization[7:].strip()
+    return None
+
+
+def _require_staff_session(authorization: Optional[str] = None) -> dict:
+    session = auth_module.validate_staff_token(redis_client, _bearer_token(authorization), SESSION_SECRET)
+    if not session:
+        raise HTTPException(401, "Session personnel expiree ou invalide")
+    if session.get("sub") not in CAREGIVERS:
+        raise HTTPException(403, "Personnel inconnu")
+    return session
+
+
+def _is_privileged_staff(staff_id: str, role: Optional[str] = None) -> bool:
+    return staff_id in {"chef_garde", "direction"} or role in {"medecin", "direction", "admin"}
+
+
+def _can_staff_access_resident(staff_id: str, resident_id: str, role: Optional[str] = None) -> bool:
+    if _is_privileged_staff(staff_id, role):
+        return True
+    return _resident_caregiver(resident_id, RESIDENTS_MAP.get(resident_id, {})) == staff_id
+
+
+def _log_access(user_id: str, role: str, resident_id: str, action: str, outcome: str, request: Optional[Request] = None, reason: Optional[str] = None):
+    row = {
+        "at": datetime.utcnow().isoformat() + "Z",
+        "user_id": user_id,
+        "role": role,
+        "resident_id": resident_id,
+        "resident_name": RESIDENTS_MAP.get(resident_id, {}).get("name", resident_id),
+        "action": action,
+        "outcome": outcome,
+        "reason": reason,
+        "ip": request.client.host if request and request.client else None,
+        "path": str(request.url.path) if request else None,
+    }
+    redis_client.lpush("security:access_log", json.dumps(row, ensure_ascii=False))
+    redis_client.ltrim("security:access_log", 0, 4999)
+    redis_client.expire("security:access_log", RETENTION_ACCESS_LOG_DAYS * 86400)
+    if outcome == "break_glass":
+        redis_client.lpush("security:break_glass", json.dumps(row, ensure_ascii=False))
+        redis_client.ltrim("security:break_glass", 0, 999)
+        redis_client.expire("security:break_glass", RETENTION_ACCESS_LOG_DAYS * 86400)
+    return row
+
+
+def _require_resident_access(
+    resident_id: str,
+    authorization: Optional[str],
+    request: Optional[Request],
+    action: str,
+    break_glass_reason: Optional[str] = None,
+) -> dict:
+    session = _require_staff_session(authorization)
+    staff_id = session["sub"]
+    role = session.get("role", "soignant")
+    if _can_staff_access_resident(staff_id, resident_id, role):
+        _log_access(staff_id, role, resident_id, action, "allowed", request)
+        return session
+    active = _active_alert_for_resident(resident_id)
+    if break_glass_reason and len(break_glass_reason.strip()) >= 8 and active and int(active.get("level") or 0) >= 3:
+        _log_access(staff_id, role, resident_id, action, "break_glass", request, break_glass_reason.strip())
+        return session
+    _log_access(staff_id, role, resident_id, action, "denied", request, break_glass_reason)
+    raise HTTPException(403, "Acces refuse: resident non assigne. Bris de glace requis si urgence.")
+
+
+def _require_security_admin(authorization: Optional[str] = None) -> dict:
+    session = _require_staff_session(authorization)
+    if not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Acces reserve chef de garde / direction")
+    return session
 
 
 def _resident_caregiver(resident_id: str, profile: Optional[dict] = None) -> str:
@@ -424,13 +516,7 @@ def _risk_label(score: float) -> str:
 
 def _safe_state_for_report(resident_id: str) -> dict:
     raw = redis_client.get(f"resident:{resident_id}:state")
-    if not raw and resident_id in RESIDENTS_MAP:
-        state = _safe_state_for_report(resident_id)
-        state["profile"] = RESIDENTS_MAP.get(resident_id, {})
-        state["active_alert"] = _active_alert_for_resident(resident_id)
-        state["source"] = "fallback_profile_history"
-        return state
-    profile = RESIDENTS_MAP.get(resident_id, {})
+    profile = _effective_resident_profile(resident_id)
     if raw:
         state = json.loads(raw)
     else:
@@ -456,6 +542,7 @@ def _safe_state_for_report(resident_id: str) -> dict:
         }
     state["profile"] = profile
     state["resident_name"] = state.get("name", profile.get("name", resident_id))
+    state["avatar"] = state.get("avatar") or profile.get("avatar", "")
     state["caregiver"] = _resident_caregiver(resident_id, profile)
     archetype = _resident_archetype(profile)
     state.setdefault("life_profile", {
@@ -688,7 +775,7 @@ def _a2a_prediction_for_resident(state: dict, hist: dict, active_alert: Optional
 
 def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = None, force: bool = False) -> dict:
     report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:v6:{report_date}:{resident_id}"
+    redis_key = f"daily_report:v8:{report_date}:{resident_id}"
     if not force:
         cached = redis_client.get(redis_key)
         if cached:
@@ -712,6 +799,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
         "generated_at": datetime.utcnow().isoformat() + "Z",
         "resident_id": resident_id,
         "resident_name": profile.get("name", state.get("resident_name", resident_id)),
+        "avatar": profile.get("avatar", state.get("avatar", "")),
         "room": state.get("room", profile.get("room")),
         "floor": state.get("floor"),
         "caregiver": state.get("caregiver", profile.get("caregiver")),
@@ -719,6 +807,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
             "age": profile.get("age"),
             "mobility": profile.get("mobility"),
             "pathologies": pathologies,
+            "avatar": profile.get("avatar", state.get("avatar", "")),
             "care_level": state.get("care_level"),
             "life_profile": state.get("life_profile"),
         },
@@ -775,7 +864,7 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
 
 def _build_global_daily_report(report_date: Optional[str] = None, force: bool = False) -> dict:
     report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:v6:{report_date}:global"
+    redis_key = f"daily_report:v8:{report_date}:global"
     if not force:
         cached = redis_client.get(redis_key)
         if cached:
@@ -817,9 +906,15 @@ def _build_global_daily_report(report_date: Optional[str] = None, force: bool = 
                 "caregiver": r.get("caregiver"),
                 "level": r["risk"]["alert_level_name"],
                 "risk": r["risk"]["ml_risk"],
+                "risk_30min": r["risk"].get("a2a_risk_30min"),
+                "risk_60min": r["risk"].get("a2a_risk_60min"),
                 "location": r["current"]["location"],
+                "routine": r["current"].get("routine"),
+                "alerts_today": len(r.get("alerts_today", [])),
+                "history_30d_count": r.get("history_30d", {}).get("alerts_count", 0),
                 "summary": r["transmission_summary"],
                 "watch": " ".join(r["watch_points"][:2]),
+                "actions": " ".join(r["next_actions"][:2]),
             }
             for r in resident_reports
         ],
@@ -833,7 +928,7 @@ def daily_report_loop():
     while True:
         try:
             today = _local_report_date()
-            existing = redis_client.get(f"daily_report:v6:{today}:global")
+            existing = redis_client.get(f"daily_report:v8:{today}:global")
             if today != _last_daily_report_date and not existing:
                 _build_global_daily_report(today, force=False)
                 _last_daily_report_date = today
@@ -900,7 +995,9 @@ def on_message(client, userdata, msg):
     global _mqtt_message_count, _mqtt_vitals_count, _mqtt_ambient_count, _last_mqtt_message_at
     try:
         _mqtt_message_count += 1
-        _last_mqtt_message_at = time.time()
+        now = time.time()
+        _last_mqtt_message_at = now
+        _mqtt_window.append((now, msg.topic))
         if msg.topic.endswith("/vitals"):
             _mqtt_vitals_count += 1
         if "/ambient" in msg.topic or "/door/" in msg.topic:
@@ -981,14 +1078,16 @@ def _handle_vitals(state: dict):
     state["ml_risk"] = ml_risk
     state["ml_prediction"] = ml_prediction
     state["resident_name"] = state.get("name", profile.get("name", rid))
+    room_zone = f"ch{state.get('room')}" if state.get("room") else state.get("zone")
     for sensor in state.get("sensor_health", []):
         sensor_key = sensor.get("id") or f"{rid}-{sensor.get('type', 'sensor')}"
+        fixed_room_sensor = room_zone and str(sensor_key).startswith(f"{room_zone}-")
         redis_client.hset("sensors:health", sensor_key, json.dumps({
             **sensor,
             "resident_id": rid,
             "resident_name": state.get("resident_name"),
             "room": state.get("room"),
-            "zone_id": state.get("current_zone") or state.get("zone"),
+            "zone_id": room_zone if fixed_room_sensor else state.get("current_zone") or state.get("zone"),
             "updated_at": state.get("timestamp") or datetime.utcnow().isoformat() + "Z",
         }))
         redis_client.expire("sensors:health", 3600)
@@ -1246,19 +1345,22 @@ def get_all_residents():
 
 
 @app.get("/api/residents/{resident_id}")
-def get_resident(resident_id: str):
+def get_resident(resident_id: str, request: Request, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
+    _require_resident_access(resident_id, authorization, request, "resident_live_view", x_break_glass_reason)
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
         raise HTTPException(404, "Résident non trouvé")
     state = json.loads(raw)
     # Historique comportemental
-    profile = RESIDENTS_MAP.get(resident_id, {})
+    profile = _effective_resident_profile(resident_id)
     state["profile"] = profile
+    state["avatar"] = state.get("avatar") or profile.get("avatar", "")
     return state
 
 
 @app.get("/api/residents/{resident_id}/history")
-def get_resident_history(resident_id: str, minutes: int = 60):
+def get_resident_history(resident_id: str, request: Request, minutes: int = 60, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
+    _require_resident_access(resident_id, authorization, request, "resident_history_view", x_break_glass_reason)
     minutes = max(1, min(int(minutes or 30), 24 * 60))
     """Retourne l'historique InfluxDB du résident."""
     try:
@@ -1322,7 +1424,8 @@ def _fallback_recent_history(resident_id: str, minutes: int = 30) -> list[dict]:
 
 
 @app.get("/api/residents/{resident_id}/history/simulated")
-def get_resident_simulated_history(resident_id: str, days: int = 30, step_hours: int = 6):
+def get_resident_simulated_history(resident_id: str, request: Request, days: int = 30, step_hours: int = 6, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
+    _require_resident_access(resident_id, authorization, request, "resident_history_simulated_view", x_break_glass_reason)
     """Historique simule long terme pour tester un mois de scenarios sans attendre InfluxDB."""
     rows = _simulated_history_rows(resident_id, days=days, step_hours=step_hours)
     return {"resident_id": resident_id, "days": max(30, days), "step_hours": step_hours, "history": rows}
@@ -1566,7 +1669,13 @@ def generate_simulator_history(body: HistoryGenerateRequest):
 
 
 @app.get("/api/residents/{resident_id}/dossier/history")
-def get_patient_dossier_history(resident_id: str):
+def get_patient_dossier_history(
+    resident_id: str,
+    request: Request,
+    authorization: str = Header(None),
+    x_break_glass_reason: str = Header(None),
+):
+    _require_resident_access(resident_id, authorization, request, "resident_dossier_history", x_break_glass_reason)
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident inconnu")
     daily = redis_client.get(f"patient:{resident_id}:history:daily")
@@ -1586,6 +1695,34 @@ def get_alerts():
     active = alert_engine.get_all_active()
     history = alert_engine.get_history(50)
     return {"active": active, "history": history}
+
+
+@app.get("/api/alerts/config")
+def get_alert_config():
+    return {
+        "levels": [
+            {
+                "level": int(level),
+                "name": config["name"],
+                "color": config["color"],
+                "action": config["action"],
+                "escalation_delay_s": config.get("escalade_delay_s"),
+                "notify": config.get("notify", []),
+            }
+            for level, config in sorted(LEVEL_CONFIG.items(), key=lambda item: int(item[0]))
+        ],
+        "routing_rules": {
+            "level_1": "dashboard uniquement",
+            "level_2_3": "soignant assigne",
+            "level_4": "tous soignants + chef de garde",
+            "level_5": "tous soignants + chef de garde + direction + SAMU 15 selon protocole",
+        },
+        "realism_policy": {
+            "anti_noise": "Les niveaux 1-3 doivent persister avant creation.",
+            "routine_ceiling": "Une alerte de routine non acquittee est plafonnee au niveau 3 sans signal clinique aggravant.",
+            "critical_escalation": "Les niveaux 4 non acquittes et les signaux cliniques forts peuvent escalader jusqu'au niveau 5.",
+        },
+    }
 
 
 @app.post("/api/alerts/{resident_id}/acknowledge")
@@ -1675,14 +1812,45 @@ def get_sensors_health():
 @app.get("/api/ops/scalability")
 def get_scalability_metrics():
     uptime = max(1.0, time.time() - _started_at)
-    resident_count = len(redis_client.hgetall("residents:all"))
+    now = time.time()
+    residents_raw = redis_client.hgetall("residents:all")
+    resident_count = len(residents_raw)
     target_messages_s = resident_count * 6
+    while _mqtt_window and now - _mqtt_window[0][0] > 60:
+        _mqtt_window.popleft()
+    window_total = len(_mqtt_window)
+    window_vitals = sum(1 for _, topic in _mqtt_window if topic.endswith("/vitals"))
+    window_ambient = sum(1 for _, topic in _mqtt_window if "/ambient" in topic or "/door/" in topic)
+    state_ages = []
+    for raw in residents_raw.values():
+        try:
+            state = json.loads(raw)
+            ts = state.get("timestamp")
+            if ts:
+                dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+                state_ages.append(max(0.0, now - dt.timestamp()))
+        except Exception:
+            pass
+    max_state_age = max(state_ages) if state_ages else None
+    avg_state_age = sum(state_ages) / len(state_ages) if state_ages else None
+    theoretical_50 = 50 * 6
+    actual_60s = window_total / 60
     return {
         "uptime_s": round(uptime),
         "resident_count": resident_count,
+        "scale_targets": {
+            "current_residents_constants_s": target_messages_s,
+            "target_20_residents_6_constants_s": 120,
+            "target_50_residents_6_constants_s": theoretical_50,
+            "current_vs_50_target_pct": round((actual_60s / theoretical_50) * 100, 1) if theoretical_50 else 0,
+        },
         "mqtt": {
             "messages_total": _mqtt_message_count,
             "messages_per_second_avg": round(_mqtt_message_count / uptime, 2),
+            "messages_per_second_60s": round(actual_60s, 2),
+            "window_60s_total": window_total,
+            "window_60s_vitals": window_vitals,
+            "window_60s_ambient": window_ambient,
             "vitals_total": _mqtt_vitals_count,
             "ambient_total": _mqtt_ambient_count,
             "last_message_age_s": round(time.time() - _last_mqtt_message_at, 1) if _last_mqtt_message_at else None,
@@ -1694,6 +1862,10 @@ def get_scalability_metrics():
             "ws_resident_min_interval_s": WS_RESIDENT_MIN_INTERVAL_S,
             "ws_push_total": _ws_push_count,
             "ws_push_per_second_avg": round(_ws_push_count / uptime, 2),
+            "estimated_influx_points_per_second": round(resident_count / max(INFLUX_SAMPLE_INTERVAL_S, 0.1), 2),
+            "estimated_ws_states_per_second": round(resident_count / max(WS_RESIDENT_MIN_INTERVAL_S, 0.1), 2),
+            "state_age_avg_s": round(avg_state_age, 1) if avg_state_age is not None else None,
+            "state_age_max_s": round(max_state_age, 1) if max_state_age is not None else None,
         },
         "prediction": {
             "refresh_interval_s": 300,
@@ -1762,8 +1934,9 @@ def _staff_snapshot() -> dict:
                     "level": a.get("level"),
                     "reason": a.get("reason"),
                     "location": a.get("location_label"),
-                    "status": _notification_status(caregiver_id, _notification_key(a)).get("status", "envoyee"),
+                    "status": _notification_status(caregiver_id, _notification_key(a)).get("action", "envoyee"),
                     "status_at": _notification_status(caregiver_id, _notification_key(a)).get("at"),
+                    "samu_status": (_ensure_samu_call(a) or {}).get("status") if int(a.get("level") or 0) >= 5 else None,
                 }
                 for a in notified_alerts
             ],
@@ -1774,6 +1947,13 @@ def _staff_snapshot() -> dict:
 
 def _staff_simulated_history(days: int = 30, step_hours: int = 6) -> dict[str, list[dict]]:
     """Historique exploitable par soignant, base sur la simulation 30 jours."""
+    cache_key = f"staff:simulated_history:{days}:{step_hours}:v1"
+    cached = redis_client.get(cache_key)
+    if cached:
+        try:
+            return json.loads(cached)
+        except Exception:
+            pass
     by_staff: dict[str, list[dict]] = {cid: [] for cid in CAREGIVERS.keys()}
     for rid, profile in RESIDENTS_MAP.items():
         caregiver_id = _resident_caregiver(rid, profile)
@@ -1802,6 +1982,7 @@ def _staff_simulated_history(days: int = 30, step_hours: int = 6) -> dict[str, l
                 })
     for events in by_staff.values():
         events.sort(key=lambda item: item.get("time") or "", reverse=True)
+    redis_client.setex(cache_key, 60, json.dumps(by_staff, ensure_ascii=False))
     return by_staff
 
 
@@ -1839,6 +2020,89 @@ def _notification_audit_for_staff(caregiver_id: str, limit: int = 20) -> list[di
     return rows
 
 
+def _samu_call_key(alert_id: str) -> str:
+    return f"samu:call:{alert_id}"
+
+
+def _build_samu_call(alert: dict, caregiver_id: str = "systeme", status: str = "preappel_prepare") -> dict:
+    resident_id = alert.get("resident_id")
+    profile = RESIDENTS_MAP.get(resident_id, {})
+    trigger = alert.get("trigger_data") or {}
+    vitals = trigger.get("vitals") or {}
+    movement = trigger.get("movement") or {}
+    news = trigger.get("news") or {}
+    staff = _staff_status(caregiver_id) if caregiver_id in CAREGIVERS else {"name": caregiver_id}
+    now = datetime.utcnow().isoformat() + "Z"
+    return {
+        "call_id": f"SAMU-{alert.get('id')}",
+        "alert_id": alert.get("id"),
+        "resident_id": resident_id,
+        "resident_name": alert.get("resident_name") or profile.get("name"),
+        "age": profile.get("age"),
+        "room": alert.get("room") or profile.get("room"),
+        "location": alert.get("location_label") or alert.get("current_zone"),
+        "floor": alert.get("floor"),
+        "position": alert.get("position"),
+        "level": alert.get("level"),
+        "reason": alert.get("reason"),
+        "status": status,
+        "prepared_at": now,
+        "prepared_by": caregiver_id,
+        "prepared_by_name": staff.get("name", caregiver_id),
+        "confirmed_at": None,
+        "confirmed_by": None,
+        "confirmed_by_name": None,
+        "vitals": {
+            "heart_rate": vitals.get("heart_rate"),
+            "spo2": vitals.get("spo2"),
+            "blood_pressure_sys": vitals.get("blood_pressure_sys"),
+            "blood_pressure_dia": vitals.get("blood_pressure_dia"),
+            "temperature": vitals.get("temperature"),
+            "respiratory_rate": vitals.get("respiratory_rate"),
+        },
+        "movement": {
+            "is_fall_detected": movement.get("is_fall_detected"),
+            "ambient_fall_confirmed": movement.get("ambient_fall_confirmed"),
+            "sos_pressed": movement.get("sos_pressed"),
+            "last_movement_ago_s": movement.get("last_movement_ago_s"),
+        },
+        "clinical_context": {
+            "news_score": news.get("score"),
+            "news_response": news.get("clinical_response"),
+            "ml_risk": trigger.get("ml_risk"),
+            "pathologies": profile.get("pathologies", []),
+            "mobility": profile.get("mobility"),
+            "likely_medications": profile.get("likely_medications", []),
+        },
+        "message_samu": (
+            f"Simulation appel SAMU 15: {alert.get('resident_name') or profile.get('name')}, "
+            f"{profile.get('age', '?')} ans, chambre {alert.get('room') or profile.get('room')}, "
+            f"{alert.get('location_label') or alert.get('current_zone')}. "
+            f"Niveau 5 danger vital. Motif: {alert.get('reason')}. "
+            f"Constantes: FC {vitals.get('heart_rate')}, SpO2 {vitals.get('spo2')}%, "
+            f"PA {vitals.get('blood_pressure_sys')}/{vitals.get('blood_pressure_dia')}, "
+            f"T {vitals.get('temperature')}C, FR {vitals.get('respiratory_rate')}."
+        ),
+    }
+
+
+def _ensure_samu_call(alert: dict, caregiver_id: str = "systeme") -> Optional[dict]:
+    if not alert or int(alert.get("level") or 0) < 5 or not alert.get("id"):
+        return None
+    key = _samu_call_key(alert["id"])
+    raw = redis_client.get(key)
+    if raw:
+        try:
+            return json.loads(raw)
+        except Exception:
+            pass
+    call = _build_samu_call(alert, caregiver_id=caregiver_id, status="preappel_prepare")
+    redis_client.setex(key, 86400, json.dumps(call, ensure_ascii=False))
+    redis_client.lpush("samu:calls", json.dumps(call, ensure_ascii=False))
+    redis_client.ltrim("samu:calls", 0, 199)
+    return call
+
+
 class NotificationAction(BaseModel):
     caregiver_id: str
     action: str
@@ -1851,8 +2115,22 @@ class NotificationAction(BaseModel):
     location: Optional[str] = None
 
 
+class SamuCallAction(BaseModel):
+    caregiver_id: str
+    alert_id: Optional[str] = None
+    action: str = "confirmed"
+
+
+class StaffLoginBody(BaseModel):
+    caregiver_id: str
+    password: str
+
+
 @app.post("/api/notifications/action")
-def record_notification_action(payload: NotificationAction):
+def record_notification_action(payload: NotificationAction, authorization: str = Header(None)):
+    session = _require_staff_session(authorization)
+    if session["sub"] != payload.caregiver_id and not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Action refusee pour un autre personnel")
     if payload.caregiver_id not in CAREGIVERS:
         raise HTTPException(404, "Personnel inconnu")
     action_map = {
@@ -1880,6 +2158,7 @@ def record_notification_action(payload: NotificationAction):
         "caregiver_id": payload.caregiver_id,
         "caregiver_name": staff.get("name", payload.caregiver_id),
         "action": action,
+        "status": action,
         "resident_id": payload.resident_id,
         "resident_name": payload.resident_name,
         "level": payload.level,
@@ -1890,10 +2169,16 @@ def record_notification_action(payload: NotificationAction):
     redis_client.hset(f"notification:status:{payload.caregiver_id}", key, json.dumps(row))
     redis_client.lpush(f"notifications:audit:{payload.caregiver_id}", json.dumps(row))
     redis_client.ltrim(f"notifications:audit:{payload.caregiver_id}", 0, 199)
+    redis_client.expire(f"notifications:audit:{payload.caregiver_id}", RETENTION_AUDIT_DAYS * 86400)
     redis_client.lpush("notifications:audit:global", json.dumps(row))
     redis_client.ltrim("notifications:audit:global", 0, 999)
+    redis_client.expire("notifications:audit:global", RETENTION_AUDIT_DAYS * 86400)
 
-    if action == "acquittee" and payload.resident_id:
+    if action == "prise_en_charge" and payload.resident_id:
+        alert_engine.take_in_charge(payload.resident_id, payload.caregiver_id)
+    elif action == "resolue" and payload.resident_id:
+        alert_engine.resolve(payload.resident_id, payload.caregiver_id)
+    elif action == "acquittee" and payload.resident_id:
         alert_engine.acknowledge(payload.resident_id, payload.caregiver_id)
 
     return {"ok": True, "trace": row}
@@ -1912,6 +2197,75 @@ def get_notification_audit(caregiver_id: Optional[str] = None, limit: int = 50):
     return {"count": len(rows), "audit": rows}
 
 
+@app.get("/api/alerts/{resident_id}/samu-call")
+def get_samu_call(resident_id: str, request: Request, authorization: str = Header(None)):
+    _require_resident_access(resident_id, authorization, request, "samu_preappel_view")
+    alert = _active_alert_for_resident(resident_id)
+    if not alert:
+        raise HTTPException(404, "Pas d'alerte active pour ce resident")
+    if int(alert.get("level") or 0) < 5:
+        raise HTTPException(400, "Le protocole SAMU simule est reserve au niveau 5")
+    call = _ensure_samu_call(alert)
+    return {"ok": True, "call": call}
+
+
+@app.post("/api/alerts/{resident_id}/samu-call/simulate")
+def simulate_samu_call(resident_id: str, payload: SamuCallAction, request: Request, authorization: str = Header(None)):
+    session = _require_resident_access(resident_id, authorization, request, "samu_simulation")
+    if session["sub"] != payload.caregiver_id and not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Action SAMU refusee pour un autre personnel")
+    if payload.caregiver_id not in CAREGIVERS:
+        raise HTTPException(404, "Personnel inconnu")
+    alert = _active_alert_for_resident(resident_id)
+    if not alert:
+        raise HTTPException(404, "Pas d'alerte active pour ce resident")
+    if int(alert.get("level") or 0) < 5:
+        raise HTTPException(400, "Le protocole SAMU simule est reserve au niveau 5")
+    if payload.alert_id and payload.alert_id != alert.get("id"):
+        raise HTTPException(409, "L'alerte active ne correspond plus a l'appel demande")
+
+    call = _ensure_samu_call(alert, caregiver_id=payload.caregiver_id)
+    staff = _staff_status(payload.caregiver_id)
+    action = payload.action.lower()
+    if action in {"cancelled", "annule", "cancel"}:
+        call["status"] = "appel_annule_simulation"
+        audit_action = "samu_annule"
+    else:
+        call["status"] = "appel_samu_simule_confirme"
+        call["confirmed_at"] = datetime.utcnow().isoformat() + "Z"
+        call["confirmed_by"] = payload.caregiver_id
+        call["confirmed_by_name"] = staff.get("name", payload.caregiver_id)
+        audit_action = "samu_confirme"
+
+    redis_client.setex(_samu_call_key(alert["id"]), 86400, json.dumps(call, ensure_ascii=False))
+    redis_client.lpush("samu:calls", json.dumps(call, ensure_ascii=False))
+    redis_client.ltrim("samu:calls", 0, 199)
+
+    row = {
+        "notification_key": alert.get("id"),
+        "alert_id": alert.get("id"),
+        "caregiver_id": payload.caregiver_id,
+        "caregiver_name": staff.get("name", payload.caregiver_id),
+        "action": audit_action,
+        "status": audit_action,
+        "resident_id": resident_id,
+        "resident_name": alert.get("resident_name"),
+        "level": alert.get("level"),
+        "reason": alert.get("reason"),
+        "location": alert.get("location_label"),
+        "samu_call_id": call["call_id"],
+        "at": datetime.utcnow().isoformat() + "Z",
+    }
+    redis_client.hset(f"notification:status:{payload.caregiver_id}", alert.get("id"), json.dumps(row, ensure_ascii=False))
+    redis_client.lpush(f"notifications:audit:{payload.caregiver_id}", json.dumps(row, ensure_ascii=False))
+    redis_client.ltrim(f"notifications:audit:{payload.caregiver_id}", 0, 199)
+    redis_client.lpush("notifications:audit:global", json.dumps(row, ensure_ascii=False))
+    redis_client.ltrim("notifications:audit:global", 0, 999)
+    redis_client.expire("notifications:audit:global", RETENTION_AUDIT_DAYS * 86400)
+
+    return {"ok": True, "call": call, "trace": row}
+
+
 @app.get("/api/staff")
 def get_staff():
     snapshot = _staff_snapshot()
@@ -1927,8 +2281,108 @@ def get_staff():
     }
 
 
+@app.get("/api/security/policy")
+def get_security_policy(authorization: str = Header(None)):
+    _require_security_admin(authorization)
+    return {
+        "session": {"staff_ttl_s": auth_module.STAFF_TOKEN_TTL, "family_ttl_s": auth_module.TOKEN_TTL},
+        "roles": {"privileged": ["chef_garde", "direction", "medecin", "admin"], "strict_backend": True},
+        "cors": {"allowed_origins": ALLOWED_ORIGINS},
+        "https_required": HTTPS_REQUIRED,
+        "redis_password_enabled": bool(REDIS_PASSWORD),
+        "retention": {
+            "access_log_days": RETENTION_ACCESS_LOG_DAYS,
+            "notification_audit_days": RETENTION_AUDIT_DAYS,
+            "llm_daily_report_days": LLM_DAILY_TTL_DAYS,
+        },
+        "break_glass": {
+            "enabled": True,
+            "condition": "patient non assigne + justification + alerte active niveau >= 3",
+            "trace_key": "security:break_glass",
+        },
+    }
+
+
+@app.get("/api/security/access-logs")
+def get_access_logs(limit: int = 100, authorization: str = Header(None)):
+    _require_security_admin(authorization)
+    limit = max(1, min(limit, 500))
+    rows = []
+    for raw in redis_client.lrange("security:access_log", 0, limit - 1):
+        try:
+            rows.append(json.loads(raw))
+        except Exception:
+            continue
+    return {"count": len(rows), "logs": rows}
+
+
+@app.get("/api/security/break-glass")
+def get_break_glass_logs(limit: int = 100, authorization: str = Header(None)):
+    _require_security_admin(authorization)
+    limit = max(1, min(limit, 500))
+    rows = []
+    for raw in redis_client.lrange("security:break_glass", 0, limit - 1):
+        try:
+            rows.append(json.loads(raw))
+        except Exception:
+            continue
+    return {"count": len(rows), "logs": rows}
+
+
+@app.post("/api/staff/login")
+@limiter.limit("5/minute")
+def staff_login(request: Request, body: StaffLoginBody):
+    result = auth_module.authenticate_staff(redis_client, body.caregiver_id, body.password, CAREGIVERS, SESSION_SECRET)
+    if not result:
+        redis_client.lpush("security:auth_failures", json.dumps({
+            "at": datetime.utcnow().isoformat() + "Z",
+            "user_id": body.caregiver_id,
+            "ip": request.client.host if request.client else None,
+            "type": "staff_login",
+        }, ensure_ascii=False))
+        redis_client.ltrim("security:auth_failures", 0, 999)
+        redis_client.expire("security:auth_failures", RETENTION_ACCESS_LOG_DAYS * 86400)
+        raise HTTPException(401, "Identifiants personnel incorrects")
+    token, session = result
+    staff = _staff_status(session["sub"])
+    return {
+        "token": token,
+        "expires_in_s": auth_module.STAFF_TOKEN_TTL,
+        "staff": staff,
+        "security": {
+            "role": session.get("role"),
+            "session_expires_at": datetime.fromtimestamp(session["exp"], timezone.utc).isoformat().replace("+00:00", "Z"),
+        },
+    }
+
+
+@app.post("/api/staff/logout")
+def staff_logout(authorization: str = Header(None)):
+    token = _bearer_token(authorization)
+    if token:
+        auth_module.revoke_staff_token(redis_client, token)
+    return {"ok": True}
+
+
+@app.get("/api/staff/session")
+def staff_session(authorization: str = Header(None)):
+    session = _require_staff_session(authorization)
+    staff = _staff_status(session["sub"])
+    return {
+        "ok": True,
+        "staff": staff,
+        "security": {
+            "role": session.get("role"),
+            "session_expires_at": datetime.fromtimestamp(session["exp"], timezone.utc).isoformat().replace("+00:00", "Z"),
+        },
+    }
+
+
 @app.post("/api/staff/{caregiver_id}/status")
-def set_staff_status(caregiver_id: str, status: str = "disponible", sector: Optional[str] = None, shift: Optional[str] = None):
+def set_staff_status(caregiver_id: str, status: str = "disponible", sector: Optional[str] = None, shift: Optional[str] = None, authorization: str = Header(None)):
+    session = _require_staff_session(authorization)
+    if session["sub"] != caregiver_id and not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Modification refusee pour un autre personnel")
     if caregiver_id not in CAREGIVERS:
         raise HTTPException(404, "Soignant inconnu")
     allowed = {"disponible", "occupe", "pause", "hors_service", "astreinte"}
@@ -1946,7 +2400,8 @@ def set_staff_status(caregiver_id: str, status: str = "disponible", sector: Opti
 
 
 @app.post("/api/residents/{resident_id}/assign-caregiver")
-def assign_caregiver(resident_id: str, caregiver_id: str):
+def assign_caregiver(resident_id: str, caregiver_id: str, authorization: str = Header(None)):
+    _require_security_admin(authorization)
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
     if caregiver_id not in CAREGIVERS:
@@ -2056,8 +2511,15 @@ def get_daily_resident_report(date: str, resident_id: str):
 
 
 @app.get("/api/residents/{resident_id}/dpi")
-def get_resident_dpi(resident_id: str, date: Optional[str] = None):
+def get_resident_dpi(
+    resident_id: str,
+    request: Request,
+    date: Optional[str] = None,
+    authorization: str = Header(None),
+    x_break_glass_reason: str = Header(None),
+):
     """Mini DPI: profil, constantes, alertes, historique 30 jours et risque a venir."""
+    _require_resident_access(resident_id, authorization, request, "resident_mini_dpi", x_break_glass_reason)
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
     report_date = _local_report_date(date)
@@ -2074,7 +2536,13 @@ def get_a2a_agents():
 
 
 @app.get("/api/a2a/predict/{resident_id}")
-def get_a2a_prediction(resident_id: str):
+def get_a2a_prediction(
+    resident_id: str,
+    request: Request,
+    authorization: str = Header(None),
+    x_break_glass_reason: str = Header(None),
+):
+    _require_resident_access(resident_id, authorization, request, "resident_a2a_prediction", x_break_glass_reason)
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
     cached = redis_client.get(f"a2a:prediction:{resident_id}")
@@ -2127,8 +2595,14 @@ def get_elopement_alerts():
 
 
 @app.get("/api/residents/{resident_id}/routine")
-def get_resident_routine(resident_id: str):
+def get_resident_routine(
+    resident_id: str,
+    request: Request,
+    authorization: str = Header(None),
+    x_break_glass_reason: str = Header(None),
+):
     """Analyse comportementale C4 - baseline multi-signaux par periode."""
+    _require_resident_access(resident_id, authorization, request, "resident_routine_view", x_break_glass_reason)
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
     summary = get_routine_summary(redis_client, resident_id)
@@ -2204,9 +2678,7 @@ def get_famille_view(resident_id: str, authorization: str = _Header(None)):
     if not profile:
         raise HTTPException(404, "Resident non trouve")
     raw = redis_client.get(f"resident:{resident_id}:state")
-    if not raw:
-        raise HTTPException(404, "Donnees non disponibles")
-    state = json.loads(raw)
+    state = json.loads(raw) if raw else _safe_state_for_report(resident_id)
     active_alert = _active_alert_for_resident(resident_id)
     alert_level = active_alert.get("level", 0) if active_alert else 0
     if alert_level >= 4:
@@ -2228,6 +2700,10 @@ def get_famille_view(resident_id: str, authorization: str = _Header(None)):
         "activity": state.get("routine_label") or state.get("time_label") or state.get("activity", ""),
         "caregiver": caregiver_name,
         "last_update": state.get("timestamp", ""),
+        "privacy_scope": {
+            "visible": ["etat general", "activite", "menu", "programme", "photos", "soignant referent"],
+            "hidden": ["FC", "SpO2", "PA", "temperature", "scores cliniques", "alertes brutes"],
+        },
         "life_week": life_week,
     }
 
@@ -2568,6 +3044,11 @@ async def startup():
         log.info("Comptes famille demo amorces")
     except Exception as e:
         log.warning(f"Seed comptes famille echoue : {e}")
+    try:
+        auth_module.create_staff_accounts(redis_client, CAREGIVERS, STAFF_DEMO_PASSWORD)
+        log.info("Comptes personnel demo amorces")
+    except Exception as e:
+        log.warning(f"Seed comptes personnel echoue : {e}")
 
     # Connexion MQTT en thread séparé
     def mqtt_thread():

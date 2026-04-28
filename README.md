@@ -25,6 +25,32 @@ docker compose ps
 | InfluxDB | http://localhost:8086 |
 | MQTT | localhost:1883 |
 
+## Acces demo prof
+
+Tout est centralise ici pour la soutenance.
+
+| Espace | URL | Identifiant | Mot de passe / token | A montrer |
+|---|---|---|---|---|
+| Dashboard central | http://localhost:3002 | aucun | aucun | grille, alertes, plan 2D/3D, transmissions |
+| Espace soignant | http://localhost:3002/soignant | `soignant_A` | `EHPAD2024!` | residents assignes + prise en charge |
+| Espace soignant | http://localhost:3002/soignant | `soignant_B` | `EHPAD2024!` | autre secteur |
+| Espace soignant | http://localhost:3002/soignant | `soignant_C` | `EHPAD2024!` | autre secteur |
+| Chef de garde | http://localhost:3002/soignant | `chef_garde` | `EHPAD2024!` | acces privilegie + journaux securite |
+| Direction | http://localhost:3002/soignant | `direction` | `EHPAD2024!` | acces direction |
+| Famille demo | http://localhost:3002/famille.html | `piaf` | `piaf105` | livre famille Edith Piaf |
+| Famille demo | http://localhost:3002/famille.html | `curie` | `curie101` | autre famille |
+| Admin familles | http://localhost:3002/admin_famille.html | token admin | `ADMIN_EHPAD_2024` | comptes famille |
+| API Swagger | http://localhost:8001/docs | aucun | aucun | endpoints backend |
+
+Liens directs utiles :
+
+- Fiche patient complete : http://localhost:3002/resident/R005
+- Fiche mobile intervention : http://localhost:3002/mobile/resident/R005
+- API alertes : http://localhost:8001/api/alerts
+- API personnel : http://localhost:8001/api/staff
+
+Tous les comptes famille sont listes dans [docs/comptes_famille_demo.md](docs/comptes_famille_demo.md).
+
 ```powershell
 docker compose down   # arret
 ```
@@ -277,10 +303,17 @@ Couverture (60+ tests) :
 
 ## Securite
 
-> **Configuration developpement uniquement.**
-> - Token InfluxDB, Redis sans mot de passe, MQTT sans auth : intentionnel pour le demo.
-> - Mots de passe famille : haches SHA-256 + sel dans Redis (non stockes en clair).
-> - En production : TLS MQTT (8883), `requirepass` Redis, token InfluxDB via secret manager, bcrypt pour les mots de passe, HTTPS, rate limiting sur /login.
+Controles integres :
+
+- Sessions famille 24 h et personnel 8 h, stockees dans Redis.
+- Roles stricts cote backend : soignant referent, chef de garde, direction.
+- Bris de glace trace si un soignant ouvre un DPI hors perimetre pendant une alerte.
+- Journal d'acces DPI, actions notification, echecs login et appels SAMU simules.
+- CORS limite via `ALLOWED_ORIGINS`, rate limiting sur les logins, headers de securite HTTP.
+- Redis protege par mot de passe via `REDIS_PASSWORD`.
+- Secrets sortis du code : copier `.env.example` vers `.env` et remplacer les valeurs.
+
+Documentation detaillee : [docs/securite_rgpd.md](docs/securite_rgpd.md)
 
 ---
 

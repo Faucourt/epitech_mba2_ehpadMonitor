@@ -30,6 +30,11 @@
     .btn-danger  { background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.82rem; }
     .btn-full { width: 100%; }
     .error-msg { color: #e74c3c; font-size: 0.85rem; text-align: center; display: none; }
+    .demo-creds { border: 1px solid #f0d1cd; background: #fff7f6; border-radius: 12px; padding: 12px; display: grid; gap: 8px; font-size: 0.8rem; }
+    .demo-creds b { color: #922b21; }
+    .demo-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; color: #7f5f5b; }
+    .demo-row code { display: block; background: #fff; border: 1px solid #f0d1cd; color: #922b21; border-radius: 8px; padding: 7px 8px; user-select: all; font-family: Consolas, monospace; }
+    .demo-fill { background: #fdf2f2; color: #922b21; border: 1px solid #f0d1cd; padding: 7px 9px; white-space: nowrap; }
 
     .app-screen { display: none; flex-direction: column; min-height: 100vh; }
     header {
@@ -80,9 +85,12 @@
     <p style="font-size:0.85rem;color:#666;text-align:center;">Acces reserve au personnel de direction.</p>
     <input type="password" id="adminToken" placeholder="Token administrateur"
            onkeydown="if(event.key==='Enter') doAdminLogin()">
+    <div class="demo-creds">
+      <b>Compte demo admin</b>
+      <div class="demo-row"><code>ADMIN_EHPAD_2024</code><button class="btn demo-fill" onclick="fillDemoAdmin()">Remplir</button></div>
+    </div>
     <button class="btn btn-primary btn-full" onclick="doAdminLogin()">Connexion</button>
     <div class="error-msg" id="loginError">Token incorrect.</div>
-    <p style="font-size:0.72rem;color:#bbb;text-align:center;">Demo : ADMIN_EHPAD_2024</p>
   </div>
 </div>
 
@@ -134,6 +142,10 @@ let adminToken = '';
 
 // --- Residents list (fetched once for the dropdown) ---
 let residentsList = [];
+
+function fillDemoAdmin() {
+  document.getElementById('adminToken').value = 'ADMIN_EHPAD_2024';
+}
 
 async function doAdminLogin() {
   const t = document.getElementById('adminToken').value.trim();

@@ -411,11 +411,17 @@ class ResidentSimulator:
             "isolement_chambre", "retour_kine_fatigue", "promenade_jardin",
             "sortie_jardin_non_accompagnee", "chute_jardin", "fugue_hors_ehpad",
             "chute_trajet_repas", "desorientation_avant_repas", "malaise_retour_repas",
+            "chute_salle_bain", "toilette_matinale_fatigue", "desorientation_patio",
+            "regroupement_patio_fatigue", "retour_jardin_fatigue",
         }:
             return {
                 "chute_couloir": random.choice(["couloir_aile_rdc", "couloir_principal", "couloir_aile_a_etage", "couloir_aile_b_etage"]),
+                "chute_salle_bain": self.home_zone,
+                "toilette_matinale_fatigue": self.home_zone,
                 "malaise_salle_manger": "salle_manger",
                 "sortie_patio": "patio",
+                "desorientation_patio": "patio",
+                "regroupement_patio_fatigue": "patio",
                 "immobilite_salle_repos": "salle_repos",
                 "aller_toilettes_nuit": random.choice(["couloir_principal", "couloir_aile_rdc", "couloir_aile_a_etage", "couloir_aile_b_etage"]),
                 "desorientation_ascenseur": random.choice(["ascenseur", "palier_etage", "escalier"]),
@@ -423,6 +429,7 @@ class ResidentSimulator:
                 "isolement_chambre": self.home_zone,
                 "retour_kine_fatigue": random.choice(["kinesitherapie", "salle_repos"]),
                 "promenade_jardin": "jardin",
+                "retour_jardin_fatigue": random.choice(["patio", "salle_commune"]),
                 "sortie_jardin_non_accompagnee": random.choice(["jardin", "entree"]),
                 "chute_jardin": "jardin",
                 "fugue_hors_ehpad": "hors_ehpad",
@@ -447,7 +454,7 @@ class ResidentSimulator:
         tod = self._time_of_day_factor()
         if self.care_level == "chambre":
             if self._tick >= self.next_forced_movement_tick:
-                self.movement_scenario = random.choices(["isolement_chambre", "chute_chambre"], weights=[9, 1])[0]
+                self.movement_scenario = random.choices(["isolement_chambre", "chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue"], weights=[8, 1, 1, 2])[0]
                 self.next_forced_movement_tick = self._tick + random.randint(1800, 4200)
                 log.info(f"[{self.id}] Scenario chambre: {self.movement_scenario}")
             return
@@ -457,11 +464,11 @@ class ResidentSimulator:
             log.warning(f"[{self.id}] Scenario trajet repas: {self.movement_scenario}")
             return
         if tod in {"lever_toilette", "coucher"} and random.random() < risk * 0.0016:
-            self.movement_scenario = random.choice(["chute_chambre", "aller_toilettes_nuit", "desorientation_ascenseur"])
+            self.movement_scenario = random.choice(["chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue", "aller_toilettes_nuit", "desorientation_ascenseur"])
             log.warning(f"[{self.id}] Scenario transfert chambre: {self.movement_scenario}")
             return
         if tod in {"animation_matin", "animation_apres_midi"} and self.life_archetype in {"respiratoire", "cardio"} and random.random() < risk * 0.0012:
-            self.movement_scenario = random.choice(["retour_kine_fatigue", "promenade_jardin", "malaise_retour_repas"])
+            self.movement_scenario = random.choice(["retour_kine_fatigue", "promenade_jardin", "retour_jardin_fatigue", "regroupement_patio_fatigue", "malaise_retour_repas"])
             log.warning(f"[{self.id}] Scenario activite fragile: {self.movement_scenario}")
             return
         if tod in {"dejeuner", "diner"} and self._tick - self.last_meal_risk_tick > 120 and random.random() < risk * 0.004:
@@ -509,6 +516,14 @@ class ResidentSimulator:
             if self.movement_scenario == "chute_chambre" and self.fall_started_tick is None:
                 self.start_scenario("chute", duration=90)
                 self.fall_started_tick = self._tick
+            elif self.movement_scenario == "chute_salle_bain" and self.fall_started_tick is None:
+                self.current_activity = "toilette"
+                self.start_scenario("chute", duration=90)
+                self.fall_started_tick = self._tick
+            elif self.movement_scenario == "toilette_matinale_fatigue":
+                self.current_activity = "toilette"
+                self.hr = min(112, self.hr + random.randint(6, 14))
+                self.last_movement_time = time.time()
             elif self.movement_scenario == "isolement_chambre":
                 self.last_movement_time = time.time() - random.randint(2100, 5400)
             self.current_zone = self.home_zone
@@ -527,6 +542,13 @@ class ResidentSimulator:
                 self._set_route_to(self.home_zone)
             elif tod == "soins_matin" and self.p["mobility"] in {"faible", "tres_faible"} and random.random() < 0.45:
                 self._set_route_to(random.choice(["infirmerie_rdc", "kinesitherapie"]))
+            elif tod in {"animation_matin", "animation_apres_midi"} and random.random() < 0.38:
+                self._set_route_to("patio")
+            return
+        if self.movement_scenario in {"chute_salle_bain", "toilette_matinale_fatigue"} and self.current_zone == self.home_zone:
+            self.current_activity = "toilette"
+            self.position = list(zone_position(self.home_zone))
+            self._on_arrival()
             return
         if not self.route and random.random() < 0.035:
             self._set_route_to(self._choose_destination())
@@ -563,7 +585,7 @@ class ResidentSimulator:
                 self._on_arrival()
 
     def _on_arrival(self):
-        if self.movement_scenario in ["chute_couloir", "chute_chambre"] and self.fall_started_tick is None:
+        if self.movement_scenario in ["chute_couloir", "chute_chambre", "chute_salle_bain"] and self.fall_started_tick is None:
             self.start_scenario("chute", duration=90)
             self.fall_started_tick = self._tick
         elif self.movement_scenario == "malaise_salle_manger":
@@ -573,6 +595,12 @@ class ResidentSimulator:
             self.current_activity = "immobilite_anormale"
         elif self.movement_scenario == "sortie_patio":
             self.sos_pressed = random.random() < 0.1
+        elif self.movement_scenario == "desorientation_patio":
+            self.hr = min(118, self.hr + random.randint(8, 16))
+            self.sos_pressed = random.random() < 0.06
+        elif self.movement_scenario == "regroupement_patio_fatigue":
+            self.hr = min(116, self.hr + random.randint(6, 14))
+            self.spo2 = max(90, self.spo2 - random.uniform(0.8, 2.2))
         elif self.movement_scenario == "aller_toilettes_nuit":
             self.last_movement_time = time.time()
         elif self.movement_scenario == "desorientation_ascenseur":
@@ -587,6 +615,9 @@ class ResidentSimulator:
             self.spo2 = max(90, self.spo2 - random.uniform(1.0, 3.0))
         elif self.movement_scenario == "promenade_jardin":
             self.last_movement_time = time.time()
+        elif self.movement_scenario == "retour_jardin_fatigue":
+            self.hr = min(120, self.hr + random.randint(8, 20))
+            self.spo2 = max(89, self.spo2 - random.uniform(1.0, 3.0))
         elif self.movement_scenario == "sortie_jardin_non_accompagnee":
             self.sos_pressed = random.random() < 0.08
         elif self.movement_scenario == "chute_jardin":
@@ -642,20 +673,29 @@ class ResidentSimulator:
         is_fall = self.accel_magnitude > 7.0
         room_sensors = self.p.get("room_sensors", [])
         is_in_room = self.current_zone == self.home_zone
+        in_bathroom_risk_period = self._time_of_day_factor() in {"lever_toilette", "coucher", "nuit"}
+        bathroom_motion = bool("sdb_pir" in room_sensors and is_in_room and (
+            self.current_activity == "deplacement"
+            or self.current_activity == "toilette"
+            or self.movement_scenario in {"aller_toilettes_nuit", "chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue"}
+            or (in_bathroom_risk_period and random.random() < 0.08)
+        ))
         sensor_events = {
             "room_pir_motion": bool("pir" in room_sensors and is_in_room and (self.current_activity == "deplacement" or self.accel_magnitude > 0.35)),
             "room_radar_presence": bool("radar" in room_sensors and is_in_room),
             "bed_occupied": bool("matelas" in room_sensors and is_in_room and self.is_sleeping and not is_fall),
             "mattress_exit": bool("matelas" in room_sensors and not is_in_room),
             "door_open": bool("porte" in room_sensors and (self.current_activity == "deplacement" or not is_in_room)),
+            "bathroom_motion": bathroom_motion,
             "floor_pressure_event": bool(("sol" in room_sensors or "sol_intelligent" in room_sensors or "matelas" in room_sensors) and is_fall),
-            "fall_confirmed_by_room_sensor": bool(is_fall and (("radar" in room_sensors) or ("matelas" in room_sensors))),
+            "fall_confirmed_by_room_sensor": bool(is_fall and (("radar" in room_sensors) or ("matelas" in room_sensors) or bathroom_motion)),
         }
         sensor_health_items = [
             sensor_health(f"{self.id}-wearable", "wearable_vitaux", True, self._tick, critical=True),
             sensor_health(f"ch{self.p['room']}-pir", "pir_presence", sensor_events["room_pir_motion"], self._tick),
             sensor_health(f"ch{self.p['room']}-radar", "radar_presence", sensor_events["room_radar_presence"], self._tick),
             sensor_health(f"ch{self.p['room']}-porte", "porte", sensor_events["door_open"], self._tick),
+            sensor_health(f"ch{self.p['room']}-sdb-pir", "sdb_pir", sensor_events["bathroom_motion"], self._tick, critical=True),
             sensor_health(f"ch{self.p['room']}-matelas", "matelas_lit", sensor_events["bed_occupied"] or sensor_events["mattress_exit"], self._tick, critical=True),
             sensor_health(f"ch{self.p['room']}-sol", "sol_pression", sensor_events["floor_pressure_event"], self._tick, critical=True),
         ]
@@ -752,6 +792,7 @@ class AmbientSensorSimulator:
                 or s.get("movement", {}).get("last_movement_ago_s", 0) > 1800
             ]
             occ = len(present)
+            door_open = bool("porte" in sensors and (moving or (z["type"] in ["entree", "exterieur", "exterieur_hors_site"] and present)))
             self.zone_occupancy[z["id"]] = occ
             results.append({
                 "zone_id": z["id"],
@@ -760,7 +801,13 @@ class AmbientSensorSimulator:
                 "floor": z["floor"],
             "sensors": sensors,
             "sensor_health": [
-                sensor_health(f"{z['id']}-{sensor}", sensor, bool(occ > 0 or sensor in {"co2", "son", "temperature"}), int(time.time()) + len(z["id"]))
+                sensor_health(
+                    f"{z['id']}-{sensor}",
+                    sensor,
+                    bool(door_open if sensor == "porte" else occ > 0 or sensor in {"co2", "son", "temperature"}),
+                    int(time.time()) + len(z["id"]),
+                    critical=(sensor == "porte"),
+                )
                 for sensor in sensors
             ],
             "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
@@ -779,7 +826,7 @@ class AmbientSensorSimulator:
                 "smoke_ppm": 0 if z["type"] != "cuisine" else random.choice([0, 0, 1]),
                 "co_ppm": 0 if z["type"] != "cuisine" else random.choice([0, 0, 8]),
                 "sound_db": round(random.uniform(32, 68), 1),
-                "door_open": z["type"] in ["entree", "exterieur"] and bool(present),
+                "door_open": door_open,
             })
         return results
 

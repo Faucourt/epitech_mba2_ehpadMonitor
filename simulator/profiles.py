@@ -31,6 +31,11 @@ ROOM_ASSIGNMENTS = [
     {"room": "220", "floor": 1, "zone": "ch220", "wing": "aile_b", "room_sensors": ["wearable", "pir", "matelas"]},
 ]
 
+for _room in ROOM_ASSIGNMENTS:
+    for _sensor in ("porte", "sdb_pir"):
+        if _sensor not in _room["room_sensors"]:
+            _room["room_sensors"].append(_sensor)
+
 RESIDENTS = [
     {
         "id": "R001", "name": "Marie Curie", "age": 87, "room": "101",
@@ -192,7 +197,7 @@ ZONES = [
     {"id": "pharmacie_admin", "name": "Pharmacie / Admin", "floor": 0, "type": "admin", "sensors": ["dashboard_central"]},
     {"id": "couloir_principal", "name": "Couloir principal", "floor": 0, "type": "couloir", "sensors": ["pir", "radar_mmwave", "sol_intelligent"]},
     {"id": "salle_commune", "name": "Salle commune / TV", "floor": 0, "type": "salle_commune", "sensors": ["pir", "co2", "son"]},
-    {"id": "patio", "name": "Patio couvert", "floor": 0, "type": "exterieur", "sensors": ["gps_bracelet", "rfid_sortie"]},
+    {"id": "patio", "name": "Patio couvert", "floor": 0, "type": "exterieur", "sensors": ["gps_bracelet", "rfid_sortie", "pir", "radar_mmwave", "sol_intelligent", "co2", "son", "camera_thermique"]},
     {"id": "jardin", "name": "Jardin therapeutique", "floor": 0, "type": "exterieur", "sensors": ["gps_bracelet", "rfid_sortie", "camera_thermique", "pir"]},
     {"id": "salle_activites", "name": "Salle d'activites", "floor": 0, "type": "therapie", "sensors": ["pir", "ambiant"]},
     {"id": "salle_manger", "name": "Salle a manger", "floor": 0, "type": "restaurant", "sensors": ["presence", "sol_capteur"]},
@@ -207,6 +212,11 @@ ZONES = [
     {"id": "couloir_aile_b_etage", "name": "Couloir Aile B", "floor": 1, "type": "couloir", "sensors": ["pir", "ble_beacon", "radar_mmwave"]},
     {"id": "palier_etage", "name": "Palier escalier / ascenseur", "floor": 1, "type": "circulation", "sensors": ["pir", "badge", "radar_mmwave"]},
 ]
+
+for _zone in ZONES:
+    if _zone["type"] in {"entree", "infirmerie", "admin", "salle_commune", "therapie", "restaurant", "cuisine", "circulation"}:
+        if "porte" not in _zone["sensors"]:
+            _zone["sensors"].append("porte")
 
 # Personnel soignant
 CAREGIVERS = [

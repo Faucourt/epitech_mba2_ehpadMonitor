@@ -16,6 +16,13 @@
     button { border: 0; border-radius: 9px; padding: 10px 14px; background: #1a5276; color: #fff; font-weight: 800; cursor: pointer; }
     button:hover { background: #154360; }
     .error-msg { display: none; color: #dc2626; text-align: center; font-size: .85rem; }
+    .demo-creds { border: 1px solid #d7e1ec; background: #f8fafc; border-radius: 12px; padding: 12px; display: grid; gap: 8px; font-size: .8rem; }
+    .demo-creds b { color: #1a5276; }
+    .demo-table { display: grid; gap: 6px; }
+    .demo-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; align-items: center; color: #64748b; }
+    .demo-row.header { font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+    .demo-row code { display: block; background: #fff; border: 1px solid #d7e1ec; color: #1a5276; border-radius: 8px; padding: 7px 8px; user-select: all; font-family: Consolas, monospace; }
+    .demo-fill { background: #eaf4fb; color: #1a5276; border: 1px solid #bdd8e8; padding: 7px 9px; white-space: nowrap; }
 
     .app-screen { display: none; min-height: 100vh; flex-direction: column; }
     header { background: #1a5276; color: #fff; padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
@@ -74,6 +81,8 @@
 
     .last-update { color: #8a8f98; text-align: right; font-size: .76rem; padding: 0 28px 22px; }
     .disclaimer { margin-top: 16px; padding: 12px 15px; background: #eaf4fb; border-left: 3px solid #1a5276; border-radius: 9px; color: #4b5563; font-size: .82rem; line-height: 1.5; }
+    .privacy-box { margin-top: 12px; padding: 11px 12px; border: 1px solid #d7e1ec; background: #f8fafc; border-radius: 10px; color: #4b5563; font-size: .82rem; line-height: 1.45; }
+    .privacy-box b { color: #1a5276; display: block; margin-bottom: 4px; }
     .refresh-info { text-align: center; color: #94a3b8; font-size: .78rem; padding: 10px; }
     .loading { text-align: center; padding: 80px 20px; color: #64748b; }
 
@@ -98,9 +107,17 @@
     <label>Mot de passe
       <input type="password" id="passwordInput" placeholder="Mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
     </label>
+    <div class="demo-creds">
+      <b>Comptes demo</b>
+      <div class="demo-table">
+        <div class="demo-row header"><span>ID</span><span>Mot de passe</span><span></span></div>
+        <div class="demo-row"><code>piaf</code><code>piaf105</code><button class="demo-fill" onclick="fillDemoFamily('piaf','piaf105')">Remplir</button></div>
+        <div class="demo-row"><code>curie</code><code>curie101</code><button class="demo-fill" onclick="fillDemoFamily('curie','curie101')">Remplir</button></div>
+        <div class="demo-row"><code>dalida</code><code>dalida214</code><button class="demo-fill" onclick="fillDemoFamily('dalida','dalida214')">Remplir</button></div>
+      </div>
+    </div>
     <button onclick="doLogin()">Ouvrir le carnet</button>
     <div class="error-msg" id="errorMsg">Identifiants incorrects. Contactez l'etablissement.</div>
-    <p style="font-size:.75rem;color:#94a3b8">Demo : utilisateur <b>curie</b> - mot de passe <b>curie101</b></p>
   </div>
 </div>
 
@@ -129,6 +146,11 @@ let residentId = '';
 let residentName = '';
 let refreshTimer = null;
 let activeFamilyTab = 'resume';
+
+function fillDemoFamily(username, password) {
+  document.getElementById('usernameInput').value = username;
+  document.getElementById('passwordInput').value = password;
+}
 
 async function doLogin() {
   const username = document.getElementById('usernameInput').value.trim();
@@ -265,6 +287,11 @@ function renderResident(r) {
           <div class="section-title">Activites deja notees</div>
           <div class="chips">${done.map(x => `<span class="chip">${x}</span>`).join('') || '<span class="chip">Aucune activite encore notee</span>'}</div>
           <p class="page-note">Ce carnet donne des nouvelles de vie quotidienne. Il ne remplace pas les transmissions medicales de l'equipe.</p>
+          <div class="privacy-box">
+            <b>Confidentialite</b>
+            Informations visibles : ${r.privacy_scope?.visible?.join(', ') || 'vie quotidienne'}<br>
+            Informations masquees : ${r.privacy_scope?.hidden?.join(', ') || 'constantes medicales et alertes brutes'}.
+          </div>
         </section>
 
         <section class="book-page right" data-tab="jour">
@@ -303,7 +330,7 @@ function renderResident(r) {
               </div>`).join('')}
           </div>
           <div style="text-align:center;margin-top:16px">
-            <a id="album-link" href="/album-activites"
+            <a id="album-link" href="/album_activites.html"
               style="display:inline-block;background:#b8870b;color:#fff;font-family:'Segoe UI',sans-serif;font-size:.85rem;font-weight:700;padding:9px 20px;border-radius:8px;text-decoration:none;letter-spacing:.02em">
               Voir l'album complet ✦
             </a>

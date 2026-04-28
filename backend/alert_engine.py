@@ -173,6 +173,9 @@ class Alert:
     acknowledged: bool = False
     acknowledged_at: Optional[float] = None
     acknowledged_by: Optional[str] = None
+    taken_at: Optional[float] = None
+    taken_by: Optional[str] = None
+    escalation_paused_until: Optional[float] = None
     escalated_from: Optional[int] = None
     resolved: bool = False
 
@@ -184,6 +187,8 @@ class Alert:
         escalates_in_s = None
         if delay and not self.acknowledged and not self.resolved:
             remaining = delay - elapsed
+            if self.escalation_paused_until and self.escalation_paused_until > now:
+                remaining = max(remaining, self.escalation_paused_until - now)
             escalates_in_s = max(0, round(remaining))
         return {
             "id": self.id,
@@ -206,6 +211,9 @@ class Alert:
             "created_at": datetime.fromtimestamp(self.created_at, timezone.utc).isoformat().replace("+00:00", "Z"),
             "acknowledged": self.acknowledged,
             "acknowledged_by": self.acknowledged_by,
+            "taken_at": datetime.fromtimestamp(self.taken_at, timezone.utc).isoformat().replace("+00:00", "Z") if self.taken_at else None,
+            "taken_by": self.taken_by,
+            "escalation_paused_until": datetime.fromtimestamp(self.escalation_paused_until, timezone.utc).isoformat().replace("+00:00", "Z") if self.escalation_paused_until else None,
             "escalated_from": self.escalated_from,
             "resolved": self.resolved,
             "time_since_s": elapsed,
@@ -461,18 +469,26 @@ class AlertEngine:
         log.warning(f"[ALERT {level.name}] {state['resident_name']} (chambre {state['room']}): {reason}")
 
         # Sauvegarder dans Redis
-        self._save_to_redis(alert)
+        self._save_to_redis(alert, record_history=True)
         return alert
 
-    def _save_to_redis(self, alert: Alert):
+    def _save_to_redis(self, alert: Alert, record_history: bool = False):
         try:
             key = f"alert:{alert.resident_id}:active"
             self.redis.setex(key, 86400, __import__('json').dumps(alert.to_dict()))
-            # Liste historique
-            self.redis.lpush("alerts:history", __import__('json').dumps(alert.to_dict()))
-            self.redis.ltrim("alerts:history", 0, 999)
+            if record_history:
+                # Historique evenementiel: creation, escalade, acquittement, resolution.
+                # Les simples mises a jour de localisation restent dans la cle active.
+                self.redis.lpush("alerts:history", __import__('json').dumps(alert.to_dict()))
+                self.redis.ltrim("alerts:history", 0, 999)
         except Exception as e:
             log.error(f"Redis save error: {e}")
+
+    def _delete_active_from_redis(self, resident_id: str):
+        try:
+            self.redis.delete(f"alert:{resident_id}:active")
+        except Exception as e:
+            log.error(f"Redis delete active alert error: {e}")
 
     def _passes_persistence(self, resident_id: str, level: AlertLevel, reason: str) -> bool:
         """Filtre anti-bruit: seules les urgences sont immediates, le reste doit persister."""
@@ -525,6 +541,8 @@ class AlertEngine:
         if alert:
             alert.resolved = True
             self._resolved_recently[resident_id] = time.time()
+            self._save_to_redis(alert, record_history=True)
+            self._delete_active_from_redis(resident_id)
             log.info(f"Alerte résolue pour {resident_id}")
 
     def acknowledge(self, resident_id: str, by: str) -> bool:
@@ -533,10 +551,79 @@ class AlertEngine:
             alert.acknowledged = True
             alert.acknowledged_at = time.time()
             alert.acknowledged_by = by
-            self._save_to_redis(alert)
+            self._save_to_redis(alert, record_history=True)
             log.info(f"Alerte acquittée par {by} pour {resident_id}")
             return True
         return False
+
+    def take_in_charge(self, resident_id: str, by: str, pause_s: int = 600) -> bool:
+        alert = self.active_alerts.get(resident_id)
+        if alert and not alert.resolved:
+            now = time.time()
+            alert.taken_at = now
+            alert.taken_by = by
+            alert.escalation_paused_until = now + pause_s
+            self._save_to_redis(alert, record_history=True)
+            log.info(f"Alerte prise en charge par {by} pour {resident_id}, escalade suspendue {pause_s}s")
+            return True
+        return False
+
+    def resolve(self, resident_id: str, by: str) -> bool:
+        alert = self.active_alerts.pop(resident_id, None)
+        if alert and not alert.resolved:
+            now = time.time()
+            alert.taken_by = alert.taken_by or by
+            alert.taken_at = alert.taken_at or now
+            alert.acknowledged = True
+            alert.acknowledged_at = now
+            alert.acknowledged_by = by
+            alert.resolved = True
+            self._resolved_recently[resident_id] = now
+            self._save_to_redis(alert, record_history=True)
+            self._delete_active_from_redis(resident_id)
+            log.info(f"Alerte resolue par {by} pour {resident_id}")
+            return True
+        return False
+
+    def _has_clinical_escalation_signal(self, alert: Alert) -> bool:
+        """Vrai si l'alerte porte un signal clinique suffisant pour monter vers urgence."""
+        trigger = alert.trigger_data or {}
+        vitals = trigger.get("vitals") or {}
+        movement = trigger.get("movement") or {}
+        news = trigger.get("news") or {}
+        routine = trigger.get("routine_analysis") or {}
+        ml_risk = float(trigger.get("ml_risk") or 0)
+        news_score = int(news.get("score") or 0)
+        spo2 = float(vitals.get("spo2") or 100)
+        hr = float(vitals.get("heart_rate") or 0)
+        bp = float(vitals.get("blood_pressure_sys") or 120)
+        temp = float(vitals.get("temperature") or 36.5)
+        rr = float(vitals.get("respiratory_rate") or 0)
+        routine_score = float(routine.get("score") or 0)
+
+        return bool(
+            alert.level >= AlertLevel.URGENCE
+            or alert.current_zone == "hors_ehpad"
+            or movement.get("is_fall_detected")
+            or movement.get("ambient_fall_confirmed")
+            or movement.get("sos_pressed")
+            or news_score >= 6
+            or ml_risk >= 0.82
+            or routine_score >= 0.85
+            or spo2 < 90
+            or hr > 125
+            or hr < 45
+            or bp < 85
+            or bp > 200
+            or temp > 39.3
+            or rr > 24
+        )
+
+    def _escalation_ceiling(self, alert: Alert) -> AlertLevel:
+        """Evite qu'une simple alerte de routine devienne danger vital par non-clic."""
+        if alert.level >= AlertLevel.URGENCE or self._has_clinical_escalation_signal(alert):
+            return AlertLevel.DANGER_VITAL
+        return AlertLevel.ALERT
 
     def check_escalations(self) -> list[dict]:
         """Appelé périodiquement. Escalade les alertes non acquittées et retourne les dicts escaladés."""
@@ -550,11 +637,14 @@ class AlertEngine:
         for rid, alert in self.active_alerts.items():
             if alert.acknowledged or alert.resolved:
                 continue
+            if alert.escalation_paused_until and now < alert.escalation_paused_until:
+                continue
             config = LEVEL_CONFIG[alert.level]
             delay = config.get("escalade_delay_s")
             if delay and (now - alert.created_at) > delay:
                 next_level = alert.level + 1
-                if next_level <= AlertLevel.DANGER_VITAL:
+                ceiling = self._escalation_ceiling(alert)
+                if next_level <= AlertLevel.DANGER_VITAL and next_level <= ceiling:
                     to_escalate.append((rid, alert, AlertLevel(next_level)))
 
         escalated_dicts = []
@@ -588,7 +678,7 @@ class AlertEngine:
             )
             self.active_alerts[rid] = escalated
             self.alert_history.append(escalated)
-            self._save_to_redis(escalated)
+            self._save_to_redis(escalated, record_history=True)
             log.warning(f"[ESCALADE] {old_alert.resident_name}: N{int(old_alert.level)} → N{int(new_level)} après {elapsed_min} min")
             escalated_dicts.append(escalated.to_dict())
 

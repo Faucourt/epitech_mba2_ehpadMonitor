@@ -332,11 +332,11 @@
        style="font-size:12px;padding:5px 12px;background:rgba(59,130,246,0.14);color:#60a5fa;border:1px solid rgba(59,130,246,0.28);border-radius:6px;text-decoration:none;white-space:nowrap;">
       Config simulateur
     </a>
-    <a href="famille.html" target="_blank"
+    <a href="/famille.html" target="_blank"
        style="font-size:12px;padding:5px 12px;background:rgba(39,174,96,0.15);color:#27ae60;border:1px solid rgba(39,174,96,0.3);border-radius:6px;text-decoration:none;white-space:nowrap;">
       &#128100; Espace Famille
     </a>
-    <a href="admin_famille.html" target="_blank"
+    <a href="/admin_famille.html" target="_blank"
        style="font-size:12px;padding:5px 12px;background:rgba(146,43,33,0.12);color:#c0392b;border:1px solid rgba(146,43,33,0.25);border-radius:6px;text-decoration:none;white-space:nowrap;">
       &#128272; Admin
     </a>
@@ -599,6 +599,49 @@ let alertPanelOpen = false;
 let _llmReportCache = {};  // resident_id → rendered HTML
 let lastToastByAlert = {};
 let demoModeActive = false;
+let staffId = localStorage.getItem('ehpad_staff_id') || '';
+let staffToken = localStorage.getItem('ehpad_staff_token') || '';
+let breakGlassReasonByResident = {};
+
+function authHeaders(extra = {}, rid = null) {
+  const headers = staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
+  if (rid && breakGlassReasonByResident[rid]) headers['X-Break-Glass-Reason'] = breakGlassReasonByResident[rid];
+  return headers;
+}
+
+async function ensureStaffSession() {
+  if (staffToken) return true;
+  const id = prompt("Identifiant personnel pour acces DPI :");
+  const password = id ? prompt("Mot de passe personnel :") : '';
+  if (!id || !password) return false;
+  const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caregiver_id: id.trim(), password }),
+  });
+  if (!res.ok) return false;
+  const data = await res.json();
+  staffId = id.trim();
+  staffToken = data.token || '';
+  localStorage.setItem('ehpad_staff_id', staffId);
+  localStorage.setItem('ehpad_staff_token', staffToken);
+  return Boolean(staffToken);
+}
+
+async function secureResidentJson(url, rid) {
+  const hasSession = await ensureStaffSession();
+  if (!hasSession) throw new Error('session requise');
+  let res = await fetch(url, { headers: authHeaders({}, rid) });
+  if (res.status === 403 && !breakGlassReasonByResident[rid]) {
+    const reason = prompt("Resident hors perimetre. Justification bris de glace :");
+    if (reason && reason.trim().length >= 8) {
+      breakGlassReasonByResident[rid] = reason.trim();
+      res = await fetch(url, { headers: authHeaders({}, rid) });
+    }
+  }
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
 
 // ============================================================
 // WebSocket
@@ -694,9 +737,7 @@ async function ensureThirtyMinuteHistory(rid) {
   const loadedAt = detailHistoryLoaded[rid] || 0;
   if (Date.now() - loadedAt < 2 * 60 * 1000) return;
   try {
-    const res = await fetch(`${BACKEND_HTTP}/api/residents/${rid}/history?minutes=30`);
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
+    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${rid}/history?minutes=30`, rid);
     setThirtyMinuteHistory(rid, data.history || []);
     if (currentDetailResident === rid && residents[rid]) openDetail(rid);
   } catch (e) {
@@ -801,7 +842,12 @@ function renderGrid() {
 
 function openResidentDossier(rid) {
   if (!rid) return;
-  window.open(`/resident/${rid}`, '_blank');
+  const params = new URLSearchParams();
+  if (staffId) params.set('staff', staffId);
+  if (staffToken) params.set('token', staffToken);
+  if (breakGlassReasonByResident[rid]) params.set('break_glass', breakGlassReasonByResident[rid]);
+  const suffix = params.toString() ? `?${params.toString()}` : '';
+  window.open(`/resident/${rid}${suffix}`, '_blank');
 }
 
 function renderNightBlock(r) {
@@ -987,6 +1033,7 @@ function updateAlertSidebar() {
         <span class="alert-time">Chambre ${a.room} · ${formatSensorEvents(a.sensor_events)}</span>
         <span class="alert-time">${a.time_since_s}s</span>
       </div>
+      <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); openDetail('${a.resident_id}'); loadAlertExplanation('${a.resident_id}')">Explication</button>
       ${escaladeBar}
     </div>`;
   }).join('');
@@ -1048,6 +1095,8 @@ function renderHistoryTab() {
           <th style="padding:8px;text-align:left">Résident</th>
           <th style="padding:8px;text-align:left">Chambre</th>
           <th style="padding:8px;text-align:left">Niveau</th>
+          <th style="padding:8px;text-align:left">Position</th>
+          <th style="padding:8px;text-align:left">Capteurs</th>
           <th style="padding:8px;text-align:left">Soignants</th>
           <th style="padding:8px;text-align:left">Raison</th>
         </tr>
@@ -1059,6 +1108,8 @@ function renderHistoryTab() {
             <td style="padding:8px">${a.resident_name}</td>
             <td style="padding:8px;color:var(--text3)">${a.room}</td>
             <td style="padding:8px"><span style="color:${levelColors[a.level]};font-weight:600">${levelNames[a.level]}</span></td>
+            <td style="padding:8px;color:var(--text2);font-size:12px">${formatAlertLocation(a)}</td>
+            <td style="padding:8px;color:var(--text2);font-size:12px">${formatSensorEvents(a.sensor_events)}</td>
             <td style="padding:8px;color:var(--text2);font-size:12px">${formatNotifiedStaff(a.notified_staff)}</td>
             <td style="padding:8px;color:var(--text2);font-size:12px">${a.reason}</td>
           </tr>
@@ -1197,8 +1248,7 @@ async function loadSimulatedHistory() {
   if (!residentId || !panel) return;
   panel.innerHTML = '<div class="no-alerts">Chargement de l historique simulé...</div>';
   try {
-    const res = await fetch(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`);
-    const data = await res.json();
+    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`, residentId);
     const rows = data.history || [];
     const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
     const events = rows.reduce((acc, r) => {
@@ -1292,8 +1342,7 @@ async function loadResidentDpi(rid) {
   if (!residentId || !panel) return;
   panel.innerHTML = '<div class="no-alerts">Chargement du mini DPI...</div>';
   try {
-    const res = await fetch(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${date}`);
-    const data = await res.json();
+    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${date}`, residentId);
     renderResidentDpi(data.mini_dpi);
   } catch (err) {
     panel.innerHTML = `<div class="no-alerts">Mini DPI indisponible: ${err.message}</div>`;
@@ -1408,7 +1457,9 @@ function renderStaff(data) {
 }
 
 async function setStaffStatus(caregiverId, status) {
-  await fetch(`${BACKEND_HTTP}/api/staff/${caregiverId}/status?status=${status}`, { method: 'POST' });
+  const ok = await ensureStaffSession();
+  if (!ok) return;
+  await fetch(`${BACKEND_HTTP}/api/staff/${caregiverId}/status?status=${status}`, { method: 'POST', headers: authHeaders() });
   loadStaff();
 }
 
@@ -1416,7 +1467,9 @@ async function assignCaregiverFromPanel() {
   const rid = document.getElementById('assign-resident')?.value;
   const caregiver = document.getElementById('assign-caregiver')?.value;
   if (!rid || !caregiver) return;
-  await fetch(`${BACKEND_HTTP}/api/residents/${rid}/assign-caregiver?caregiver_id=${caregiver}`, { method: 'POST' });
+  const ok = await ensureStaffSession();
+  if (!ok) return;
+  await fetch(`${BACKEND_HTTP}/api/residents/${rid}/assign-caregiver?caregiver_id=${caregiver}`, { method: 'POST', headers: authHeaders() });
   loadStaff();
   setTimeout(fetchInitialData, 400);
 }
@@ -1440,6 +1493,7 @@ function renderReadiness(data, life, pred, sensors = {}, scale = {}) {
   const urgentPred = predictions.filter(p => (p.recommended_level || 0) >= 3 || (p.risk_60min || 0) >= 0.7).length;
   const mqtt = scale.mqtt || {};
   const backend = scale.backend || {};
+  const targets = scale.scale_targets || {};
   const topSensors = (sensors.sensors || []).slice(0, 10);
   panel.innerHTML = `
     <div class="report-panel" style="margin-bottom:12px">
@@ -1458,7 +1512,9 @@ function renderReadiness(data, life, pred, sensors = {}, scale = {}) {
       </div>
       <div class="profile-counts">
         <span class="profile-pill">MQTT avg: <b>${mqtt.messages_per_second_avg ?? '—'} msg/s</b></span>
+        <span class="profile-pill">MQTT 60s: <b>${mqtt.messages_per_second_60s ?? '—'} msg/s</b></span>
         <span class="profile-pill">Cible 20x6: <b>${mqtt.target_20_residents_6_constants_s ?? 120} msg/s</b></span>
+        <span class="profile-pill">Cible 50x6: <b>${targets.target_50_residents_6_constants_s ?? 300} msg/s</b></span>
         <span class="profile-pill">WS avg: <b>${backend.ws_push_per_second_avg ?? '—'} msg/s</b></span>
         <span class="profile-pill">Capteurs: <b>${sensors.count ?? 0}</b></span>
         <span class="profile-pill">Offline: <b style="color:${sensors.offline ? 'var(--red)' : 'var(--green)'}">${sensors.offline ?? 0}</b></span>
@@ -1533,9 +1589,15 @@ function renderReadiness(data, life, pred, sensors = {}, scale = {}) {
         <div class="dpi-grid">
           <div class="dpi-row"><span>Résidents actifs</span><b>${scale.resident_count ?? '—'}</b></div>
           <div class="dpi-row"><span>MQTT total</span><b>${mqtt.messages_total ?? '—'}</b></div>
+          <div class="dpi-row"><span>MQTT 60s</span><b>${mqtt.window_60s_total ?? '—'} msg · ${mqtt.messages_per_second_60s ?? '—'}/s</b></div>
           <div class="dpi-row"><span>Âge dernier message</span><b>${mqtt.last_message_age_s ?? '—'} s</b></div>
           <div class="dpi-row"><span>Théorique actuel</span><b>${mqtt.current_theoretical_constants_s ?? '—'} constantes/s</b></div>
+          <div class="dpi-row"><span>Cible 50 résidents</span><b>${targets.target_50_residents_6_constants_s ?? 300} constantes/s</b></div>
           <div class="dpi-row"><span>Influx sample</span><b>${backend.influx_sample_interval_s ?? '—'} s</b></div>
+          <div class="dpi-row"><span>Influx estimé</span><b>${backend.estimated_influx_points_per_second ?? '—'} pts/s</b></div>
+          <div class="dpi-row"><span>WebSocket throttle</span><b>${backend.ws_resident_min_interval_s ?? '—'} s</b></div>
+          <div class="dpi-row"><span>WS estimé</span><b>${backend.estimated_ws_states_per_second ?? '—'} états/s</b></div>
+          <div class="dpi-row"><span>Âge états Redis</span><b>moy. ${backend.state_age_avg_s ?? '—'}s · max ${backend.state_age_max_s ?? '—'}s</b></div>
           <div class="dpi-row"><span>Prédiction</span><b>${scale.prediction?.refresh_interval_s ?? 300} s</b></div>
         </div>
         <div class="watch-list">${(scale.pro_recommendations || []).map(x => `<div class="watch-item">${x}</div>`).join('')}</div>
@@ -1574,15 +1636,17 @@ function renderGlobalReport(report) {
     </div>
     <div id="daily-llm-status" class="watch-item" style="margin-bottom:10px">Rapports LLM quotidiens: vérification...</div>
     <table class="handover-table">
-      <thead><tr><th>Ch.</th><th>Résident</th><th>Niveau</th><th>Transmission</th><th>À surveiller</th></tr></thead>
+      <thead><tr><th>Ch.</th><th>Résident</th><th>Niveau</th><th>30/60 min</th><th>Transmission</th><th>À surveiller</th><th>Actions</th></tr></thead>
       <tbody>
         ${rows.map(r => `
           <tr class="handover-row" onclick="selectReportResident('${r.resident_id}')">
             <td>${r.room || '—'}</td>
-            <td><b>${r.resident_name || r.resident_id}</b><br><span style="color:var(--text3)">${r.location || 'zone inconnue'}</span></td>
+            <td><b>${r.resident_name || r.resident_id}</b><br><span style="color:var(--text3)">${r.location || 'zone inconnue'} · ${r.routine || 'routine'}</span></td>
             <td style="color:${getMLRiskColor(r.risk || 0)};font-weight:700">${r.level}<br>${Math.round((r.risk || 0) * 100)}%</td>
-            <td>${r.summary || ''}</td>
+            <td style="font-size:12px;color:var(--text2)">30: <b style="color:${getMLRiskColor(r.risk_30min || 0)}">${Math.round((r.risk_30min || 0) * 100)}%</b><br>60: <b style="color:${getMLRiskColor(r.risk_60min || 0)}">${Math.round((r.risk_60min || 0) * 100)}%</b></td>
+            <td>${r.summary || ''}<br><span style="color:var(--text3);font-size:11px">${r.alerts_today || 0} alerte(s) jour · ${r.history_30d_count || 0} événement(s) 30j</span></td>
             <td style="color:var(--text2)">${r.watch || ''}</td>
+            <td style="color:var(--text2)">${r.actions || ''}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -1639,6 +1703,7 @@ function renderResidentDpi(report) {
       <div class="dpi-row"><span>Moyennes 30j</span><b>FC ${avg.heart_rate ?? '—'} · SpO2 ${avg.spo2 ?? '—'} · PA ${avg.blood_pressure_sys ?? '—'}</b></div>
       <div class="dpi-row"><span>Alertes du jour</span><b>${alerts.length}</b></div>
       <div class="dpi-row"><span>Evénements 30j</span><b>${hist.alerts_count ?? 0}</b></div>
+      <div class="dpi-row"><span>Généré le</span><b>${report.generated_at ? new Date(report.generated_at).toLocaleString('fr-FR') : '—'}</b></div>
     </div>
     <div class="section-sub">Agents prédictifs A2A</div>
     <div class="agent-strip">
@@ -1657,9 +1722,9 @@ function renderResidentDpi(report) {
     <div class="section-sub">Transmission</div>
     <div style="font-size:13px;line-height:1.45;color:var(--text2)">${report.transmission_summary || ''}</div>
     <div class="section-sub">Risque à venir</div>
-    <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('')}</div>
+    <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Aucun point spécifique.</div>'}</div>
     <div class="section-sub">Actions soignantes</div>
-    <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('')}</div>
+    <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Surveillance standard.</div>'}</div>
     <div class="section-sub" style="display:flex;align-items:center;justify-content:space-between;">
       <span>Rapport LLM (Meditron · RAG KB)</span>
       <button class="filter-btn" onclick="loadLlmReport('${report.resident_id}')" id="llm-btn-${report.resident_id}">Générer</button>
@@ -1811,6 +1876,7 @@ function renderFloorPlan(floor) {
       ${floor === 0 ? 'RDC' : '1er etage'} - ${rooms.length} chambres
     </text>
     ${renderPlanSpaces(floor)}
+    ${renderPatioSensors2D(floor)}
     ${renderDiningOverlay(floor)}
   `;
 
@@ -1840,6 +1906,12 @@ function renderFloorPlan(floor) {
           <title>Salle de bain chambre ${room} · capteur mouvement</title>
         </circle>
         <text x="${x + rw - 14.5}" y="${y + 22}" fill="#67e8f9" font-size="5.8" text-anchor="middle" font-family="system-ui">SDB</text>
+        <line x1="${x + rw/2 - 10}" y1="${y + rh}" x2="${x + rw/2 + 10}" y2="${y + rh}" stroke="#ef4444" stroke-width="2.4" stroke-linecap="round">
+          <title>Porte chambre ${room} · capteur ouverture</title>
+        </line>
+        <circle cx="${x + rw/2 + 14}" cy="${y + rh - 3}" r="2.8" fill="#ef4444">
+          <title>Capteur porte chambre ${room}</title>
+        </circle>
         <text x="${x + rw/2 - 4}" y="${y + 18}" fill="#e2e8f0" font-size="12" font-weight="600" text-anchor="middle" font-family="system-ui">Ch. ${room}</text>
         ${resident ? `
           <text x="${x + rw/2 - 4}" y="${y + 32}" fill="#94a3b8" font-size="10" text-anchor="middle" font-family="system-ui">${resident.name?.split(' ')[0] || ''}</text>
@@ -1877,7 +1949,7 @@ function planCoordsForZone(zone, floor, layout) {
   const map0 = {
     entree: [88, 75], infirmerie_rdc: [216, 75], pharmacie_admin: [348, 75], salle_commune: [493, 75],
     salle_activites: [644, 75], hors_ehpad: [101, 147], escalier: [236, 147], ascenseur: [342, 147],
-    couloir_principal: [370, 210], patio: [309, 286], salle_manger: [499, 283], office_cuisine: [643, 283],
+    couloir_principal: [370, 210], patio: [320, 300], salle_manger: [514, 283], office_cuisine: [653, 283],
     jardin: [350, 367], couloir_aile_rdc: [370, 408],
   };
   const map1 = {
@@ -1940,9 +2012,9 @@ function renderPlanSpaces(floor) {
     ['Escalier', 190, 124, 92, 46, '#31394b'],
     ['Ascenseur', 296, 124, 92, 46, '#31394b'],
     ['Couloir principal', 28, 194, 686, 32, '#242840'],
-    ['Patio', 220, 250, 178, 72, '#244139'],
-    ['Salle a manger', 424, 250, 150, 66, '#2a3544'],
-    ['Office / Cuisine', 590, 250, 106, 66, '#3a2d24'],
+    ['Patio central', 186, 242, 250, 112, '#244139'],
+    ['Salle a manger', 454, 250, 126, 66, '#2a3544'],
+    ['Office / Cuisine', 594, 250, 102, 66, '#3a2d24'],
     ['Jardin therapeutique', 220, 344, 260, 46, '#1f5b3b'],
     ['Couloir chambres RDC', 28, 396, 686, 24, '#242840'],
   ] : [
@@ -1950,7 +2022,7 @@ function renderPlanSpaces(floor) {
     ['Poste infirmier', 200, 48, 130, 54, '#29324f'],
     ['Kinesitherapie', 346, 48, 140, 54, '#263344'],
     ['Salle de repos', 502, 48, 140, 54, '#263344'],
-    ['Vue patio', 288, 136, 172, 86, '#1e302c'],
+    ['Vue patio central', 240, 124, 270, 110, '#1e302c'],
     ['Palier etage', 28, 136, 156, 42, '#31394b'],
     ['Couloir Aile A', 28, 276, 686, 28, '#242840'],
     ['Couloir Aile B', 28, 426, 686, 28, '#242840'],
@@ -1959,6 +2031,30 @@ function renderPlanSpaces(floor) {
     <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" rx="6" stroke="#4a5568" stroke-width="1"/>
     <text x="${x + w/2}" y="${y + h/2 + 4}" fill="#cbd5e1" font-size="10" text-anchor="middle" font-family="system-ui">${label}</text>
   `).join('');
+}
+
+function renderPatioSensors2D(floor) {
+  if (floor !== 0) return '';
+  const sensors = [
+    ['PIR', 218, 268, '#3b82f6'],
+    ['Radar', 270, 268, '#8b5cf6'],
+    ['Sol', 322, 268, '#f59e0b'],
+    ['RFID', 374, 268, '#ef4444'],
+    ['GPS', 230, 326, '#10b981'],
+    ['CO2', 282, 326, '#22d3ee'],
+    ['Son', 334, 326, '#22d3ee'],
+    ['Therm.', 386, 326, '#f43f5e'],
+  ];
+  return `
+    <g>
+      ${sensors.map(([label, x, y, color]) => `
+        <circle cx="${x}" cy="${y}" r="5" fill="${color}" stroke="#e2e8f0" stroke-width="0.8">
+          <title>Patio central · ${label}</title>
+        </circle>
+        <text x="${x}" y="${y + 15}" fill="#cbd5e1" font-size="6.5" text-anchor="middle" font-family="system-ui">${label}</text>
+      `).join('')}
+    </g>
+  `;
 }
 
 function renderDiningOverlay(floor) {
@@ -2035,6 +2131,8 @@ function openDetail(rid) {
         <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Position: ${formatAlertLocation(alert)}</div>
         <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Capteurs actifs: ${formatSensorEvents(alert.sensor_events)}</div>
         <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Soignants notifiés: ${formatNotifiedStaff(alert.notified_staff)}</div>
+        <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="loadAlertExplanation('${rid}')">Voir explication</button>
+        <div id="alert-explain-block" style="margin-top:8px"></div>
       </div>
       <button class="ack-btn" onclick="acknowledgeAlert('${rid}')">✓ Acquitter l'alerte</button>
     `;
@@ -2392,6 +2490,51 @@ function acknowledgeAlert(rid) {
     }
     updateAlertSidebar();
     openDetail(rid);
+    return;
+  }
+  fetch(`${BACKEND_HTTP}/api/alerts/${rid}/acknowledge?by=soignant_dashboard`, { method: 'POST' })
+    .then(r => {
+      if (!r.ok) throw new Error('Alerte deja cloturee ou inexistante');
+      if (activeAlerts[rid]) {
+        activeAlerts[rid].acknowledged = true;
+        activeAlerts[rid].resolved = true;
+      }
+      updateAlertSidebar();
+      openDetail(rid);
+    })
+    .catch(err => alert(err.message));
+}
+
+async function loadAlertExplanation(rid) {
+  openDetail(rid);
+  const block = document.getElementById('alert-explain-block');
+  if (block) block.innerHTML = '<div class="watch-item">Chargement de l explication...</div>';
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/alerts/explain/${rid}`);
+    if (!res.ok) throw new Error('Explication indisponible');
+    const data = await res.json();
+    const target = document.getElementById('alert-explain-block');
+    if (!target) return;
+    if (!data.alert_id && !data.alert) {
+      target.innerHTML = `<div class="watch-item">${data.professional_summary || 'Aucune alerte active ou recente.'}</div>`;
+      return;
+    }
+    const events = data.sensors?.events || {};
+    const evidence = data.sensors?.evidence || [];
+    const vitals = data.clinical?.vitals || {};
+    target.innerHTML = `
+      <div class="watch-item" style="border-color:rgba(59,130,246,.35)">
+        <b>Explication structurée</b><br>
+        ${data.professional_summary || ''}<br>
+        <span style="color:var(--text2)">Position:</span> ${data.location?.label || data.location?.zone || 'non precisee'}<br>
+        <span style="color:var(--text2)">Capteurs:</span> ${formatSensorEvents(events)}<br>
+        <span style="color:var(--text2)">Constantes:</span> FC ${vitals.heart_rate ?? '-'} · SpO2 ${vitals.spo2 ?? '-'} · PA ${vitals.blood_pressure_sys ?? '-'} · T ${vitals.temperature ?? '-'}<br>
+        ${evidence.length ? `<span style="color:var(--text2)">Preuves:</span> ${evidence.join(' · ')}` : ''}
+      </div>
+    `;
+  } catch (err) {
+    const block = document.getElementById('alert-explain-block');
+    if (block) block.innerHTML = `<div class="watch-item" style="color:var(--red)">${err.message}</div>`;
   }
 }
 
@@ -2523,28 +2666,29 @@ const FACILITY_3D = {
     ['Pharmacie / Admin', -4.5, 8, 5.5, 4, 0, ['dashboard']],
     ['Salle commune / TV', 8, 8, 8, 4, 0, ['pir', 'co2', 'son']],
     ['Salle activites', 17, 8, 5, 4, 0, ['pir', 'ambient']],
-    ['Salle a manger', 10, 1, 9, 4, 0, ['presence', 'sol']],
-    ['Office / Cuisine', 18.5, 1, 4.5, 4, 0, ['fumee', 'co', 'temp']],
-    ['Patio central', 0, 0, 8, 7, 0, ['gps', 'rfid']],
+    ['Patio central', 0, 0, 24, 10.5, 0, ['gps', 'rfid', 'pir', 'radar', 'sol', 'co2', 'son', 'camera_thermique']],
+    ['Salle a manger', 16, 1, 6, 4, 0, ['presence', 'sol']],
+    ['Office / Cuisine', 20.4, 1, 3.2, 4, 0, ['fumee', 'co', 'temp']],
     ['Jardin therapeutique', 0, 15, 22, 7, 0, ['gps', 'rfid', 'pir']],
     ['Escalier securise', -21, 0, 2.4, 5, 0, ['pir', 'radar']],
     ['Ascenseur', -18, 0, 2.4, 3.4, 0, ['badge', 'pir']],
     ['Poste infirmier', -18, 8, 6, 4, 1, ['dashboard']],
     ['Kinesitherapie', -7, 8, 7, 4, 1, ['pir', 'sol', 'wearable']],
     ['Salle de repos', 7, 8, 7, 4, 1, ['pir', 'co2', 'son']],
-    ['Vide patio', 0, 0, 8, 7, 1, ['garde_corps']],
+    ['Vide patio', 0, 0, 24, 10.5, 1, ['garde_corps', 'radar', 'camera_thermique']],
     ['Palier ascenseur', -18, 0, 5, 4, 1, ['badge', 'pir', 'radar']],
     ['Escalier etage', -21, 0, 2.4, 5, 1, ['pir', 'radar']],
   ]
 };
 const DINING_TABLES_3D = [
-  ['T1', 8.0, 0.7], ['T2', 10.7, 0.7], ['T3', 13.4, 0.7],
-  ['T4', 8.8, 3.4], ['T5', 12.3, 3.4],
+  ['T1', 14.4, 0.45], ['T2', 16.0, 0.45], ['T3', 17.6, 0.45],
+  ['T4', 15.1, 2.55], ['T5', 16.9, 2.55],
 ];
 
 const SENSOR_STYLE = {
   pir: ['PIR', 0x3b82f6], presence: ['Presence', 0x3b82f6],
   radar: ['Radar mmWave', 0x8b5cf6], wearable: ['Wearable BLE', 0x10b981], gps: ['GPS bracelet', 0x10b981],
+  camera_thermique: ['Camera thermique', 0xf43f5e],
   matelas: ['Matelas', 0xf59e0b], sol: ['Sol intelligent', 0xf59e0b],
   porte: ['Porte', 0xef4444], rfid: ['RFID', 0xef4444], ir: ['IR', 0xef4444], sos: ['SOS', 0xef4444],
   co2: ['CO2', 0x22d3ee], son: ['Son', 0x22d3ee], ambient: ['Ambiant', 0x22d3ee], fumee: ['Fumee', 0xef4444], co: ['CO', 0xef4444], temp: ['Temperature', 0x22d3ee],
@@ -2724,12 +2868,19 @@ function addDiningRoomDetails3D() {
 }
 
 function addRoom3D(room, x, z, w, d, floor, sensors) {
-  addSpace3D({ type: 'room', name: `Ch. ${room}`, room, x, z, w, d, floor, sensors, color: 0x253149 });
+  addSpace3D({ type: 'room', name: `Ch. ${room}`, room, x, z, w, d, floor, sensors: ensureSensors(sensors, ['porte']), color: 0x253149 });
 }
 
 function addZone3D(name, x, z, w, d, floor, sensors) {
   const color = name.includes('hors EHPAD') ? 0x5c1f1f : name.includes('Jardin') ? 0x1f5b3b : name.includes('Patio') || name.includes('Vide') ? 0x244139 : name.includes('Infirmerie') ? 0x29324f : 0x263344;
-  addSpace3D({ type: 'zone', name, x, z, w, d, floor, sensors, color });
+  const doorNeeded = !name.includes('Couloir') && !name.includes('Patio') && !name.includes('Jardin') && !name.includes('Vide');
+  addSpace3D({ type: 'zone', name, x, z, w, d, floor, sensors: doorNeeded ? ensureSensors(sensors, ['porte']) : sensors, color });
+}
+
+function ensureSensors(sensors, required) {
+  const set = new Set(sensors || []);
+  required.forEach(sensor => set.add(sensor));
+  return [...set];
 }
 
 function addSpace3D(space) {
@@ -2758,8 +2909,34 @@ function addSpace3D(space) {
   if (space.type === 'room') {
     addBed3D(space);
     addBathroom3D(space);
+    addDoorSensor3D(space);
+  } else if ((space.sensors || []).includes('porte')) {
+    addDoorSensor3D(space);
   }
   placeSensors3D(space);
+}
+
+function addDoorSensor3D(space) {
+  const THREE = model3D.THREE;
+  const y = space.floor * 6;
+  const doorSide = space.type === 'room'
+    ? (space.z >= 0 ? -1 : 1)
+    : (Math.abs(space.z) > 0.6 ? (space.z >= 0 ? -1 : 1) : -1);
+  const dz = doorSide * (space.d / 2 + 0.06);
+  const door = new THREE.Mesh(
+    new THREE.BoxGeometry(Math.min(1.1, space.w * 0.34), 0.08, 0.08),
+    new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0x3b0606, emissiveIntensity: 0.35, roughness: 0.68 })
+  );
+  door.position.set(space.x, y + 0.5, space.z + dz);
+  door.userData = { type: 'sensor', sensor: 'porte', label: 'Capteur porte', location: space.name, room: space.room, floor: space.floor };
+  const dot = new THREE.Mesh(
+    new THREE.SphereGeometry(0.13, 14, 8),
+    new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 0.55 })
+  );
+  dot.position.set(space.x + Math.min(0.7, space.w * 0.22), y + 0.78, space.z + dz - doorSide * 0.12);
+  dot.userData = door.userData;
+  model3D.sensorsGroup.add(door, dot);
+  model3D.interactives.push(door, dot);
 }
 
 function addBathroom3D(space) {
@@ -2810,9 +2987,10 @@ function placeSensors3D(space) {
   const THREE = model3D.THREE;
   const y = space.floor * 6 + 1.35;
   const radius = Math.min(space.w, space.d) * 0.32;
-  space.sensors.forEach((sensor, i) => {
+  const sensors = (space.sensors || []).filter(sensor => sensor !== 'porte');
+  sensors.forEach((sensor, i) => {
     const style = SENSOR_STYLE[sensor] || [sensor, 0xffffff];
-    const angle = (Math.PI * 2 * i) / Math.max(space.sensors.length, 1);
+    const angle = (Math.PI * 2 * i) / Math.max(sensors.length, 1);
     const mesh = new THREE.Mesh(
       new THREE.SphereGeometry(0.18, 16, 10),
       new THREE.MeshStandardMaterial({ color: style[1], emissive: style[1], emissiveIntensity: 0.35 })
