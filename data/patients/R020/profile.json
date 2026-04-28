@@ -1,0 +1,26 @@
+{
+  "id": "R020",
+  "name": "Lino Ventura",
+  "age": 82,
+  "room": "215",
+  "pathologies": [
+    "diabete",
+    "insuffisance_cardiaque"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.55,
+  "caregiver": "soignant_C",
+  "family_code": "VENTURA215",
+  "avatar": "/avatars/resident_215_lino_ventura.png",
+  "archetype_id": "ARCH_CARDIAC",
+  "likely_medications": [
+    "diuretics",
+    "antihypertensives",
+    "antidiabetics_insulin_sulfonylurea",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN013_HEART_FAILURE_DECOMPENSATION",
+    "SCN005_DEHYDRATION_HEATWAVE_DIURETICS"
+  ]
+}

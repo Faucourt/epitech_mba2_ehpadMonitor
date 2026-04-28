@@ -54,7 +54,7 @@ Backend FastAPI
   - KB clinique v2 (15 scenarios HAS, 8 archetypes)
   - authentification famille (comptes Redis, tokens 24h)
   - rapport LLM quotidien (Meditron:7b via Ollama)
-  - stockage Redis (etat courant) + InfluxDB (historique)
+  - profils source JSON par resident + Redis live/cache + InfluxDB series capteurs
   - WebSocket dashboard temps reel
         |
         v
@@ -122,10 +122,10 @@ Codes de demonstration (generes au demarrage) :
 
 | Utilisateur | Mot de passe | Resident | Chambre |
 |---|---|---|---|
-| dupont | dupont101 | Marguerite Dupont | 101 |
-| martin | martin105 | Yvette Martin | 105 |
-| robert | robert201 | Jeanne Robert | 201 |
-| girard | girard219 | Leon Girard | 219 |
+| curie | curie101 | Marie Curie | 101 |
+| coubertin | coubertin104 | Pierre de Coubertin | 104 |
+| piaf | piaf105 | Edith Piaf | 105 |
+| sardou | sardou219 | Michel Sardou | 219 |
 | ... | ... | 25 comptes au total | voir docs/comptes_famille_demo.md |
 
 Ce qui est visible : statut general, activite en cours, soignant referent, heure.

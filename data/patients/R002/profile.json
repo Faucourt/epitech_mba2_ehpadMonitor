@@ -1,0 +1,23 @@
+{
+  "id": "R002",
+  "name": "Louis Pasteur",
+  "age": 79,
+  "room": "102",
+  "pathologies": [
+    "insuffisance_cardiaque"
+  ],
+  "mobility": "moyenne",
+  "risk_factor": 0.5,
+  "caregiver": "soignant_A",
+  "family_code": "PASTEUR102",
+  "avatar": "/avatars/resident_102_louis_pasteur.png",
+  "archetype_id": "ARCH_CARDIAC",
+  "likely_medications": [
+    "diuretics",
+    "antihypertensives"
+  ],
+  "preferred_scenarios": [
+    "SCN013_HEART_FAILURE_DECOMPENSATION",
+    "SCN005_DEHYDRATION_HEATWAVE_DIURETICS"
+  ]
+}

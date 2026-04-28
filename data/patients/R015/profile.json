@@ -1,0 +1,24 @@
+{
+  "id": "R015",
+  "name": "Mireille Mathieu",
+  "age": 85,
+  "room": "210",
+  "pathologies": [
+    "hypertension",
+    "insuffisance_renale"
+  ],
+  "mobility": "moyenne",
+  "risk_factor": 0.4,
+  "caregiver": "soignant_C",
+  "family_code": "MATHIEU210",
+  "avatar": "/avatars/resident_210_mireille_mathieu.png",
+  "archetype_id": "ARCH_STROKE_RISK",
+  "likely_medications": [
+    "antihypertensives",
+    "diuretics",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN012_STROKE_FAST_SUSPECTED"
+  ]
+}

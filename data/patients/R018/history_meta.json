@@ -1,0 +1,16 @@
+{
+  "status": "ready",
+  "resident_id": "R018",
+  "generated_at": "2026-04-27T23:58:47.192275Z",
+  "months": 12,
+  "daily_days": 361,
+  "detailed_days": 30,
+  "step_hours": 6,
+  "storage": {
+    "profiles": "Redis sim:profile:R018",
+    "daily_history": "Redis patient:R018:history:daily",
+    "detailed_history": "Redis patient:R018:history:detailed",
+    "live_timeseries": "InfluxDB bucket residents",
+    "json_folder": "/app/data/patients/R018"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "R024",
+  "name": "Michel Sardou",
+  "age": 95,
+  "room": "219",
+  "pathologies": [
+    "alzheimer",
+    "insuffisance_cardiaque",
+    "hypertension"
+  ],
+  "mobility": "tres_faible",
+  "risk_factor": 0.85,
+  "caregiver": "soignant_B",
+  "family_code": "SARDOU219",
+  "avatar": "/avatars/resident_219_michel_sardou.png",
+  "archetype_id": "ARCH_ALZ_FALL",
+  "likely_medications": [
+    "antihypertensives",
+    "diuretics",
+    "anticholinergics",
+    "psychotropes",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+    "SCN007_WANDERING_ELOPEMENT_ALZHEIMER"
+  ]
+}

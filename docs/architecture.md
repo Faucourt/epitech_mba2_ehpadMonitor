@@ -1,21 +1,51 @@
-# Architecture technique — EHPAD Monitor
+# Architecture technique — EPicare Palace
 
 ## Vue d'ensemble
 
-```text
-[Simulateur Python]
-        |  MQTT QoS 0/1/2
-        v
-[Mosquitto]
-        |
-        v
-[Backend FastAPI]  <-->  [Redis]
-        |            <-->  [InfluxDB]
-        |
-        +---> [Dashboard soignant]
-        +---> [Espace famille]
-        +---> [Admin famille]
-        +---> [LLM Meditron via Ollama]
+```mermaid
+graph TB
+    subgraph SIM["Simulateur Python"]
+        S1["25 résidents · profils cliniques\nrythme circadien 24h"]
+        S2["18 scénarios\nchute · hypoxie · fugue · sepsis"]
+    end
+
+    subgraph BRK["Mosquitto MQTT"]
+        M1["vitals — QoS 1\nfall / SOS — QoS 2\nambient — QoS 0"]
+    end
+
+    subgraph BACK["Backend FastAPI"]
+        B1["Moteur alertes 5 niveaux\nNEWS2 · escalade auto · WebSocket"]
+        B2["Prédiction ML\nGradientBoost · 30-60 min"]
+        B3["KB clinique HAS/RCP\n15 scénarios · 8 archétypes"]
+        B4["Auth famille\nSHA-256+sel · tokens Redis 24h"]
+        B5["LLM RAG · Meditron:7b\nPydantic · async jobs"]
+    end
+
+    subgraph STORE["Persistance"]
+        R1[("Redis\nétat courant · routine σ\ncomptes famille · tokens")]
+        I1[("InfluxDB\nséries temporelles\nvitaux capteurs 5s")]
+    end
+
+    subgraph DASH["Dashboard Soignant :3002"]
+        D1["Grille 25 résidents · WebSocket"]
+        D2["Plan SVG 2D + 3D Three.js"]
+        D3["Alertes · acquittement · escalade"]
+        D4["Drill-down · Mini DPI · LLM"]
+    end
+
+    subgraph FAM["Espace Famille"]
+        F1["Login compte individuel\ntoken 24h · vue sans médicaux"]
+    end
+
+    LLM["Ollama local\nMeditron:7b\nRGPD-compliant"]
+
+    SIM -- "150 msg/s MQTT" --> BRK
+    BRK --> BACK
+    BACK <-- "état courant / routine" --> R1
+    BACK <-- "séries 5s" --> I1
+    BACK -- "WebSocket + REST" --> DASH
+    BACK -- "REST API Bearer" --> FAM
+    BACK -- "HTTP local" --> LLM
 ```
 
 ---
@@ -150,11 +180,26 @@ Repli automatique si Ollama indisponible.
 
 ## 3. Persistance
 
+### Dossiers patient JSON
+
+Les profils configurables et les historiques generes sont visibles sur disque:
+
+```text
+data/patients/R001/profile.json
+data/patients/R001/history_daily.json
+data/patients/R001/history_detailed.json
+data/patients/R001/history_meta.json
+```
+
+`profile.json` est la source lisible du profil resident pour la demo. Quand la page Config simulateur modifie un resident, le backend met a jour ce JSON, pousse la modification dans Redis/MQTT pour le live, puis regenere automatiquement son historique.
+
 ### Redis
 
 | Cle | Type | Contenu | TTL |
 |---|---|---|---|
 | `resident:{id}:state` | String JSON | Etat courant complet | — |
+| `sim:profile:{id}` | String JSON | Cache live du profil source JSON | — |
+| `patient:{id}:history:*` | String/List JSON | Copie cache de l'historique genere | — |
 | `alert:{id}:active` | String JSON | Alerte active | — |
 | `routine:{id}:{period}` | List | 100 derniers HR | 7 jours |
 | `famille:account:{username}` | String JSON | Hash + sel + resident_id | — |

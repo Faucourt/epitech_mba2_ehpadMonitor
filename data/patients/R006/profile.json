@@ -1,0 +1,19 @@
+{
+  "id": "R006",
+  "name": "Jean Gabin",
+  "age": 81,
+  "room": "106",
+  "pathologies": [
+    "bpco"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.55,
+  "caregiver": "soignant_B",
+  "family_code": "GABIN106",
+  "avatar": "/avatars/resident_106_jean_gabin.png",
+  "archetype_id": "ARCH_BPCO",
+  "likely_medications": [],
+  "preferred_scenarios": [
+    "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA"
+  ]
+}

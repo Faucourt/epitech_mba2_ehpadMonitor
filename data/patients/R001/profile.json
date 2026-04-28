@@ -1,0 +1,24 @@
+{
+  "id": "R001",
+  "name": "Marie Curie",
+  "age": 87,
+  "room": "101",
+  "pathologies": [
+    "hypertension",
+    "diabete"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.3,
+  "caregiver": "soignant_A",
+  "family_code": "CURIE101",
+  "avatar": "/avatars/resident_101_marie_curie.png",
+  "archetype_id": "ARCH_STROKE_RISK",
+  "likely_medications": [
+    "antihypertensives",
+    "antidiabetics_insulin_sulfonylurea",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN012_STROKE_FAST_SUSPECTED"
+  ]
+}

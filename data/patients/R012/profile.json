@@ -1,0 +1,24 @@
+{
+  "id": "R012",
+  "name": "Charles Aznavour",
+  "age": 80,
+  "room": "204",
+  "pathologies": [
+    "insuffisance_cardiaque",
+    "bpco"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.65,
+  "caregiver": "soignant_B",
+  "family_code": "AZNAVOUR204",
+  "avatar": "/avatars/resident_204_charles_aznavour.png",
+  "archetype_id": "ARCH_BPCO",
+  "likely_medications": [
+    "diuretics",
+    "antihypertensives",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA"
+  ]
+}

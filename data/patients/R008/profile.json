@@ -1,0 +1,18 @@
+{
+  "id": "R008",
+  "name": "Bourvil",
+  "age": 77,
+  "room": "108",
+  "pathologies": [],
+  "mobility": "bonne",
+  "risk_factor": 0.05,
+  "caregiver": "soignant_C",
+  "family_code": "BOURVIL108",
+  "avatar": "/avatars/resident_108_bourvil.png",
+  "archetype_id": "ARCH_NUTRITION",
+  "likely_medications": [],
+  "preferred_scenarios": [
+    "SCN014_DENUTRITION_FRAILTY_DECLINE",
+    "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+  ]
+}

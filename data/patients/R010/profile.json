@@ -1,0 +1,21 @@
+{
+  "id": "R010",
+  "name": "Yves Montand",
+  "age": 83,
+  "room": "202",
+  "pathologies": [
+    "hypertension"
+  ],
+  "mobility": "moyenne",
+  "risk_factor": 0.25,
+  "caregiver": "soignant_A",
+  "family_code": "MONTAND202",
+  "avatar": "/avatars/resident_202_yves_montand.png",
+  "archetype_id": "ARCH_STROKE_RISK",
+  "likely_medications": [
+    "antihypertensives"
+  ],
+  "preferred_scenarios": [
+    "SCN012_STROKE_FAST_SUSPECTED"
+  ]
+}

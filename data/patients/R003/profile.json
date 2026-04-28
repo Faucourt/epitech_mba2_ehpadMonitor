@@ -1,0 +1,26 @@
+{
+  "id": "R003",
+  "name": "Simone Veil",
+  "age": 92,
+  "room": "103",
+  "pathologies": [
+    "alzheimer",
+    "hypertension"
+  ],
+  "mobility": "tres_faible",
+  "risk_factor": 0.6,
+  "caregiver": "soignant_A",
+  "family_code": "VEIL103",
+  "avatar": "/avatars/resident_103_simone_veil.png",
+  "archetype_id": "ARCH_ALZ_FALL",
+  "likely_medications": [
+    "antihypertensives",
+    "anticholinergics",
+    "psychotropes",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+    "SCN007_WANDERING_ELOPEMENT_ALZHEIMER"
+  ]
+}

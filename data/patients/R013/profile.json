@@ -1,0 +1,22 @@
+{
+  "id": "R013",
+  "name": "Brigitte Bardot",
+  "age": 76,
+  "room": "208",
+  "pathologies": [
+    "diabete"
+  ],
+  "mobility": "bonne",
+  "risk_factor": 0.15,
+  "caregiver": "soignant_B",
+  "family_code": "BARDOT208",
+  "avatar": "/avatars/resident_208_brigitte_bardot.png",
+  "archetype_id": "ARCH_NUTRITION",
+  "likely_medications": [
+    "antidiabetics_insulin_sulfonylurea"
+  ],
+  "preferred_scenarios": [
+    "SCN014_DENUTRITION_FRAILTY_DECLINE",
+    "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "R019",
+  "name": "Dalida",
+  "age": 93,
+  "room": "214",
+  "pathologies": [
+    "alzheimer",
+    "parkinson",
+    "hypertension"
+  ],
+  "mobility": "tres_faible",
+  "risk_factor": 0.75,
+  "caregiver": "soignant_B",
+  "family_code": "DALIDA214",
+  "avatar": "/avatars/resident_214_dalida.png",
+  "archetype_id": "ARCH_ALZ_FALL",
+  "likely_medications": [
+    "antihypertensives",
+    "anticholinergics",
+    "psychotropes",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+    "SCN007_WANDERING_ELOPEMENT_ALZHEIMER"
+  ]
+}

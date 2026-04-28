@@ -1,855 +1,987 @@
 {
-  "metadata": {
-    "source": "Données simulées basées sur littérature clinique (NIH, AHA, PMC3102151)",
-    "description": "Constantes vitales de base pour 25 résidents EHPAD. Valeurs calibrées par pathologie.",
-    "references": [
-      "Chester & Rudolph (2011) - Vital Signs in Older Patients: Age-Related Changes. PMC3102151",
-      "American Heart Association - Blood Pressure Guidelines 2025",
-      "NIH - Normal SpO2 ranges by age (emedicinehealth.com)"
-    ],
-    "units": {
-      "heart_rate": "bpm",
-      "spo2": "%",
-      "blood_pressure_sys": "mmHg",
-      "blood_pressure_dia": "mmHg",
-      "temperature": "celsius",
-      "respiratory_rate": "breaths/min",
-      "noise_sigma": "standard deviation for gaussian noise"
-    }
-  },
+    "metadata":  {
+                     "source":  "DonnÃ©es simulÃ©es basÃ©es sur littÃ©rature clinique (NIH, AHA, PMC3102151)",
+                     "description":  "Constantes vitales de base pour 25 rÃ©sidents EHPAD. Valeurs calibrÃ©es par pathologie.",
+                     "references":  [
+                                        "Chester \u0026 Rudolph (2011) - Vital Signs in Older Patients: Age-Related Changes. PMC3102151",
+                                        "American Heart Association - Blood Pressure Guidelines 2025",
+                                        "NIH - Normal SpO2 ranges by age (emedicinehealth.com)"
+                                    ],
+                     "units":  {
+                                   "heart_rate":  "bpm",
+                                   "spo2":  "%",
+                                   "blood_pressure_sys":  "mmHg",
+                                   "blood_pressure_dia":  "mmHg",
+                                   "temperature":  "celsius",
+                                   "respiratory_rate":  "breaths/min",
+                                   "noise_sigma":  "standard deviation for gaussian noise"
+                               }
+                 },
+    "residents":  [
+                      {
+                          "id":  "R001",
+                          "name":  "Marie Curie",
+                          "age":  87,
+                          "gender":  "F",
+                          "room":  "101",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "hypertension",
+                                              "diabete"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.30,
+                          "baseline":  {
+                                           "heart_rate":  72,
+                                           "heart_rate_sigma":  2.0,
+                                           "spo2":  96.0,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  148,
+                                           "blood_pressure_sys_sigma":  4.0,
+                                           "blood_pressure_dia":  88,
+                                           "temperature":  36.7,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  15
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Hypertension traitÃ©e (bÃªtabloquant), diabÃ¨te type 2 sous insuline. PA Ã©levÃ©e stable.",
+                          "family_code":  "CURIE101",
+                          "avatar":  "/avatars/resident_101_marie_curie.png"
+                      },
+                      {
+                          "id":  "R002",
+                          "name":  "Louis Pasteur",
+                          "age":  79,
+                          "gender":  "M",
+                          "room":  "102",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "insuffisance_cardiaque"
+                                          ],
+                          "mobility":  "moyenne",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.50,
+                          "baseline":  {
+                                           "heart_rate":  78,
+                                           "heart_rate_sigma":  3.0,
+                                           "spo2":  94.0,
+                                           "spo2_sigma":  0.5,
+                                           "blood_pressure_sys":  132,
+                                           "blood_pressure_sys_sigma":  5.0,
+                                           "blood_pressure_dia":  78,
+                                           "temperature":  36.6,
+                                           "temperature_sigma":  0.07,
+                                           "respiratory_rate":  16
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  21,
+                                          "nap_start":  14,
+                                          "nap_end":  16,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "Insuffisance cardiaque stade II. SpO2 basale 94% normale pour lui. OedÃ¨mes des membres infÃ©rieurs.",
+                          "family_code":  "PASTEUR102",
+                          "avatar":  "/avatars/resident_102_louis_pasteur.png"
+                      },
+                      {
+                          "id":  "R003",
+                          "name":  "Simone Veil",
+                          "age":  92,
+                          "gender":  "F",
+                          "room":  "103",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "alzheimer",
+                                              "hypertension"
+                                          ],
+                          "mobility":  "tres_faible",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.60,
+                          "baseline":  {
+                                           "heart_rate":  76,
+                                           "heart_rate_sigma":  2.5,
+                                           "spo2":  95.0,
+                                           "spo2_sigma":  0.5,
+                                           "blood_pressure_sys":  152,
+                                           "blood_pressure_sys_sigma":  6.0,
+                                           "blood_pressure_dia":  86,
+                                           "temperature":  36.4,
+                                           "temperature_sigma":  0.10,
+                                           "respiratory_rate":  16
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  20,
+                                          "nap_start":  13,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Alzheimer stade modÃ©rÃ©. TempÃ©rature basale basse (92 ans). Risque fugue la nuit.",
+                          "family_code":  "VEIL103",
+                          "avatar":  "/avatars/resident_103_simone_veil.png"
+                      },
+                      {
+                          "id":  "R004",
+                          "name":  "Pierre de Coubertin",
+                          "age":  75,
+                          "gender":  "M",
+                          "room":  "104",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "diabete"
+                                          ],
+                          "mobility":  "bonne",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.10,
+                          "baseline":  {
+                                           "heart_rate":  65,
+                                           "heart_rate_sigma":  1.5,
+                                           "spo2":  97.0,
+                                           "spo2_sigma":  0.3,
+                                           "blood_pressure_sys":  122,
+                                           "blood_pressure_sys_sigma":  3.0,
+                                           "blood_pressure_dia":  74,
+                                           "temperature":  36.5,
+                                           "temperature_sigma":  0.06,
+                                           "respiratory_rate":  14
+                                       },
+                          "routine":  {
+                                          "wake_hour":  6,
+                                          "sleep_hour":  22,
+                                          "nap_start":  14,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "DiabÃ¨te type 2 bien Ã©quilibrÃ©. Patient autonome, marche tous les matins.",
+                          "family_code":  "COUBERTIN104",
+                          "avatar":  "/avatars/resident_104_pierre_de_coubertin.png"
+                      },
+                      {
+                          "id":  "R005",
+                          "name":  "Edith Piaf",
+                          "age":  84,
+                          "gender":  "F",
+                          "room":  "105",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "parkinson",
+                                              "hypertension"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.40,
+                          "baseline":  {
+                                           "heart_rate":  70,
+                                           "heart_rate_sigma":  2.0,
+                                           "spo2":  95.5,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  142,
+                                           "blood_pressure_sys_sigma":  5.5,
+                                           "blood_pressure_dia":  82,
+                                           "temperature":  36.6,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  15
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Parkinson stade II. Tremblements constants â€” accÃ©lÃ©romÃ¨tre bruitÃ© normalement (sigma Ã©levÃ©). Risque hypotension orthostatique.",
+                          "family_code":  "PIAF105",
+                          "avatar":  "/avatars/resident_105_edith_piaf.png"
+                      },
+                      {
+                          "id":  "R006",
+                          "name":  "Jean Gabin",
+                          "age":  81,
+                          "gender":  "M",
+                          "room":  "106",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "bpco"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.55,
+                          "baseline":  {
+                                           "heart_rate":  80,
+                                           "heart_rate_sigma":  2.5,
+                                           "spo2":  92.5,
+                                           "spo2_sigma":  0.6,
+                                           "blood_pressure_sys":  136,
+                                           "blood_pressure_sys_sigma":  4.0,
+                                           "blood_pressure_dia":  78,
+                                           "temperature":  36.6,
+                                           "temperature_sigma":  0.07,
+                                           "respiratory_rate":  20
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  14,
+                                          "nap_end":  16,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "BPCO sÃ©vÃ¨re. SpO2 basale 92-93% NORMALE pour lui (ne pas alerter en dessous de 90%). FC Ã©levÃ©e compensation.",
+                          "family_code":  "GABIN106",
+                          "avatar":  "/avatars/resident_106_jean_gabin.png"
+                      },
+                      {
+                          "id":  "R007",
+                          "name":  "Annie Girardot",
+                          "age":  88,
+                          "gender":  "F",
+                          "room":  "107",
+                          "floor":  1,
+                          "pathologies":  [
+                                              "insuffisance_renale",
+                                              "diabete"
+                                          ],
+                          "mobility":  "moyenne",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.35,
+                          "baseline":  {
+                                           "heart_rate":  74,
+                                           "heart_rate_sigma":  2.0,
+                                           "spo2":  96.0,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  156,
+                                           "blood_pressure_sys_sigma":  5.0,
+                                           "blood_pressure_dia":  90,
+                                           "temperature":  36.8,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  15
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  14,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Insuffisance rÃ©nale chronique + diabÃ¨te. PA Ã©levÃ©e stable. Dialyse 3x/semaine.",
+                          "family_code":  "GIRARDOT107",
+                          "avatar":  "/avatars/resident_107_annie_girardot.png"
+                      },
+                      {
+                          "id":  "R008",
+                          "name":  "Bourvil",
+                          "age":  77,
+                          "gender":  "M",
+                          "room":  "108",
+                          "floor":  1,
+                          "pathologies":  [
 
-  "residents": [
-    {
-      "id": "R001",
-      "name": "Marguerite Dupont",
-      "age": 87,
-      "gender": "F",
-      "room": "101",
-      "floor": 1,
-      "pathologies": ["hypertension", "diabete"],
-      "mobility": "faible",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.30,
-      "baseline": {
-        "heart_rate": 72,
-        "heart_rate_sigma": 2.0,
-        "spo2": 96.0,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 148,
-        "blood_pressure_sys_sigma": 4.0,
-        "blood_pressure_dia": 88,
-        "temperature": 36.7,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 15
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Hypertension traitée (bêtabloquant), diabète type 2 sous insuline. PA élevée stable."
-    },
-    {
-      "id": "R002",
-      "name": "Henri Moreau",
-      "age": 79,
-      "gender": "M",
-      "room": "102",
-      "floor": 1,
-      "pathologies": ["insuffisance_cardiaque"],
-      "mobility": "moyenne",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.50,
-      "baseline": {
-        "heart_rate": 78,
-        "heart_rate_sigma": 3.0,
-        "spo2": 94.0,
-        "spo2_sigma": 0.5,
-        "blood_pressure_sys": 132,
-        "blood_pressure_sys_sigma": 5.0,
-        "blood_pressure_dia": 78,
-        "temperature": 36.6,
-        "temperature_sigma": 0.07,
-        "respiratory_rate": 16
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 21,
-        "nap_start": 14,
-        "nap_end": 16,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "Insuffisance cardiaque stade II. SpO2 basale 94% normale pour lui. Oedèmes des membres inférieurs."
-    },
-    {
-      "id": "R003",
-      "name": "Simone Bernard",
-      "age": 92,
-      "gender": "F",
-      "room": "103",
-      "floor": 1,
-      "pathologies": ["alzheimer", "hypertension"],
-      "mobility": "tres_faible",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.60,
-      "baseline": {
-        "heart_rate": 76,
-        "heart_rate_sigma": 2.5,
-        "spo2": 95.0,
-        "spo2_sigma": 0.5,
-        "blood_pressure_sys": 152,
-        "blood_pressure_sys_sigma": 6.0,
-        "blood_pressure_dia": 86,
-        "temperature": 36.4,
-        "temperature_sigma": 0.10,
-        "respiratory_rate": 16
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 20,
-        "nap_start": 13,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Alzheimer stade modéré. Température basale basse (92 ans). Risque fugue la nuit."
-    },
-    {
-      "id": "R004",
-      "name": "Pierre Leroy",
-      "age": 75,
-      "gender": "M",
-      "room": "104",
-      "floor": 1,
-      "pathologies": ["diabete"],
-      "mobility": "bonne",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.10,
-      "baseline": {
-        "heart_rate": 65,
-        "heart_rate_sigma": 1.5,
-        "spo2": 97.0,
-        "spo2_sigma": 0.3,
-        "blood_pressure_sys": 122,
-        "blood_pressure_sys_sigma": 3.0,
-        "blood_pressure_dia": 74,
-        "temperature": 36.5,
-        "temperature_sigma": 0.06,
-        "respiratory_rate": 14
-      },
-      "routine": {
-        "wake_hour": 6,
-        "sleep_hour": 22,
-        "nap_start": 14,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Diabète type 2 bien équilibré. Patient autonome, marche tous les matins."
-    },
-    {
-      "id": "R005",
-      "name": "Yvette Martin",
-      "age": 84,
-      "gender": "F",
-      "room": "105",
-      "floor": 1,
-      "pathologies": ["parkinson", "hypertension"],
-      "mobility": "faible",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.40,
-      "baseline": {
-        "heart_rate": 70,
-        "heart_rate_sigma": 2.0,
-        "spo2": 95.5,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 142,
-        "blood_pressure_sys_sigma": 5.5,
-        "blood_pressure_dia": 82,
-        "temperature": 36.6,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 15
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Parkinson stade II. Tremblements constants — accéléromètre bruité normalement (sigma élevé). Risque hypotension orthostatique."
-    },
-    {
-      "id": "R006",
-      "name": "André Petit",
-      "age": 81,
-      "gender": "M",
-      "room": "106",
-      "floor": 1,
-      "pathologies": ["bpco"],
-      "mobility": "faible",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.55,
-      "baseline": {
-        "heart_rate": 80,
-        "heart_rate_sigma": 2.5,
-        "spo2": 92.5,
-        "spo2_sigma": 0.6,
-        "blood_pressure_sys": 136,
-        "blood_pressure_sys_sigma": 4.0,
-        "blood_pressure_dia": 78,
-        "temperature": 36.6,
-        "temperature_sigma": 0.07,
-        "respiratory_rate": 20
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 14,
-        "nap_end": 16,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "BPCO sévère. SpO2 basale 92-93% NORMALE pour lui (ne pas alerter en dessous de 90%). FC élevée compensation."
-    },
-    {
-      "id": "R007",
-      "name": "Louise Durand",
-      "age": 88,
-      "gender": "F",
-      "room": "107",
-      "floor": 1,
-      "pathologies": ["insuffisance_renale", "diabete"],
-      "mobility": "moyenne",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.35,
-      "baseline": {
-        "heart_rate": 74,
-        "heart_rate_sigma": 2.0,
-        "spo2": 96.0,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 156,
-        "blood_pressure_sys_sigma": 5.0,
-        "blood_pressure_dia": 90,
-        "temperature": 36.8,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 15
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 14,
-        "activity_peak": "matin"
-      },
-      "notes": "Insuffisance rénale chronique + diabète. PA élevée stable. Dialyse 3x/semaine."
-    },
-    {
-      "id": "R008",
-      "name": "Marcel Thomas",
-      "age": 77,
-      "gender": "M",
-      "room": "108",
-      "floor": 1,
-      "pathologies": [],
-      "mobility": "bonne",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.05,
-      "baseline": {
-        "heart_rate": 62,
-        "heart_rate_sigma": 1.5,
-        "spo2": 98.0,
-        "spo2_sigma": 0.3,
-        "blood_pressure_sys": 118,
-        "blood_pressure_sys_sigma": 2.5,
-        "blood_pressure_dia": 72,
-        "temperature": 36.4,
-        "temperature_sigma": 0.06,
-        "respiratory_rate": 13
-      },
-      "routine": {
-        "wake_hour": 6,
-        "sleep_hour": 22,
-        "nap_start": 14,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Pas de pathologie chronique. Ancien sportif. Constantes de référence EHPAD."
-    },
-    {
-      "id": "R009",
-      "name": "Jeanne Robert",
-      "age": 90,
-      "gender": "F",
-      "room": "201",
-      "floor": 2,
-      "pathologies": ["alzheimer", "insuffisance_cardiaque"],
-      "mobility": "tres_faible",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.70,
-      "baseline": {
-        "heart_rate": 82,
-        "heart_rate_sigma": 3.5,
-        "spo2": 93.0,
-        "spo2_sigma": 0.6,
-        "blood_pressure_sys": 162,
-        "blood_pressure_sys_sigma": 7.0,
-        "blood_pressure_dia": 92,
-        "temperature": 36.3,
-        "temperature_sigma": 0.10,
-        "respiratory_rate": 18
-      },
-      "routine": {
-        "wake_hour": 9,
-        "sleep_hour": 20,
-        "nap_start": 12,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Double pathologie grave. SpO2 93% baseline. Alitement quasi-total. Profil le plus à risque du 2e étage."
-    },
-    {
-      "id": "R010",
-      "name": "Gaston Richard",
-      "age": 83,
-      "gender": "M",
-      "room": "202",
-      "floor": 2,
-      "pathologies": ["hypertension"],
-      "mobility": "moyenne",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.25,
-      "baseline": {
-        "heart_rate": 69,
-        "heart_rate_sigma": 1.8,
-        "spo2": 96.5,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 148,
-        "blood_pressure_sys_sigma": 4.5,
-        "blood_pressure_dia": 86,
-        "temperature": 36.6,
-        "temperature_sigma": 0.07,
-        "respiratory_rate": 14
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 14,
-        "activity_peak": "matin"
-      },
-      "notes": "HTA modérée sous traitement. Bonne observance médicamenteuse."
-    },
-    {
-      "id": "R011",
-      "name": "Odette Simon",
-      "age": 86,
-      "gender": "F",
-      "room": "203",
-      "floor": 2,
-      "pathologies": ["parkinson", "diabete"],
-      "mobility": "faible",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.45,
-      "baseline": {
-        "heart_rate": 73,
-        "heart_rate_sigma": 2.2,
-        "spo2": 95.5,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 140,
-        "blood_pressure_sys_sigma": 5.0,
-        "blood_pressure_dia": 82,
-        "temperature": 36.5,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 15
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 15,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "Parkinson + diabète. Tremblements modérés. Hypoglycémies nocturnes occasionnelles."
-    },
-    {
-      "id": "R012",
-      "name": "Fernand Michel",
-      "age": 80,
-      "gender": "M",
-      "room": "204",
-      "floor": 2,
-      "pathologies": ["insuffisance_cardiaque", "bpco"],
-      "mobility": "faible",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.65,
-      "baseline": {
-        "heart_rate": 84,
-        "heart_rate_sigma": 3.5,
-        "spo2": 91.5,
-        "spo2_sigma": 0.7,
-        "blood_pressure_sys": 144,
-        "blood_pressure_sys_sigma": 6.0,
-        "blood_pressure_dia": 84,
-        "temperature": 36.8,
-        "temperature_sigma": 0.09,
-        "respiratory_rate": 21
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 16,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "Double pathologie cardio-respiratoire. SpO2 91% normale pour lui. Décompensation fréquente. Profil démo idéal."
-    },
-    {
-      "id": "R013",
-      "name": "Hélène Lefebvre",
-      "age": 76,
-      "gender": "F",
-      "room": "208",
-      "floor": 2,
-      "pathologies": ["diabete"],
-      "mobility": "bonne",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.15,
-      "baseline": {
-        "heart_rate": 67,
-        "heart_rate_sigma": 1.5,
-        "spo2": 97.0,
-        "spo2_sigma": 0.3,
-        "blood_pressure_sys": 126,
-        "blood_pressure_sys_sigma": 3.0,
-        "blood_pressure_dia": 76,
-        "temperature": 36.5,
-        "temperature_sigma": 0.06,
-        "respiratory_rate": 14
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 22,
-        "nap_start": 14,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Diabète bien contrôlé. Active, participe aux ateliers. Constantes stables."
-    },
-    {
-      "id": "R014",
-      "name": "Roger Leblanc",
-      "age": 91,
-      "gender": "M",
-      "room": "209",
-      "floor": 2,
-      "pathologies": ["alzheimer"],
-      "mobility": "tres_faible",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.50,
-      "baseline": {
-        "heart_rate": 76,
-        "heart_rate_sigma": 2.5,
-        "spo2": 94.5,
-        "spo2_sigma": 0.5,
-        "blood_pressure_sys": 154,
-        "blood_pressure_sys_sigma": 6.0,
-        "blood_pressure_dia": 88,
-        "temperature": 36.2,
-        "temperature_sigma": 0.10,
-        "respiratory_rate": 16
-      },
-      "routine": {
-        "wake_hour": 9,
-        "sleep_hour": 20,
-        "nap_start": 12,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Alzheimer sévère. Température très basse (91 ans). Fugues nocturnes antécédents."
-    },
-    {
-      "id": "R015",
-      "name": "Germaine Fontaine",
-      "age": 85,
-      "gender": "F",
-      "room": "210",
-      "floor": 2,
-      "pathologies": ["hypertension", "insuffisance_renale"],
-      "mobility": "moyenne",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.40,
-      "baseline": {
-        "heart_rate": 71,
-        "heart_rate_sigma": 2.0,
-        "spo2": 95.5,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 158,
-        "blood_pressure_sys_sigma": 5.5,
-        "blood_pressure_dia": 92,
-        "temperature": 36.6,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 15
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 14,
-        "activity_peak": "matin"
-      },
-      "notes": "HTA + insuffisance rénale. PA élevée chronique. Restriction hydrique."
-    },
-    {
-      "id": "R016",
-      "name": "Edouard Rousseau",
-      "age": 78,
-      "gender": "M",
-      "room": "211",
-      "floor": 2,
-      "pathologies": ["bpco", "hypertension"],
-      "mobility": "faible",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.50,
-      "baseline": {
-        "heart_rate": 78,
-        "heart_rate_sigma": 2.5,
-        "spo2": 93.0,
-        "spo2_sigma": 0.6,
-        "blood_pressure_sys": 144,
-        "blood_pressure_sys_sigma": 5.0,
-        "blood_pressure_dia": 84,
-        "temperature": 36.7,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 19
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 14,
-        "nap_end": 16,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "BPCO + HTA. Oxygénothérapie nocturne. SpO2 93% normale pour lui."
-    },
-    {
-      "id": "R017",
-      "name": "Blanche Morel",
-      "age": 89,
-      "gender": "F",
-      "room": "212",
-      "floor": 2,
-      "pathologies": ["insuffisance_cardiaque"],
-      "mobility": "tres_faible",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.70,
-      "baseline": {
-        "heart_rate": 86,
-        "heart_rate_sigma": 4.0,
-        "spo2": 92.0,
-        "spo2_sigma": 0.7,
-        "blood_pressure_sys": 166,
-        "blood_pressure_sys_sigma": 8.0,
-        "blood_pressure_dia": 96,
-        "temperature": 36.4,
-        "temperature_sigma": 0.10,
-        "respiratory_rate": 20
-      },
-      "routine": {
-        "wake_hour": 9,
-        "sleep_hour": 20,
-        "nap_start": 12,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Insuffisance cardiaque sévère. Alitée quasi-permanente. Décompensation fréquente la nuit."
-    },
-    {
-      "id": "R018",
-      "name": "Lucien Garnier",
-      "age": 74,
-      "gender": "M",
-      "room": "213",
-      "floor": 2,
-      "pathologies": [],
-      "mobility": "bonne",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.05,
-      "baseline": {
-        "heart_rate": 63,
-        "heart_rate_sigma": 1.5,
-        "spo2": 98.0,
-        "spo2_sigma": 0.3,
-        "blood_pressure_sys": 116,
-        "blood_pressure_sys_sigma": 2.5,
-        "blood_pressure_dia": 70,
-        "temperature": 36.4,
-        "temperature_sigma": 0.06,
-        "respiratory_rate": 13
-      },
-      "routine": {
-        "wake_hour": 6,
-        "sleep_hour": 22,
-        "nap_start": 14,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Très bon état général. Référence pour comparer avec résidents malades."
-    },
-    {
-      "id": "R019",
-      "name": "Paulette Chevalier",
-      "age": 93,
-      "gender": "F",
-      "room": "304",
-      "floor": 3,
-      "pathologies": ["alzheimer", "parkinson", "hypertension"],
-      "mobility": "tres_faible",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.75,
-      "baseline": {
-        "heart_rate": 80,
-        "heart_rate_sigma": 3.5,
-        "spo2": 93.5,
-        "spo2_sigma": 0.6,
-        "blood_pressure_sys": 164,
-        "blood_pressure_sys_sigma": 8.0,
-        "blood_pressure_dia": 94,
-        "temperature": 36.2,
-        "temperature_sigma": 0.12,
-        "respiratory_rate": 18
-      },
-      "routine": {
-        "wake_hour": 9,
-        "sleep_hour": 19,
-        "nap_start": 11,
-        "nap_end": 14,
-        "activity_peak": "matin"
-      },
-      "notes": "Triple pathologie. La plus âgée de l'EHPAD. Température basale très basse. Très haut risque."
-    },
-    {
-      "id": "R020",
-      "name": "Auguste Mercier",
-      "age": 82,
-      "gender": "M",
-      "room": "305",
-      "floor": 3,
-      "pathologies": ["diabete", "insuffisance_cardiaque"],
-      "mobility": "faible",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.55,
-      "baseline": {
-        "heart_rate": 77,
-        "heart_rate_sigma": 3.0,
-        "spo2": 94.0,
-        "spo2_sigma": 0.5,
-        "blood_pressure_sys": 150,
-        "blood_pressure_sys_sigma": 6.0,
-        "blood_pressure_dia": 88,
-        "temperature": 36.7,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 17
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 15,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "Diabète + insuffisance cardiaque. Surveillance glycémique renforcée."
-    },
-    {
-      "id": "R021",
-      "name": "Thérèse Blanc",
-      "age": 78,
-      "gender": "F",
-      "room": "306",
-      "floor": 3,
-      "pathologies": ["hypertension"],
-      "mobility": "moyenne",
-      "caregiver": "soignant_C",
-      "risk_factor": 0.20,
-      "baseline": {
-        "heart_rate": 68,
-        "heart_rate_sigma": 1.8,
-        "spo2": 97.0,
-        "spo2_sigma": 0.3,
-        "blood_pressure_sys": 145,
-        "blood_pressure_sys_sigma": 4.0,
-        "blood_pressure_dia": 84,
-        "temperature": 36.6,
-        "temperature_sigma": 0.07,
-        "respiratory_rate": 14
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 14,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "HTA légère bien contrôlée. Participe aux activités du groupe."
-    },
-    {
-      "id": "R022",
-      "name": "Gaétan Caron",
-      "age": 86,
-      "gender": "M",
-      "room": "307",
-      "floor": 3,
-      "pathologies": ["bpco", "insuffisance_renale"],
-      "mobility": "faible",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.60,
-      "baseline": {
-        "heart_rate": 81,
-        "heart_rate_sigma": 3.0,
-        "spo2": 91.5,
-        "spo2_sigma": 0.7,
-        "blood_pressure_sys": 142,
-        "blood_pressure_sys_sigma": 5.5,
-        "blood_pressure_dia": 82,
-        "temperature": 36.8,
-        "temperature_sigma": 0.09,
-        "respiratory_rate": 22
-      },
-      "routine": {
-        "wake_hour": 8,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 16,
-        "activity_peak": "apres_midi"
-      },
-      "notes": "BPCO sévère + insuffisance rénale. SpO2 91% normale. FR élevée chronique."
-    },
-    {
-      "id": "R023",
-      "name": "Renée Fournier",
-      "age": 81,
-      "gender": "F",
-      "room": "401",
-      "floor": 4,
-      "pathologies": ["diabete", "hypertension"],
-      "mobility": "moyenne",
-      "caregiver": "soignant_A",
-      "risk_factor": 0.35,
-      "baseline": {
-        "heart_rate": 72,
-        "heart_rate_sigma": 2.0,
-        "spo2": 96.0,
-        "spo2_sigma": 0.4,
-        "blood_pressure_sys": 152,
-        "blood_pressure_sys_sigma": 5.0,
-        "blood_pressure_dia": 88,
-        "temperature": 36.7,
-        "temperature_sigma": 0.08,
-        "respiratory_rate": 15
-      },
-      "routine": {
-        "wake_hour": 7,
-        "sleep_hour": 21,
-        "nap_start": 13,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "Diabète + HTA. Suivi glycémique quotidien. Légère baisse de mobilité récente."
-    },
-    {
-      "id": "R024",
-      "name": "Léon Girard",
-      "age": 95,
-      "gender": "M",
-      "room": "402",
-      "floor": 4,
-      "pathologies": ["alzheimer", "insuffisance_cardiaque", "hypertension"],
-      "mobility": "tres_faible",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.85,
-      "baseline": {
-        "heart_rate": 84,
-        "heart_rate_sigma": 4.5,
-        "spo2": 91.0,
-        "spo2_sigma": 0.8,
-        "blood_pressure_sys": 172,
-        "blood_pressure_sys_sigma": 9.0,
-        "blood_pressure_dia": 98,
-        "temperature": 36.1,
-        "temperature_sigma": 0.12,
-        "respiratory_rate": 20
-      },
-      "routine": {
-        "wake_hour": 10,
-        "sleep_hour": 19,
-        "nap_start": 11,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "LE profil de démo. Triple pathologie, 95 ans. SpO2 91% basale. Risque 0.85. Scénarios fréquents. Mettre risk_factor: 1.0 pour démo garantie."
-    },
-    {
-      "id": "R025",
-      "name": "Clothilde Perrin",
-      "age": 73,
-      "gender": "F",
-      "room": "403",
-      "floor": 4,
-      "pathologies": [],
-      "mobility": "bonne",
-      "caregiver": "soignant_B",
-      "risk_factor": 0.02,
-      "baseline": {
-        "heart_rate": 60,
-        "heart_rate_sigma": 1.2,
-        "spo2": 99.0,
-        "spo2_sigma": 0.2,
-        "blood_pressure_sys": 112,
-        "blood_pressure_sys_sigma": 2.0,
-        "blood_pressure_dia": 68,
-        "temperature": 36.3,
-        "temperature_sigma": 0.05,
-        "respiratory_rate": 13
-      },
-      "routine": {
-        "wake_hour": 6,
-        "sleep_hour": 23,
-        "nap_start": 14,
-        "nap_end": 15,
-        "activity_peak": "matin"
-      },
-      "notes": "La plus jeune, aucune pathologie. Constantes parfaites. Référence absolue."
-    }
-  ],
+                                          ],
+                          "mobility":  "bonne",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.05,
+                          "baseline":  {
+                                           "heart_rate":  62,
+                                           "heart_rate_sigma":  1.5,
+                                           "spo2":  98.0,
+                                           "spo2_sigma":  0.3,
+                                           "blood_pressure_sys":  118,
+                                           "blood_pressure_sys_sigma":  2.5,
+                                           "blood_pressure_dia":  72,
+                                           "temperature":  36.4,
+                                           "temperature_sigma":  0.06,
+                                           "respiratory_rate":  13
+                                       },
+                          "routine":  {
+                                          "wake_hour":  6,
+                                          "sleep_hour":  22,
+                                          "nap_start":  14,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Pas de pathologie chronique. Ancien sportif. Constantes de rÃ©fÃ©rence EHPAD.",
+                          "family_code":  "BOURVIL108",
+                          "avatar":  "/avatars/resident_108_bourvil.png"
+                      },
+                      {
+                          "id":  "R009",
+                          "name":  "Coco Chanel",
+                          "age":  90,
+                          "gender":  "F",
+                          "room":  "201",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "alzheimer",
+                                              "insuffisance_cardiaque"
+                                          ],
+                          "mobility":  "tres_faible",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.70,
+                          "baseline":  {
+                                           "heart_rate":  82,
+                                           "heart_rate_sigma":  3.5,
+                                           "spo2":  93.0,
+                                           "spo2_sigma":  0.6,
+                                           "blood_pressure_sys":  162,
+                                           "blood_pressure_sys_sigma":  7.0,
+                                           "blood_pressure_dia":  92,
+                                           "temperature":  36.3,
+                                           "temperature_sigma":  0.10,
+                                           "respiratory_rate":  18
+                                       },
+                          "routine":  {
+                                          "wake_hour":  9,
+                                          "sleep_hour":  20,
+                                          "nap_start":  12,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Double pathologie grave. SpO2 93% baseline. Alitement quasi-total. Profil le plus Ã  risque du 2e Ã©tage.",
+                          "family_code":  "CHANEL201",
+                          "avatar":  "/avatars/resident_201_coco_chanel.png"
+                      },
+                      {
+                          "id":  "R010",
+                          "name":  "Yves Montand",
+                          "age":  83,
+                          "gender":  "M",
+                          "room":  "202",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "hypertension"
+                                          ],
+                          "mobility":  "moyenne",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.25,
+                          "baseline":  {
+                                           "heart_rate":  69,
+                                           "heart_rate_sigma":  1.8,
+                                           "spo2":  96.5,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  148,
+                                           "blood_pressure_sys_sigma":  4.5,
+                                           "blood_pressure_dia":  86,
+                                           "temperature":  36.6,
+                                           "temperature_sigma":  0.07,
+                                           "respiratory_rate":  14
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  14,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "HTA modÃ©rÃ©e sous traitement. Bonne observance mÃ©dicamenteuse.",
+                          "family_code":  "MONTAND202",
+                          "avatar":  "/avatars/resident_202_yves_montand.png"
+                      },
+                      {
+                          "id":  "R011",
+                          "name":  "Jeanne Moreau",
+                          "age":  86,
+                          "gender":  "F",
+                          "room":  "203",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "parkinson",
+                                              "diabete"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.45,
+                          "baseline":  {
+                                           "heart_rate":  73,
+                                           "heart_rate_sigma":  2.2,
+                                           "spo2":  95.5,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  140,
+                                           "blood_pressure_sys_sigma":  5.0,
+                                           "blood_pressure_dia":  82,
+                                           "temperature":  36.5,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  15
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  15,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "Parkinson + diabÃ¨te. Tremblements modÃ©rÃ©s. HypoglycÃ©mies nocturnes occasionnelles.",
+                          "family_code":  "MOREAU203",
+                          "avatar":  "/avatars/resident_203_jeanne_moreau.png"
+                      },
+                      {
+                          "id":  "R012",
+                          "name":  "Charles Aznavour",
+                          "age":  80,
+                          "gender":  "M",
+                          "room":  "204",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "insuffisance_cardiaque",
+                                              "bpco"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.65,
+                          "baseline":  {
+                                           "heart_rate":  84,
+                                           "heart_rate_sigma":  3.5,
+                                           "spo2":  91.5,
+                                           "spo2_sigma":  0.7,
+                                           "blood_pressure_sys":  144,
+                                           "blood_pressure_sys_sigma":  6.0,
+                                           "blood_pressure_dia":  84,
+                                           "temperature":  36.8,
+                                           "temperature_sigma":  0.09,
+                                           "respiratory_rate":  21
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  16,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "Double pathologie cardio-respiratoire. SpO2 91% normale pour lui. DÃ©compensation frÃ©quente. Profil dÃ©mo idÃ©al.",
+                          "family_code":  "AZNAVOUR204",
+                          "avatar":  "/avatars/resident_204_charles_aznavour.png"
+                      },
+                      {
+                          "id":  "R013",
+                          "name":  "Brigitte Bardot",
+                          "age":  76,
+                          "gender":  "F",
+                          "room":  "208",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "diabete"
+                                          ],
+                          "mobility":  "bonne",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.15,
+                          "baseline":  {
+                                           "heart_rate":  67,
+                                           "heart_rate_sigma":  1.5,
+                                           "spo2":  97.0,
+                                           "spo2_sigma":  0.3,
+                                           "blood_pressure_sys":  126,
+                                           "blood_pressure_sys_sigma":  3.0,
+                                           "blood_pressure_dia":  76,
+                                           "temperature":  36.5,
+                                           "temperature_sigma":  0.06,
+                                           "respiratory_rate":  14
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  22,
+                                          "nap_start":  14,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "DiabÃ¨te bien contrÃ´lÃ©. Active, participe aux ateliers. Constantes stables.",
+                          "family_code":  "BARDOT208",
+                          "avatar":  "/avatars/resident_208_brigitte_bardot.png"
+                      },
+                      {
+                          "id":  "R014",
+                          "name":  "Gerard Depardieu",
+                          "age":  91,
+                          "gender":  "M",
+                          "room":  "209",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "alzheimer"
+                                          ],
+                          "mobility":  "tres_faible",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.50,
+                          "baseline":  {
+                                           "heart_rate":  76,
+                                           "heart_rate_sigma":  2.5,
+                                           "spo2":  94.5,
+                                           "spo2_sigma":  0.5,
+                                           "blood_pressure_sys":  154,
+                                           "blood_pressure_sys_sigma":  6.0,
+                                           "blood_pressure_dia":  88,
+                                           "temperature":  36.2,
+                                           "temperature_sigma":  0.10,
+                                           "respiratory_rate":  16
+                                       },
+                          "routine":  {
+                                          "wake_hour":  9,
+                                          "sleep_hour":  20,
+                                          "nap_start":  12,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Alzheimer sÃ©vÃ¨re. TempÃ©rature trÃ¨s basse (91 ans). Fugues nocturnes antÃ©cÃ©dents.",
+                          "family_code":  "DEPARDIEU209",
+                          "avatar":  "/avatars/resident_209_gerard_depardieu.png"
+                      },
+                      {
+                          "id":  "R015",
+                          "name":  "Mireille Mathieu",
+                          "age":  85,
+                          "gender":  "F",
+                          "room":  "210",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "hypertension",
+                                              "insuffisance_renale"
+                                          ],
+                          "mobility":  "moyenne",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.40,
+                          "baseline":  {
+                                           "heart_rate":  71,
+                                           "heart_rate_sigma":  2.0,
+                                           "spo2":  95.5,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  158,
+                                           "blood_pressure_sys_sigma":  5.5,
+                                           "blood_pressure_dia":  92,
+                                           "temperature":  36.6,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  15
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  14,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "HTA + insuffisance rÃ©nale. PA Ã©levÃ©e chronique. Restriction hydrique.",
+                          "family_code":  "MATHIEU210",
+                          "avatar":  "/avatars/resident_210_mireille_mathieu.png"
+                      },
+                      {
+                          "id":  "R016",
+                          "name":  "Claude Francois",
+                          "age":  78,
+                          "gender":  "M",
+                          "room":  "211",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "bpco",
+                                              "hypertension"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.50,
+                          "baseline":  {
+                                           "heart_rate":  78,
+                                           "heart_rate_sigma":  2.5,
+                                           "spo2":  93.0,
+                                           "spo2_sigma":  0.6,
+                                           "blood_pressure_sys":  144,
+                                           "blood_pressure_sys_sigma":  5.0,
+                                           "blood_pressure_dia":  84,
+                                           "temperature":  36.7,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  19
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  14,
+                                          "nap_end":  16,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "BPCO + HTA. OxygÃ©nothÃ©rapie nocturne. SpO2 93% normale pour lui.",
+                          "family_code":  "FRANCOIS211",
+                          "avatar":  "/avatars/resident_211_claude_francois.png"
+                      },
+                      {
+                          "id":  "R017",
+                          "name":  "Josephine Baker",
+                          "age":  89,
+                          "gender":  "F",
+                          "room":  "212",
+                          "floor":  2,
+                          "pathologies":  [
+                                              "insuffisance_cardiaque"
+                                          ],
+                          "mobility":  "tres_faible",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.70,
+                          "baseline":  {
+                                           "heart_rate":  86,
+                                           "heart_rate_sigma":  4.0,
+                                           "spo2":  92.0,
+                                           "spo2_sigma":  0.7,
+                                           "blood_pressure_sys":  166,
+                                           "blood_pressure_sys_sigma":  8.0,
+                                           "blood_pressure_dia":  96,
+                                           "temperature":  36.4,
+                                           "temperature_sigma":  0.10,
+                                           "respiratory_rate":  20
+                                       },
+                          "routine":  {
+                                          "wake_hour":  9,
+                                          "sleep_hour":  20,
+                                          "nap_start":  12,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Insuffisance cardiaque sÃ©vÃ¨re. AlitÃ©e quasi-permanente. DÃ©compensation frÃ©quente la nuit.",
+                          "family_code":  "BAKER212",
+                          "avatar":  "/avatars/resident_212_josephine_baker.png"
+                      },
+                      {
+                          "id":  "R018",
+                          "name":  "Fernandel",
+                          "age":  74,
+                          "gender":  "M",
+                          "room":  "213",
+                          "floor":  2,
+                          "pathologies":  [
 
-  "scenarios": {
-    "hypoxie": {
-      "description": "Désaturation progressive — BPCO, insuffisance cardiaque",
-      "spo2_drop_max": 15,
-      "hr_rise_max": 40,
-      "duration_s": [120, 600]
-    },
-    "tachycardie": {
-      "description": "Accélération cardiaque — HTA, stress, arythmie",
-      "hr_rise_max": 70,
-      "bp_rise_max": 50,
-      "duration_s": [60, 300]
-    },
-    "chute": {
-      "description": "Pic accéléromètre brutal > 7g puis immobilité",
-      "accel_peak_g": [8.0, 15.0],
-      "duration_s": [1, 5]
-    },
-    "hypotension": {
-      "description": "Hypotension orthostatique — Parkinson, déshydratation",
-      "bp_drop_max": 60,
-      "hr_rise_max": 25,
-      "duration_s": [60, 300]
-    },
-    "fievre": {
-      "description": "Infection — pneumonie, infection urinaire (fréquentes en EHPAD)",
-      "temp_rise_max": 3.5,
-      "hr_rise_max": 35,
-      "duration_s": [600, 3600]
-    }
-  }
+                                          ],
+                          "mobility":  "bonne",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.05,
+                          "baseline":  {
+                                           "heart_rate":  63,
+                                           "heart_rate_sigma":  1.5,
+                                           "spo2":  98.0,
+                                           "spo2_sigma":  0.3,
+                                           "blood_pressure_sys":  116,
+                                           "blood_pressure_sys_sigma":  2.5,
+                                           "blood_pressure_dia":  70,
+                                           "temperature":  36.4,
+                                           "temperature_sigma":  0.06,
+                                           "respiratory_rate":  13
+                                       },
+                          "routine":  {
+                                          "wake_hour":  6,
+                                          "sleep_hour":  22,
+                                          "nap_start":  14,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "TrÃ¨s bon Ã©tat gÃ©nÃ©ral. RÃ©fÃ©rence pour comparer avec rÃ©sidents malades.",
+                          "family_code":  "FERNANDEL213",
+                          "avatar":  "/avatars/resident_213_fernandel.png"
+                      },
+                      {
+                          "id":  "R019",
+                          "name":  "Dalida",
+                          "age":  93,
+                          "gender":  "F",
+                          "room":  "304",
+                          "floor":  3,
+                          "pathologies":  [
+                                              "alzheimer",
+                                              "parkinson",
+                                              "hypertension"
+                                          ],
+                          "mobility":  "tres_faible",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.75,
+                          "baseline":  {
+                                           "heart_rate":  80,
+                                           "heart_rate_sigma":  3.5,
+                                           "spo2":  93.5,
+                                           "spo2_sigma":  0.6,
+                                           "blood_pressure_sys":  164,
+                                           "blood_pressure_sys_sigma":  8.0,
+                                           "blood_pressure_dia":  94,
+                                           "temperature":  36.2,
+                                           "temperature_sigma":  0.12,
+                                           "respiratory_rate":  18
+                                       },
+                          "routine":  {
+                                          "wake_hour":  9,
+                                          "sleep_hour":  19,
+                                          "nap_start":  11,
+                                          "nap_end":  14,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "Triple pathologie. La plus Ã¢gÃ©e de l\u0027EHPAD. TempÃ©rature basale trÃ¨s basse. TrÃ¨s haut risque.",
+                          "family_code":  "DALIDA214",
+                          "avatar":  "/avatars/resident_214_dalida.png"
+                      },
+                      {
+                          "id":  "R020",
+                          "name":  "Lino Ventura",
+                          "age":  82,
+                          "gender":  "M",
+                          "room":  "305",
+                          "floor":  3,
+                          "pathologies":  [
+                                              "diabete",
+                                              "insuffisance_cardiaque"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.55,
+                          "baseline":  {
+                                           "heart_rate":  77,
+                                           "heart_rate_sigma":  3.0,
+                                           "spo2":  94.0,
+                                           "spo2_sigma":  0.5,
+                                           "blood_pressure_sys":  150,
+                                           "blood_pressure_sys_sigma":  6.0,
+                                           "blood_pressure_dia":  88,
+                                           "temperature":  36.7,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  17
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  15,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "DiabÃ¨te + insuffisance cardiaque. Surveillance glycÃ©mique renforcÃ©e.",
+                          "family_code":  "VENTURA215",
+                          "avatar":  "/avatars/resident_215_lino_ventura.png"
+                      },
+                      {
+                          "id":  "R021",
+                          "name":  "Romy Schneider",
+                          "age":  78,
+                          "gender":  "F",
+                          "room":  "306",
+                          "floor":  3,
+                          "pathologies":  [
+                                              "hypertension"
+                                          ],
+                          "mobility":  "moyenne",
+                          "caregiver":  "soignant_C",
+                          "risk_factor":  0.20,
+                          "baseline":  {
+                                           "heart_rate":  68,
+                                           "heart_rate_sigma":  1.8,
+                                           "spo2":  97.0,
+                                           "spo2_sigma":  0.3,
+                                           "blood_pressure_sys":  145,
+                                           "blood_pressure_sys_sigma":  4.0,
+                                           "blood_pressure_dia":  84,
+                                           "temperature":  36.6,
+                                           "temperature_sigma":  0.07,
+                                           "respiratory_rate":  14
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  14,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "HTA lÃ©gÃ¨re bien contrÃ´lÃ©e. Participe aux activitÃ©s du groupe.",
+                          "family_code":  "SCHNEIDER216",
+                          "avatar":  "/avatars/resident_216_romy_schneider.png"
+                      },
+                      {
+                          "id":  "R022",
+                          "name":  "Jean-Paul Belmondo",
+                          "age":  86,
+                          "gender":  "M",
+                          "room":  "307",
+                          "floor":  3,
+                          "pathologies":  [
+                                              "bpco",
+                                              "insuffisance_renale"
+                                          ],
+                          "mobility":  "faible",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.60,
+                          "baseline":  {
+                                           "heart_rate":  81,
+                                           "heart_rate_sigma":  3.0,
+                                           "spo2":  91.5,
+                                           "spo2_sigma":  0.7,
+                                           "blood_pressure_sys":  142,
+                                           "blood_pressure_sys_sigma":  5.5,
+                                           "blood_pressure_dia":  82,
+                                           "temperature":  36.8,
+                                           "temperature_sigma":  0.09,
+                                           "respiratory_rate":  22
+                                       },
+                          "routine":  {
+                                          "wake_hour":  8,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  16,
+                                          "activity_peak":  "apres_midi"
+                                      },
+                          "notes":  "BPCO sÃ©vÃ¨re + insuffisance rÃ©nale. SpO2 91% normale. FR Ã©levÃ©e chronique.",
+                          "family_code":  "BELMONDO217",
+                          "avatar":  "/avatars/resident_217_jean_paul_belmondo.png"
+                      },
+                      {
+                          "id":  "R023",
+                          "name":  "Sophie Marceau",
+                          "age":  81,
+                          "gender":  "F",
+                          "room":  "401",
+                          "floor":  4,
+                          "pathologies":  [
+                                              "diabete",
+                                              "hypertension"
+                                          ],
+                          "mobility":  "moyenne",
+                          "caregiver":  "soignant_A",
+                          "risk_factor":  0.35,
+                          "baseline":  {
+                                           "heart_rate":  72,
+                                           "heart_rate_sigma":  2.0,
+                                           "spo2":  96.0,
+                                           "spo2_sigma":  0.4,
+                                           "blood_pressure_sys":  152,
+                                           "blood_pressure_sys_sigma":  5.0,
+                                           "blood_pressure_dia":  88,
+                                           "temperature":  36.7,
+                                           "temperature_sigma":  0.08,
+                                           "respiratory_rate":  15
+                                       },
+                          "routine":  {
+                                          "wake_hour":  7,
+                                          "sleep_hour":  21,
+                                          "nap_start":  13,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "DiabÃ¨te + HTA. Suivi glycÃ©mique quotidien. LÃ©gÃ¨re baisse de mobilitÃ© rÃ©cente.",
+                          "family_code":  "MARCEAU218",
+                          "avatar":  "/avatars/resident_218_sophie_marceau.png"
+                      },
+                      {
+                          "id":  "R024",
+                          "name":  "Michel Sardou",
+                          "age":  95,
+                          "gender":  "M",
+                          "room":  "402",
+                          "floor":  4,
+                          "pathologies":  [
+                                              "alzheimer",
+                                              "insuffisance_cardiaque",
+                                              "hypertension"
+                                          ],
+                          "mobility":  "tres_faible",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.85,
+                          "baseline":  {
+                                           "heart_rate":  84,
+                                           "heart_rate_sigma":  4.5,
+                                           "spo2":  91.0,
+                                           "spo2_sigma":  0.8,
+                                           "blood_pressure_sys":  172,
+                                           "blood_pressure_sys_sigma":  9.0,
+                                           "blood_pressure_dia":  98,
+                                           "temperature":  36.1,
+                                           "temperature_sigma":  0.12,
+                                           "respiratory_rate":  20
+                                       },
+                          "routine":  {
+                                          "wake_hour":  10,
+                                          "sleep_hour":  19,
+                                          "nap_start":  11,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "LE profil de dÃ©mo. Triple pathologie, 95 ans. SpO2 91% basale. Risque 0.85. ScÃ©narios frÃ©quents. Mettre risk_factor: 1.0 pour dÃ©mo garantie.",
+                          "family_code":  "SARDOU219",
+                          "avatar":  "/avatars/resident_219_michel_sardou.png"
+                      },
+                      {
+                          "id":  "R025",
+                          "name":  "Isabelle Adjani",
+                          "age":  73,
+                          "gender":  "F",
+                          "room":  "403",
+                          "floor":  4,
+                          "pathologies":  [
+
+                                          ],
+                          "mobility":  "bonne",
+                          "caregiver":  "soignant_B",
+                          "risk_factor":  0.02,
+                          "baseline":  {
+                                           "heart_rate":  60,
+                                           "heart_rate_sigma":  1.2,
+                                           "spo2":  99.0,
+                                           "spo2_sigma":  0.2,
+                                           "blood_pressure_sys":  112,
+                                           "blood_pressure_sys_sigma":  2.0,
+                                           "blood_pressure_dia":  68,
+                                           "temperature":  36.3,
+                                           "temperature_sigma":  0.05,
+                                           "respiratory_rate":  13
+                                       },
+                          "routine":  {
+                                          "wake_hour":  6,
+                                          "sleep_hour":  23,
+                                          "nap_start":  14,
+                                          "nap_end":  15,
+                                          "activity_peak":  "matin"
+                                      },
+                          "notes":  "La plus jeune, aucune pathologie. Constantes parfaites. RÃ©fÃ©rence absolue.",
+                          "family_code":  "ADJANI220",
+                          "avatar":  "/avatars/resident_220_isabelle_adjani.png"
+                      }
+                  ],
+    "scenarios":  {
+                      "hypoxie":  {
+                                      "description":  "DÃ©saturation progressive â€” BPCO, insuffisance cardiaque",
+                                      "spo2_drop_max":  15,
+                                      "hr_rise_max":  40,
+                                      "duration_s":  [
+                                                         120,
+                                                         600
+                                                     ]
+                                  },
+                      "tachycardie":  {
+                                          "description":  "AccÃ©lÃ©ration cardiaque â€” HTA, stress, arythmie",
+                                          "hr_rise_max":  70,
+                                          "bp_rise_max":  50,
+                                          "duration_s":  [
+                                                             60,
+                                                             300
+                                                         ]
+                                      },
+                      "chute":  {
+                                    "description":  "Pic accÃ©lÃ©romÃ¨tre brutal \u003e 7g puis immobilitÃ©",
+                                    "accel_peak_g":  [
+                                                         8.0,
+                                                         15.0
+                                                     ],
+                                    "duration_s":  [
+                                                       1,
+                                                       5
+                                                   ]
+                                },
+                      "hypotension":  {
+                                          "description":  "Hypotension orthostatique â€” Parkinson, dÃ©shydratation",
+                                          "bp_drop_max":  60,
+                                          "hr_rise_max":  25,
+                                          "duration_s":  [
+                                                             60,
+                                                             300
+                                                         ]
+                                      },
+                      "fievre":  {
+                                     "description":  "Infection â€” pneumonie, infection urinaire (frÃ©quentes en EHPAD)",
+                                     "temp_rise_max":  3.5,
+                                     "hr_rise_max":  35,
+                                     "duration_s":  [
+                                                        600,
+                                                        3600
+                                                    ]
+                                 }
+                  }
 }

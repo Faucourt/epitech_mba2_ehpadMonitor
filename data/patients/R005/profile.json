@@ -1,0 +1,26 @@
+{
+  "id": "R005",
+  "name": "Edith Piaf",
+  "age": 84,
+  "room": "105",
+  "pathologies": [
+    "parkinson",
+    "hypertension"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.4,
+  "caregiver": "soignant_B",
+  "family_code": "PIAF105",
+  "avatar": "/avatars/resident_105_edith_piaf.png",
+  "archetype_id": "ARCH_POLYMED",
+  "likely_medications": [
+    "antihypertensives",
+    "anticholinergics",
+    "psychotropes",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN009_IATROGENIC_FALL_CONFUSION_AFTER_MED_CHANGE",
+    "SCN011_ACUTE_CONFUSION_DELIRIUM"
+  ]
+}

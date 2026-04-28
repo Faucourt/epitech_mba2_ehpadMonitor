@@ -1,0 +1,21 @@
+{
+  "id": "R021",
+  "name": "Romy Schneider",
+  "age": 78,
+  "room": "216",
+  "pathologies": [
+    "hypertension"
+  ],
+  "mobility": "moyenne",
+  "risk_factor": 0.2,
+  "caregiver": "soignant_C",
+  "family_code": "SCHNEIDER216",
+  "avatar": "/avatars/resident_216_romy_schneider.png",
+  "archetype_id": "ARCH_STROKE_RISK",
+  "likely_medications": [
+    "antihypertensives"
+  ],
+  "preferred_scenarios": [
+    "SCN012_STROKE_FAST_SUSPECTED"
+  ]
+}

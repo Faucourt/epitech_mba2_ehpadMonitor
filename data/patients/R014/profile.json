@@ -1,0 +1,23 @@
+{
+  "id": "R014",
+  "name": "Gerard Depardieu",
+  "age": 91,
+  "room": "209",
+  "pathologies": [
+    "alzheimer"
+  ],
+  "mobility": "tres_faible",
+  "risk_factor": 0.5,
+  "caregiver": "soignant_C",
+  "family_code": "DEPARDIEU209",
+  "avatar": "/avatars/resident_209_gerard_depardieu.png",
+  "archetype_id": "ARCH_ALZ_FALL",
+  "likely_medications": [
+    "anticholinergics",
+    "psychotropes"
+  ],
+  "preferred_scenarios": [
+    "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+    "SCN007_WANDERING_ELOPEMENT_ALZHEIMER"
+  ]
+}

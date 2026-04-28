@@ -145,8 +145,10 @@ Expliquer le calcul:
 Ce qui est fait:
 
 - MQTT pour le flux;
-- Redis pour l'etat courant;
-- InfluxDB pour l'historique;
+- JSON par resident dans `data/patients/Rxxx/profile.json` comme source lisible de demo;
+- Redis pour l'etat courant et le cache live;
+- InfluxDB pour les series capteurs/vitaux;
+- JSON `history_daily.json` et `history_detailed.json` pour l'historique patient exportable;
 - WebSocket limite;
 - ML toutes les 5 minutes;
 - LLM hors boucle seconde.
@@ -189,9 +191,9 @@ Montrer le login avec un compte demo :
 
 | Utilisateur | Mot de passe | Resident |
 |-------------|-------------|---------|
-| `dupont`    | `dupont101` | Marguerite Dupont — Chambre 101 |
-| `martin`    | `martin105` | Yvette Martin — Chambre 105 |
-| `robert`    | `robert201` | Jeanne Robert — Chambre 201 |
+| `curie`      | `curie101` | Marie Curie - Chambre 101 |
+| `coubertin`  | `coubertin104` | Pierre de Coubertin - Chambre 104 |
+| `piaf`       | `piaf105` | Edith Piaf - Chambre 105 |
 
 Points a montrer :
 

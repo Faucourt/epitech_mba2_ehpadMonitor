@@ -1,0 +1,25 @@
+{
+  "id": "R011",
+  "name": "Jeanne Moreau",
+  "age": 86,
+  "room": "203",
+  "pathologies": [
+    "parkinson",
+    "diabete"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.45,
+  "caregiver": "soignant_A",
+  "family_code": "MOREAU203",
+  "avatar": "/avatars/resident_203_jeanne_moreau.png",
+  "archetype_id": "ARCH_DIABETES",
+  "likely_medications": [
+    "antidiabetics_insulin_sulfonylurea",
+    "anticholinergics",
+    "psychotropes",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN006_HYPOGLYCEMIA_DIABETES"
+  ]
+}

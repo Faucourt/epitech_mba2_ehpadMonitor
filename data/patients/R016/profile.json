@@ -1,0 +1,23 @@
+{
+  "id": "R016",
+  "name": "Claude Francois",
+  "age": 78,
+  "room": "211",
+  "pathologies": [
+    "bpco",
+    "hypertension"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.5,
+  "caregiver": "soignant_A",
+  "family_code": "FRANCOIS211",
+  "avatar": "/avatars/resident_211_claude_francois.png",
+  "archetype_id": "ARCH_BPCO",
+  "likely_medications": [
+    "antihypertensives",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA"
+  ]
+}

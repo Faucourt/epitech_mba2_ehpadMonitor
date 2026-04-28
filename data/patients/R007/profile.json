@@ -1,0 +1,25 @@
+{
+  "id": "R007",
+  "name": "Annie Girardot",
+  "age": 88,
+  "room": "107",
+  "pathologies": [
+    "insuffisance_renale",
+    "diabete"
+  ],
+  "mobility": "moyenne",
+  "risk_factor": 0.35,
+  "caregiver": "soignant_C",
+  "family_code": "GIRARDOT107",
+  "avatar": "/avatars/resident_107_annie_girardot.png",
+  "archetype_id": "ARCH_NUTRITION",
+  "likely_medications": [
+    "antidiabetics_insulin_sulfonylurea",
+    "diuretics",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN014_DENUTRITION_FRAILTY_DECLINE",
+    "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+  ]
+}

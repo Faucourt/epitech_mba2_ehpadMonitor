@@ -1,0 +1,23 @@
+{
+  "id": "R022",
+  "name": "Jean-Paul Belmondo",
+  "age": 86,
+  "room": "217",
+  "pathologies": [
+    "bpco",
+    "insuffisance_renale"
+  ],
+  "mobility": "faible",
+  "risk_factor": 0.6,
+  "caregiver": "soignant_A",
+  "family_code": "BELMONDO217",
+  "avatar": "/avatars/resident_217_jean_paul_belmondo.png",
+  "archetype_id": "ARCH_BPCO",
+  "likely_medications": [
+    "diuretics",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA"
+  ]
+}

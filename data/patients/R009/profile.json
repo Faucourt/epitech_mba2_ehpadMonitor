@@ -1,0 +1,27 @@
+{
+  "id": "R009",
+  "name": "Coco Chanel",
+  "age": 90,
+  "room": "201",
+  "pathologies": [
+    "alzheimer",
+    "insuffisance_cardiaque"
+  ],
+  "mobility": "tres_faible",
+  "risk_factor": 0.7,
+  "caregiver": "soignant_C",
+  "family_code": "CHANEL201",
+  "avatar": "/avatars/resident_201_coco_chanel.png",
+  "archetype_id": "ARCH_ALZ_FALL",
+  "likely_medications": [
+    "diuretics",
+    "antihypertensives",
+    "anticholinergics",
+    "psychotropes",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT",
+    "SCN007_WANDERING_ELOPEMENT_ALZHEIMER"
+  ]
+}

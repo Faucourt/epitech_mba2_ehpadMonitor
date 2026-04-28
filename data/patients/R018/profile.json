@@ -1,0 +1,18 @@
+{
+  "id": "R018",
+  "name": "Fernandel",
+  "age": 74,
+  "room": "213",
+  "pathologies": [],
+  "mobility": "bonne",
+  "risk_factor": 0.05,
+  "caregiver": "soignant_B",
+  "family_code": "FERNANDEL213",
+  "avatar": "/avatars/resident_213_fernandel.png",
+  "archetype_id": "ARCH_NUTRITION",
+  "likely_medications": [],
+  "preferred_scenarios": [
+    "SCN014_DENUTRITION_FRAILTY_DECLINE",
+    "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+  ]
+}

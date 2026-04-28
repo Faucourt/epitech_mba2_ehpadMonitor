@@ -1,0 +1,23 @@
+{
+  "id": "R017",
+  "name": "Josephine Baker",
+  "age": 89,
+  "room": "212",
+  "pathologies": [
+    "insuffisance_cardiaque"
+  ],
+  "mobility": "tres_faible",
+  "risk_factor": 0.7,
+  "caregiver": "soignant_A",
+  "family_code": "BAKER212",
+  "avatar": "/avatars/resident_212_josephine_baker.png",
+  "archetype_id": "ARCH_CARDIAC",
+  "likely_medications": [
+    "diuretics",
+    "antihypertensives"
+  ],
+  "preferred_scenarios": [
+    "SCN013_HEART_FAILURE_DECOMPENSATION",
+    "SCN005_DEHYDRATION_HEATWAVE_DIURETICS"
+  ]
+}

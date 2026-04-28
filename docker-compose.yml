@@ -73,6 +73,9 @@ services:
       - MQTT_PORT=1883
       - NUM_RESIDENTS=25
       - DEMO_RESIDENT=R005
+      - PATIENT_DATA_DIR=/app/data/patients
+    volumes:
+      - ./data:/app/data
     networks:
       - ehpad_net
     healthcheck:
@@ -107,6 +110,9 @@ services:
       - DEMO_RESIDENT=R005
       - OLLAMA_HOST=http://host.docker.internal:11434
       - OLLAMA_MODEL=meditron:7b
+      - PATIENT_DATA_DIR=/app/data/patients
+    volumes:
+      - ./data:/app/data
     networks:
       - ehpad_net
     healthcheck:

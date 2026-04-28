@@ -61,6 +61,17 @@ def _load_residents():
 
     residents = []
     for index, patient in enumerate(data.get("residents", [])[:FACILITY_ROOM_COUNT]):
+        source_path = os.path.join(os.getenv("PATIENT_DATA_DIR", "/app/data/patients"), patient["id"], "profile.json")
+        if os.path.exists(source_path):
+            try:
+                with open(source_path, encoding="utf-8") as f:
+                    source_profile = json.load(f)
+                if isinstance(source_profile, dict) and isinstance(source_profile.get("effective"), dict):
+                    source_profile = source_profile["effective"]
+                if isinstance(source_profile, dict):
+                    patient.update(source_profile)
+            except Exception as e:
+                log.warning(f"[{patient['id']}] Profil JSON source ignore ({e})")
         baseline = patient.get("baseline", {})
         room_plan = ROOM_ASSIGNMENTS[index]
         residents.append({
@@ -82,6 +93,8 @@ def _load_residents():
             "base_resp_rate": baseline.get("respiratory_rate", 15),
             "risk_factor": patient.get("risk_factor", 0.3),
             "caregiver": patient.get("caregiver", ""),
+            "family_code": patient.get("family_code", ""),
+            "avatar": patient.get("avatar", ""),
         })
         archetype = resident_archetype(residents[-1])
         residents[-1]["archetype"] = archetype
@@ -191,6 +204,25 @@ class ResidentSimulator:
         self.fall_started_tick = None
         self.next_forced_movement_tick = self._tick
         log.warning(f"[{self.id}] Scenario validation force: {self.movement_scenario}")
+
+    def apply_profile_update(self, profile_update):
+        """Applique une configuration live envoyee par le backend."""
+        allowed = {
+            "age", "pathologies", "mobility", "risk_factor", "caregiver",
+            "meal_mode", "care_level", "assigned_scenarios", "notes",
+        }
+        for key, value in (profile_update or {}).items():
+            if key in allowed and value is not None:
+                self.p[key] = value
+        if "assigned_scenarios" in self.p and self.p["assigned_scenarios"]:
+            self.assigned_movement_scenario = self.p["assigned_scenarios"][0]
+        else:
+            self.care_level = self._care_level()
+        self.care_level = self.p.get("care_level") or self._care_level()
+        self.meal_mode = self.p.get("meal_mode") or ("chambre" if self.care_level == "chambre" else ("accompagne" if self.care_level == "accompagne" else "salle"))
+        self.life_archetype = resident_archetype(self.p)
+        self.life_profile = RESIDENT_ARCHETYPES.get(self.life_archetype, RESIDENT_ARCHETYPES["autonome"])
+        log.info(f"[{self.id}] Profil simulateur mis a jour: mobilite={self.p.get('mobility')} risque={self.p.get('risk_factor')} scenarios={self.p.get('assigned_scenarios')}")
 
     def _simulated_minute(self):
         """Une minute simulee par tick; le curseur vitesse accelere donc la journee."""
@@ -636,6 +668,7 @@ class ResidentSimulator:
         return {
             "resident_id": self.id,
             "name": self.p["name"],
+            "avatar": self.p.get("avatar", ""),
             "room": self.p["room"],
             "floor": self.p.get("floor", 0),
             "zone": self.p.get("zone", f"ch{self.p['room']}"),
@@ -684,6 +717,7 @@ class ResidentSimulator:
             "scenario_active": self.malaise_scenario["type"] if self.malaise_scenario else None,
             "movement_scenario": self.movement_scenario,
             "assigned_movement_scenario": self.assigned_movement_scenario,
+            "assigned_scenarios": self.p.get("assigned_scenarios", [self.assigned_movement_scenario]),
             "time_of_day": self._time_of_day_factor(),
             "time_label": self._simulated_clock_label(),
             "routine_label": routine_context["label"],
@@ -769,6 +803,7 @@ class EHPADSimulator:
             log.info(f"ConnectÃ© au broker MQTT {MQTT_HOST}:{MQTT_PORT}")
             client.subscribe("ehpad/control/speed", qos=1)
             client.subscribe("ehpad/control/scenario", qos=1)
+            client.subscribe("ehpad/control/profile", qos=1)
         else:
             log.error(f"Erreur connexion MQTT: {rc}")
 
@@ -788,6 +823,11 @@ class EHPADSimulator:
                 target = next((r for r in self.residents if r.id == resident_id), None)
                 if target and scenario:
                     target.force_validation_scenario(scenario)
+            elif msg.topic == "ehpad/control/profile":
+                resident_id = payload.get("resident_id")
+                target = next((r for r in self.residents if r.id == resident_id), None)
+                if target:
+                    target.apply_profile_update(payload.get("profile") or {})
         except Exception as e:
             log.warning(f"Commande simulateur invalide: {e}")
 
@@ -929,6 +969,7 @@ class EHPADSimulator:
                 {
                     "id": s["resident_id"],
                     "name": s["name"],
+                    "avatar": s.get("avatar", ""),
                     "room": s["room"],
                     "floor": s.get("floor"),
                     "zone": s.get("zone"),

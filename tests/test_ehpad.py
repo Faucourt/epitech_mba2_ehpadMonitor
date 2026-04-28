@@ -407,7 +407,7 @@ class TestAPINewEndpoints:
 
     def test_api_famille_login_then_view(self):
         with get_api_client() as client:
-            login = client.post("/api/famille/login", json={"username": "dupont", "password": "dupont101"})
+            login = client.post("/api/famille/login", json={"username": "curie", "password": "curie101"})
             assert login.status_code == 200
             token = login.json()["token"]
             r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
@@ -498,7 +498,7 @@ class TestAPINewEndpoints:
             "action": "seen",
             "notification_key": "test-trace-r005",
             "resident_id": "R005",
-            "resident_name": "Yvette Martin",
+            "resident_name": "Edith Piaf",
             "level": 3,
             "reason": "test notification",
             "location": "couloir principal",
@@ -522,31 +522,31 @@ class TestAPINewEndpoints:
 
 # Comptes demo attendus apres seed — reference pour tous les tests famille
 FAMILLE_DEMO_ACCOUNTS = [
-    ("dupont",    "dupont101",    "R001"),
-    ("moreau",    "moreau102",    "R002"),
-    ("bernard",   "bernard103",   "R003"),
-    ("leroy",     "leroy104",     "R004"),
-    ("martin",    "martin105",    "R005"),
-    ("petit",     "petit106",     "R006"),
-    ("durand",    "durand107",    "R007"),
-    ("thomas",    "thomas108",    "R008"),
-    ("robert",    "robert201",    "R009"),
-    ("richard",   "richard202",   "R010"),
-    ("simon",     "simon203",     "R011"),
-    ("michel",    "michel204",    "R012"),
-    ("lefebvre",  "lefebvre208",  "R013"),
-    ("leblanc",   "leblanc209",   "R014"),
-    ("fontaine",  "fontaine210",  "R015"),
-    ("rousseau",  "rousseau211",  "R016"),
-    ("morel",     "morel212",     "R017"),
-    ("garnier",   "garnier213",   "R018"),
-    ("chevalier", "chevalier214", "R019"),
-    ("mercier",   "mercier215",   "R020"),
-    ("blanc",     "blanc216",     "R021"),
-    ("caron",     "caron217",     "R022"),
-    ("fournier",  "fournier218",  "R023"),
-    ("girard",    "girard219",    "R024"),
-    ("perrin",    "perrin220",    "R025"),
+    ("curie",      "curie101",      "R001"),
+    ("pasteur",    "pasteur102",    "R002"),
+    ("veil",       "veil103",       "R003"),
+    ("coubertin",  "coubertin104",  "R004"),
+    ("piaf",       "piaf105",       "R005"),
+    ("gabin",      "gabin106",      "R006"),
+    ("girardot",   "girardot107",   "R007"),
+    ("bourvil",    "bourvil108",    "R008"),
+    ("chanel",     "chanel201",     "R009"),
+    ("montand",    "montand202",    "R010"),
+    ("moreau",     "moreau203",     "R011"),
+    ("aznavour",   "aznavour204",   "R012"),
+    ("bardot",     "bardot208",     "R013"),
+    ("depardieu",  "depardieu209",  "R014"),
+    ("mathieu",    "mathieu210",    "R015"),
+    ("francois",   "francois211",   "R016"),
+    ("baker",      "baker212",      "R017"),
+    ("fernandel",  "fernandel213",  "R018"),
+    ("dalida",     "dalida214",     "R019"),
+    ("ventura",    "ventura215",    "R020"),
+    ("schneider",  "schneider216",  "R021"),
+    ("belmondo",   "belmondo217",   "R022"),
+    ("marceau",    "marceau218",    "R023"),
+    ("sardou",     "sardou219",     "R024"),
+    ("adjani",     "adjani220",     "R025"),
 ]
 
 
@@ -653,8 +653,8 @@ class TestFamilleAuth:
         assert rid == resident_id, f"{username} devrait pointer vers {resident_id}, obtenu {rid}"
 
     def test_username_case_insensitive(self):
-        self.auth.create_account(self.rc, "Dupont", "dupont101", "R001")
-        result = self.auth.authenticate(self.rc, "DUPONT", "dupont101")
+        self.auth.create_account(self.rc, "Curie", "curie101", "R001")
+        result = self.auth.authenticate(self.rc, "CURIE", "curie101")
         assert result is not None
 
     def test_wrong_resident_cannot_access_other(self):
@@ -675,7 +675,7 @@ class TestFamilleAPI:
 
     def test_login_valid(self):
         with get_api_client() as client:
-            r = self._login(client, "dupont", "dupont101")
+            r = self._login(client, "curie", "curie101")
         assert r.status_code == 200
         data = r.json()
         assert "token" in data
@@ -683,7 +683,7 @@ class TestFamilleAPI:
 
     def test_login_wrong_password(self):
         with get_api_client() as client:
-            r = self._login(client, "dupont", "mauvais")
+            r = self._login(client, "curie", "mauvais")
         assert r.status_code == 401
 
     def test_login_unknown_user(self):
@@ -698,7 +698,7 @@ class TestFamilleAPI:
 
     def test_view_correct_resident(self):
         with get_api_client() as client:
-            login = self._login(client, "dupont", "dupont101")
+            login = self._login(client, "curie", "curie101")
             token = login.json()["token"]
             r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
         assert r.status_code == 200
@@ -709,16 +709,16 @@ class TestFamilleAPI:
         assert "spo2" not in data
 
     def test_view_wrong_resident_forbidden(self):
-        """dupont (R001) ne peut pas acceder a R002."""
+        """curie (R001) ne peut pas acceder a R002."""
         with get_api_client() as client:
-            login = self._login(client, "dupont", "dupont101")
+            login = self._login(client, "curie", "curie101")
             token = login.json()["token"]
             r = client.get("/api/famille/R002", headers={"Authorization": f"Bearer {token}"})
         assert r.status_code == 403
 
     def test_logout_invalidates_token(self):
         with get_api_client() as client:
-            login = self._login(client, "dupont", "dupont101")
+            login = self._login(client, "curie", "curie101")
             token = login.json()["token"]
             client.post("/api/famille/logout", headers={"Authorization": f"Bearer {token}"})
             r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})

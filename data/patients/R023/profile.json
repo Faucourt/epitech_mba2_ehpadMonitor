@@ -1,0 +1,24 @@
+{
+  "id": "R023",
+  "name": "Sophie Marceau",
+  "age": 81,
+  "room": "218",
+  "pathologies": [
+    "diabete",
+    "hypertension"
+  ],
+  "mobility": "moyenne",
+  "risk_factor": 0.35,
+  "caregiver": "soignant_A",
+  "family_code": "MARCEAU218",
+  "avatar": "/avatars/resident_218_sophie_marceau.png",
+  "archetype_id": "ARCH_STROKE_RISK",
+  "likely_medications": [
+    "antihypertensives",
+    "antidiabetics_insulin_sulfonylurea",
+    "benzodiazepines"
+  ],
+  "preferred_scenarios": [
+    "SCN012_STROKE_FAST_SUSPECTED"
+  ]
+}

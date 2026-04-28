@@ -1,23 +1,27 @@
 """
 Gestion des comptes famille : creation, authentification, tokens de session.
-Stockage dans Redis — pas de base de donnees supplementaire necessaire.
+Stockage dans Redis, sans base de donnees supplementaire.
 """
 
 import hashlib
 import json
 import secrets
+import unicodedata
 from datetime import datetime, timezone
 
 TOKEN_TTL = 86400  # 24 h
 
+LEGACY_DEMO_USERNAMES = {
+    "dupont", "moreau", "bernard", "leroy", "martin", "petit", "durand",
+    "thomas", "robert", "richard", "simon", "michel", "lefebvre", "leblanc",
+    "fontaine", "rousseau", "morel", "garnier", "chevalier", "mercier",
+    "blanc", "caron", "fournier", "girard", "perrin",
+}
 
-# --- Hachage mot de passe ---
 
 def _hash(password: str, salt: str) -> str:
     return hashlib.sha256(f"{salt}:{password}".encode()).hexdigest()
 
-
-# --- CRUD comptes ---
 
 def create_account(rc, username: str, password: str, resident_id: str) -> bool:
     """Retourne False si le compte existe deja."""
@@ -70,8 +74,6 @@ def list_accounts(rc) -> list:
     return result
 
 
-# --- Authentification ---
-
 def authenticate(rc, username: str, password: str):
     """Retourne (token, resident_id) ou None si echec."""
     key = f"famille:account:{username.lower()}"
@@ -101,26 +103,25 @@ def revoke_token(rc, token: str):
     rc.delete(f"famille:token:{token}")
 
 
-# --- Amorçage demo ---
-
 def seed_demo_accounts(rc, residents_list: list):
-    """Cree les comptes demo au premier demarrage (ignore si deja presents)."""
+    """Synchronise les comptes demo avec la liste courante des residents."""
+    expected_usernames = {_demo_username(r) for r in residents_list}
+    for username in LEGACY_DEMO_USERNAMES - expected_usernames:
+        delete_account(rc, username)
+
     for r in residents_list:
-        parts = r["name"].split()
-        username = parts[-1].lower() if len(parts) >= 2 else r["id"].lower()
-        # Supprime les accents simples pour le username
-        username = _strip_accents(username)
+        username = _demo_username(r)
         password = r["family_code"].lower()
-        create_account(rc, username, password, r["id"])
+        if not create_account(rc, username, password, r["id"]):
+            update_account(rc, username, password, r["id"])
+
+
+def _demo_username(resident: dict) -> str:
+    parts = resident["name"].replace("-", " ").split()
+    username = parts[-1].lower() if parts else resident["id"].lower()
+    return _strip_accents(username)
 
 
 def _strip_accents(s: str) -> str:
-    replacements = {
-        "é": "e", "è": "e", "ê": "e", "ë": "e",
-        "à": "a", "â": "a", "ä": "a",
-        "î": "i", "ï": "i",
-        "ô": "o", "ö": "o",
-        "ù": "u", "û": "u", "ü": "u",
-        "ç": "c",
-    }
-    return "".join(replacements.get(c, c) for c in s)
+    normalized = unicodedata.normalize("NFKD", s)
+    return "".join(c for c in normalized if not unicodedata.combining(c))

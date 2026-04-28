@@ -1,0 +1,27 @@
+{
+  "id": "R004",
+  "name": "Pierre de Coubertin",
+  "age": 75,
+  "room": "104",
+  "pathologies": [
+    "diabete"
+  ],
+  "mobility": "bonne",
+  "risk_factor": 0.1,
+  "caregiver": "soignant_B",
+  "family_code": "COUBERTIN104",
+  "avatar": "/avatars/resident_104_pierre_de_coubertin.png",
+  "archetype_id": "ARCH_NUTRITION",
+  "likely_medications": [
+    "antidiabetics_insulin_sulfonylurea"
+  ],
+  "preferred_scenarios": [
+    "SCN014_DENUTRITION_FRAILTY_DECLINE",
+    "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+  ],
+  "assigned_scenarios": [
+    "promenade_jardin",
+    "malaise_retour_repas"
+  ],
+  "notes": "Profil configurable valide depuis la page simulateur."
+}

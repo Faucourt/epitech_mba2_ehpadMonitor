@@ -1,0 +1,18 @@
+{
+  "id": "R025",
+  "name": "Isabelle Adjani",
+  "age": 73,
+  "room": "220",
+  "pathologies": [],
+  "mobility": "bonne",
+  "risk_factor": 0.02,
+  "caregiver": "soignant_B",
+  "family_code": "ADJANI220",
+  "avatar": "/avatars/resident_220_isabelle_adjani.png",
+  "archetype_id": "ARCH_NUTRITION",
+  "likely_medications": [],
+  "preferred_scenarios": [
+    "SCN014_DENUTRITION_FRAILTY_DECLINE",
+    "SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION"
+  ]
+}

@@ -33,154 +33,154 @@ ROOM_ASSIGNMENTS = [
 
 RESIDENTS = [
     {
-        "id": "R001", "name": "Marguerite Dupont", "age": 87, "room": "101",
+        "id": "R001", "name": "Marie Curie", "age": 87, "room": "101",
         "pathologies": ["hypertension", "diabete"], "mobility": "faible",
         "base_hr": 72, "base_spo2": 96, "base_bp_sys": 145, "base_temp": 36.8,
-        "risk_factor": 0.3, "caregiver": "soignant_A"
+        "risk_factor": 0.3, "caregiver": "soignant_A", "family_code": "CURIE101", "avatar": "/avatars/resident_101_marie_curie.png"
     },
     {
-        "id": "R002", "name": "Henri Moreau", "age": 79, "room": "102",
+        "id": "R002", "name": "Louis Pasteur", "age": 79, "room": "102",
         "pathologies": ["insuffisance_cardiaque"], "mobility": "moyenne",
         "base_hr": 68, "base_spo2": 94, "base_bp_sys": 130, "base_temp": 36.6,
-        "risk_factor": 0.5, "caregiver": "soignant_A"
+        "risk_factor": 0.5, "caregiver": "soignant_A", "family_code": "PASTEUR102", "avatar": "/avatars/resident_102_louis_pasteur.png"
     },
     {
-        "id": "R003", "name": "Simone Bernard", "age": 92, "room": "103",
+        "id": "R003", "name": "Simone Veil", "age": 92, "room": "103",
         "pathologies": ["alzheimer", "hypertension"], "mobility": "tres_faible",
         "base_hr": 75, "base_spo2": 95, "base_bp_sys": 150, "base_temp": 36.9,
-        "risk_factor": 0.6, "caregiver": "soignant_A"
+        "risk_factor": 0.6, "caregiver": "soignant_A", "family_code": "VEIL103", "avatar": "/avatars/resident_103_simone_veil.png"
     },
     {
-        "id": "R004", "name": "Pierre Leroy", "age": 75, "room": "104",
+        "id": "R004", "name": "Pierre de Coubertin", "age": 75, "room": "104",
         "pathologies": ["diabete"], "mobility": "bonne",
         "base_hr": 65, "base_spo2": 97, "base_bp_sys": 120, "base_temp": 36.5,
-        "risk_factor": 0.1, "caregiver": "soignant_B"
+        "risk_factor": 0.1, "caregiver": "soignant_B", "family_code": "COUBERTIN104", "avatar": "/avatars/resident_104_pierre_de_coubertin.png"
     },
     {
-        "id": "R005", "name": "Yvette Martin", "age": 84, "room": "105",
+        "id": "R005", "name": "Edith Piaf", "age": 84, "room": "105",
         "pathologies": ["parkinson", "hypertension"], "mobility": "faible",
         "base_hr": 70, "base_spo2": 95, "base_bp_sys": 140, "base_temp": 36.7,
-        "risk_factor": 0.4, "caregiver": "soignant_B"
+        "risk_factor": 0.4, "caregiver": "soignant_B", "family_code": "PIAF105", "avatar": "/avatars/resident_105_edith_piaf.png"
     },
     {
-        "id": "R006", "name": "André Petit", "age": 81, "room": "106",
+        "id": "R006", "name": "Jean Gabin", "age": 81, "room": "106",
         "pathologies": ["bpco"], "mobility": "faible",
         "base_hr": 78, "base_spo2": 92, "base_bp_sys": 135, "base_temp": 36.6,
-        "risk_factor": 0.55, "caregiver": "soignant_B"
+        "risk_factor": 0.55, "caregiver": "soignant_B", "family_code": "GABIN106", "avatar": "/avatars/resident_106_jean_gabin.png"
     },
     {
-        "id": "R007", "name": "Louise Durand", "age": 88, "room": "107",
+        "id": "R007", "name": "Annie Girardot", "age": 88, "room": "107",
         "pathologies": ["insuffisance_renale", "diabete"], "mobility": "moyenne",
         "base_hr": 74, "base_spo2": 96, "base_bp_sys": 155, "base_temp": 36.8,
-        "risk_factor": 0.35, "caregiver": "soignant_C"
+        "risk_factor": 0.35, "caregiver": "soignant_C", "family_code": "GIRARDOT107", "avatar": "/avatars/resident_107_annie_girardot.png"
     },
     {
-        "id": "R008", "name": "Marcel Thomas", "age": 77, "room": "108",
+        "id": "R008", "name": "Bourvil", "age": 77, "room": "108",
         "pathologies": [], "mobility": "bonne",
         "base_hr": 62, "base_spo2": 98, "base_bp_sys": 118, "base_temp": 36.4,
-        "risk_factor": 0.05, "caregiver": "soignant_C"
+        "risk_factor": 0.05, "caregiver": "soignant_C", "family_code": "BOURVIL108", "avatar": "/avatars/resident_108_bourvil.png"
     },
     {
-        "id": "R009", "name": "Jeanne Robert", "age": 90, "room": "201",
+        "id": "R009", "name": "Coco Chanel", "age": 90, "room": "201",
         "pathologies": ["alzheimer", "insuffisance_cardiaque"], "mobility": "tres_faible",
         "base_hr": 80, "base_spo2": 93, "base_bp_sys": 160, "base_temp": 37.0,
-        "risk_factor": 0.7, "caregiver": "soignant_C"
+        "risk_factor": 0.7, "caregiver": "soignant_C", "family_code": "CHANEL201", "avatar": "/avatars/resident_201_coco_chanel.png"
     },
     {
-        "id": "R010", "name": "Gaston Richard", "age": 83, "room": "202",
+        "id": "R010", "name": "Yves Montand", "age": 83, "room": "202",
         "pathologies": ["hypertension"], "mobility": "moyenne",
         "base_hr": 69, "base_spo2": 96, "base_bp_sys": 148, "base_temp": 36.7,
-        "risk_factor": 0.25, "caregiver": "soignant_A"
+        "risk_factor": 0.25, "caregiver": "soignant_A", "family_code": "MONTAND202", "avatar": "/avatars/resident_202_yves_montand.png"
     },
     {
-        "id": "R011", "name": "Odette Simon", "age": 86, "room": "203",
+        "id": "R011", "name": "Jeanne Moreau", "age": 86, "room": "203",
         "pathologies": ["parkinson", "diabete"], "mobility": "faible",
         "base_hr": 73, "base_spo2": 95, "base_bp_sys": 138, "base_temp": 36.6,
-        "risk_factor": 0.45, "caregiver": "soignant_A"
+        "risk_factor": 0.45, "caregiver": "soignant_A", "family_code": "MOREAU203", "avatar": "/avatars/resident_203_jeanne_moreau.png"
     },
     {
-        "id": "R012", "name": "Fernand Michel", "age": 80, "room": "204",
+        "id": "R012", "name": "Charles Aznavour", "age": 80, "room": "204",
         "pathologies": ["insuffisance_cardiaque", "bpco"], "mobility": "faible",
         "base_hr": 82, "base_spo2": 91, "base_bp_sys": 142, "base_temp": 36.9,
-        "risk_factor": 0.65, "caregiver": "soignant_B"
+        "risk_factor": 0.65, "caregiver": "soignant_B", "family_code": "AZNAVOUR204", "avatar": "/avatars/resident_204_charles_aznavour.png"
     },
     {
-        "id": "R013", "name": "Hélène Lefebvre", "age": 76, "room": "208",
+        "id": "R013", "name": "Brigitte Bardot", "age": 76, "room": "208",
         "pathologies": ["diabete"], "mobility": "bonne",
         "base_hr": 67, "base_spo2": 97, "base_bp_sys": 125, "base_temp": 36.5,
-        "risk_factor": 0.15, "caregiver": "soignant_B"
+        "risk_factor": 0.15, "caregiver": "soignant_B", "family_code": "BARDOT208", "avatar": "/avatars/resident_208_brigitte_bardot.png"
     },
     {
-        "id": "R014", "name": "Roger Leblanc", "age": 91, "room": "209",
+        "id": "R014", "name": "Gerard Depardieu", "age": 91, "room": "209",
         "pathologies": ["alzheimer"], "mobility": "tres_faible",
         "base_hr": 76, "base_spo2": 94, "base_bp_sys": 152, "base_temp": 36.8,
-        "risk_factor": 0.5, "caregiver": "soignant_C"
+        "risk_factor": 0.5, "caregiver": "soignant_C", "family_code": "DEPARDIEU209", "avatar": "/avatars/resident_209_gerard_depardieu.png"
     },
     {
-        "id": "R015", "name": "Germaine Fontaine", "age": 85, "room": "210",
+        "id": "R015", "name": "Mireille Mathieu", "age": 85, "room": "210",
         "pathologies": ["hypertension", "insuffisance_renale"], "mobility": "moyenne",
         "base_hr": 71, "base_spo2": 95, "base_bp_sys": 157, "base_temp": 36.7,
-        "risk_factor": 0.4, "caregiver": "soignant_C"
+        "risk_factor": 0.4, "caregiver": "soignant_C", "family_code": "MATHIEU210", "avatar": "/avatars/resident_210_mireille_mathieu.png"
     },
     {
-        "id": "R016", "name": "Edouard Rousseau", "age": 78, "room": "211",
+        "id": "R016", "name": "Claude Francois", "age": 78, "room": "211",
         "pathologies": ["bpco", "hypertension"], "mobility": "faible",
         "base_hr": 77, "base_spo2": 93, "base_bp_sys": 143, "base_temp": 36.7,
-        "risk_factor": 0.5, "caregiver": "soignant_A"
+        "risk_factor": 0.5, "caregiver": "soignant_A", "family_code": "FRANCOIS211", "avatar": "/avatars/resident_211_claude_francois.png"
     },
     {
-        "id": "R017", "name": "Blanche Morel", "age": 89, "room": "212",
+        "id": "R017", "name": "Josephine Baker", "age": 89, "room": "212",
         "pathologies": ["insuffisance_cardiaque"], "mobility": "tres_faible",
         "base_hr": 85, "base_spo2": 92, "base_bp_sys": 165, "base_temp": 37.1,
-        "risk_factor": 0.7, "caregiver": "soignant_A"
+        "risk_factor": 0.7, "caregiver": "soignant_A", "family_code": "BAKER212", "avatar": "/avatars/resident_212_josephine_baker.png"
     },
     {
-        "id": "R018", "name": "Lucien Garnier", "age": 74, "room": "213",
+        "id": "R018", "name": "Fernandel", "age": 74, "room": "213",
         "pathologies": [], "mobility": "bonne",
         "base_hr": 63, "base_spo2": 98, "base_bp_sys": 115, "base_temp": 36.4,
-        "risk_factor": 0.05, "caregiver": "soignant_B"
+        "risk_factor": 0.05, "caregiver": "soignant_B", "family_code": "FERNANDEL213", "avatar": "/avatars/resident_213_fernandel.png"
     },
     {
-        "id": "R019", "name": "Paulette Chevalier", "age": 93, "room": "214",
+        "id": "R019", "name": "Dalida", "age": 93, "room": "214",
         "pathologies": ["alzheimer", "parkinson", "hypertension"], "mobility": "tres_faible",
         "base_hr": 79, "base_spo2": 93, "base_bp_sys": 162, "base_temp": 37.0,
-        "risk_factor": 0.75, "caregiver": "soignant_B"
+        "risk_factor": 0.75, "caregiver": "soignant_B", "family_code": "DALIDA214", "avatar": "/avatars/resident_214_dalida.png"
     },
     {
-        "id": "R020", "name": "Auguste Mercier", "age": 82, "room": "215",
+        "id": "R020", "name": "Lino Ventura", "age": 82, "room": "215",
         "pathologies": ["diabete", "insuffisance_cardiaque"], "mobility": "faible",
         "base_hr": 76, "base_spo2": 94, "base_bp_sys": 148, "base_temp": 36.8,
-        "risk_factor": 0.55, "caregiver": "soignant_C"
+        "risk_factor": 0.55, "caregiver": "soignant_C", "family_code": "VENTURA215", "avatar": "/avatars/resident_215_lino_ventura.png"
     },
     {
-        "id": "R021", "name": "Thérèse Blanc", "age": 78, "room": "216",
+        "id": "R021", "name": "Romy Schneider", "age": 78, "room": "216",
         "pathologies": ["hypertension"], "mobility": "moyenne",
         "base_hr": 68, "base_spo2": 97, "base_bp_sys": 144, "base_temp": 36.6,
-        "risk_factor": 0.2, "caregiver": "soignant_C"
+        "risk_factor": 0.2, "caregiver": "soignant_C", "family_code": "SCHNEIDER216", "avatar": "/avatars/resident_216_romy_schneider.png"
     },
     {
-        "id": "R022", "name": "Gaétan Caron", "age": 86, "room": "217",
+        "id": "R022", "name": "Jean-Paul Belmondo", "age": 86, "room": "217",
         "pathologies": ["bpco", "insuffisance_renale"], "mobility": "faible",
         "base_hr": 80, "base_spo2": 91, "base_bp_sys": 140, "base_temp": 36.9,
-        "risk_factor": 0.6, "caregiver": "soignant_A"
+        "risk_factor": 0.6, "caregiver": "soignant_A", "family_code": "BELMONDO217", "avatar": "/avatars/resident_217_jean_paul_belmondo.png"
     },
     {
-        "id": "R023", "name": "Renée Fournier", "age": 81, "room": "218",
+        "id": "R023", "name": "Sophie Marceau", "age": 81, "room": "218",
         "pathologies": ["diabete", "hypertension"], "mobility": "moyenne",
         "base_hr": 72, "base_spo2": 96, "base_bp_sys": 150, "base_temp": 36.7,
-        "risk_factor": 0.35, "caregiver": "soignant_A"
+        "risk_factor": 0.35, "caregiver": "soignant_A", "family_code": "MARCEAU218", "avatar": "/avatars/resident_218_sophie_marceau.png"
     },
     {
-        "id": "R024", "name": "Léon Girard", "age": 95, "room": "219",
+        "id": "R024", "name": "Michel Sardou", "age": 95, "room": "219",
         "pathologies": ["alzheimer", "insuffisance_cardiaque", "hypertension"], "mobility": "tres_faible",
         "base_hr": 83, "base_spo2": 91, "base_bp_sys": 170, "base_temp": 37.2,
-        "risk_factor": 0.85, "caregiver": "soignant_B"
+        "risk_factor": 0.85, "caregiver": "soignant_B", "family_code": "SARDOU219", "avatar": "/avatars/resident_219_michel_sardou.png"
     },
     {
-        "id": "R025", "name": "Clothilde Perrin", "age": 73, "room": "220",
+        "id": "R025", "name": "Isabelle Adjani", "age": 73, "room": "220",
         "pathologies": [], "mobility": "bonne",
         "base_hr": 60, "base_spo2": 99, "base_bp_sys": 112, "base_temp": 36.3,
-        "risk_factor": 0.02, "caregiver": "soignant_B"
+        "risk_factor": 0.02, "caregiver": "soignant_B", "family_code": "ADJANI220", "avatar": "/avatars/resident_220_isabelle_adjani.png"
     },
 ]
 
