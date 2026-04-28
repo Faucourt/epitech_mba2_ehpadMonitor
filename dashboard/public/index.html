@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EHPAD — Tableau de bord</title>
+<title>EPicare Palace — Tableau de bord</title>
 <script type="importmap">
 {
   "imports": {
@@ -28,7 +28,26 @@
 
   /* Header */
   header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
-  .logo { font-size: 18px; font-weight: 700; color: var(--blue); }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 18px; font-weight: 800; color: var(--blue);
+    user-select: none;
+  }
+  .logo-balloon {
+    width: 36px; height: 36px; position: relative; flex-shrink: 0;
+  }
+  .logo-balloon svg { width: 100%; height: 100%; }
+  @keyframes balloon-float {
+    0%,100% { transform: translateY(0) rotate(-4deg); }
+    50%      { transform: translateY(-5px) rotate(4deg); }
+  }
+  @keyframes balloon-string {
+    0%,100% { d: path("M18 34 Q14 40 16 46"); }
+    50%      { d: path("M18 34 Q22 40 20 46"); }
+  }
+  .logo-balloon { animation: balloon-float 3s ease-in-out infinite; }
+  .logo-name { letter-spacing: .01em; }
+  .logo-sub { font-size: 10px; font-weight: 500; color: var(--text2); margin-top: -2px; letter-spacing: .04em; }
   .header-stats { display: flex; gap: 20px; }
   .stat { text-align: center; }
   .stat-val { font-size: 22px; font-weight: 700; }
@@ -124,6 +143,9 @@
   .resident-card.alert-4 { border-color: var(--red); box-shadow: 0 0 12px rgba(239,68,68,0.4); }
   .resident-card.alert-5 { border-color: #ff0000; box-shadow: 0 0 16px rgba(255,0,0,0.5); animation: blink 1s infinite; }
   .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .card-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .card-avatar { width: 38px; height: 38px; border-radius: 10px; overflow: hidden; background: var(--bg3); border: 1px solid var(--border); flex: 0 0 auto; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: var(--blue); }
+  .card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .card-name { font-weight: 600; font-size: 13px; line-height: 1.3; }
   .card-room { font-size: 11px; color: var(--text3); }
   .card-vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
@@ -170,8 +192,9 @@
   }
 
   /* Detail panel */
-  #detail-panel { display: none; position: fixed; right: 0; top: 57px; width: 380px; height: calc(100vh - 57px); background: var(--bg2); border-left: 1px solid var(--border); z-index: 100; overflow-y: auto; padding: 16px; box-shadow: -4px 0 20px rgba(0,0,0,0.4); }
+  #detail-panel { display: none; position: fixed; right: 0; top: 57px; width: 440px; height: calc(100vh - 57px); background: var(--bg2); border-left: 1px solid var(--border); z-index: 100; overflow-y: auto; padding: 16px; box-shadow: -4px 0 20px rgba(0,0,0,0.4); }
   #detail-panel.open { display: block; }
+  @media (max-width: 700px) { #detail-panel { width: 100vw; } }
   .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .detail-close { cursor: pointer; font-size: 20px; color: var(--text2); }
   .vital-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
@@ -274,7 +297,28 @@
 <body>
 
 <header>
-  <div class="logo">ðŸ¥ EHPAD Monitor</div>
+  <div class="logo">
+    <div class="logo-balloon">
+      <svg viewBox="0 0 36 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="18" cy="16" rx="13" ry="15" fill="url(#bg)"/>
+        <ellipse cx="13" cy="10" rx="4" ry="5" fill="white" opacity="0.28" transform="rotate(-20 13 10)"/>
+        <ellipse cx="18" cy="31" rx="2.5" ry="1.6" fill="#2563eb"/>
+        <path d="M18 33 Q13 39 15 46" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <rect x="15" y="12" width="6" height="2" rx="1" fill="white" opacity="0.9"/>
+        <rect x="17" y="10" width="2" height="6" rx="1" fill="white" opacity="0.9"/>
+        <defs>
+          <radialGradient id="bg" cx="40%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">EPicare Palace</div>
+      <div class="logo-sub">EPicare Palace · IoT &amp; IA</div>
+    </div>
+  </div>
   <div class="header-stats">
     <div class="stat"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Résidents</div></div>
     <div class="stat"><div class="stat-val" id="stat-alerts" style="color:var(--red)">—</div><div class="stat-label">Alertes actives</div></div>
@@ -282,6 +326,10 @@
     <div class="stat"><div class="stat-val" id="stat-ok" style="color:var(--green)">—</div><div class="stat-label">Status OK</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
+    <a href="/simulateur/config" target="_blank"
+       style="font-size:12px;padding:5px 12px;background:rgba(59,130,246,0.14);color:#60a5fa;border:1px solid rgba(59,130,246,0.28);border-radius:6px;text-decoration:none;white-space:nowrap;">
+      Config simulateur
+    </a>
     <a href="famille.html" target="_blank"
        style="font-size:12px;padding:5px 12px;background:rgba(39,174,96,0.15);color:#27ae60;border:1px solid rgba(39,174,96,0.3);border-radius:6px;text-decoration:none;white-space:nowrap;">
       &#128100; Espace Famille
@@ -518,7 +566,10 @@
       <div style="font-size:18px;font-weight:700" id="dp-name">—</div>
       <div style="font-size:13px;color:var(--text2)" id="dp-info">—</div>
     </div>
-    <div class="detail-close" onclick="closeDetail()">×</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button id="dp-fullscreen-btn" onclick="openResidentDossier(currentDetailResident)" title="Ouvrir en plein écran" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:13px">⤢</button>
+      <div class="detail-close" onclick="closeDetail()">×</div>
+    </div>
   </div>
   <div id="dp-content"></div>
 </div>
@@ -538,9 +589,11 @@ let currentNightFilter = 'all';
 let currentFloor = 0;
 let currentDetailResident = null;
 let historyBuffer = {};  // resident_id → [{val, time}]
+let detailHistoryLoaded = {};
 let simulatorSpeed = 1;
 let currentDailyReport = null;
 let alertPanelOpen = false;
+let _llmReportCache = {};  // resident_id → rendered HTML
 let lastToastByAlert = {};
 
 // ============================================================
@@ -598,11 +651,52 @@ function connect() {
 function bufferHistory(rid, vitals) {
   if (!historyBuffer[rid]) historyBuffer[rid] = { hr: [], spo2: [], bp: [], temp: [] };
   const b = historyBuffer[rid];
-  const push = (arr, val) => { arr.push(val); if (arr.length > 60) arr.shift(); };
+  const ts = Date.now();
+  const cutoff = ts - 30 * 60 * 1000;
+  const push = (arr, val) => {
+    if (Number.isFinite(Number(val))) arr.push({ t: ts, v: Number(val) });
+    while (arr.length && arr[0].t < cutoff) arr.shift();
+  };
   push(b.hr, vitals.heart_rate);
   push(b.spo2, vitals.spo2);
   push(b.bp, vitals.blood_pressure_sys);
   push(b.temp, vitals.temperature);
+}
+
+function normalizeHistoryPoint(row, key) {
+  const fields = { hr: 'heart_rate', spo2: 'spo2', bp: 'blood_pressure_sys', temp: 'temperature' };
+  const value = Number(row?.[fields[key]]);
+  const time = row?.time ? new Date(row.time).getTime() : NaN;
+  if (!Number.isFinite(value) || !Number.isFinite(time)) return null;
+  return { t: time, v: value };
+}
+
+function setThirtyMinuteHistory(rid, rows) {
+  const cutoff = Date.now() - 30 * 60 * 1000;
+  const buf = { hr: [], spo2: [], bp: [], temp: [] };
+  ['hr', 'spo2', 'bp', 'temp'].forEach(key => {
+    buf[key] = (rows || [])
+      .map(row => normalizeHistoryPoint(row, key))
+      .filter(p => p && p.t >= cutoff)
+      .sort((a, b) => a.t - b.t);
+  });
+  historyBuffer[rid] = buf;
+  detailHistoryLoaded[rid] = Date.now();
+}
+
+async function ensureThirtyMinuteHistory(rid) {
+  if (!rid) return;
+  const loadedAt = detailHistoryLoaded[rid] || 0;
+  if (Date.now() - loadedAt < 2 * 60 * 1000) return;
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/residents/${rid}/history?minutes=30`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    setThirtyMinuteHistory(rid, data.history || []);
+    if (currentDetailResident === rid && residents[rid]) openDetail(rid);
+  } catch (e) {
+    detailHistoryLoaded[rid] = Date.now();
+  }
 }
 
 // ============================================================
@@ -687,7 +781,7 @@ function renderGrid() {
       card = document.createElement('div');
       card.id = `card-${r.id}`;
       card.className = 'resident-card';
-      card.onclick = () => openResidentDossier(r.id);
+      card.onclick = () => openDetail(r.id);
       grid.appendChild(card);
     }
     renderCard(card, r);
@@ -713,6 +807,7 @@ function renderCard(card, r) {
   const scenario = r.scenario || r.scenario_active || r.movement_scenario || r.assigned_movement_scenario;
   const fugue = r.current_zone === 'hors_ehpad' || r.movement_scenario === 'fugue_hors_ehpad';
   const life = r.life_profile || r.routine_context || {};
+  const routine = r.routine_analysis || {};
 
   const statusColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
   const statusColor = statusColors[level] || '#10b981';
@@ -720,10 +815,13 @@ function renderCard(card, r) {
   card.innerHTML = `
     <div class="status-dot" style="background:${statusColor}"></div>
     <div class="card-header">
-      <div>
+      <div class="card-identity">
+        <div class="card-avatar">${r.avatar ? `<img src="${r.avatar}" alt="${r.name || r.id}">` : (r.name || r.id).split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase()}</div>
+        <div>
         <div class="card-name">${r.name || r.id}</div>
         <div class="card-room">Chambre ${r.room || '—'}</div>
         ${scenario ? `<span class="scenario-chip">${fugue ? 'FUGUE HORS EHPAD' : scenario}</span>` : ''}
+        </div>
       </div>
     </div>
     <div class="card-vitals">
@@ -748,6 +846,7 @@ function renderCard(card, r) {
       <div class="ml-risk-fill" style="width:${mlRisk*100}%;background:${getMLRiskColor(mlRisk)}"></div>
     </div>
     <div style="font-size:10px;color:var(--text3);margin-top:3px">Risque ML: ${(mlRisk*100).toFixed(0)}%</div>
+    <div style="font-size:10px;color:${(routine.score || 0) >= .4 ? 'var(--yellow)' : 'var(--text3)'};margin-top:3px">Routine: ${routine.status === 'learning' ? 'apprentissage' : `${Math.round((routine.score || 0) * 100)}%`}</div>
     <div style="font-size:10px;color:var(--text2);margin-top:3px">${life.archetype_label || life.label || 'Profil standard'} · ${life.supervision || 'surveillance'}</div>
     <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.time_label || '--:--'} · ${r.routine_label || 'routine'}${r.meal_mode === 'chambre' ? ' · repas en chambre' : (r.current_zone === 'salle_manger' ? ` · table ${r.dining_table || '?'}` : '')}</div>
   `;
@@ -808,7 +907,23 @@ function updateAlertSidebar() {
   }
 
   const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
-  list.innerHTML = alerts.map(a => `
+  list.innerHTML = alerts.map(a => {
+    const escaladeBar = (() => {
+      if (a.escalates_in_s == null || a.acknowledged || a.resolved) return '';
+      const pct = Math.round((1 - a.escalates_in_s / a.escalation_delay_s) * 100);
+      const urgent = a.escalates_in_s < 60;
+      const color = urgent ? '#ef4444' : a.escalates_in_s < 120 ? '#f97316' : '#eab308';
+      const mins = Math.floor(a.escalates_in_s / 60);
+      const secs = a.escalates_in_s % 60;
+      const label = mins > 0 ? `${mins}m${secs.toString().padStart(2,'0')}s` : `${secs}s`;
+      return `<div style="margin-top:5px;display:flex;align-items:center;gap:6px">
+        <div style="flex:1;height:3px;background:var(--bg3);border-radius:2px">
+          <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width 1s linear"></div>
+        </div>
+        <span style="font-size:10px;color:${color};white-space:nowrap${urgent ? ';font-weight:700;animation:blink 1s step-end infinite' : ''}">↑ N${a.level+1} dans ${label}</span>
+      </div>`;
+    })();
+    return `
     <div class="alert-item level-${a.level}" onclick="openDetail('${a.resident_id}'); toggleAlertPanel(false)">
       <span class="alert-badge badge-${a.level}">${levelNames[a.level]}</span>
       <div class="alert-name">${a.resident_name}</div>
@@ -819,8 +934,9 @@ function updateAlertSidebar() {
         <span class="alert-time">Chambre ${a.room} · ${formatSensorEvents(a.sensor_events)}</span>
         <span class="alert-time">${a.time_since_s}s</span>
       </div>
-    </div>
-  `).join('');
+      ${escaladeBar}
+    </div>`;
+  }).join('');
 }
 
 function toggleAlertPanel(force) {
@@ -1092,6 +1208,7 @@ async function loadDailyReport() {
     const res = await fetch(`${BACKEND_HTTP}/api/reports/daily/${date}`);
     currentDailyReport = await res.json();
     renderGlobalReport(currentDailyReport);
+    loadDailyLlmStatus(date);
     await loadResidentDpi(document.getElementById('report-resident-select')?.value);
   } catch (err) {
     if (globalPanel) globalPanel.innerHTML = `<div class="no-alerts">Fiche indisponible: ${err.message}</div>`;
@@ -1107,6 +1224,7 @@ async function generateDailyReport() {
     const data = await res.json();
     currentDailyReport = data.report;
     renderGlobalReport(currentDailyReport);
+    loadDailyLlmStatus(date);
     await loadResidentDpi(document.getElementById('report-resident-select')?.value);
   } catch (err) {
     if (globalPanel) globalPanel.innerHTML = `<div class="no-alerts">Génération impossible: ${err.message}</div>`;
@@ -1274,7 +1392,7 @@ function renderReadiness(data, life, pred, sensors = {}, scale = {}) {
     <div class="report-panel" style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <div>
-          <h3>${data.project || 'EHPAD Monitor'}</h3>
+          <h3>${data.project || 'EPicare Palace'}</h3>
           <div style="font-size:12px;color:var(--text2)">${data.target || ''}</div>
         </div>
         <div style="text-align:right;font-size:12px;color:var(--text2)">
@@ -1400,6 +1518,7 @@ function renderGlobalReport(report) {
       <div class="report-kpi"><strong style="color:var(--yellow)">${counts.surveillance ?? 0}</strong><span>Surveillance</span></div>
       <div class="report-kpi"><strong style="color:var(--red)">${counts.urgent ?? 0}</strong><span>Prioritaires</span></div>
     </div>
+    <div id="daily-llm-status" class="watch-item" style="margin-bottom:10px">Rapports LLM quotidiens: vérification...</div>
     <table class="handover-table">
       <thead><tr><th>Ch.</th><th>Résident</th><th>Niveau</th><th>Transmission</th><th>À surveiller</th></tr></thead>
       <tbody>
@@ -1415,6 +1534,18 @@ function renderGlobalReport(report) {
       </tbody>
     </table>
   `;
+}
+
+async function loadDailyLlmStatus(date) {
+  const el = document.getElementById('daily-llm-status');
+  if (!el) return;
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/llm/daily/${date}`);
+    const data = await res.json();
+    el.innerHTML = `<b>Rapports LLM quotidiens</b> · ${data.count}/${data.expected} générés ${data.complete ? '· complet' : '· en cours'}<br><span style="color:var(--text2)">Stockés par jour et par résident; le bouton LLM ouvre le rapport du jour en cache.</span>`;
+  } catch (err) {
+    el.textContent = `Rapports LLM quotidiens indisponibles: ${err.message}`;
+  }
 }
 
 function selectReportResident(rid) {
@@ -1475,7 +1606,67 @@ function renderResidentDpi(report) {
     <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('')}</div>
     <div class="section-sub">Actions soignantes</div>
     <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('')}</div>
+    <div class="section-sub" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>Rapport LLM (Meditron · RAG KB)</span>
+      <button class="filter-btn" onclick="loadLlmReport('${report.resident_id}')" id="llm-btn-${report.resident_id}">Générer</button>
+    </div>
+    <div id="llm-report-block" style="margin-top:6px"></div>
   `;
+}
+
+function renderClinicalLlmReport(data, compact = false) {
+  const r = data.report || {};
+  const niveauColor = r.niveau_risque === 'eleve' ? 'var(--red)' : r.niveau_risque === 'modere' ? 'var(--yellow)' : 'var(--green)';
+  const pred = r.prediction_30_60min || {};
+  const sources = (r.sources_kb || []).join(', ') || '—';
+  const evidence = (r.preuves || []).slice(0, compact ? 3 : 5);
+  const actions = (r.actions_prioritaires || []).slice(0, compact ? 3 : 5);
+  const hypotheses = (r.hypotheses || []).slice(0, compact ? 2 : 4);
+  const complications = (r.complications_possibles || []).slice(0, compact ? 1 : 3);
+  const checks = (r.donnees_a_verifier || []).slice(0, compact ? 3 : 6);
+  return `
+    <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px;line-height:1.55;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px">
+        <span style="font-weight:800;color:${niveauColor};text-transform:uppercase">${r.niveau_risque || '—'}</span>
+        <span style="color:var(--text2);font-size:11px">${data.model || ''} · ${data.duration_ms ? data.duration_ms + 'ms' : ''}</span>
+      </div>
+      <div style="margin-bottom:8px">${r.synthese_clinique || r.resume || '—'}</div>
+      <div class="report-kpis" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:8px 0">
+        <div class="report-kpi"><strong>${Math.round(Number(pred.risque_30min ?? data.ml_risk ?? 0) * 100)}%</strong><span>Risque 30 min</span></div>
+        <div class="report-kpi"><strong>${Math.round(Number(pred.risque_60min ?? data.ml_risk ?? 0) * 100)}%</strong><span>Risque 60 min</span></div>
+        <div class="report-kpi"><strong style="font-size:15px">${pred.tendance || 'stable'}</strong><span>Tendance</span></div>
+      </div>
+      ${evidence.length ? `<div style="font-weight:700;margin:8px 0 3px">Preuves utilisees</div>
+        <div style="display:grid;gap:5px">${evidence.map(e => `<div style="border-left:3px solid ${e.gravite === 'haute' ? 'var(--red)' : e.gravite === 'moyenne' ? 'var(--yellow)' : 'var(--green)'};padding-left:7px"><b>${e.signal || 'Signal'}</b> <span style="color:var(--text2)">${e.valeur || ''}</span><br>${e.interpretation || ''}</div>`).join('')}</div>` : ''}
+      ${hypotheses.length && !compact ? `<div style="font-weight:700;margin:8px 0 3px">Hypotheses a confirmer</div>
+        <ul style="padding-left:16px;margin:0 0 8px">${hypotheses.map(h => `<li><b>${h.hypothese || 'Hypothese'}</b> <span style="color:var(--text2)">(${h.probabilite || 'a confirmer'})</span></li>`).join('')}</ul>` : ''}
+      ${complications.length ? `<div style="font-weight:700;margin:8px 0 3px">Complications KB surveillees</div>
+        <ul style="padding-left:16px;margin:0 0 8px">${complications.map(c => `<li><b>${c.nom || c.scenario_id || 'Scenario'}</b>${!compact && c.explication ? `<br><span style="color:var(--text2)">${c.explication}</span>` : ''}</li>`).join('')}</ul>` : ''}
+      ${checks.length && !compact ? `<div style="font-weight:700;margin:8px 0 3px">A verifier</div>
+        <ul style="padding-left:16px;margin:0 0 8px">${checks.map(c => `<li>${c}</li>`).join('')}</ul>` : ''}
+      ${actions.length ? `<div style="font-weight:700;margin:8px 0 3px">Actions par delai</div>
+        <ul style="padding-left:16px;margin:0 0 8px">${actions.map(a => `<li><b>${a.delai || 'action'}</b> — ${a.action || a}</li>`).join('')}</ul>` : ''}
+      ${(r.incertitudes || []).length && !compact ? `<div style="color:var(--text2);font-size:11px;margin-top:6px">Incertitudes : ${r.incertitudes.join(' · ')}</div>` : ''}
+      <div style="color:var(--text2);font-size:11px;margin-top:6px">KB : ${sources} · ${data.alerts_count_today ?? 0} alerte(s) · aide a la decision</div>
+    </div>`;
+}
+
+async function loadLlmReport(residentId) {
+  const block = document.getElementById('llm-report-block');
+  const btn = document.getElementById(`llm-btn-${residentId}`);
+  if (!block) return;
+  block.innerHTML = '<div style="color:var(--text2);font-size:12px;padding:8px 0">Génération en cours (10-30s)…</div>';
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    block.innerHTML = renderClinicalLlmReport(data);
+  } catch (e) {
+    block.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur : ${e.message} (Ollama disponible ?)</div>`;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Régénérer'; }
+  }
 }
 
 async function setSimulatorSpeed(value) {
@@ -1588,7 +1779,7 @@ function renderFloorPlan(floor) {
     const borderColor = borderColors[level];
 
     html += `
-      <g style="cursor:pointer" onclick="openResidentDossier('${resident?.id || ''}')">
+      <g style="cursor:pointer" onclick="openDetail('${resident?.id || ''}')">
         <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="${fillColor}" rx="6" stroke="${borderColor}" stroke-width="${level > 0 ? 2 : 1}"/>
         <text x="${x + rw/2}" y="${y + 18}" fill="#e2e8f0" font-size="12" font-weight="600" text-anchor="middle" font-family="system-ui">Ch. ${room}</text>
         ${resident ? `
@@ -1656,7 +1847,7 @@ function renderPlanLiveDots(floor, layout) {
     const dx = ((i % 5) - 2) * 7;
     const dy = Math.floor(i / 5) * 7;
     return `
-      <g onclick="openResidentDossier('${r.id}')" style="cursor:pointer">
+      <g onclick="openDetail('${r.id}')" style="cursor:pointer">
         <circle cx="${group.x + dx}" cy="${group.y + dy}" r="6" fill="${color}" stroke="#e2e8f0" stroke-width="1.2"/>
         <title>${r.name} · ${r.current_zone} · ${r.activity || 'repos'}</title>
       </g>
@@ -1749,6 +1940,7 @@ function openDetail(rid) {
   if (!r) return;
 
   currentDetailResident = rid;
+  ensureThirtyMinuteHistory(rid);
   document.getElementById('detail-panel').classList.add('open');
   document.getElementById('dp-name').textContent = r.name || rid;
   document.getElementById('dp-info').textContent = `Chambre ${r.room} · ${r.caregiver || ''}`;
@@ -1758,6 +1950,8 @@ function openDetail(rid) {
   const alert = activeAlerts[rid];
   const buf = historyBuffer[rid] || {};
   const life = r.life_profile || r.routine_context || {};
+  const routine = r.routine_analysis || {};
+  const routineFlags = routine.flags || [];
 
   let html = '';
 
@@ -1786,12 +1980,22 @@ function openDetail(rid) {
     `;
   }
 
+  html += `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <span style="font-size:12px;color:var(--text2)">Rapport LLM · Meditron (RAG KB)</span>
+      <button class="filter-btn" id="dp-llm-btn" onclick="loadDetailLlmReport('${rid}')">Générer</button>
+    </div>
+    <div id="dp-llm-block" style="margin-bottom:10px"></div>
+  `;
+
   html += renderMonitorScope(rid, r);
 
   html += `
     <div class="section-sub">Vie quotidienne simulée</div>
     <div class="vital-row"><span style="color:var(--text2)">Heure simulée</span><span>${r.time_label || '--:--'}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Phase</span><span>${r.routine_label || r.time_of_day || 'routine'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Score écart routine</span><span>${routine.status === 'learning' ? `Apprentissage (${routine.baseline?.samples || 0}/20)` : `${Math.round((routine.score || 0) * 100)}%`}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Écart routine</span><span>${routineFlags.slice(0, 2).join(' ; ') || 'Routine compatible'}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Autonomie</span><span>${r.care_level || 'autonome'}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Profil de vie</span><span>${life.archetype_label || life.label || 'standard'}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Surveillance</span><span>${life.supervision || 'surveillance standard'}</span></div>
@@ -1860,7 +2064,7 @@ function openDetail(rid) {
   }
 
   // Sparklines multi-métriques
-  html += `<div class="section-sub">Tendances (60 dernières secondes)</div>`;
+  html += `<div class="section-sub">Tendances (30 dernières minutes)</div>`;
   const sparkDefs = [
     { key: 'hr',   label: 'Fréq. Cardiaque (bpm)', color: '#3b82f6' },
     { key: 'spo2', label: 'SpO2 (%)',               color: '#10b981' },
@@ -1879,6 +2083,14 @@ function openDetail(rid) {
 
   document.getElementById('dp-content').innerHTML = html;
 
+  // Restaurer le rapport LLM si déjà généré pour ce résident
+  if (_llmReportCache[rid]) {
+    const block = document.getElementById('dp-llm-block');
+    const btn   = document.getElementById('dp-llm-btn');
+    if (block) block.innerHTML = _llmReportCache[rid];
+    if (btn)   btn.textContent = 'Régénérer';
+  }
+
   // Dessiner les sparklines après rendu
   setTimeout(() => {
     drawMonitorScope(rid, r);
@@ -1886,6 +2098,28 @@ function openDetail(rid) {
       if (buf[key]?.length > 2) drawSparkline(`spark-${key}`, buf[key], color);
     });
   }, 50);
+}
+
+async function loadDetailLlmReport(residentId) {
+  const block = document.getElementById('dp-llm-block');
+  const btn   = document.getElementById('dp-llm-btn');
+  if (!block) return;
+  block.innerHTML = '<div style="color:var(--text2);font-size:12px;padding:6px 0">Génération en cours…</div>';
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  try {
+    const res = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    const rendered = renderClinicalLlmReport(data, true);
+    block.innerHTML = rendered;
+    _llmReportCache[residentId] = rendered;
+    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    block.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur (Ollama disponible ?)</div>`;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Régénérer'; }
+  }
 }
 
 function renderMonitorScope(rid, r) {
@@ -1940,16 +2174,27 @@ function drawSparkline(canvasId, data, color) {
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
   const w = canvas.width, h = canvas.height;
-  const min = Math.min(...data) - 5;
-  const max = Math.max(...data) + 5;
+  const points = (data || [])
+    .map((p, i) => typeof p === 'number' ? { t: Date.now() - (data.length - 1 - i) * 1000, v: p } : p)
+    .filter(p => p && Number.isFinite(p.t) && Number.isFinite(p.v))
+    .sort((a, b) => a.t - b.t);
+  if (points.length < 2) return;
+  const min = Math.min(...points.map(p => p.v)) - 5;
+  const max = Math.max(...points.map(p => p.v)) + 5;
+  const start = Date.now() - 30 * 60 * 1000;
+  const end = Date.now();
 
   ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(148,163,184,0.12)';
+  ctx.font = '10px system-ui';
+  ctx.fillText('-30 min', 4, h - 4);
+  ctx.fillText('maintenant', Math.max(4, w - 58), h - 4);
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  data.forEach((v, i) => {
-    const x = (i / (data.length - 1)) * w;
-    const y = h - ((v - min) / (max - min)) * h;
+  points.forEach((p, i) => {
+    const x = clampNumber((p.t - start) / (end - start), 0, 1) * w;
+    const y = h - ((p.v - min) / Math.max(1, max - min)) * (h - 12) - 10;
     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
   });
   ctx.stroke();
