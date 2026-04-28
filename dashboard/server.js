@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const DIST = path.join(__dirname, 'dist');
 
 app.use((req, res, next) => {
   if (req.path.endsWith('.html') || req.path === '/') {
@@ -9,60 +10,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+// Serve built React/Vite app
+app.use(express.static(DIST));
 
-app.get('/soignant', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'soignant.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/soignant/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'soignant.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/resident/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'resident.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/famille', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'famille.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/admin/famille', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin_famille.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/mobile/resident/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'mobile_resident.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/album-activites', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'album_activites.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('/simulateur/config', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'simulateur_config.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+// SPA fallback — React Router handles all client-side routes
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(DIST, 'index.html'), {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
 });
 

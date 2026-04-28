@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPicare Palace — Intervention</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; background: #0f1422; color: #e5edf8; display: flex; justify-content: center; align-items: flex-start; padding: 16px; }
+    .app { width: min(390px, 100%); height: min(820px, calc(100vh - 32px)); background: #111827; border: 10px solid #05070c; border-radius: 34px; box-shadow: 0 24px 70px rgba(0,0,0,0.45); overflow-y: auto; position: relative; }
+    .app::before { content: ""; position: sticky; top: 0; left: 50%; transform: translateX(-50%); display: block; width: 112px; height: 24px; margin: 0 auto -24px; background: #05070c; border-radius: 0 0 16px 16px; z-index: 4; }
+    header { position: sticky; top: 0; z-index: 2; background: rgba(17,24,39,.97); border-bottom: 1px solid #26334c; padding: 38px 12px 12px; }
+    .topline { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .identity { display: flex; gap: 10px; align-items: center; min-width: 0; }
+    .avatar { width: 48px; height: 48px; border-radius: 14px; overflow: hidden; background: #26334c; border: 1px solid #334155; flex: 0 0 auto; display: grid; place-items: center; font-weight: 900; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: 18px; }
+    h2 { font-size: 12px; color: #9fb0c7; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    button, a.button { border: 0; border-radius: 10px; background: #2563eb; color: white; padding: 9px 11px; font-weight: 800; text-decoration: none; cursor: pointer; font-size: 12px; line-height: 1.2; }
+    a.button.secondary-link { background: #26334c; color: #dbeafe; border: 1px solid #334155; }
+    .content { padding: 12px; display: grid; gap: 12px; }
+    .card { background: #151c2d; border: 1px solid #26334c; border-radius: 12px; padding: 12px; }
+    .muted { color: #9fb0c7; }
+    .small { font-size: 12px; }
+    .alert { border-color: #334155; }
+    .alert.level-2 { border-color: #f59e0b; background: rgba(245,158,11,.12); }
+    .alert.level-3 { border-color: #f97316; background: rgba(249,115,22,.14); }
+    .alert.level-4, .alert.level-5 { border-color: #ef4444; background: rgba(239,68,68,.16); }
+    .badge { display: inline-flex; border-radius: 999px; padding: 4px 9px; background: #26334c; color: #bfdbfe; font-size: 11px; font-weight: 900; }
+    .badge.red { color: #fecaca; background: rgba(239,68,68,.2); }
+    .badge.orange { color: #fed7aa; background: rgba(249,115,22,.2); }
+    .badge.green { color: #bbf7d0; background: rgba(16,185,129,.16); }
+    .vitals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .vital { background: #0f172a; border: 1px solid #26334c; border-radius: 10px; padding: 10px; }
+    .vital span { display: block; color: #9fb0c7; font-size: 11px; }
+    .vital b { display: block; font-size: 22px; margin-top: 4px; }
+    .plan { width: 100%; height: auto; display: block; background: #1a1d2e; border-radius: 10px; border: 1px solid #26334c; }
+    .rows { display: grid; gap: 7px; }
+    .row { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid #26334c; padding-bottom: 7px; font-size: 13px; }
+    .row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; }
+    .actions .full-dpi { grid-column: 1 / -1; background: #26334c; color: #dbeafe; border: 1px solid #334155; min-height: 34px; display: grid; place-items: center; font-size: 11px; padding: 7px 9px; }
+    .danger { background: #dc2626; }
+    .ok { background: #059669; }
+    @media (max-width: 900px) {
+      body { display: block; min-height: 100dvh; padding: 0; background: #111827; }
+      .app { width: 100%; max-width: none; min-height: 100dvh; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; }
+      .app::before { display: none; }
+      header { padding: max(12px, env(safe-area-inset-top)) 12px 12px; }
+      .content { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+      button, a.button { min-height: 36px; padding: 8px 9px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="topline">
+        <div class="identity">
+          <div class="avatar" id="avatar">--</div>
+          <div>
+          <h1 id="name">Resident</h1>
+          <p class="muted small" id="meta">Chargement...</p>
+          </div>
+        </div>
+        <a class="button secondary-link" id="back-link" href="/soignant">Retour</a>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="card alert" id="alert-card"></div>
+
+      <div class="card">
+        <h2>Localisation</h2>
+        <svg id="mobile-plan" class="plan" viewBox="0 0 360 250"></svg>
+        <p class="muted small" id="location-text" style="margin-top:8px"></p>
+      </div>
+
+      <div class="card">
+        <h2>Signes vitaux</h2>
+        <div class="vitals" id="vitals"></div>
+      </div>
+
+      <div class="card">
+        <h2>Resultat IA / LLM</h2>
+        <div class="rows" id="ia-panel"></div>
+      </div>
+
+      <div class="card">
+        <h2>Action rapide</h2>
+        <div class="actions">
+          <button class="ok" onclick="trace('taken')">Je prends</button>
+          <button onclick="trace('seen')">Vu</button>
+          <button class="danger" onclick="trace('acknowledged')">Acquitter</button>
+          <a class="button full-dpi" href="#" id="full-link">DPI complet</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const BACKEND_HTTP = `${location.protocol}//${location.hostname}:8001`;
+    const residentId = location.pathname.split('/').filter(Boolean)[2] || 'R005';
+    const params = new URLSearchParams(location.search);
+    let staffId = params.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
+    let staffToken = params.get('token') || localStorage.getItem('ehpad_staff_token') || '';
+    const returnPath = params.get('return') || (staffId ? `/soignant/${staffId}` : '/soignant');
+    let breakGlassReason = '';
+    let state = null;
+    let dpi = null;
+    let alertExplain = null;
+
+    if (params.get('staff') && params.get('token')) {
+      localStorage.setItem('ehpad_staff_id', staffId);
+      localStorage.setItem('ehpad_staff_token', staffToken);
+    }
+
+    function authHeaders(extra = {}) {
+      const headers = staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
+      if (breakGlassReason) headers['X-Break-Glass-Reason'] = breakGlassReason;
+      return headers;
+    }
+
+    async function ensureStaffSession() {
+      if (staffToken) return true;
+      const id = prompt("Identifiant soignant :");
+      const password = id ? prompt("Mot de passe personnel :") : '';
+      if (!id || !password) return false;
+      const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caregiver_id: id.trim(), password }),
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      staffId = id.trim();
+      staffToken = data.token || '';
+      localStorage.setItem('ehpad_staff_id', staffId);
+      localStorage.setItem('ehpad_staff_token', staffToken);
+      return Boolean(staffToken);
+    }
+
+    async function secureJson(url) {
+      let res = await fetch(url, { headers: authHeaders() });
+      if (res.status === 403 && !breakGlassReason) {
+        const reason = prompt("Acces hors perimetre. Justification bris de glace pour tracer l'ouverture du DPI :");
+        if (reason && reason.trim().length >= 8) {
+          breakGlassReason = reason.trim();
+          res = await fetch(url, { headers: authHeaders() });
+        }
+      }
+      return res.ok ? res.json() : null;
+    }
+
+    function levelName(level) {
+      return ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][Number(level) || 0] || 'Stable';
+    }
+
+    function colorForLevel(level) {
+      return ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#111827'][Number(level) || 0] || '#10b981';
+    }
+
+    async function loadAll() {
+      const hasSession = await ensureStaffSession();
+      if (!hasSession) return;
+      const today = new Date().toISOString().slice(0, 10);
+      const calls = await Promise.allSettled([
+        secureJson(`${BACKEND_HTTP}/api/residents/${residentId}`),
+        secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${today}`),
+        fetch(`${BACKEND_HTTP}/api/alerts/explain/${residentId}`).then(r => r.ok ? r.json() : null),
+      ]);
+      state = calls[0].status === 'fulfilled' ? calls[0].value : null;
+      dpi = calls[1].status === 'fulfilled' ? calls[1].value?.mini_dpi : null;
+      alertExplain = calls[2].status === 'fulfilled' ? calls[2].value : null;
+      render();
+    }
+
+    function render() {
+      const current = state || dpi?.current || {};
+      const profile = state?.profile || dpi?.profile || {};
+      const vitals = current.vitals || dpi?.current?.vitals || {};
+      const alert = alertExplain?.alert || current.active_alert || null;
+      const risk = dpi?.risk || {};
+      const a2a = dpi?.a2a_prediction?.prediction || {};
+      const level = Number(alert?.level || risk.alert_level || 0);
+      const name = current.name || dpi?.resident_name || profile.name || residentId;
+      const room = current.room || dpi?.room || profile.room || '-';
+      const zone = current.location_label || current.current_zone || dpi?.current?.location || 'zone inconnue';
+      document.title = `${name} - Intervention`;
+      document.getElementById('name').textContent = name;
+      document.getElementById('meta').textContent = `Ch. ${room} - ${zone}`;
+      const avatar = current.avatar || profile.avatar || dpi?.avatar || '';
+      const avatarEl = document.getElementById('avatar');
+      if (avatar) {
+        avatarEl.innerHTML = `<img src="${avatar}" alt="${name}">`;
+      } else {
+        avatarEl.textContent = name.split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase();
+      }
+      const fullParams = new URLSearchParams({ staff: staffId, token: staffToken });
+      fullParams.set('return', returnPath);
+      if (breakGlassReason) fullParams.set('break_glass', breakGlassReason);
+      document.getElementById('full-link').href = `/resident/${residentId}?${fullParams.toString()}`;
+      document.getElementById('back-link').href = returnPath;
+      renderAlert(alert, level, zone);
+      renderPlan(current, room, zone, level, name);
+      renderVitals(vitals);
+      renderIA(risk, a2a);
+    }
+
+    function renderAlert(alert, level, zone) {
+      const card = document.getElementById('alert-card');
+      card.className = `card alert level-${level}`;
+      if (!alert) {
+        card.innerHTML = `<span class="badge green">Stable</span><h1 style="margin-top:8px">Pas d'alerte active</h1><p class="muted small">${zone}</p>`;
+        return;
+      }
+      card.innerHTML = `
+        <span class="badge red">N${alert.level} ${alert.level_name || levelName(alert.level)}</span>
+        <h1 style="margin-top:8px">${alert.reason || 'Alerte active'}</h1>
+        <p class="muted small">${alert.location_label || zone}</p>
+        <p class="muted small" style="margin-top:6px">Capteurs: ${formatSensorEvents(alert.sensor_events || alertExplain?.sensors?.events || {})}</p>
+      `;
+    }
+
+    function formatSensorEvents(events = {}) {
+      const labels = [];
+      if (events.door_open) labels.push('porte');
+      if (events.floor_pressure_event) labels.push('sol/matelas');
+      if (events.room_radar_presence || events.radar_immobile_low) labels.push('radar');
+      if (events.room_pir_motion) labels.push('PIR');
+      if (events.bed_occupied) labels.push('lit');
+      if (events.mattress_exit) labels.push('sortie lit');
+      return labels.length ? labels.join(', ') : 'aucun capteur actif';
+    }
+
+    function renderVitals(v) {
+      document.getElementById('vitals').innerHTML = [
+        ['FC', v.heart_rate ?? '-', 'bpm'],
+        ['SpO2', v.spo2 ?? '-', '%'],
+        ['PA', v.blood_pressure_sys ?? '-', 'mmHg'],
+        ['Temp.', v.temperature ?? '-', 'C'],
+      ].map(([k, val, unit]) => `<div class="vital"><span>${k}</span><b>${val}</b><span>${unit}</span></div>`).join('');
+    }
+
+    function renderIA(risk, a2a) {
+      document.getElementById('ia-panel').innerHTML = [
+        ['Risque actuel', `${Math.round((risk.ml_risk || 0) * 100)}%`],
+        ['Risque 30 min', `${Math.round((a2a.risk_30min || risk.a2a_risk_30min || 0) * 100)}%`],
+        ['Risque 60 min', `${Math.round((a2a.risk_60min || risk.a2a_risk_60min || 0) * 100)}%`],
+        ['Conclusion', a2a.summary || dpi?.transmission_summary || 'Analyse indisponible'],
+      ].map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
+    }
+
+    function coordsForZone(zone, room) {
+      const layout = Object.fromEntries(['101','102','103','104','105','106','107','108'].map((r, i) => [r, [30 + i * 38, 194]]));
+      if (!String(room).startsWith('1')) {
+        ['201','202','203','204','208','209','210','211','212','213','214','215','216','217','218','219','220'].forEach((r, i) => layout[r] = [24 + (i % 9) * 35, i < 8 ? 158 : 210]);
+      }
+      if (zone?.startsWith('ch')) return layout[zone.slice(2)] || layout[room] || [180, 125];
+      const map = {
+        entree: [44, 42], hors_ehpad: [44, 82], infirmerie_rdc: [102, 42], salle_commune: [234, 42],
+        salle_activites: [308, 42], escalier: [104, 84], ascenseur: [146, 84], couloir_principal: [180, 112],
+        patio: [150, 142], salle_manger: [242, 142], jardin: [180, 176], kinesitherapie: [190, 56],
+        salle_repos: [250, 56], palier_etage: [80, 92], couloir_aile_a_etage: [180, 142], couloir_aile_b_etage: [180, 190],
+      };
+      return map[zone] || layout[room] || [180, 125];
+    }
+
+    function renderPlan(current, room, zone, level, name) {
+      const svg = document.getElementById('mobile-plan');
+      const coords = coordsForZone(current.current_zone || current.zone, room);
+      const color = colorForLevel(level);
+      document.getElementById('location-text').textContent = `Position: ${zone}`;
+      svg.innerHTML = `
+        <rect width="360" height="250" rx="10" fill="#1a1d2e"/>
+        <rect x="18" y="24" width="70" height="34" rx="6" fill="#263344" stroke="#4a5568"/><text x="53" y="45" fill="#cbd5e1" font-size="9" text-anchor="middle">Accueil</text>
+        <rect x="96" y="24" width="70" height="34" rx="6" fill="#29324f" stroke="#4a5568"/><text x="131" y="45" fill="#cbd5e1" font-size="9" text-anchor="middle">Infirmerie</text>
+        <rect x="174" y="24" width="76" height="34" rx="6" fill="#263344" stroke="#4a5568"/><text x="212" y="45" fill="#cbd5e1" font-size="9" text-anchor="middle">Commune</text>
+        <rect x="258" y="24" width="76" height="34" rx="6" fill="#263344" stroke="#4a5568"/><text x="296" y="45" fill="#cbd5e1" font-size="9" text-anchor="middle">Activites</text>
+        <rect x="18" y="74" width="316" height="24" rx="5" fill="#242840" stroke="#4a5568"/><text x="176" y="90" fill="#94a3b8" font-size="9" text-anchor="middle">Couloir principal</text>
+        <rect x="116" y="118" width="76" height="44" rx="6" fill="#244139" stroke="#4a5568"/><text x="154" y="144" fill="#cbd5e1" font-size="9" text-anchor="middle">Patio</text>
+        <rect x="204" y="118" width="88" height="44" rx="6" fill="#2a3544" stroke="#4a5568"/><text x="248" y="144" fill="#cbd5e1" font-size="9" text-anchor="middle">Repas</text>
+        <rect x="94" y="172" width="150" height="26" rx="6" fill="#1f5b3b" stroke="#4a5568"/><text x="169" y="190" fill="#cbd5e1" font-size="9" text-anchor="middle">Jardin</text>
+        <rect x="18" y="210" width="316" height="20" rx="5" fill="#242840" stroke="#4a5568"/>
+        ${Object.entries(Object.fromEntries(['101','102','103','104','105','106','107','108'].map((r, i) => [r, [26 + i * 39, 206]]))).map(([r, [x, y]]) => `<rect x="${x}" y="${y}" width="30" height="28" rx="5" fill="${r === String(room) ? '#1e3a5f' : '#2d3748'}" stroke="${r === String(room) ? '#60a5fa' : '#4a5568'}"/><text x="${x+15}" y="${y+17}" fill="#e2e8f0" font-size="8" text-anchor="middle">${r}</text>`).join('')}
+        <circle cx="${coords[0]}" cy="${coords[1]}" r="16" fill="${color}" opacity=".22"/>
+        <circle cx="${coords[0]}" cy="${coords[1]-8}" r="6" fill="#f8fafc" stroke="#e2e8f0"/>
+        <rect x="${coords[0]-7}" y="${coords[1]-1}" width="14" height="22" rx="7" fill="${color}" stroke="#e2e8f0"/>
+        <text x="${Math.min(300, Math.max(60, coords[0]))}" y="${Math.max(18, coords[1]-26)}" fill="#e5edf8" font-size="10" text-anchor="middle">${name}</text>
+      `;
+    }
+
+    async function trace(action) {
+      const alert = alertExplain?.alert || {};
+      await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          caregiver_id: staffId,
+          action,
+          notification_key: alert.notification_key || alert.id || `${residentId}-${action}`,
+          alert_id: alert.id || null,
+          resident_id: residentId,
+          resident_name: state?.name || dpi?.resident_name || residentId,
+          level: alert.level || 0,
+          reason: alert.reason || 'fiche intervention mobile',
+          location: alert.location_label || state?.current_zone || null,
+        }),
+      }).catch(() => {});
+      loadAll();
+    }
+
+    loadAll();
+    setInterval(loadAll, 10000);
+  </script>
+</body>
+</html>
