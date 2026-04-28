@@ -21,8 +21,11 @@ import numpy as np
 
 import redis
 import paho.mqtt.client as mqtt
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from pydantic import BaseModel
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -71,7 +74,10 @@ from resident_profiles import RESIDENTS_MAP, RESIDENTS_LIST, FAMILY_CODE_MAP, CA
 import auth as auth_module
 
 # --- Init ---
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="EHPAD API", version="1.0.0")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
@@ -458,11 +464,25 @@ def _safe_state_for_report(resident_id: str) -> dict:
 
 def _alerts_for_resident_on_date(resident_id: str, report_date: str) -> list[dict]:
     alerts = []
+    seen = set()
     for alert in alert_engine.get_history(500):
         if alert.get("resident_id") != resident_id:
             continue
         created = str(alert.get("created_at") or alert.get("timestamp") or "")
         if created.startswith(report_date):
+            seen.add(alert.get("id") or f"{created}:{alert.get('reason')}")
+            alerts.append(alert)
+    for raw in redis_client.lrange("alerts:history", 0, 999):
+        try:
+            alert = json.loads(raw)
+        except Exception:
+            continue
+        if alert.get("resident_id") != resident_id:
+            continue
+        created = str(alert.get("created_at") or alert.get("timestamp") or "")
+        key = alert.get("id") or f"{created}:{alert.get('reason')}"
+        if created.startswith(report_date) and key not in seen:
+            seen.add(key)
             alerts.append(alert)
     return alerts
 
@@ -2138,7 +2158,8 @@ def _require_admin(authorization: str = _Header(None)):
 # ---------- Auth famille ----------
 
 @app.post("/api/famille/login")
-def famille_login(body: _LoginBody):
+@limiter.limit("5/minute")
+def famille_login(request: Request, body: _LoginBody):
     """Authentifie un compte famille, retourne un token de session 24h."""
     result = auth_module.authenticate(redis_client, body.username, body.password)
     if not result:
@@ -2317,7 +2338,25 @@ def _get_cached_daily_llm(report_date: str, resident_id: str) -> Optional[dict]:
 
 
 def _llm_alerts_for_resident(resident_id: str) -> list[dict]:
-    return [a for a in alert_engine.get_history(100) if a["resident_id"] == resident_id]
+    alerts = []
+    seen = set()
+    for alert in alert_engine.get_history(100):
+        if alert.get("resident_id") == resident_id:
+            key = alert.get("id") or f"{alert.get('created_at')}:{alert.get('reason')}"
+            seen.add(key)
+            alerts.append(alert)
+    for raw in redis_client.lrange("alerts:history", 0, 199):
+        try:
+            alert = json.loads(raw)
+        except Exception:
+            continue
+        if alert.get("resident_id") != resident_id:
+            continue
+        key = alert.get("id") or f"{alert.get('created_at')}:{alert.get('reason')}"
+        if key not in seen:
+            seen.add(key)
+            alerts.append(alert)
+    return alerts[:100]
 
 
 @app.get("/api/llm/report/{resident_id}")
