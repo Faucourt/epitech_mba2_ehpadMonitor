@@ -251,6 +251,7 @@
     async function ensureStaffSession(force = false) {
       if (force) clearStaffSession();
       if (staffToken) return true;
+      if (fromDashboard) return false;
       const id = prompt("Identifiant soignant autorisé pour ouvrir ce DPI (ex: chef_garde) :");
       if (!id) return false;
       const password = prompt("Mot de passe personnel :");

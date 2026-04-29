@@ -79,6 +79,43 @@ Le projet fonctionne sans Ollama: les rapports LLM ont un fallback local.
 - Pour tester la mini app sur telephone: PC et telephone sur le meme reseau Wi-Fi.
 - Pour tester les push mobiles reels: HTTPS local avec certificats dans `dashboard/certs/`.
 
+## Scripts de secours
+
+La commande principale reste:
+
+```bash
+docker compose up --build -d
+```
+
+Des scripts sont disponibles si vous voulez un demarrage assiste avec attente du
+backend et du dashboard.
+
+Windows PowerShell:
+
+```powershell
+.\start-demo.ps1
+```
+
+Windows double-clic:
+
+```bat
+start-demo.cmd
+```
+
+macOS / Linux / Git Bash:
+
+```bash
+NO_BROWSER=1 ./start.sh
+```
+
+Ces scripts:
+
+- verifient Docker;
+- lancent la stack;
+- attendent `http://localhost:8001/health`;
+- attendent `http://localhost:3002`;
+- affichent les URLs utiles.
+
 ## URLs utiles
 
 - Dashboard principal: `http://localhost:3002`
@@ -108,6 +145,35 @@ Le projet fonctionne sans Ollama: les rapports LLM ont un fallback local.
 | Admin familles | token admin | `ADMIN_EHPAD_2024` | gestion comptes famille |
 
 La liste complete des comptes famille est dans `docs/comptes_famille_demo.md`.
+
+## Activation des fonctions
+
+Les variables principales sont documentees dans `.env.example`.
+
+| Variable | Valeur demo | Role |
+|---|---|---|
+| `NUM_RESIDENTS` | `25` | nombre de residents simules |
+| `STAFF_DEMO_PASSWORD` | `EHPAD2024!` | mot de passe demo personnel |
+| `FAMILLE_ADMIN_TOKEN` | `ADMIN_EHPAD_2024` | token admin familles |
+| `REDIS_PASSWORD` | `change-me-redis-long-random` | protection Redis |
+| `INFLUX_TOKEN` | `change-me-influx-token` | token InfluxDB |
+| `OLLAMA_HOST` | `http://host.docker.internal:11434` | URL Ollama depuis Docker |
+| `OLLAMA_MODEL` | `meditron:7b` | modele LLM local |
+| `LLM_DAILY_AUTO_ENABLED` | `false` backend, `true` worker | generation auto rapports LLM |
+| `HTTPS_REQUIRED` | `false` | force HTTPS hors localhost si active |
+| `ALLOWED_ORIGINS` | localhost dashboard | CORS API |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | vide ou demo compose | Web Push navigateur |
+
+Utilisation conseillee:
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+Pour une soutenance locale, les valeurs par defaut de `docker-compose.yml`
+suffisent. Pour un rendu propre, remplacez les secrets demo si le projet est
+publie.
 
 ## Mini app soignant sur telephone
 
@@ -272,6 +338,23 @@ Lecture rapide:
 - la mini app telephone utilise la page soignant + service worker;
 - l'espace famille utilise un token limite a un resident.
 
+## Lecture de l'architecture
+
+- Le simulateur genere les constantes et evenements de vie a partir de profils
+  residents, routines, chambres et scenarios.
+- Il publie les donnees sur MQTT avec differents niveaux de QoS selon la criticite.
+- Le backend consomme les messages MQTT, enrichit l'etat resident, calcule le
+  score NEWS2, detecte les alertes, ecrit l'historique et diffuse le live.
+- Redis conserve l'etat courant, les sessions, les audits et les caches.
+- InfluxDB conserve les series temporelles de constantes.
+- Le dashboard affiche le temps reel, les alertes, le plan, le Mini DPI, les
+  transmissions, le personnel et la scalabilite.
+- La mini app soignant reutilise le meme backend mais avec une interface mobile
+  orientee intervention.
+- L'espace famille expose uniquement une vue non medicale du proche.
+- Le ML et l'A2A apportent une aide prospective, sans prendre de decision
+  medicale autonome.
+
 ## Schema structurel du projet
 
 ```mermaid
@@ -329,6 +412,44 @@ sequenceDiagram
     D->>B: REST details / mini DPI / staff / family
 ```
 
+## Schema fonctionnel
+
+```mermaid
+flowchart TD
+    V[Constantes vitales]
+    C[Capteurs ambiants]
+    R[Routines et localisation]
+    N[NEWS2 + regles]
+    M[ML 30-60 min]
+    A[A2A synthesis]
+    L[Alertes 1-5]
+    D[Dashboard / Mini DPI]
+    S[Soignant mobile]
+    F[Famille]
+
+    V --> N
+    C --> N
+    R --> N
+    V --> M
+    R --> M
+    N --> A
+    M --> A
+    A --> L
+    L --> D
+    L --> S
+    A --> D
+    R --> F
+```
+
+Lecture fonctionnelle:
+
+- les constantes alimentent a la fois les regles et le ML;
+- les capteurs ambiants confirment ou contextualisent les evenements;
+- les routines evitent de confondre un comportement normal et un signal faible;
+- l'A2A transforme les scores en priorite et transmission lisible;
+- le dashboard et l'app soignant affichent les donnees medicales;
+- la famille ne voit qu'un carnet de vie filtre.
+
 ## Fonctionnement clinique
 
 L'interface distingue plusieurs blocs:
@@ -340,6 +461,14 @@ L'interface distingue plusieurs blocs:
 - `Famille`: carnet de vie sans constantes medicales.
 - `ML/A2A`: prediction 30/60 minutes et synthese explicable.
 - `Scalabilite`: MQTT, Redis, InfluxDB, WebSocket et objectifs de charge.
+
+Important:
+
+- le simulateur ne change pas selon une validation medicale humaine;
+- le LLM n'est pas reentraine localement;
+- les rapports LLM sont une aide de synthese, pas un avis medical officiel;
+- l'entrainement ML reste separe du moteur d'alerte live;
+- le Mini DPI dashboard utilise un rapport frais pour eviter un cache ancien.
 
 ## Organisation des fonctions
 
@@ -423,6 +552,30 @@ Fichiers principaux:
 - `dashboard/public/famille.html`
 - `dashboard/public/admin_famille.html`
 
+### Plan et capteurs
+
+- affiche les chambres et zones sur un plan 2D;
+- affiche une vue 3D Three.js de l'etablissement;
+- relie chaque resident a une position;
+- affiche capteurs actifs, qualite, batterie et dernier signal.
+
+Fichiers principaux:
+
+- `dashboard/public/index.html`
+- `dashboard/public/resident.html`
+- `simulator/facility_map.py`
+
+### Scalabilite et exploitation
+
+- mesure le debit MQTT global et sur 60 secondes;
+- expose les compteurs vitaux / ambiants;
+- estime la pression InfluxDB et WebSocket;
+- donne des recommandations pour tester 50 residents.
+
+Endpoint:
+
+- `/api/ops/scalability`
+
 ## Alertes 5 niveaux
 
 | Niveau | Nom | Usage | Routage |
@@ -471,6 +624,31 @@ Le ML montre une chaine predictive technique 30-60 minutes. Il ne constitue pas
 une validation medicale reelle. En production, il faudrait des donnees EHPAD
 reelles, un split temporel et une validation clinique.
 ```
+
+## Separation regles / ML / LLM
+
+### Regles
+
+- seuils immediats;
+- NEWS2;
+- chute, SOS, fugue;
+- escalade;
+- fallback d'analyse si le LLM ne repond pas.
+
+### ML
+
+- apprend un risque a partir de donnees synthetiques;
+- produit `risk_30min` et `risk_60min`;
+- s'appuie sur `StandardScaler + GradientBoostingClassifier`;
+- ne choisit pas seul le niveau final;
+- ne remplace pas la decision soignante.
+
+### LLM
+
+- reformule une synthese clinique;
+- utilise contexte resident, historique, alertes et KB locale;
+- n'est pas fine-tune par le projet;
+- retombe sur un fallback local si Ollama est indisponible ou trop lent.
 
 ## Espace famille
 
@@ -524,6 +702,53 @@ Objectif de demo:
 - montrer que la cible 20 residents est depassee;
 - expliquer que Redis garde le live et InfluxDB garde l'historique.
 
+## Notifications
+
+Le projet supporte:
+
+- notifications live dans l'application soignant;
+- notifications navigateur via Service Worker;
+- Web Push serveur si les cles VAPID sont configurees;
+- audit des livraisons push.
+
+Routes associees:
+
+- `GET /api/push/config`
+- `GET /api/push/status`
+- `POST /api/push/subscribe`
+- `DELETE /api/push/subscribe`
+- `POST /api/push/test`
+- `POST /api/push/test-all`
+- `GET /api/push/delivery/{alert_id}`
+- `GET /api/push/audit`
+
+Limites importantes:
+
+- les push reels demandent HTTPS sur telephone;
+- un onglet ferme peut recevoir les notifications selon navigateur;
+- un navigateur totalement ferme depend du systeme mobile et du navigateur;
+- pour la demo jury, la fiche mobile fonctionne sans push.
+
+## LLM local
+
+Le projet utilise par defaut `meditron:7b` via Ollama.
+
+Activation simple:
+
+```powershell
+ollama serve
+docker compose up --build -d backend llm_worker
+```
+
+Variables utiles:
+
+- `OLLAMA_HOST`
+- `OLLAMA_MODEL`
+- `LLM_DAILY_AUTO_ENABLED`
+- `LLM_DAILY_TTL_DAYS`
+
+Le backend retombe sur un fallback local si le LLM est indisponible ou trop lent.
+
 ## Services Docker
 
 | Service | Role | Port |
@@ -557,6 +782,13 @@ Objectif de demo:
 | `GET /api/famille/{id}` | vue famille protegee |
 | `POST /api/famille/login` | login famille |
 | `GET /api/ops/scalability` | stats scalabilite |
+| `GET /api/push/config` | configuration Web Push |
+| `POST /api/push/subscribe` | inscription telephone |
+| `POST /api/push/test` | test push soignant |
+| `GET /api/llm/report/{id}` | rapport LLM resident |
+| `GET /api/llm/daily/{date}` | statut rapports quotidiens |
+| `GET /api/security/access-log` | journal acces DPI |
+| `GET /api/security/break-glass` | journal bris de glace |
 | `WS /ws` | flux live dashboard |
 
 ## Commandes utiles
@@ -574,6 +806,16 @@ docker compose ps
 docker compose logs --tail=50 backend
 docker compose logs --tail=50 simulator
 docker compose down
+```
+
+Scripts:
+
+```powershell
+.\start-demo.ps1
+```
+
+```bash
+NO_BROWSER=1 ./start.sh
 ```
 
 Tests:
@@ -594,6 +836,14 @@ Invoke-RestMethod http://localhost:8001/api/ml/metrics
 Invoke-RestMethod http://localhost:8001/api/ops/scalability
 ```
 
+Validation Docker depuis zero:
+
+```bash
+docker compose down
+docker compose up --build -d
+docker compose ps
+```
+
 ## Demo conseillee
 
 1. Demarrer Docker avec `docker compose up --build -d`.
@@ -610,6 +860,24 @@ Invoke-RestMethod http://localhost:8001/api/ops/scalability
 Guide detaille:
 
 - `docs/demo.md`
+
+## Correspondance cahier des charges
+
+| Demande ecole | Realisation projet | Statut |
+|---|---|---|
+| 20 residents minimum | 25 residents simules | OK |
+| Capteurs vitaux | FC, SpO2, PA, temperature, FR | OK |
+| Capteurs ambiants | porte, lit, PIR, radar, sol, SDB | OK |
+| MQTT | Mosquitto + QoS 0/1/2 | OK |
+| Dashboard multi-residents | grille 25 residents + detail | OK |
+| Alertes 5 niveaux | information a danger vital | OK |
+| Docker Compose | stack complete avec healthchecks | OK |
+| Prediction 30-60 min | ML + A2A | Bonus |
+| Historique / routines | Redis + InfluxDB + routine engine | Bonus |
+| Personnel / escalade | app soignant, affectations, audits | Bonus |
+| Famille | portail famille filtre | Bonus |
+| Plan / capteurs | SVG 2D + Three.js + qualite capteurs | Bonus |
+| Scalabilite | endpoint MQTT/Redis/WebSocket | Bonus |
 
 ## Tests et verification
 

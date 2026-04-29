@@ -742,6 +742,7 @@ function setThirtyMinuteHistory(rid, rows) {
 
 async function ensureThirtyMinuteHistory(rid) {
   if (!rid) return;
+  if (!staffToken) return;
   const loadedAt = detailHistoryLoaded[rid] || 0;
   if (Date.now() - loadedAt < 2 * 60 * 1000) return;
   try {
