@@ -1,10 +1,10 @@
-﻿"""
-Backend EHPAD â€” FastAPI
-- Consomme MQTT (vitaux rÃ©sidents + capteurs ambiants)
-- Stocke dans Redis (Ã©tat courant) + InfluxDB (historique)
+"""
+Backend EHPAD - FastAPI
+- Consomme MQTT (vitaux résidents + capteurs ambiants)
+- Stocke dans Redis (état courant) + InfluxDB (historique)
 - Moteur d'alertes 5 niveaux avec escalade
 - API REST + WebSocket pour le dashboard
-- PrÃ©diction ML de malaise
+- Prédiction ML de malaise
 """
 
 import json
@@ -34,7 +34,8 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from alert_engine import AlertEngine, LEVEL_CONFIG
 from ws_manager import WebSocketManager
 from ml_model import MalaisePredictor
-from a2a_agents import agent_card, run_a2a_pipeline
+from a2a_agents import agent_card
+from reports import DailyReportService
 from routine_engine import update_and_detect, get_routine_summary
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [BACKEND] %(message)s')
@@ -85,7 +86,7 @@ SIMULATION_SCENARIOS = [
     "risque_nuit", "jardin",
 ]
 
-# --- Profils rÃ©sidents (importÃ© depuis le simulateur, ou hardcodÃ©)
+# --- Profils résidents (importé depuis le simulateur, ou hardcodé)
 from resident_profiles import RESIDENTS_MAP, RESIDENTS_LIST, FAMILY_CODE_MAP, CAREGIVERS
 import auth as auth_module
 
@@ -132,7 +133,7 @@ def _push_subscriptions_for_staff(staff_id: str) -> list[dict]:
 
 
 def _all_push_subscriptions() -> list[dict]:
-    """RÃ©cupÃ¨re toutes les souscriptions push actives (tous les soignants)."""
+    """Récupère toutes les souscriptions push actives (tous les soignants)."""
     subs = []
     for key in redis_client.scan_iter("push:sub:*"):
         staff_id = key.split("push:sub:", 1)[-1]
@@ -149,7 +150,7 @@ def _all_push_subscriptions() -> list[dict]:
     return subs
 
 def _send_web_push_sync(payload: dict, staff_ids: Optional[list[str]] = None) -> dict:
-    """Envoie un push cible par personnel (synchrone, Ã  appeler dans thread)."""
+    """Envoie un push cible par personnel (synchrone, à appeler dans thread)."""
     target_ids = list(dict.fromkeys(staff_ids or []))
     result = {
         "enabled": WEBPUSH_ENABLED,
@@ -166,7 +167,7 @@ def _send_web_push_sync(payload: dict, staff_ids: Optional[list[str]] = None) ->
     try:
         from pywebpush import webpush, WebPushException
     except ImportError:
-        log.warning("pywebpush non installÃ©, push dÃ©sactivÃ©")
+        log.warning("pywebpush non installé, push désactivé")
         result["errors"].append("pywebpush non installe")
         return result
 
@@ -174,7 +175,7 @@ def _send_web_push_sync(payload: dict, staff_ids: Optional[list[str]] = None) ->
     from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec
 
-    # Convertir la clÃ© privÃ©e base64url â†’ PEM si nÃ©cessaire
+    # Convertir la clé privée base64url -> PEM si nécessaire
     raw_key = VAPID_PRIVATE_KEY.replace("\\n", "\n").strip()
     if "BEGIN" not in raw_key:
         padding = "=" * ((4 - len(raw_key) % 4) % 4)
@@ -195,75 +196,82 @@ def _send_web_push_sync(payload: dict, staff_ids: Optional[list[str]] = None) ->
     tmp.close()
     key_path = tmp.name
 
-    subs = []
-    if target_ids:
-        for staff_id in target_ids:
-            staff_subs = _push_subscriptions_for_staff(staff_id)
-            result["staff"].append({
-                "staff_id": staff_id,
-                "status": "pending" if staff_subs else "not_subscribed",
-                "subscriptions": len(staff_subs),
-                "sent": 0,
-                "expired": 0,
-                "errors": [],
-            })
-            subs.extend(staff_subs)
-    else:
-        subs = _all_push_subscriptions()
-        grouped = {}
-        for sub in subs:
-            grouped.setdefault(sub.get("staff_id", "unknown"), 0)
-            grouped[sub.get("staff_id", "unknown")] += 1
-        result["staff"] = [
-            {"staff_id": staff_id, "status": "pending", "subscriptions": count, "sent": 0, "expired": 0, "errors": []}
-            for staff_id, count in grouped.items()
-        ]
-    result["subscriptions"] = len(subs)
+    try:
+        subs = []
+        if target_ids:
+            for staff_id in target_ids:
+                staff_subs = _push_subscriptions_for_staff(staff_id)
+                result["staff"].append({
+                    "staff_id": staff_id,
+                    "status": "pending" if staff_subs else "not_subscribed",
+                    "subscriptions": len(staff_subs),
+                    "sent": 0,
+                    "expired": 0,
+                    "errors": [],
+                })
+                subs.extend(staff_subs)
+        else:
+            subs = _all_push_subscriptions()
+            grouped = {}
+            for sub in subs:
+                grouped.setdefault(sub.get("staff_id", "unknown"), 0)
+                grouped[sub.get("staff_id", "unknown")] += 1
+            result["staff"] = [
+                {"staff_id": staff_id, "status": "pending", "subscriptions": count, "sent": 0, "expired": 0, "errors": []}
+                for staff_id, count in grouped.items()
+            ]
+        result["subscriptions"] = len(subs)
 
-    staff_result = {row["staff_id"]: row for row in result["staff"]}
-    for sub in subs:
-        staff_id = sub.get("staff_id", "unknown")
-        row = staff_result.get(staff_id)
-        try:
-            webpush(
-                subscription_info={"endpoint": sub["endpoint"], "keys": {"p256dh": sub["p256dh"], "auth": sub["auth"]}},
-                data=json.dumps(payload, ensure_ascii=False),
-                vapid_private_key=key_path,
-                vapid_claims={"sub": f"mailto:{VAPID_CLAIMS_EMAIL}"},
-                ttl=120,
-            )
-            result["sent"] += 1
-            if row:
-                row["sent"] += 1
-                row["status"] = "sent"
-        except WebPushException as exc:
-            code = getattr(getattr(exc, "response", None), "status_code", None)
-            if code in {404, 410}:
-                result["expired"] += 1
+        staff_result = {row["staff_id"]: row for row in result["staff"]}
+        for sub in subs:
+            staff_id = sub.get("staff_id", "unknown")
+            row = staff_result.get(staff_id)
+            try:
+                webpush(
+                    subscription_info={"endpoint": sub["endpoint"], "keys": {"p256dh": sub["p256dh"], "auth": sub["auth"]}},
+                    data=json.dumps(payload, ensure_ascii=False),
+                    vapid_private_key=key_path,
+                    vapid_claims={"sub": f"mailto:{VAPID_CLAIMS_EMAIL}"},
+                    ttl=120,
+                )
+                result["sent"] += 1
                 if row:
-                    row["expired"] += 1
-                    row["status"] = "expired"
-                # Souscription expirÃ©e â€” supprimer
-                key = _push_subscriptions_key(staff_id)
-                raw = redis_client.get(key)
-                if raw:
-                    try:
-                        stored = json.loads(raw)
-                        stored = [s for s in (stored if isinstance(stored, list) else [stored]) if s.get("endpoint") != sub["endpoint"]]
-                        redis_client.set(key, json.dumps(stored))
-                    except Exception:
-                        pass
-            else:
-                result["errors"].append(f"webpush {code or 'error'}")
+                    row["sent"] += 1
+                    row["status"] = "sent"
+            except WebPushException as exc:
+                code = getattr(getattr(exc, "response", None), "status_code", None)
+                if code in {404, 410}:
+                    result["expired"] += 1
+                    if row:
+                        row["expired"] += 1
+                        row["status"] = "expired"
+                    key = _push_subscriptions_key(staff_id)
+                    raw = redis_client.get(key)
+                    if raw:
+                        try:
+                            stored = json.loads(raw)
+                            stored = [s for s in (stored if isinstance(stored, list) else [stored]) if s.get("endpoint") != sub["endpoint"]]
+                            redis_client.set(key, json.dumps(stored))
+                        except Exception:
+                            pass
+                else:
+                    result["errors"].append(f"webpush {code or 'error'}")
+                    if row:
+                        row["errors"].append(f"webpush {code or 'error'}")
+                        row["status"] = "error"
+            except Exception:
+                log.exception("Erreur envoi Web Push")
+                result["errors"].append("erreur envoi webpush")
                 if row:
-                    row["errors"].append(f"webpush {code or 'error'}")
+                    row["errors"].append("erreur envoi webpush")
                     row["status"] = "error"
-        except Exception:
-            log.exception("Erreur envoi Web Push")
-            result["errors"].append("erreur envoi webpush")
-            if row:
-                row["errors"].append("erreur envoi webpush")
-                row["status"] = "error"
+    finally:
+        try:
+            os.unlink(key_path)
+        except FileNotFoundError:
+            pass
+        except Exception as exc:
+            log.warning(f"Impossible de supprimer le fichier VAPID temporaire {key_path}: {exc}")
     return result
 
 async def _send_web_push_async(payload: dict, staff_ids: Optional[list[str]] = None) -> dict:
@@ -384,7 +392,7 @@ def _replay_active_push_alerts_for_staff(staff_id: str) -> int:
 influx = InfluxDBClient(url=INFLUX_HOST, token=INFLUX_TOKEN, org=INFLUX_ORG)
 write_api = influx.write_api(write_options=SYNCHRONOUS)
 
-# Loop asyncio partagÃ©e
+# Loop asyncio partagée
 _loop: Optional[asyncio.AbstractEventLoop] = None
 _last_influx_write: dict[str, float] = {}
 _last_ws_push: dict[str, float] = {}
@@ -660,546 +668,33 @@ def publish_mqtt_control(topic: str, payload: dict):
     client.disconnect()
 
 
-def _simulated_history_rows(resident_id: str, days: int = 30, step_hours: int = 6):
-    profile = _effective_resident_profile(resident_id)
-    if not profile:
-        raise HTTPException(404, "Resident non trouve")
+daily_reports = DailyReportService(
+    redis_client=redis_client,
+    alert_engine=alert_engine,
+    residents_map=RESIDENTS_MAP,
+    archetypes=RESIDENT_ARCHETYPES,
+    effective_resident_profile=_effective_resident_profile,
+    resident_caregiver=_resident_caregiver,
+    resident_archetype=_resident_archetype,
+)
 
-    days = max(30, min(days, 730))
-    step_hours = max(1, min(step_hours, 24))
-    points = int((days * 24) / step_hours) + 1
-    risk = float(profile.get("risk_factor", 0.3))
-    mobility = profile.get("mobility", "moyenne")
-    base_hr = 70 + int(risk * 12)
-    base_spo2 = 97 - int(risk * 6)
-    base_bp = 125 + int(risk * 45)
-    base_temp = 36.6 + risk * 0.4
-    now = datetime.now(timezone.utc)
-    room_meal = mobility == "tres_faible" and risk >= 0.6
-    meal_zone = f"ch{profile.get('room', '')}" if room_meal else "salle_manger"
-    zones_by_hour = {
-        7: (meal_zone, "petit_dejeuner_en_chambre" if room_meal else "petit_dejeuner"),
-        8: (meal_zone, "petit_dejeuner_en_chambre" if room_meal else "petit_dejeuner"),
-        10: ("salle_activites", "animation_matin"),
-        11: ("couloir_principal", "trajet_repas"),
-        12: (meal_zone, "dejeuner_en_chambre" if room_meal else "dejeuner"),
-        13: (f"ch{profile.get('room', '')}", "sieste"),
-        15: ("salle_commune", "animation_apres_midi"),
-        16: (meal_zone, "gouter_en_chambre" if room_meal else "gouter"),
-        18: (meal_zone, "diner_en_chambre" if room_meal else "diner"),
-        19: ("salle_commune", "soiree"),
-    }
-    fallback_zones = [f"ch{profile.get('room', '')}", "couloir_principal", "salle_manger", "salle_commune", "salle_repos", "patio", "jardin"]
-    rows = []
-
-    for i in range(points):
-        ts = now - timedelta(hours=(points - 1 - i) * step_hours)
-        seed = sum(ord(c) for c in f"{resident_id}-{ts.date()}-{ts.hour}")
-        phase = (seed % 17) - 8
-        night = ts.hour < 6 or ts.hour >= 22
-        meal = ts.hour in {7, 8, 12, 16, 18}
-        scheduled = zones_by_hour.get(ts.hour)
-        movement_base = 2400 if night else (300 if meal else 900)
-        if mobility in {"faible", "tres_faible"}:
-            movement_base += 600
-        last_movement = max(30, movement_base + phase * 55)
-        event = "routine"
-        level = 0
-
-        heart_rate = base_hr + phase
-        spo2 = base_spo2 - (2 if night and risk > 0.5 else 0)
-        blood_pressure = base_bp + phase * 2
-        temperature = base_temp + (phase / 80)
-        respiratory_rate = 15 + int(risk * 6) + (1 if spo2 < 93 else 0)
-        zone = scheduled[0] if scheduled else fallback_zones[seed % len(fallback_zones)]
-        routine = scheduled[1] if scheduled else ("nuit" if night else "routine")
-
-        if ts.hour in {11, 18} and seed % 7 == 0 and risk > 0.35:
-            event = "risque_trajet_repas"
-            level = 2
-            last_movement = 1200
-            heart_rate += 10
-        elif seed % 41 == 0 and risk > 0.45:
-            event = "risque_chute"
-            level = 3
-            last_movement = 3800
-        elif seed % 29 == 0 and risk > 0.35:
-            event = "constantes_hors_norme"
-            level = 2
-            spo2 -= 2
-            heart_rate += 18
-        elif last_movement > 1800:
-            event = "inactivite"
-            level = 1
-
-        if seed % 97 == 0 and risk > 0.65:
-            event = "chute_detectee"
-            level = 4
-            last_movement = 4500
-            heart_rate += 25
-        if seed % 131 == 0 and risk > 0.75:
-            event = "danger_vital"
-            level = 5
-            spo2 = min(spo2, 86)
-            heart_rate = max(heart_rate, 142)
-
-        rows.append({
-            "time": ts.isoformat().replace("+00:00", "Z"),
-            "resident_id": resident_id,
-            "room": profile.get("room"),
-            "zone": zone,
-            "routine": routine,
-            "event": event,
-            "alert_level": level,
-            "heart_rate": round(heart_rate),
-            "spo2": round(max(80, min(100, spo2)), 1),
-            "blood_pressure_sys": round(blood_pressure),
-            "temperature": round(temperature, 1),
-            "respiratory_rate": respiratory_rate,
-            "last_movement_ago_s": int(last_movement),
-            "ml_risk": round(min(0.98, risk + max(0, level - 1) * 0.12), 2),
-        })
-    return rows
-
-
-def _local_report_date(value: Optional[str] = None) -> str:
-    if value:
-        return value
-    return datetime.now().date().isoformat()
-
-
-def _alert_level_name(level: int) -> str:
-    names = ["Stable", "Information", "Attention", "Alerte", "Urgence", "Danger vital"]
-    if 0 <= int(level) < len(names):
-        return names[int(level)]
-    return "Inconnu"
-
-
-def _risk_label(score: float) -> str:
-    if score >= 0.75:
-        return "eleve"
-    if score >= 0.5:
-        return "modere"
-    if score >= 0.25:
-        return "faible"
-    return "bas"
-
-
-def _safe_state_for_report(resident_id: str) -> dict:
-    raw = redis_client.get(f"resident:{resident_id}:state")
-    profile = _effective_resident_profile(resident_id)
-    if raw:
-        state = json.loads(raw)
-    else:
-        hist = _simulated_history_rows(resident_id, days=30, step_hours=6)
-        latest = hist[-1]
-        state = {
-            "resident_id": resident_id,
-            "name": profile.get("name", resident_id),
-            "room": profile.get("room"),
-            "floor": 0 if str(profile.get("room", "100")).startswith("1") else 1,
-            "current_zone": latest.get("zone"),
-            "activity": latest.get("routine"),
-            "vitals": {
-                "heart_rate": latest.get("heart_rate"),
-                "spo2": latest.get("spo2"),
-                "blood_pressure_sys": latest.get("blood_pressure_sys"),
-                "temperature": latest.get("temperature"),
-                "respiratory_rate": latest.get("respiratory_rate"),
-            },
-            "movement": {"last_movement_ago_s": latest.get("last_movement_ago_s")},
-            "ml_risk": latest.get("ml_risk", profile.get("risk_factor", 0.3)),
-            "caregiver": _resident_caregiver(resident_id, profile),
-        }
-    state["profile"] = profile
-    state["resident_name"] = state.get("name", profile.get("name", resident_id))
-    state["avatar"] = state.get("avatar") or profile.get("avatar", "")
-    state["caregiver"] = _resident_caregiver(resident_id, profile)
-    archetype = _resident_archetype(profile)
-    state.setdefault("life_profile", {
-        "archetype": archetype,
-        "archetype_label": RESIDENT_ARCHETYPES[archetype]["label"],
-        "daily_focus": RESIDENT_ARCHETYPES[archetype]["daily_focus"],
-        "main_risks": RESIDENT_ARCHETYPES[archetype]["main_risks"],
-        "supervision": RESIDENT_ARCHETYPES[archetype]["supervision"],
-    })
-    return state
-
-
-def _alerts_for_resident_on_date(resident_id: str, report_date: str) -> list[dict]:
-    alerts = []
-    seen = set()
-    for alert in alert_engine.get_history(500):
-        if alert.get("resident_id") != resident_id:
-            continue
-        created = str(alert.get("created_at") or alert.get("timestamp") or "")
-        if created.startswith(report_date):
-            seen.add(alert.get("id") or f"{created}:{alert.get('reason')}")
-            alerts.append(alert)
-    for raw in redis_client.lrange("alerts:history", 0, 999):
-        try:
-            alert = json.loads(raw)
-        except Exception:
-            continue
-        if alert.get("resident_id") != resident_id:
-            continue
-        created = str(alert.get("created_at") or alert.get("timestamp") or "")
-        key = alert.get("id") or f"{created}:{alert.get('reason')}"
-        if created.startswith(report_date) and key not in seen:
-            seen.add(key)
-            alerts.append(alert)
-    return alerts
-
-
-def _active_alert_for_resident(resident_id: str) -> Optional[dict]:
-    for alert in alert_engine.get_all_active():
-        if alert.get("resident_id") == resident_id and not alert.get("resolved"):
-            return alert
-    return None
-
-
-def _history_summary(resident_id: str) -> dict:
-    rows = _simulated_history_rows(resident_id, days=30, step_hours=6)
-    if not rows:
-        return {}
-    alert_rows = [r for r in rows if r.get("alert_level", 0) > 0]
-    events: dict[str, int] = {}
-    for row in rows:
-        events[row["event"]] = events.get(row["event"], 0) + 1
-    avg = lambda key: round(float(np.mean([r[key] for r in rows if r.get(key) is not None])), 1)
-    trend = rows[-1]["ml_risk"] - rows[max(0, len(rows) - 15)]["ml_risk"]
-    return {
-        "days": 30,
-        "points": len(rows),
-        "avg_vitals": {
-            "heart_rate": avg("heart_rate"),
-            "spo2": avg("spo2"),
-            "blood_pressure_sys": avg("blood_pressure_sys"),
-            "temperature": avg("temperature"),
-            "respiratory_rate": avg("respiratory_rate"),
-        },
-        "max_ml_risk": round(max(r["ml_risk"] for r in rows), 2),
-        "risk_trend": "hausse" if trend > 0.04 else "baisse" if trend < -0.04 else "stable",
-        "alerts_count": len(alert_rows),
-        "critical_events": [r for r in alert_rows if r.get("alert_level", 0) >= 3][-8:],
-        "event_counts": events,
-    }
-
-
-def _forecast_points(state: dict, hist: dict, alerts_today: list[dict]) -> list[str]:
-    v = state.get("vitals", {})
-    movement = state.get("movement", {})
-    risk = float(state.get("ml_risk", 0))
-    points = []
-    if risk >= 0.7 or hist.get("risk_trend") == "hausse":
-        points.append("Risque a venir augmente: surveiller constantes et comportement dans les prochaines 30-60 min.")
-    if v.get("spo2", 100) < 94:
-        points.append("SpO2 basse ou limite: verifier tolerance a l'effort, dyspnee et saturation.")
-    if v.get("heart_rate", 0) > 105 or v.get("blood_pressure_sys", 0) > 165:
-        points.append("Constantes cardio en tension: controle rapproche conseille.")
-    if movement.get("last_movement_ago_s", 0) > 1800:
-        points.append("Inactivite prolongee: verifier position, confort, hydratation et etat de vigilance.")
-    if any(a.get("level", 0) >= 3 for a in alerts_today):
-        points.append("Alerte significative aujourd'hui: tracer l'observation et confirmer l'acquittement.")
-    if not points:
-        points.append("Pas de signal fort a venir; maintenir la surveillance habituelle.")
-    return points
-
-
-def _prediction_memory_for_resident(resident_id: str) -> dict:
-    rows = []
-    for raw in redis_client.lrange(f"a2a:prediction_history:{resident_id}", 0, 11):
-        try:
-            rows.append(json.loads(raw))
-        except Exception:
-            pass
-    if len(rows) < 2:
-        return {"trend": "indisponible", "delta_15min": 0.0, "points": rows}
-
-    latest = rows[0]
-    older = rows[min(3, len(rows) - 1)]
-    delta = float(latest.get("risk_60min", 0)) - float(older.get("risk_60min", 0))
-    if delta >= 0.18:
-        trend = "hausse_rapide"
-    elif delta >= 0.07:
-        trend = "hausse"
-    elif delta <= -0.07:
-        trend = "baisse"
-    else:
-        trend = "stable"
-    return {"trend": trend, "delta_15min": round(delta, 3), "points": rows}
-
-
-def _remember_prediction(resident_id: str, result: dict):
-    pred = result.get("prediction", {})
-    row = {
-        "generated_at": result.get("generated_at") or datetime.utcnow().isoformat() + "Z",
-        "risk_30min": pred.get("risk_30min", 0),
-        "risk_60min": pred.get("risk_60min", 0),
-        "recommended_level": pred.get("recommended_level", 0),
-        "recommended_level_name": pred.get("recommended_level_name", "Stable"),
-    }
-    key = f"a2a:prediction_history:{resident_id}"
-    redis_client.lpush(key, json.dumps(row))
-    redis_client.ltrim(key, 0, 287)  # 24h a 5 min
-    redis_client.expire(key, 48 * 3600)
-
-
-WEEKLY_LIFE_PLAN = [
-    {"day": "Lundi", "menu": {"lunch": "Veloute de legumes, poulet roti, puree de carottes, fromage blanc", "dinner": "Potage, omelette aux fines herbes, salade de pommes de terre, compote"}, "activities": {"morning": "Atelier memoire", "afternoon": "Dominos et jeux de societe", "evening": "Lecture calme"}},
-    {"day": "Mardi", "menu": {"lunch": "Salade de lentilles, poisson sauce citron, riz, yaourt", "dinner": "Soupe de saison, gratin de courgettes, fruit cuit"}, "activities": {"morning": "Kine douce", "afternoon": "Atelier dessin", "evening": "Musique douce"}},
-    {"day": "Mercredi", "menu": {"lunch": "Betteraves, boeuf bourguignon, coquillettes, fromage", "dinner": "Veloute, quiche lorraine, salade, dessert lacte"}, "activities": {"morning": "Revue de presse", "afternoon": "Loto", "evening": "Film ancien"}},
-    {"day": "Jeudi", "menu": {"lunch": "Carottes rapees, dinde aux champignons, haricots verts, riz au lait", "dinner": "Soupe, poisson froid mayonnaise legere, pommes vapeur, poire"}, "activities": {"morning": "Gym assise", "afternoon": "Theatre et expression", "evening": "Discussion accompagnee"}},
-    {"day": "Vendredi", "menu": {"lunch": "Terrine de legumes, colin, semoule, fromage blanc aux fruits", "dinner": "Potage, croque monsieur adapte, salade, compote"}, "activities": {"morning": "Atelier cuisine", "afternoon": "Chorale", "evening": "Jeux de cartes"}},
-    {"day": "Samedi", "menu": {"lunch": "Salade composee, roti de veau, gratin dauphinois, tarte aux pommes", "dinner": "Soupe, jambon blanc, puree, yaourt"}, "activities": {"morning": "Promenade jardin", "afternoon": "Rencontre familles", "evening": "Television accompagnee"}},
-    {"day": "Dimanche", "menu": {"lunch": "Menu dominical: entree fraiche, poulet fermier, pommes sautees, patisserie", "dinner": "Potage, assiette froide, fromage, fruit"}, "activities": {"morning": "Temps calme / messe TV", "afternoon": "Gouter musical", "evening": "Retour au calme"}},
-]
-
-
-def _zone_label(zone: str) -> str:
-    if not zone:
-        return "zone non renseignee"
-    if str(zone).startswith("ch"):
-        return "chambre"
-    labels = {
-        "salle_manger": "salle a manger",
-        "salle_commune": "salle commune",
-        "salle_activites": "salle d'activites",
-        "salle_repos": "salle de repos",
-        "couloir_principal": "couloir",
-        "jardin": "jardin therapeutique",
-        "patio": "patio",
-        "kine": "kinesitherapie",
-        "hors_ehpad": "sortie hors etablissement",
-    }
-    return labels.get(zone, str(zone).replace("_", " "))
-
-
-def _routine_label_for_family(routine: str) -> str:
-    labels = {
-        "petit_dejeuner": "petit-dejeuner",
-        "petit_dejeuner_en_chambre": "petit-dejeuner en chambre",
-        "dejeuner": "dejeuner",
-        "dejeuner_en_chambre": "dejeuner en chambre",
-        "diner": "diner",
-        "diner_en_chambre": "diner en chambre",
-        "gouter": "gouter",
-        "trajet_repas": "trajet vers le repas",
-        "nuit": "repos de nuit",
-        "routine": "activite habituelle",
-        "animation_apres_midi": "animation",
-    }
-    return labels.get(routine or "", str(routine or "activite habituelle").replace("_", " "))
-
-
-def _resident_week_life(resident_id: str, state: Optional[dict] = None) -> dict:
-    now = datetime.now()
-    today_index = now.weekday()
-    profile = _effective_resident_profile(resident_id)
-    meal_mode = (state or {}).get("meal_mode") or profile.get("meal_mode") or "salle"
-    care_level = (state or {}).get("care_level") or profile.get("care_level") or ""
-    if meal_mode == "chambre" or care_level == "chambre":
-        meal_note = "Repas servis en chambre selon l'autonomie du jour."
-    elif meal_mode == "accompagne":
-        meal_note = "Repas en salle avec accompagnement soignant."
-    else:
-        meal_note = "Repas en salle a manger."
-
-    recent = []
-    for row in _simulated_history_rows(resident_id, days=30, step_hours=6)[-6:]:
-        recent.append({
-            "time": row.get("time"),
-            "label": _routine_label_for_family(row.get("routine")),
-            "zone": _zone_label(row.get("zone")),
-            "event": row.get("event"),
-        })
-
-    today = WEEKLY_LIFE_PLAN[today_index]
-    current_hour = now.hour
-    done = []
-    if current_hour >= 10:
-        done.append(today["activities"]["morning"])
-    if current_hour >= 15:
-        done.append(today["activities"]["afternoon"])
-    if current_hour >= 19:
-        done.append(today["activities"]["evening"])
-    if not done:
-        done.append("Accueil et installation du matin")
-
-    return {
-        "today": today["day"],
-        "meal_note": meal_note,
-        "today_menu": today["menu"],
-        "today_activities": today["activities"],
-        "activities_done_today": done,
-        "recent_activity": recent,
-        "week": WEEKLY_LIFE_PLAN,
-    }
-
-
-def _a2a_prediction_for_resident(state: dict, hist: dict, active_alert: Optional[dict] = None) -> dict:
-    resident_id = state.get("resident_id")
-    history_rows = _simulated_history_rows(resident_id, days=30, step_hours=6) if resident_id else []
-    memory = _prediction_memory_for_resident(resident_id) if resident_id else {}
-    return run_a2a_pipeline(state, hist, history_rows, active_alert=active_alert, prediction_memory=memory)
-
-
-def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = None, force: bool = False) -> dict:
-    report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:v8:{report_date}:{resident_id}"
-    if not force:
-        cached = redis_client.get(redis_key)
-        if cached:
-            return json.loads(cached)
-
-    state = _safe_state_for_report(resident_id)
-    profile = state.get("profile", {})
-    v = state.get("vitals", {})
-    hist = _history_summary(resident_id)
-    alerts_today = _alerts_for_resident_on_date(resident_id, report_date)
-    active_alert = _active_alert_for_resident(resident_id)
-    risk = float(state.get("ml_risk", 0))
-    level = max([a.get("level", 0) for a in alerts_today] + ([active_alert.get("level", 0)] if active_alert else [0]))
-    location = state.get("location_label") or state.get("current_zone") or state.get("zone") or f"chambre {state.get('room', profile.get('room'))}"
-    forecast = _forecast_points(state, hist, alerts_today)
-    a2a_prediction = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
-    pathologies = profile.get("pathologies", [])
-
-    report = {
-        "date": report_date,
-        "generated_at": datetime.utcnow().isoformat() + "Z",
-        "resident_id": resident_id,
-        "resident_name": profile.get("name", state.get("resident_name", resident_id)),
-        "avatar": profile.get("avatar", state.get("avatar", "")),
-        "room": state.get("room", profile.get("room")),
-        "floor": state.get("floor"),
-        "caregiver": state.get("caregiver", profile.get("caregiver")),
-        "profile": {
-            "age": profile.get("age"),
-            "mobility": profile.get("mobility"),
-            "pathologies": pathologies,
-            "avatar": profile.get("avatar", state.get("avatar", "")),
-            "care_level": state.get("care_level"),
-            "life_profile": state.get("life_profile"),
-        },
-        "current": {
-            "location": location,
-            "activity": state.get("activity"),
-            "routine": state.get("routine_label") or state.get("time_of_day"),
-            "time_label": state.get("time_label"),
-            "timestamp_simulated": state.get("timestamp_simulated"),
-            "simulated_datetime": state.get("simulated_datetime"),
-            "simulated_date": state.get("simulated_date"),
-            "simulated_time": state.get("simulated_time"),
-            "simulated_weekday": state.get("simulated_weekday"),
-            "simulated_day_index": state.get("simulated_day_index"),
-            "simulated_label": state.get("simulated_label"),
-            "vitals": v,
-            "movement": state.get("movement", {}),
-            "sensor_events": state.get("sensor_events", {}),
-        },
-        "life_week": _resident_week_life(resident_id, state),
-        "risk": {
-            "ml_risk": round(risk, 2),
-            "label": _risk_label(risk),
-            "a2a_risk_30min": a2a_prediction["prediction"]["risk_30min"],
-            "a2a_risk_60min": a2a_prediction["prediction"]["risk_60min"],
-            "a2a_label_30min": a2a_prediction["prediction"]["label_30min"],
-            "a2a_label_60min": a2a_prediction["prediction"]["label_60min"],
-            "prediction_trend": a2a_prediction["prediction"].get("prediction_trend"),
-            "risk_delta_15min": a2a_prediction["prediction"].get("risk_delta_15min"),
-            "alert_level": level,
-            "alert_level_name": _alert_level_name(level),
-            "trend_30d": hist.get("risk_trend", "stable"),
-        },
-        "a2a_prediction": a2a_prediction,
-        "history_30d": hist,
-        "alerts_today": alerts_today[-10:],
-        "transmission_summary": (
-            f"{profile.get('name', resident_id)} - chambre {state.get('room', profile.get('room'))}: "
-            f"risque {_risk_label(risk)} ({risk:.0%}), niveau {_alert_level_name(level)}. "
-            f"Position actuelle: {location}. "
-            f"{len(alerts_today)} alerte(s) ce jour, {hist.get('alerts_count', 0)} evenement(s) sur 30 jours."
-        ),
-        "watch_points": list(dict.fromkeys(a2a_prediction["prediction"].get("watch_points", []) + forecast)),
-        "next_actions": [
-            *a2a_prediction["prediction"].get("actions", [])[:2],
-            "Controler les constantes selon le niveau de risque.",
-            "Verifier la concordance capteurs chambre/sol/porte si anomalie.",
-        ],
-        "professional_checks": {
-            "location_precise": bool(location and location != f"chambre {state.get('room', profile.get('room'))}"),
-            "uses_sensor_context": bool(state.get("sensor_events")),
-            "uses_prediction_memory": a2a_prediction["prediction"].get("prediction_trend") is not None,
-            "care_profile": state.get("life_profile", {}).get("archetype_label"),
-        },
-    }
-    redis_client.setex(redis_key, 45 * 86400, json.dumps(report))
-    redis_client.hset(f"daily_reports:{report_date}", resident_id, json.dumps(report))
-    redis_client.expire(f"daily_reports:{report_date}", 45 * 86400)
-    return report
-
-
-def _build_global_daily_report(report_date: Optional[str] = None, force: bool = False) -> dict:
-    report_date = _local_report_date(report_date)
-    redis_key = f"daily_report:v8:{report_date}:global"
-    if not force:
-        cached = redis_client.get(redis_key)
-        if cached:
-            return json.loads(cached)
-
-    resident_reports = [
-        _build_resident_daily_report(rid, report_date=report_date, force=force)
-        for rid in RESIDENTS_MAP.keys()
-    ]
-    resident_reports.sort(key=lambda r: (r["risk"]["alert_level"], r["risk"]["ml_risk"]), reverse=True)
-    by_caregiver: dict[str, list[dict]] = {}
-    for report in resident_reports:
-        by_caregiver.setdefault(report.get("caregiver") or "non_assigne", []).append({
-            "resident_id": report["resident_id"],
-            "resident_name": report["resident_name"],
-            "room": report["room"],
-            "risk": report["risk"],
-            "summary": report["transmission_summary"],
-            "watch_points": report["watch_points"][:2],
-        })
-
-    global_report = {
-        "date": report_date,
-        "generated_at": datetime.utcnow().isoformat() + "Z",
-        "total_residents": len(resident_reports),
-        "risk_counts": {
-            "stable": sum(1 for r in resident_reports if r["risk"]["alert_level"] == 0 and r["risk"]["ml_risk"] < 0.5),
-            "surveillance": sum(1 for r in resident_reports if r["risk"]["alert_level"] in {1, 2} or 0.5 <= r["risk"]["ml_risk"] < 0.7),
-            "urgent": sum(1 for r in resident_reports if r["risk"]["alert_level"] >= 3 or r["risk"]["ml_risk"] >= 0.7),
-        },
-        "priority_residents": resident_reports[:8],
-        "by_caregiver": by_caregiver,
-        "residents": resident_reports,
-        "handover_sheet": [
-            {
-                "resident_id": r["resident_id"],
-                "resident_name": r["resident_name"],
-                "room": r["room"],
-                "caregiver": r.get("caregiver"),
-                "level": r["risk"]["alert_level_name"],
-                "risk": r["risk"]["ml_risk"],
-                "risk_30min": r["risk"].get("a2a_risk_30min"),
-                "risk_60min": r["risk"].get("a2a_risk_60min"),
-                "location": r["current"]["location"],
-                "routine": r["current"].get("routine"),
-                "alerts_today": len(r.get("alerts_today", [])),
-                "history_30d_count": r.get("history_30d", {}).get("alerts_count", 0),
-                "summary": r["transmission_summary"],
-                "watch": " ".join(r["watch_points"][:2]),
-                "actions": " ".join(r["next_actions"][:2]),
-            }
-            for r in resident_reports
-        ],
-    }
-    redis_client.setex(redis_key, 45 * 86400, json.dumps(global_report))
-    return global_report
-
+_simulated_history_rows = daily_reports.simulated_history_rows
+_local_report_date = daily_reports.local_report_date
+_alert_level_name = daily_reports.alert_level_name
+_risk_label = daily_reports.risk_label
+_safe_state_for_report = daily_reports.safe_state_for_report
+_alerts_for_resident_on_date = daily_reports.alerts_for_resident_on_date
+_active_alert_for_resident = daily_reports.active_alert_for_resident
+_history_summary = daily_reports.history_summary
+_prediction_memory_for_resident = daily_reports.prediction_memory_for_resident
+_remember_prediction = daily_reports.remember_prediction
+_zone_label = daily_reports.zone_label
+_routine_label_for_family = daily_reports.routine_label_for_family
+_resident_week_life = daily_reports.resident_week_life
+_forecast_points = daily_reports.forecast_points
+_a2a_prediction_for_resident = daily_reports.a2a_prediction_for_resident
+_build_resident_daily_report = daily_reports.build_resident_daily_report
+_build_global_daily_report = daily_reports.build_global_daily_report
 
 def daily_report_loop():
     global _last_daily_report_date
@@ -1256,7 +751,7 @@ def predictive_analysis_loop():
 # ============================================================
 
 def on_connect(client, userdata, flags, rc):
-    log.info(f"ConnectÃ© au broker MQTT (rc={rc})")
+    log.info(f"Connecté au broker MQTT (rc={rc})")
     client.subscribe("ehpad/residents/+/vitals", qos=1)
     client.subscribe("ehpad/residents/+/movement", qos=1)
     client.subscribe("ehpad/zones/+/ambient", qos=0)
@@ -1299,7 +794,7 @@ def on_message(client, userdata, msg):
 
 
 def _track_routine(state: dict):
-    """Enregistre le comportement horaire du rÃ©sident et dÃ©tecte les dÃ©viations (C4)."""
+    """Enregistre le comportement horaire du résident et détecte les déviations (C4)."""
     rid = state["resident_id"]
     tod = state.get("time_of_day", "unknown")
     v = state["vitals"]
@@ -1309,7 +804,7 @@ def _track_routine(state: dict):
     })
     history_key = f"routine:{rid}:{tod}"
     redis_client.lpush(history_key, entry)
-    redis_client.ltrim(history_key, 0, 99)       # 100 mesures max par pÃ©riode
+    redis_client.ltrim(history_key, 0, 99)       # 100 mesures max par période
     redis_client.expire(history_key, 7 * 86400)  # TTL 7 jours
 
     history = redis_client.lrange(history_key, 1, -1)  # exclure la mesure courante
@@ -1334,7 +829,7 @@ def _handle_vitals(state: dict):
         return
     now = time.time()
 
-    # Enrichir avec profil rÃ©sident
+    # Enrichir avec profil résident
     profile = RESIDENTS_MAP.get(rid, {})
     state["caregiver"] = _resident_caregiver(rid, profile)
     caregiver_info = _staff_status(state["caregiver"])
@@ -1343,7 +838,7 @@ def _handle_vitals(state: dict):
     age = profile.get("age", 80)
     base_risk = profile.get("risk_factor", 0.3)
 
-    # PrÃ©diction ML
+    # Prédiction ML
     ml_prediction = ml_predictor.predict_horizons(
         rid, state["vitals"], state.get("movement", {}), age, base_risk
     )
@@ -1370,13 +865,13 @@ def _handle_vitals(state: dict):
         }))
         redis_client.expire("sensors:health", 3600)
 
-    # Analyse de routine C4 : dÃ©tecter dÃ©viations comportementales
+    # Analyse de routine C4 : détecter déviations comportementales
     routine_analysis = update_and_detect(redis_client, state)
     state["routine_analysis"] = routine_analysis
     if routine_analysis.get("alert_level", 0) >= 2:
         state["routine_deviation"] = " ; ".join(routine_analysis.get("flags", [])[:3])
 
-    # Stocker Ã©tat courant dans Redis
+    # Stocker état courant dans Redis
     redis_client.setex(f"resident:{rid}:state", 30, json.dumps(state))
     redis_client.hset("residents:all", rid, json.dumps({
         "id": rid,
@@ -1422,10 +917,10 @@ def _handle_vitals(state: dict):
         "last_update": datetime.utcnow().isoformat() + "Z",
     }))
 
-    # Ã‰valuer alertes
+    # Évaluer alertes
     alert = alert_engine.evaluate(state)
 
-    # Ã‰crire dans InfluxDB
+    # Écrire dans InfluxDB
     if now - _last_influx_write.get(rid, 0) >= INFLUX_SAMPLE_INTERVAL_S:
         _last_influx_write[rid] = now
         _write_influx(state)
@@ -1538,7 +1033,7 @@ def _handle_ambient(data: dict):
             }))
             redis_client.expire("sensors:health", 3600)
 
-        # DÃ©tection de fugue : rÃ©sident en zone sortie ou hors site
+        # Détection de fugue : résident en zone sortie ou hors site
         if data.get("zone_id") == "hors_ehpad" and data.get("occupancy", 0) > 0:
             _check_elopement(data)
         elif data.get("zone_type") == "entree" and data.get("occupancy", 0) > 0:
@@ -1548,7 +1043,7 @@ def _handle_ambient(data: dict):
 
 
 def _check_elopement(zone_data: dict):
-    """VÃ©rifie si un rÃ©sident dÃ©sorientÃ© (alzheimer) est Ã  l'entrÃ©e hors horaires."""
+    """Vérifie si un résident désorienté (alzheimer) est à l'entrée hors horaires."""
     alert = {
         "type": "elopement_risk",
         "zone": zone_data["zone_name"],
@@ -1589,7 +1084,7 @@ def _write_influx(state: dict):
 
 
 # ============================================================
-# Escalade pÃ©riodique
+# Escalade périodique
 # ============================================================
 
 def escalation_loop():
@@ -1633,7 +1128,7 @@ class PushTestRequest(BaseModel):
 
 @app.get("/api/push/config")
 def push_config():
-    """Retourne la clÃ© publique VAPID et si le push est activÃ©."""
+    """Retourne la clé publique VAPID et si le push est activé."""
     return {"enabled": WEBPUSH_ENABLED, "public_key": VAPID_PUBLIC_KEY}
 
 @app.get("/api/push/status")
@@ -1653,11 +1148,11 @@ def push_subscribe(body: PushSubscribeRequest, authorization: str = Header(None)
     key = _push_subscriptions_key(body.staff_id)
     raw = redis_client.get(key)
     subs: list[dict] = json.loads(raw) if raw else []
-    # Ã‰vite les doublons d'endpoint
+    # Évite les doublons d'endpoint
     subs = [s for s in subs if s.get("endpoint") != body.endpoint]
     subs.append({"endpoint": body.endpoint, "p256dh": body.p256dh, "auth": body.auth})
     redis_client.set(key, json.dumps(subs))
-    redis_client.expire(key, 86400 * 30)  # expire aprÃ¨s 30 jours
+    redis_client.expire(key, 86400 * 30)  # expire après 30 jours
     replayed = _replay_active_push_alerts_for_staff(body.staff_id)
     log.info(f"Push subscribe: staff={body.staff_id} endpoint={body.endpoint[:40]} - replayed={replayed}")
     return {"status": "subscribed", "staff_id": body.staff_id, "subscriptions": len(subs), "replayed_active_alerts": replayed}
@@ -1718,7 +1213,7 @@ def root():
 
 @app.get("/health")
 def health():
-    """Healthcheck pour Docker â€” vÃ©rifie Redis + compte les rÃ©sidents actifs."""
+    """Healthcheck pour Docker - vérifie Redis + compte les résidents actifs."""
     try:
         redis_client.ping()
         resident_count = len(redis_client.hgetall("residents:all"))
@@ -1730,13 +1225,13 @@ def health():
 
 @app.get("/api/residents")
 def get_all_residents():
-    """Liste tous les rÃ©sidents avec leur Ã©tat courant."""
+    """Liste tous les résidents avec leur état courant."""
     data = redis_client.hgetall("residents:all")
     residents = []
     for rid, raw in data.items():
         try:
             r = json.loads(raw)
-            # Ajouter l'alerte active si prÃ©sente
+            # Ajouter l'alerte active si présente
             r["active_alert"] = _active_alert_for_resident(rid)
             residents.append(r)
         except Exception:
@@ -1749,7 +1244,7 @@ def get_resident(resident_id: str, request: Request, authorization: str = Header
     _require_resident_access(resident_id, authorization, request, "resident_live_view", x_break_glass_reason)
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "RÃ©sident non trouvÃ©")
+        raise HTTPException(404, "Résident non trouvé")
     state = json.loads(raw)
     # Historique comportemental
     profile = _effective_resident_profile(resident_id)
@@ -1762,7 +1257,7 @@ def get_resident(resident_id: str, request: Request, authorization: str = Header
 def get_resident_history(resident_id: str, request: Request, minutes: int = 60, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
     _require_resident_access(resident_id, authorization, request, "resident_history_view", x_break_glass_reason)
     minutes = max(1, min(int(minutes or 30), 24 * 60))
-    """Retourne l'historique InfluxDB du rÃ©sident."""
+    """Retourne l'historique InfluxDB du résident."""
     try:
         query_api = influx.query_api()
         query = f'''
@@ -2151,8 +1646,8 @@ def get_alert_config():
 def acknowledge_alert(resident_id: str, by: str = "soignant"):
     ok = alert_engine.acknowledge(resident_id, by)
     if not ok:
-        raise HTTPException(404, "Pas d'alerte active pour ce rÃ©sident")
-    return {"ok": True, "message": f"Alerte acquittÃ©e par {by}"}
+        raise HTTPException(404, "Pas d'alerte active pour ce résident")
+    return {"ok": True, "message": f"Alerte acquittée par {by}"}
 
 
 @app.get("/api/alerts/explain/{resident_id}")
@@ -2854,7 +2349,7 @@ def get_summary():
     raw = redis_client.get("ehpad:summary")
     if raw:
         return json.loads(raw)
-    return {"error": "Pas encore de donnÃ©es"}
+    return {"error": "Pas encore de données"}
 
 
 @app.get("/api/project/readiness")
@@ -3012,7 +2507,7 @@ def get_a2a_predictions():
 
 @app.get("/api/ml/metrics")
 def get_ml_metrics():
-    """MÃ©triques de performance du modÃ¨le ML (accuracy, AUC, F1)."""
+    """Métriques de performance du modèle ML (accuracy, AUC, F1)."""
     if not ml_predictor.metrics:
         return {"status": "model_loaded_from_disk", "metrics": {}}
     return {"status": "ok", "metrics": ml_predictor.metrics}
@@ -3100,7 +2595,7 @@ def famille_logout(authorization: str = _Header(None)):
 
 @app.get("/api/famille/{resident_id}")
 def get_famille_view(resident_id: str, authorization: str = _Header(None)):
-    """Vue famille C3 â€” etat general uniquement, sans donnees medicales."""
+    """Vue famille C3 - etat general uniquement, sans donnees medicales."""
     session = _require_famille_token(authorization)
     if session["resident_id"] != resident_id:
         raise HTTPException(403, "Acces refuse a ce resident")
@@ -3280,8 +2775,8 @@ def _llm_alerts_for_resident(resident_id: str) -> list[dict]:
 @app.get("/api/llm/report/{resident_id}")
 async def get_llm_report(resident_id: str, force: bool = False):
     """
-    Rapport LLM quotidien â€” synchrone, attend le rÃ©sultat.
-    RAG KB clinique (HAS/RCP), sortie JSON structurÃ©e Pydantic, suivi latence.
+    Rapport LLM quotidien - synchrone, attend le résultat.
+    RAG KB clinique (HAS/RCP), sortie JSON structurée Pydantic, suivi latence.
     """
     report_date = _local_report_date()
     if not force:
@@ -3292,7 +2787,7 @@ async def get_llm_report(resident_id: str, force: bool = False):
 
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "RÃ©sident non trouvÃ©")
+        raise HTTPException(404, "Résident non trouvé")
     state = json.loads(raw)
     profile = RESIDENTS_MAP.get(resident_id, {})
     alerts_today = _llm_alerts_for_resident(resident_id)
@@ -3321,12 +2816,12 @@ async def get_llm_report(resident_id: str, force: bool = False):
 @app.post("/api/llm/report/{resident_id}/start")
 async def start_llm_report(resident_id: str):
     """
-    Lance la gÃ©nÃ©ration LLM en arriÃ¨re-plan, retourne un job_id immÃ©diatement.
-    Utiliser GET /api/llm/result/{job_id} pour rÃ©cupÃ©rer le rÃ©sultat.
+    Lance la génération LLM en arrière-plan, retourne un job_id immédiatement.
+    Utiliser GET /api/llm/result/{job_id} pour récupérer le résultat.
     """
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "RÃ©sident non trouvÃ©")
+        raise HTTPException(404, "Résident non trouvé")
     state = json.loads(raw)
     profile = RESIDENTS_MAP.get(resident_id, {})
     alerts_today = _llm_alerts_for_resident(resident_id)
@@ -3414,13 +2909,13 @@ def daily_llm_report_loop():
 
 @app.get("/api/llm/result/{job_id}")
 async def get_llm_result(job_id: str):
-    """RÃ©sultat d'un job LLM lancÃ© via /start â€” retourne pending ou done."""
+    """Résultat d'un job LLM lancé via /start - retourne pending ou done."""
     return get_report_result(redis_client, job_id)
 
 
 @app.get("/api/llm/audit")
 async def get_llm_audit():
-    """Historique des 200 derniers appels LLM : latence, modÃ¨le, niveau risque."""
+    """Historique des 200 derniers appels LLM : latence, modèle, niveau risque."""
     raw_entries = redis_client.lrange("llm:audit", 0, 199)
     entries = [json.loads(e) for e in raw_entries]
     avg_ms = int(sum(e.get("duration_ms", 0) for e in entries) / len(entries)) if entries else 0
@@ -3435,7 +2930,7 @@ async def get_llm_audit():
 async def websocket_endpoint(websocket: WebSocket):
     await ws_manager.connect(websocket)
     try:
-        # Envoyer l'Ã©tat initial
+        # Envoyer l'état initial
         residents_raw = redis_client.hgetall("residents:all")
         residents = [json.loads(v) for v in residents_raw.values()]
         await websocket.send_json({
@@ -3480,7 +2975,7 @@ async def startup():
     except Exception as e:
         log.warning(f"Seed comptes personnel echoue : {e}")
 
-    # Connexion MQTT en thread sÃ©parÃ©
+    # Connexion MQTT en thread séparé
     def mqtt_thread():
         client = mqtt.Client(client_id=f"ehpad_backend_{os.getpid()}")
         client.on_connect = on_connect
@@ -3504,5 +2999,4 @@ async def startup():
     threading.Thread(target=predictive_analysis_loop, daemon=True).start()
     threading.Thread(target=daily_llm_report_loop, daemon=True).start()
 
-    log.info("Backend EHPAD dÃ©marrÃ© âœ“")
-
+    log.info("Backend EHPAD démarré OK")

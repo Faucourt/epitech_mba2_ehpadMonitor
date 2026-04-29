@@ -1,6 +1,6 @@
-﻿"""
-Simulateur EHPAD â€” GÃ©nÃ¨re les donnÃ©es de 25 rÃ©sidents et capteurs ambiants.
-Publie sur MQTT : vitaux, accÃ©lÃ©romÃ¨tre, capteurs ambiants (mouvement/portes).
+"""
+Simulateur EHPAD - Génère les données de 25 résidents et capteurs ambiants.
+Publie sur MQTT : vitaux, accéléromètre, capteurs ambiants (mouvement/portes).
 """
 
 import json
@@ -118,12 +118,12 @@ def _load_residents():
 
 
 class ResidentSimulator:
-    """Simule un rÃ©sident avec ses constantes vitales et comportements."""
+    """Simule un résident avec ses constantes vitales et comportements."""
 
     def __init__(self, profile):
         self.p = profile
         self.id = profile["id"]
-        # Ã‰tat interne
+        # État interne
         self.malaise_scenario = None   # None | dict en cours
         self.scenario_step = 0
         self.last_movement_time = time.time()
@@ -146,7 +146,7 @@ class ResidentSimulator:
         self.life_profile = RESIDENT_ARCHETYPES.get(self.life_archetype, RESIDENT_ARCHETYPES["autonome"])
         self.last_routine_period = None
         self.last_meal_risk_tick = -9999
-        # ParamÃ¨tres courants (dÃ©rivent progressivement)
+        # Paramètres courants (dérivent progressivement)
         self.hr = profile["base_hr"]
         self.spo2 = profile["base_spo2"]
         self.bp_sys = profile["base_bp_sys"]
@@ -326,24 +326,24 @@ class ResidentSimulator:
         }
 
     def _maybe_trigger_scenario(self):
-        """DÃ©clenche alÃ©atoirement un scÃ©nario de malaise selon le facteur de risque."""
+        """Déclenche aléatoirement un scénario de malaise selon le facteur de risque."""
         if self.malaise_scenario:
             return
         risk = self.p["risk_factor"]
-        # ProbabilitÃ© par tick (~1/seconde) : risque Ã©levÃ© = scÃ©nario plus frÃ©quent
+        # Probabilité par tick (~1/seconde) : risque élevé = scénario plus fréquent
         if random.random() < risk * 0.00005:
             scenarios = ["hypoxie", "tachycardie", "chute", "hypotension", "fievre"]
             chosen = random.choice(scenarios)
-            # BPCO â†’ hypoxie plus probable
+            # BPCO -> hypoxie plus probable
             if "bpco" in self.p["pathologies"]:
                 chosen = random.choice(["hypoxie", "hypoxie", "tachycardie"])
             if "insuffisance_cardiaque" in self.p["pathologies"]:
                 chosen = random.choice(["tachycardie", "hypotension", "hypoxie"])
             self.start_scenario(chosen)
-            log.warning(f"[{self.id}] ScÃ©nario dÃ©clenchÃ©: {chosen}")
+            log.warning(f"[{self.id}] Scénario déclenché: {chosen}")
 
     def _apply_scenario(self):
-        """DÃ©grade progressivement les constantes selon le scÃ©nario actif."""
+        """Dégrade progressivement les constantes selon le scénario actif."""
         if not self.malaise_scenario:
             return
         s = self.malaise_scenario
@@ -373,9 +373,9 @@ class ResidentSimulator:
             self.temp = min(39.2, self.p["base_temp"] + progress * 2.0)
             self.hr = min(118, self.p["base_hr"] + progress * 22)
 
-        # Fin du scÃ©nario : rÃ©cupÃ©ration progressive
+        # Fin du scénario : récupération progressive
         if progress >= 1.0:
-            log.info(f"[{self.id}] ScÃ©nario {s['type']} terminÃ©")
+            log.info(f"[{self.id}] Scénario {s['type']} terminé")
             self.malaise_scenario = None
 
     def _circadian_offsets(self):
@@ -666,7 +666,7 @@ class ResidentSimulator:
         self.movement_scenario = None
 
     def _compute_movement(self):
-        """Simule les mouvements selon l'heure et l'Ã©tat."""
+        """Simule les mouvements selon l'heure et l'état."""
         tod = self._time_of_day_factor()
         mobility_factor = {"bonne": 1.0, "moyenne": 0.6, "faible": 0.3, "tres_faible": 0.1}
         mob = mobility_factor.get(self.p["mobility"], 0.5)
@@ -689,7 +689,7 @@ class ResidentSimulator:
                 self.gyro_magnitude = max(0, self.gyro_magnitude * 0.8 + np.random.normal(0, 0.5))
 
     def tick(self):
-        """Calcule l'Ã©tat pour ce tick."""
+        """Calcule l'état pour ce tick."""
         self._tick += 1
         self._maybe_trigger_scenario()
 
@@ -701,7 +701,7 @@ class ResidentSimulator:
         self._update_navigation()
         self._compute_movement()
 
-        # DÃ©tection de chute : pic d'accÃ©lÃ©ration brutal
+        # Détection de chute : pic d'accélération brutal
         is_fall = self.accel_magnitude > 7.0
         room_sensors = self.p.get("room_sensors", [])
         is_in_room = self.current_zone == self.home_zone
@@ -807,7 +807,7 @@ class ResidentSimulator:
 
 
 class AmbientSensorSimulator:
-    """Simule les capteurs ambiants : mouvement zones, portes, activitÃ©."""
+    """Simule les capteurs ambiants : mouvement zones, portes, activité."""
 
     def __init__(self, zones):
         self.zones = zones
@@ -892,7 +892,7 @@ class EHPADSimulator:
 
     def _on_connect(self, client, userdata, flags, rc):
         if rc == 0:
-            log.info(f"ConnectÃ© au broker MQTT {MQTT_HOST}:{MQTT_PORT}")
+            log.info(f"Connecté au broker MQTT {MQTT_HOST}:{MQTT_PORT}")
             client.subscribe("ehpad/control/speed", qos=1)
             client.subscribe("ehpad/control/scenario", qos=1)
             client.subscribe("ehpad/control/profile", qos=1)
@@ -900,7 +900,7 @@ class EHPADSimulator:
             log.error(f"Erreur connexion MQTT: {rc}")
 
     def _on_disconnect(self, client, userdata, rc):
-        log.warning(f"DÃ©connexion MQTT (rc={rc}), reconnexion...")
+        log.warning(f"Déconnexion MQTT (rc={rc}), reconnexion...")
 
     def _on_message(self, client, userdata, msg):
         try:
@@ -1052,7 +1052,7 @@ class EHPADSimulator:
                 self._publish(f"ehpad/{z['zone_id']}/door/ambient", z, qos=1)
 
     def _publish_summary(self, all_states):
-        """Topic agrÃ©gÃ© pour le dashboard."""
+        """Topic agrégé pour le dashboard."""
         ref = all_states[0] if all_states else {}
         real_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         summary = {
@@ -1122,13 +1122,13 @@ class EHPADSimulator:
             return
 
         self.running = True
-        log.info(f"Simulateur dÃ©marrÃ© avec {len(self.residents)} rÃ©sidents, vitesse x{self.speed_multiplier:g}")
+        log.info(f"Simulateur démarré avec {len(self.residents)} résidents, vitesse x{self.speed_multiplier:g}")
         tick_count = 0
 
         while self.running:
             start = time.time()
 
-            # Tick tous les rÃ©sidents
+            # Tick tous les résidents
             all_states = []
             for r in self.residents:
                 state = r.tick()
@@ -1140,7 +1140,7 @@ class EHPADSimulator:
                 zone_data = self.ambient.tick(all_states)
                 self._publish_ambient(zone_data)
 
-            # RÃ©sumÃ© global (toutes les secondes)
+            # Résumé global (toutes les secondes)
             self._publish_summary(all_states)
 
             tick_count += 1
