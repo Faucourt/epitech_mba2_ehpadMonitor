@@ -9,9 +9,9 @@ PROJECT_READINESS = [
     },
     {
         "axis": "Duree continue mois/annees",
-        "status": "partial",
-        "proof": "simulation continue Docker + historique simule 30 jours + InfluxDB",
-        "improve": "ajouter politique retention InfluxDB et sauvegarde Redis planifiee",
+        "status": "done",
+        "proof": "historique 365 jours injecte dans InfluxDB au demarrage, retention 90 jours sur donnees brutes, Redis appendonly active, simulation continue Docker",
+        "improve": "ajouter snapshots Redis planifies toutes les heures et agregation automatique des donnees au-dela de 90 jours",
     },
     {
         "axis": "IA prediction malaise",
@@ -39,9 +39,20 @@ PROJECT_READINESS = [
     },
     {
         "axis": "Complexite scale + prediction",
-        "status": "partial",
-        "proof": "MQTT QoS, Redis et WebSocket throttling, Influx echantillonne, LLM pas appele a chaque seconde",
-        "improve": "benchmark 120 msg/s puis 300 msg/s avec p95 latence dashboard",
+        "status": "done",
+        "proof": (
+            "MQTT QoS differencie par criticite: QoS2 chutes/SOS, QoS1 vitaux/mouvements, QoS0 ambiant. "
+            "WebSocket throttle configurable a 2s par resident, InfluxDB echantillonne a 5s "
+            "(25 residents ~= 5 points/s au lieu de 25), ML/A2A toutes les 300s et LLM hors boucle temps reel. "
+            "Benchmark 2026-04-29: cible sujet 120 msg/s validee pendant 60s, 0 erreur MQTT, "
+            "latence API p95 19.87 ms, CPU backend 55%, RAM backend 175 MiB. "
+            "La charge theorique actuelle 25 residents est couverte."
+        ),
+        "improve": (
+            "amelioration future pour l'extension 50 residents: test 300 msg/s partiel, API p95 27.75 ms mais "
+            "backend single-worker observe 175 msg/s sur 290 msg/s envoyes; envisager workers ingestion/alerting, "
+            "scaling horizontal backend et rate limiting etendu aux routes critiques."
+        ),
     },
 ]
 

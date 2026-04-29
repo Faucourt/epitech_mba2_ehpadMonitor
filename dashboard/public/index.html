@@ -237,6 +237,11 @@
   .report-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); gap: 12px; align-items: start; }
   .report-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 0; }
   .report-panel h3 { font-size: 14px; margin-bottom: 8px; }
+  .medical-report-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-top: 12px; }
+  .medical-report-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+  .medical-section { background: rgba(15,23,42,.35); border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-top: 8px; font-size: 12px; line-height: 1.45; }
+  .medical-section h4 { margin: 0 0 5px; font-size: 12px; color: var(--text); text-transform: uppercase; letter-spacing: .03em; }
+  .medical-section p { margin: 0 0 6px; color: var(--text2); }
   .report-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
   .report-kpi { background: var(--bg3); border-radius: 6px; padding: 8px; }
   .report-kpi strong { display: block; font-size: 20px; }
@@ -525,7 +530,7 @@
         <select id="report-resident-select" onchange="loadResidentDpi(this.value)"></select>
         <button class="filter-btn" onclick="loadDailyReport()">Charger fiche</button>
         <button class="filter-btn" onclick="generateDailyReport()">Regénérer aujourd'hui</button>
-        <button class="filter-btn" onclick="print()">Imprimer transmission</button>
+        <button class="filter-btn" onclick="printSelectedMedicalReport()">Imprimer rapport médical</button>
         <span style="font-size:12px;color:var(--text2)">Fiche globale soignants + mini DPI résident.</span>
       </div>
       <div class="report-layout">
@@ -1518,9 +1523,9 @@ async function loadResidentDpi(rid) {
   if (!residentId || !panel) return;
   panel.innerHTML = '<div class="no-alerts">Chargement du mini DPI...</div>';
   try {
-    const res = await fetch(`${BACKEND_HTTP}/api/reports/daily/${date}/${residentId}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const report = await res.json();
+    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${date}`, residentId);
+    const report = data.mini_dpi || {};
+    report.medical_document = data.medical_document || report.medical_document || null;
     renderResidentDpi(report);
   } catch (err) {
     panel.innerHTML = `<div class="no-alerts">Mini DPI indisponible: ${err.message}</div>`;
@@ -1549,6 +1554,34 @@ async function loadReadiness(showLoading = true) {
     panel.innerHTML = `<div class="no-alerts">Validation indisponible: ${err.message}</div>`;
   }
 }
+
+const SCALABILITY_BENCHMARK = {
+  date: '2026-04-29',
+  target120: {
+    label: 'Cible ecole 120 msg/s',
+    status: 'validé',
+    sent: 7198,
+    errors: 0,
+    observedMps: 198.41,
+    p95Ms: 19.87,
+    p99Ms: 31.80,
+    backendCpuPct: 55.29,
+    backendRam: '174.9 MiB',
+    summary: 'Cible cahier des charges validée: 0 erreur MQTT et API très réactive.'
+  },
+  target300: {
+    label: 'Projection 50 résidents 300 msg/s',
+    status: 'partiel',
+    sent: 17997,
+    errors: 0,
+    observedMps: 175.29,
+    p95Ms: 27.75,
+    p99Ms: 36.69,
+    backendCpuPct: 85.28,
+    backendRam: '182.6 MiB',
+    summary: 'API stable, mais backend single-worker insuffisant pour garantir 300 msg/s.'
+  }
+};
 
 async function loadStaff(showLoading = true) {
   const panel = document.getElementById('staff-panel');
@@ -1764,6 +1797,34 @@ function renderReadiness(data, life, pred, sensors = {}, scale = {}) {
       </section>
       <aside class="report-panel">
         <h3>Scalabilité</h3>
+        <div style="border:1px solid rgba(16,185,129,0.35);background:rgba(16,185,129,0.08);border-radius:8px;padding:10px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px">
+            <b>Benchmark charge ${SCALABILITY_BENCHMARK.date}</b>
+            <span class="validation-status done">120 msg/s validé</span>
+          </div>
+          <div class="dpi-grid">
+            <div class="dpi-row"><span>${SCALABILITY_BENCHMARK.target120.label}</span><b style="color:var(--green)">${SCALABILITY_BENCHMARK.target120.status}</b></div>
+            <div class="dpi-row"><span>Envoyés / erreurs</span><b>${SCALABILITY_BENCHMARK.target120.sent} · ${SCALABILITY_BENCHMARK.target120.errors}</b></div>
+            <div class="dpi-row"><span>Débit backend observé</span><b>${SCALABILITY_BENCHMARK.target120.observedMps} msg/s</b></div>
+            <div class="dpi-row"><span>Latence API p95 / p99</span><b>${SCALABILITY_BENCHMARK.target120.p95Ms} / ${SCALABILITY_BENCHMARK.target120.p99Ms} ms</b></div>
+            <div class="dpi-row"><span>CPU / RAM backend</span><b>${SCALABILITY_BENCHMARK.target120.backendCpuPct}% · ${SCALABILITY_BENCHMARK.target120.backendRam}</b></div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.45;margin-top:6px">${SCALABILITY_BENCHMARK.target120.summary}</div>
+        </div>
+        <div style="border:1px solid rgba(245,158,11,0.35);background:rgba(245,158,11,0.08);border-radius:8px;padding:10px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px">
+            <b>Stress test extension</b>
+            <span class="validation-status partial">300 msg/s partiel</span>
+          </div>
+          <div class="dpi-grid">
+            <div class="dpi-row"><span>${SCALABILITY_BENCHMARK.target300.label}</span><b style="color:var(--yellow)">${SCALABILITY_BENCHMARK.target300.status}</b></div>
+            <div class="dpi-row"><span>Envoyés / erreurs</span><b>${SCALABILITY_BENCHMARK.target300.sent} · ${SCALABILITY_BENCHMARK.target300.errors}</b></div>
+            <div class="dpi-row"><span>Débit backend observé</span><b>${SCALABILITY_BENCHMARK.target300.observedMps} msg/s</b></div>
+            <div class="dpi-row"><span>Latence API p95 / p99</span><b>${SCALABILITY_BENCHMARK.target300.p95Ms} / ${SCALABILITY_BENCHMARK.target300.p99Ms} ms</b></div>
+            <div class="dpi-row"><span>CPU / RAM backend</span><b>${SCALABILITY_BENCHMARK.target300.backendCpuPct}% · ${SCALABILITY_BENCHMARK.target300.backendRam}</b></div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.45;margin-top:6px">${SCALABILITY_BENCHMARK.target300.summary}</div>
+        </div>
         <div class="dpi-grid">
           <div class="dpi-row"><span>Résidents actifs</span><b>${scale.resident_count ?? '—'}</b></div>
           <div class="dpi-row"><span>MQTT total</span><b>${mqtt.messages_total ?? '—'}</b></div>
@@ -1851,6 +1912,207 @@ function selectReportResident(rid) {
   loadResidentDpi(rid);
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function asList(value) {
+  if (Array.isArray(value)) return value.filter(v => v !== undefined && v !== null && String(v).trim() !== '');
+  if (value === undefined || value === null || value === '') return [];
+  return [value];
+}
+
+function renderReportList(items) {
+  const list = asList(items);
+  if (!list.length) return '<div style="color:var(--text3);font-size:12px">Non renseigné</div>';
+  return `<ul style="margin:6px 0 0;padding-left:18px">${list.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
+}
+
+function renderMedicalNarrativeSection(title, section, keys = []) {
+  if (!section) return '';
+  const text = typeof section === 'string' ? section : section.texte;
+  const extras = keys
+    .filter(([key]) => asList(section[key]).length)
+    .map(([key, label]) => `<div style="margin-top:7px"><b>${label}</b>${renderReportList(section[key])}</div>`)
+    .join('');
+  return `
+    <section class="medical-section">
+      <h4>${escapeHtml(title)}</h4>
+      ${text ? `<p>${escapeHtml(text)}</p>` : ''}
+      ${extras}
+    </section>`;
+}
+
+function renderStoredDocumentSections(doc) {
+  const sections = doc?.sections || [];
+  if (!sections.length) return '';
+  return sections.map(section => `
+    <section class="medical-section">
+      <h4>${escapeHtml(section.title || section.id || 'Section')}</h4>
+      ${asList(section.entries).map(entry => {
+        if (typeof entry === 'object') {
+          const label = entry.label || entry.title || entry.hypothese || entry.action || entry.parametre || entry.signal || entry.id || entry.type || '';
+          const details = [
+            entry.entry,
+            entry.summary,
+            entry.interpretation,
+            entry.patient_context && entry.patient_context !== entry.id ? entry.patient_context : '',
+            entry.responsable,
+            entry.seuil,
+            asList(entry.watch).slice(0, 3).join(' · '),
+            asList(entry.conduct).slice(0, 3).join(' · '),
+          ].filter(Boolean).join(' — ');
+          return `<p><b>${escapeHtml(label || 'Élément')}</b>${details ? ` — ${escapeHtml(details)}` : ''}</p>`;
+        }
+        return `<p>${escapeHtml(entry)}</p>`;
+      }).join('')}
+    </section>
+  `).join('');
+}
+
+function renderMedicalReportCard(doc) {
+  const report = doc?.rapport_medical || doc?.report?.rapport_medical || doc?.report || {};
+  const hasNarrative = report && (report.compte_rendu_medical || report.solutions_kb_adaptees || report.contexte_appel);
+  if (!hasNarrative && doc?.sections?.length) {
+    return `
+      <div class="medical-report-card" id="medical-report-card">
+        <div class="medical-report-head">
+          <div>
+            <div class="section-sub">Rapport médical structuré</div>
+            <h3>${escapeHtml(doc.title || 'Rapport clinique structuré')}</h3>
+            <div style="font-size:12px;color:var(--text2)">${escapeHtml(doc.document_id || '')} · ${escapeHtml(doc.date || '')} · ${escapeHtml(doc.model || doc.metadata?.model || '')}</div>
+          </div>
+          <button class="filter-btn" onclick="printMedicalReportFromCurrent()">Imprimer</button>
+        </div>
+        ${renderStoredDocumentSections(doc)}
+        <div style="font-size:11px;color:var(--text2);margin-top:8px">Aide à la décision, non diagnostic médical autonome.</div>
+      </div>`;
+  }
+  if (!report) return '';
+  const narrative = report.compte_rendu_medical || {};
+  const ctx = report.contexte_appel || {};
+  const ident = report.identite || {};
+  const obs = report.observation_initiale?.constantes || {};
+  const solutions = report.solutions_kb_adaptees || {};
+  return `
+    <div class="medical-report-card" id="medical-report-card">
+      <div class="medical-report-head">
+        <div>
+          <div class="section-sub">Rapport médical structuré</div>
+          <h3>${escapeHtml(narrative.titre || report.titre || 'Compte rendu médical IA')}</h3>
+          <div style="font-size:12px;color:var(--text2)">
+            ${escapeHtml(ident.nom || '')} · Ch. ${escapeHtml(ident.chambre || '—')} · ${escapeHtml(ident.age || '—')} ans · ${escapeHtml(doc?.date || '')}
+          </div>
+        </div>
+        <button class="filter-btn" onclick="printMedicalReportFromCurrent()">Imprimer</button>
+      </div>
+      <div class="report-kpis" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:8px 0">
+        <div class="report-kpi"><strong>${escapeHtml(ctx.niveau_risque || '—')}</strong><span>Niveau final</span></div>
+        <div class="report-kpi"><strong style="font-size:14px">${escapeHtml(ctx.probleme_dominant || '—')}</strong><span>Problème dominant</span></div>
+        <div class="report-kpi"><strong style="font-size:14px">${escapeHtml(obs.pa_mmhg || '—')}</strong><span>PA</span></div>
+      </div>
+      <div class="dpi-grid">
+        <div class="dpi-row"><span>FC</span><b>${escapeHtml(obs.fc_bpm ?? '—')} bpm</b></div>
+        <div class="dpi-row"><span>SpO2</span><b>${escapeHtml(obs.spo2_pct ?? '—')}%</b></div>
+        <div class="dpi-row"><span>FR</span><b>${escapeHtml(obs.fr_min ?? '—')}/min</b></div>
+        <div class="dpi-row"><span>Température</span><b>${escapeHtml(obs.temperature_c ?? '—')}°C</b></div>
+      </div>
+      ${renderMedicalNarrativeSection('1. Diagnostic initial', narrative.diagnostic_initial, [
+        ['arguments_cliniques', 'Arguments cliniques'],
+        ['elements_a_verifier', 'Éléments à vérifier'],
+        ['examens_ou_controles_utiles', 'Contrôles utiles'],
+      ])}
+      ${renderMedicalNarrativeSection('2. Traitements et interventions', narrative.traitements_et_interventions, [
+        ['interventions_immediates', 'Interventions immédiates'],
+        ['signes_a_rechercher', 'Signes à rechercher'],
+        ['traitements_protocoles', 'Traitements / protocoles'],
+      ])}
+      ${renderMedicalNarrativeSection('3. Suivi et évolution', narrative.suivi_et_evolution, [
+        ['surveillance', 'Surveillance'],
+        ['criteres_aggravation', 'Critères d’aggravation'],
+        ['transmissions', 'Transmissions à tracer'],
+      ])}
+      ${renderMedicalNarrativeSection('4. Conclusion et recommandations', narrative.conclusion_et_recommandations, [
+        ['appel_ide_medecin', 'Appel IDE / médecin'],
+        ['appel_15_112', 'Appel 15 / 112'],
+        ['limites', 'Limites'],
+      ])}
+      <section class="medical-section">
+        <h4>Conduite à tenir KB adaptée</h4>
+        <p>${escapeHtml(solutions.objectif || '')}</p>
+        <div><b>Actions immédiates</b>${renderReportList(solutions.a_faire_immediatement)}</div>
+        <div style="margin-top:7px"><b>Appel 15 / 112</b>${renderReportList(solutions.appel_15_112)}</div>
+      </section>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px">
+        Sources KB : ${escapeHtml((report.sources_kb || []).join(', ') || '—')} · aide à la décision, non diagnostic médical autonome.
+      </div>
+    </div>`;
+}
+
+function medicalReportPrintHtml(cardHtml) {
+  return `<!doctype html>
+  <html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Rapport médical structuré</title>
+    <style>
+      @page { size: A4; margin: 16mm; }
+      * { box-sizing: border-box; }
+      body { font-family: Arial, Helvetica, sans-serif; color: #111827; background: #fff; line-height: 1.45; }
+      .medical-report-card { border: 0; padding: 0; }
+      .medical-report-head { display: flex; justify-content: space-between; gap: 16px; border-bottom: 2px solid #111827; padding-bottom: 10px; margin-bottom: 12px; }
+      h3 { margin: 2px 0 4px; font-size: 22px; }
+      h4 { margin: 0 0 6px; font-size: 15px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 4px; }
+      p { margin: 4px 0 8px; }
+      ul { margin-top: 5px; }
+      li { margin-bottom: 3px; }
+      button { display: none !important; }
+      .section-sub { color: #374151; font-size: 12px; text-transform: uppercase; font-weight: 700; letter-spacing: .04em; }
+      .report-kpis, .dpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+      .report-kpi, .dpi-row { border: 1px solid #d1d5db; border-radius: 4px; padding: 7px; background: #f9fafb; }
+      .report-kpi strong, .dpi-row b { display: block; font-size: 14px; color: #111827 !important; }
+      .report-kpi span, .dpi-row span { display: block; color: #4b5563; font-size: 11px; }
+      .medical-section { break-inside: avoid; border: 1px solid #d1d5db; border-radius: 4px; padding: 10px; margin: 10px 0; background: #fff; }
+    </style>
+  </head>
+  <body>${cardHtml}</body>
+  </html>`;
+}
+
+function printHtmlDocument(html) {
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('Popup bloquée: autorise l’ouverture pour imprimer le rapport.');
+    return;
+  }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 350);
+}
+
+function printMedicalReportFromCurrent() {
+  const card = document.getElementById('medical-report-card');
+  if (!card) {
+    alert('Rapport médical structuré non chargé.');
+    return;
+  }
+  printHtmlDocument(medicalReportPrintHtml(card.outerHTML));
+}
+
+async function printSelectedMedicalReport() {
+  const rid = document.getElementById('report-resident-select')?.value || currentDetailResident;
+  if (!rid) return;
+  await loadResidentDpi(rid);
+  printMedicalReportFromCurrent();
+}
+
 function renderResidentDpi(report) {
   const panel = document.getElementById('resident-dpi');
   if (!panel || !report) return;
@@ -1913,14 +2175,7 @@ function renderResidentDpi(report) {
     <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Aucun point spécifique.</div>'}</div>
     <div class="section-sub">Actions soignantes</div>
     <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Surveillance standard.</div>'}</div>
-    ${medicalDoc.document_id ? `
-      <div class="section-sub">Document clinique stocké</div>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;line-height:1.45">
-        <b>${medicalDoc.title || 'Rapport clinique structuré'}</b><br>
-        <span style="color:var(--text2)">${medicalDoc.document_id} · ${medicalDoc.date || '—'} · ${medicalDoc.status || 'préliminaire'}</span>
-        ${medicalDoc.summary ? `<div style="margin-top:5px">${medicalDoc.summary}</div>` : ''}
-        <button class="filter-btn" style="margin-top:7px" onclick="openDetail('${report.resident_id}')">Consulter dans le Mini DPI</button>
-      </div>` : ''}
+    ${medicalDoc ? renderMedicalReportCard(medicalDoc) : ''}
     <div class="section-sub" style="display:flex;align-items:center;justify-content:space-between;">
       <span>Rapport LLM (Meditron · RAG KB)</span>
       <button class="filter-btn" onclick="loadLlmReport('${report.resident_id}')" id="llm-btn-${report.resident_id}">Générer</button>

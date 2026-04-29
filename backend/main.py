@@ -608,7 +608,6 @@ def predictive_analysis_loop():
                 active_alert = _active_alert_for_resident(resident_id)
                 result = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
                 _remember_prediction(resident_id, result)
-                result = _a2a_prediction_for_resident(state, hist, active_alert=active_alert)
                 redis_client.setex(f"a2a:prediction:{resident_id}", 600, json.dumps(result))
                 pred = result["prediction"]
                 predictions.append({
@@ -2309,11 +2308,12 @@ def get_resident_dpi(
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
     report_date = _local_report_date(date)
-    medical_document = _get_medical_report_document(resident_id, report_date)
+    mini_dpi = _build_resident_daily_report(resident_id, report_date=report_date, force=True)
+    medical_document = _ensure_medical_report_document(resident_id, report_date, mini_dpi)
     return {
         "resident_id": resident_id,
         "date": report_date,
-        "mini_dpi": _build_resident_daily_report(resident_id, report_date=report_date, force=True),
+        "mini_dpi": mini_dpi,
         "medical_document": medical_document,
     }
 
@@ -2660,7 +2660,7 @@ def kb_epidor_mapping():
     }
 
 
-from llm_service import run_report_sync, start_report_job, get_report_result
+from llm_service import run_report_sync, start_report_job, get_report_result, _structured_fallback_report
 from llm_service import _profile_antecedent_kb_links
 
 
@@ -2849,6 +2849,7 @@ def _build_structured_medical_report_document(llm_result: dict, mini_dpi: dict) 
             "date": generated_at,
             "section": [{"title": section["title"], "code": {"text": section["id"]}} for section in sections],
         },
+        "rapport_medical": report.get("rapport_medical", {}),
         "sections": sections,
     }
 
@@ -2870,6 +2871,53 @@ def _get_medical_report_document(resident_id: str, report_date: Optional[str] = 
     key = _medical_report_key(_local_report_date(report_date), resident_id) if report_date else _medical_report_latest_key(resident_id)
     raw = redis_client.get(key)
     return json.loads(raw) if raw else None
+
+
+def _ensure_medical_report_document(resident_id: str, report_date: str, mini_dpi: dict) -> dict:
+    """Retourne un document medical complet, meme avant generation LLM explicite."""
+    document = _get_medical_report_document(resident_id, report_date)
+    if document and document.get("rapport_medical"):
+        return document
+
+    profile = _profile_with_patient_file(resident_id, RESIDENTS_MAP.get(resident_id, {}))
+    current = mini_dpi.get("current", {}) or {}
+    routine_analysis = current.get("routine_analysis")
+    if not isinstance(routine_analysis, dict):
+        routine_analysis = {}
+    state = {
+        "resident_id": resident_id,
+        "name": mini_dpi.get("resident_name") or profile.get("name") or resident_id,
+        "room": mini_dpi.get("room") or profile.get("room"),
+        "vitals": current.get("vitals", {}) or {},
+        "movement": current.get("movement", {}) or {},
+        "location": current.get("location"),
+        "location_label": current.get("location"),
+        "activity": current.get("activity"),
+        "routine_analysis": routine_analysis,
+        "ml_risk": (mini_dpi.get("risk", {}) or {}).get("ml_risk", 0),
+        "prediction_30_60min": (mini_dpi.get("a2a_prediction", {}) or {}).get("prediction", {}),
+    }
+    fallback = _structured_fallback_report(
+        resident_name=profile.get("name", resident_id),
+        profile=profile,
+        state=state,
+        alerts_today=mini_dpi.get("alerts_today", []) or [],
+        clinical_history=mini_dpi,
+        source_note="rapport structure automatique avant generation LLM",
+    )
+    llm_result = {
+        "resident_id": resident_id,
+        "resident_name": profile.get("name", resident_id),
+        "date": report_date,
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "patient_profile": profile,
+        "model": "rules+KB+ML:auto",
+        "duration_ms": 0,
+        "ml_risk": state.get("ml_risk", 0),
+        "alerts_count_today": len(mini_dpi.get("alerts_today", []) or []),
+        "report": fallback.model_dump(),
+    }
+    return _store_medical_report_document(llm_result, mini_dpi)
 
 
 def _llm_alerts_for_resident(resident_id: str) -> list[dict]:

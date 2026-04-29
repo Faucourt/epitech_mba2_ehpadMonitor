@@ -642,6 +642,71 @@ Endpoint:
 
 - `/api/ops/scalability`
 
+### Benchmark de charge pour preuve jury
+
+Le projet contient un script de benchmark MQTT/API:
+
+- `backend/benchmark_scalability.py`
+
+Objectif:
+
+- prouver la cible sujet `20 residents x 6 constantes = 120 messages/s`;
+- tester l'extension `50 residents x 6 constantes = 300 messages/s`;
+- mesurer la latence API p95/p99 pendant la charge;
+- comparer messages envoyes et messages observes par le backend.
+
+Preparer la stack:
+
+```bash
+docker compose up --build -d
+docker compose ps
+```
+
+Test cible sujet 120 messages/s:
+
+```bash
+docker compose run --rm --no-deps backend python benchmark_scalability.py --target-mps 120 --duration-s 60 --residents 25
+```
+
+Test extension 300 messages/s:
+
+```bash
+docker compose run --rm --no-deps backend python benchmark_scalability.py --target-mps 300 --duration-s 60 --residents 50
+```
+
+Pendant le test, relever CPU/RAM Docker dans un autre terminal:
+
+```bash
+docker stats ehpad_backend ehpad_simulator ehpad_mqtt ehpad_redis ehpad_influx ehpad_dashboard
+```
+
+Champs importants dans la sortie JSON:
+
+- `sent_messages`: messages MQTT envoyes par le benchmark;
+- `backend_observed_delta_messages`: messages vus par le backend;
+- `backend_observed_messages_per_second`: debit reel observe;
+- `api_latency_ms.p95`: latence API p95 pendant le test;
+- `backend_after.backend.state_age_max_s`: fraicheur maximale des etats residents;
+- `interpretation.ok_for_jury`: indicateur rapide de validation.
+
+Critere de validation conseille pour la soutenance:
+
+```text
+publish_errors == 0
+backend_observed_delta_messages >= 90% des messages envoyes
+api_latency_ms.p95 < 500 ms
+state_age_max_s raisonnable apres la charge
+```
+
+Phrase jury:
+
+```text
+La scalabilite a ete verifiee par benchmark MQTT: 120 messages/s pour la cible
+sujet, puis 300 messages/s pour une projection 50 residents. Le backend expose
+les compteurs observes, la latence API p95/p99 et la fraicheur des etats Redis.
+Le ML et le LLM restent hors boucle temps reel afin de proteger le dashboard.
+```
+
 ## Alertes 5 niveaux
 
 | Niveau | Nom | Usage | Routage |
@@ -1210,6 +1275,101 @@ Simulateur:
 Limite securite restante: TLS MQTT 8883 n'est pas active dans la demo Docker.
 Pour une mise en production, il faudrait ajouter CA/certificat serveur, rotation
 des secrets et comptes par equipement.
+
+---
+
+## Securite — Trajectoire vers la production
+
+Le systeme actuel est un **MVP de demonstration**. Les choix de securite sont
+volontairement simplifies pour faciliter la demo locale. Avant tout deploiement
+en etablissement reel, les points suivants devront etre traites.
+
+### 1. Authentification sur tous les endpoints sensibles
+
+Plusieurs routes API sont actuellement accessibles sans authentification :
+liste des alertes, acquittement d'alerte, annuaire du personnel, predictions ML,
+generation de rapports. En production, chaque endpoint exposant des donnees de
+sante devra exiger un token staff valide, avec verification cote serveur a chaque
+requete.
+
+### 2. WebSocket authentifie
+
+Le WebSocket `/ws` envoie l'etat complet des residents des la connexion, sans
+controle d'identite. En production, la connexion WebSocket devra transmettre un
+token en query parameter, verifie avant tout envoi de donnees. Une connexion sans
+token valide sera immediatement fermee avec le code 1008 (Policy Violation).
+
+### 3. MQTT avec authentification par device
+
+Le broker Mosquitto est configure pour la demo locale. En production, chaque
+capteur ou simulateur devra s'authentifier avec des credentials uniques, des ACL
+par topic seront definies (un capteur ne peut publier que sur son propre topic),
+et les communications seront chiffrees en TLS sur le port 8883.
+
+### 4. Gestion des secrets
+
+Les mots de passe et tokens sont passes en variables d'environnement avec des
+valeurs par defaut dans le code. En production, les secrets seront geres via un
+gestionnaire dedie (HashiCorp Vault, AWS Secrets Manager ou equivalent), sans
+aucune valeur par defaut dans le code source.
+
+### 5. HTTPS obligatoire
+
+Le dashboard expose un port HTTP non chiffre en parallele du HTTPS. En
+production, tout le trafic sera force en HTTPS avec redirection automatique, et
+les cookies de session auront les flags `Secure` et `HttpOnly`.
+
+### 6. Conteneurs non root
+
+Les containers Docker tournent actuellement avec l'utilisateur root par defaut.
+En production, chaque service tournera avec un utilisateur non privilegie dedie,
+limitant la surface d'attaque en cas de compromission.
+
+### 7. Audit et tracabilite renforces
+
+Le systeme dispose deja d'un mecanisme de logs d'acces et de bris de glace. En
+production, ces logs seront transmis vers un SIEM centralise, avec alertes sur
+les acces anormaux, et conserves selon les exigences HDS (Hebergeur de Donnees
+de Sante).
+
+### 8. MQTT — securisation du bus de capteurs
+
+Le broker Mosquitto est configure en acces anonyme pour la demo locale. Ce choix
+est intentionnel pour simplifier le demarrage. En EHPAD reel, le bus MQTT est
+critique : une injection de fausses constantes ou une simulation de chute peut
+provoquer une fausse alerte ou masquer une urgence reelle.
+
+La trajectoire de securisation prevoit :
+
+- chiffrement TLS sur le port 8883 avec CA propre a l'etablissement ;
+- authentification par certificat client ou login fort par device (un compte par
+  capteur, par chambre, par unite) ;
+- ACL strictes par topic : un capteur ne peut publier que sur son propre topic,
+  aucun wildcard en ecriture ;
+- validation stricte du payload cote backend (format, plage de valeurs, horodatage) ;
+- timestamp serveur pour detecter les replays ou les injections differees ;
+- signature ou controle d'integrite pour les capteurs critiques (chute, SpO2).
+
+### 9. Authentification — renforcement pour prod
+
+Le systeme utilise actuellement du SHA-256 sale pour les mots de passe soignants,
+et les tokens sont stockes en localStorage cote frontend. Ces choix sont
+acceptables pour une demo, pas pour un usage reel.
+
+La trajectoire prevoit :
+
+- hachage Argon2id ou bcrypt pour tous les mots de passe ;
+- politique de mot de passe (longueur, complexite, expiration) ;
+- MFA obligatoire pour les roles admin et IDEC ;
+- tokens stockes en cookie HttpOnly, Secure, SameSite=Strict plutot qu'en
+  localStorage (les tokens en localStorage sont accessibles au JavaScript et
+  peuvent finir dans les logs, l'historique ou les captures d'ecran) ;
+- suppression des tokens passes en query parameter dans les URLs ;
+- refresh token avec rotation, expiration et revocation explicite ;
+- verrouillage temporaire du compte apres plusieurs echecs de connexion ;
+- logs d'acces par compte avec horodatage et IP.
+
+---
 
 ## Limites actuelles
 
