@@ -2,11 +2,43 @@
 
 Projet MBA1 Epitech de monitoring EHPAD connecte.
 
-Le projet simule 25 residents, publie leurs constantes et capteurs ambiants via MQTT, applique des regles d'alerte graduees, calcule un risque ML 30-60 minutes, produit une synthese de transmission, puis expose le tout dans un dashboard web temps reel, une mini app soignant et un portail famille.
+Le projet simule un etablissement EHPAD avec 25 residents, des constantes vitales,
+des capteurs ambiants, un flux MQTT temps reel, un moteur d'alertes 5 niveaux,
+une prediction ML 30-60 minutes, une interface soignant, une mini app mobile,
+un portail famille et une couche de scalabilite observable.
 
-Pipeline principal: simulation -> MQTT -> backend -> Redis / InfluxDB -> dashboard -> soignant / famille / notifications.
+Pipeline principal:
 
-Le systeme vise une assistance prudente et explicable. Il ne remplace pas un diagnostic medical autonome.
+```text
+simulation -> MQTT -> backend -> Redis / InfluxDB -> dashboard -> soignant / famille / notifications
+```
+
+Le systeme vise une assistance clinique prudente et explicable. Il ne remplace
+pas un diagnostic medical autonome.
+
+## Sommaire
+
+- [Demarrage rapide](#demarrage-rapide)
+- [Acces de demonstration](#acces-de-demonstration)
+- [Mini app soignant sur telephone](#mini-app-soignant-sur-telephone)
+- [Objectif du projet](#objectif-du-projet)
+- [Approche hybride](#approche-hybride)
+- [Stack technique](#stack-technique)
+- [Architecture globale](#architecture-globale)
+- [Flux temps reel](#flux-temps-reel)
+- [Fonctionnement clinique](#fonctionnement-clinique)
+- [Organisation des fonctions](#organisation-des-fonctions)
+- [Alertes 5 niveaux](#alertes-5-niveaux)
+- [ML et prediction](#ml-et-prediction)
+- [Espace famille](#espace-famille)
+- [Scalabilite](#scalabilite)
+- [Endpoints principaux](#endpoints-principaux)
+- [Commandes utiles](#commandes-utiles)
+- [Demo conseillee](#demo-conseillee)
+- [Tests et verification](#tests-et-verification)
+- [Organisation des fichiers](#organisation-des-fichiers)
+- [Securite](#securite)
+- [Limites actuelles](#limites-actuelles)
 
 ## Demarrage rapide
 
@@ -27,9 +59,9 @@ docker compose ps
 Cette commande:
 
 - construit et demarre toute la stack;
-- lance le broker MQTT, Redis, InfluxDB, le simulateur, le backend, le worker LLM et le dashboard;
-- marche directement dans PowerShell sur Windows;
-- ne demande pas de build frontend React/Vite: le dashboard actuel est en HTML/JS statique.
+- lance MQTT, Redis, InfluxDB, simulateur, backend, worker LLM et dashboard;
+- fonctionne directement dans PowerShell sur Windows;
+- ne demande pas de build React/Vite: le dashboard actuel est en HTML/JS statique.
 
 LLM optionnel:
 
@@ -37,7 +69,15 @@ LLM optionnel:
 ollama serve
 ```
 
-Le projet fonctionne sans Ollama: les rapports LLM ont un repli automatique.
+Le projet fonctionne sans Ollama: les rapports LLM ont un fallback local.
+
+## Prerequis
+
+- Docker Desktop ou Docker Engine avec `docker compose`.
+- Ports disponibles: `3002`, `3443`, `8001`, `1883`, `9001`, `6379`, `8086`.
+- Pour le LLM bonus: Ollama installe et modele `meditron:7b`.
+- Pour tester la mini app sur telephone: PC et telephone sur le meme reseau Wi-Fi.
+- Pour tester les push mobiles reels: HTTPS local avec certificats dans `dashboard/certs/`.
 
 ## URLs utiles
 
@@ -51,30 +91,32 @@ Le projet fonctionne sans Ollama: les rapports LLM ont un repli automatique.
 - Swagger: `http://localhost:8001/docs`
 - InfluxDB: `http://localhost:8086`
 - MQTT: `localhost:1883`
+- MQTT WebSocket: `localhost:9001`
 
 ## Acces de demonstration
 
-| Espace | Identifiant | Mot de passe / token |
-|---|---|---|
-| Soignant A | `soignant_A` | `EHPAD2024!` |
-| Soignant B | `soignant_B` | `EHPAD2024!` |
-| Soignant C | `soignant_C` | `EHPAD2024!` |
-| Chef de garde | `chef_garde` | `EHPAD2024!` |
-| Direction | `direction` | `EHPAD2024!` |
-| Famille Edith Piaf | `piaf` | `piaf105` |
-| Famille Marie Curie | `curie` | `curie101` |
-| Famille Dalida | `dalida` | `dalida214` |
-| Admin familles | token admin | `ADMIN_EHPAD_2024` |
+| Espace | Identifiant | Mot de passe / token | Role |
+|---|---|---|---|
+| Soignant A | `soignant_A` | `EHPAD2024!` | secteur affecte |
+| Soignant B | `soignant_B` | `EHPAD2024!` | secteur affecte |
+| Soignant C | `soignant_C` | `EHPAD2024!` | secteur affecte |
+| Chef de garde | `chef_garde` | `EHPAD2024!` | acces privilegie |
+| Direction | `direction` | `EHPAD2024!` | supervision |
+| Famille Edith Piaf | `piaf` | `piaf105` | proche R005 |
+| Famille Marie Curie | `curie` | `curie101` | proche R001 |
+| Famille Dalida | `dalida` | `dalida214` | proche R019 |
+| Admin familles | token admin | `ADMIN_EHPAD_2024` | gestion comptes famille |
 
 La liste complete des comptes famille est dans `docs/comptes_famille_demo.md`.
 
 ## Mini app soignant sur telephone
 
-La mini app soignant sert a recevoir les alertes, ouvrir une fiche intervention mobile et prendre en charge un resident depuis un telephone.
+La mini app soignant sert a recevoir les alertes, ouvrir une fiche intervention
+mobile et prendre en charge un resident depuis un telephone.
 
 ### Mode simple, sans notifications push
 
-Ce mode suffit pour montrer l'app mobile au jury.
+Ce mode suffit pour montrer l'interface mobile au jury.
 
 1. Demarrer la stack:
 
@@ -104,7 +146,7 @@ http://192.168.1.85:3002/soignant
 chef_garde / EHPAD2024!
 ```
 
-6. Ouvrir une fiche resident depuis une notification ou directement:
+6. Ouvrir une fiche mobile:
 
 ```text
 http://192.168.1.85:3002/mobile/resident/R005
@@ -112,7 +154,11 @@ http://192.168.1.85:3002/mobile/resident/R005
 
 ### Mode PWA installee sur l'ecran d'accueil
 
-La page soignant contient un manifest PWA (`dashboard/public/manifest.webmanifest`) et un service worker (`dashboard/public/sw.js`).
+La page soignant contient:
+
+- un manifest PWA: `dashboard/public/manifest.webmanifest`;
+- un service worker: `dashboard/public/sw.js`;
+- une page mobile: `dashboard/public/mobile_resident.html`.
 
 Sur Android Chrome:
 
@@ -129,59 +175,102 @@ Sur iPhone Safari:
 
 ### Mode push complet
 
-Les notifications push navigateur exigent un contexte securise. Pour un telephone, il faut donc utiliser HTTPS:
+Les notifications push navigateur exigent un contexte securise. Pour un
+telephone, il faut donc utiliser HTTPS:
 
 ```text
 https://IP_DU_PC:3443/soignant
 ```
 
-Le serveur dashboard demarre HTTPS sur le port `3443` si des certificats locaux sont presents dans `dashboard/certs/`.
+Le serveur dashboard demarre HTTPS sur le port `3443` si des certificats
+locaux sont presents dans `dashboard/certs/`.
 
 Demarche:
 
-1. Generer ou recuperer les certificats locaux compatibles avec l'IP du PC.
+1. Generer ou recuperer des certificats locaux compatibles avec l'IP du PC.
 2. Les placer dans `dashboard/certs/`.
 3. Installer l'autorite locale sur le telephone si necessaire.
 4. Ouvrir `https://IP_DU_PC:3443/soignant`.
 5. Se connecter avec un compte soignant.
 6. Cliquer sur `Activer les alertes push`.
-7. Cliquer sur `Envoyer un test push` pour verifier.
+7. Cliquer sur `Envoyer un test push`.
 
 Important:
 
-- `http://IP_DU_PC:3002` suffit pour la demo de l'interface mobile.
-- `https://IP_DU_PC:3443` est necessaire pour tester les push reels.
+- `http://IP_DU_PC:3002` suffit pour la demo mobile.
+- `https://IP_DU_PC:3443` est necessaire pour les push reels.
 - Les certificats locaux et cles privees ne doivent pas etre commites dans Git.
 
-## Objectif
+## Objectif du projet
 
-- simuler un EHPAD avec plusieurs residents et capteurs;
-- visualiser les constantes, routines, positions et alertes en temps reel;
+- simuler un EHPAD multi-residents;
+- publier les donnees capteurs en MQTT;
+- detecter les risques immediats et les alertes critiques;
+- predire un risque d'aggravation a 30-60 minutes;
 - prioriser les interventions soignantes;
-- separer les vues soignant, direction et famille;
-- fournir une demo simple a lancer avec Docker.
+- fournir une vue famille non medicale;
+- demontrer la scalabilite et la robustesse Docker.
 
 ## Approche hybride
 
 La logique reste volontairement hybride:
 
-- regles cliniques et NEWS2 pour les alertes immediates;
-- routines et capteurs ambiants pour le contexte de vie;
-- ML pour le risque predictif 30-60 minutes;
-- pipeline A2A pour combiner realtime, ML, comportement, alertes et transmission;
-- LLM optionnel pour la synthese clinique, avec fallback local.
+- `Regles cliniques`: seuils vitaux, chute, SOS, NEWS2, anti-bruit.
+- `Contexte comportemental`: routine, zone, repas, sommeil, inactivite.
+- `Capteurs ambiants`: porte, lit, sol, radar, PIR, salle de bain.
+- `ML`: score predictif 30-60 minutes.
+- `A2A`: orchestration realtime + ML + comportement + alertes + transmission.
+- `LLM`: synthese optionnelle via Ollama, avec fallback local.
 
-## Stack
+## Stack technique
 
-- Simulator Python + `paho-mqtt`
-- Mosquitto pour MQTT
-- FastAPI pour REST + WebSocket
-- Redis pour etat courant, sessions, cache et audits
-- InfluxDB pour l'historique des constantes
-- HTML / CSS / JavaScript statique pour le dashboard
-- Express pour servir le dashboard et proxyfier `/api`
-- `GradientBoostingClassifier` pour le score ML
-- Ollama local avec `meditron:7b` pour le bonus LLM
+- Python 3.11 pour backend et simulateur.
+- FastAPI pour API REST et WebSocket.
+- Paho MQTT pour publication / consommation capteurs.
+- Mosquitto pour le broker MQTT.
+- Redis pour etat courant, sessions, cache, audit et predictions.
+- InfluxDB pour historique de constantes.
+- Scikit-learn pour le modele `GradientBoostingClassifier`.
+- HTML / CSS / JavaScript statique pour le dashboard.
+- Three.js pour la vue 3D de l'EHPAD.
+- Express pour servir le dashboard et proxyfier `/api`.
+- Ollama + `meditron:7b` pour les rapports LLM optionnels.
+- Docker Compose pour lancer l'ensemble.
+
+## Architecture globale
+
+```mermaid
+flowchart LR
+    SIM[Simulator Python<br/>25 residents]
+    MQTT[Broker Mosquitto<br/>MQTT 1883 / WS 9001]
+    API[Backend FastAPI<br/>API + WS + alertes + ML]
+    REDIS[(Redis<br/>etat live + sessions)]
+    INF[(InfluxDB<br/>historique capteurs)]
+    DASH[Dashboard HTML/JS<br/>port 3002]
+    TEL[Mini app soignant<br/>telephone / PWA]
+    FAM[Espace famille]
+    LLM[Ollama meditron:7b<br/>optionnel]
+
+    SIM -->|vitals QoS1<br/>ambient QoS0<br/>critical QoS2| MQTT
+    MQTT --> API
+    API --> REDIS
+    API --> INF
+    API --> LLM
+    DASH -->|REST /api| API
+    DASH -->|WebSocket /ws| API
+    TEL --> DASH
+    FAM --> DASH
+```
+
+Lecture rapide:
+
+- le simulateur publie les etats residents et capteurs;
+- le backend consomme MQTT, calcule alertes/ML et stocke l'etat;
+- Redis garde le live et les sessions;
+- InfluxDB garde l'historique;
+- le dashboard interroge l'API et recoit le live en WebSocket;
+- la mini app telephone utilise la page soignant + service worker;
+- l'espace famille utilise un token limite a un resident.
 
 ## Schema structurel du projet
 
@@ -194,8 +283,9 @@ flowchart TB
     ROOT --> BACK[backend/]
     ROOT --> DASH[dashboard/]
     ROOT --> SIM[simulator/]
-    ROOT --> MQTT[mosquitto/config/]
+    ROOT --> MQTTCONF[mosquitto/config/]
     ROOT --> TESTS[tests/]
+    ROOT --> DATA[data/]
 
     BACK --> B1[main.py]
     BACK --> B2[alert_engine.py]
@@ -204,59 +294,39 @@ flowchart TB
     BACK --> B5[llm_service.py]
     BACK --> B6[routine_engine.py]
     BACK --> B7[auth.py]
+    BACK --> B8[kb/ehpad_watch_kb.json]
 
     DASH --> D1[public/index.html]
     DASH --> D2[public/resident.html]
     DASH --> D3[public/mobile_resident.html]
     DASH --> D4[public/soignant.html]
     DASH --> D5[public/famille.html]
-    DASH --> D6[server.js]
+    DASH --> D6[public/admin_famille.html]
+    DASH --> D7[server.js]
 
     SIM --> S1[main.py]
     SIM --> S2[profiles.py]
     SIM --> S3[facility_map.py]
 ```
 
-Lecture rapide:
-
-- `docker compose up --build -d` est la commande principale cross-platform;
-- `backend/` porte la logique centrale: ingestion, alertes, ML, LLM, securite et API;
-- `dashboard/public/` porte l'interface HTML statique;
-- `simulator/` genere les constantes vitales et les capteurs ambiants;
-- `docs/` contient les audits et guides de demonstration;
-- `tests/` contient les tests pytest.
-
-## Schema d'architecture
+## Flux temps reel
 
 ```mermaid
-flowchart LR
-    U[Utilisateur]
-    TEL[Telephone soignant]
-    FE[Dashboard HTML/JS]
-    SW[Service Worker / Web Push]
-    WS[WebSocket live]
-    API[Backend FastAPI]
-    MQTT[Broker Mosquitto]
-    SIM[Simulator Python]
-    REDIS[(Redis)]
-    INF[(InfluxDB)]
-    ML[ML 30-60 min]
-    LLM[Ollama meditron:7b]
+sequenceDiagram
+    participant S as Simulator
+    participant M as Mosquitto
+    participant B as Backend
+    participant R as Redis
+    participant I as InfluxDB
+    participant D as Dashboard
 
-    U --> FE
-    TEL --> FE
-    FE -->|REST /api| API
-    FE --> WS
-    WS --> FE
-    FE --> SW
-
-    SIM -->|topics residents et capteurs| MQTT
-    MQTT --> API
-
-    API --> REDIS
-    API --> INF
-    API --> ML
-    API --> LLM
+    S->>M: publish vitals / movement / ambient
+    M->>B: messages MQTT
+    B->>R: update resident live state
+    B->>I: write sampled vitals
+    B->>B: NEWS2 + routine + ML + alerts
+    B->>D: WebSocket live update
+    D->>B: REST details / mini DPI / staff / family
 ```
 
 ## Fonctionnement clinique
@@ -271,94 +341,223 @@ L'interface distingue plusieurs blocs:
 - `ML/A2A`: prediction 30/60 minutes et synthese explicable.
 - `Scalabilite`: MQTT, Redis, InfluxDB, WebSocket et objectifs de charge.
 
-Important:
-
-- le simulateur genere des donnees synthetiques;
-- le ML montre une faisabilite technique, pas une validation medicale reelle;
-- les alertes ne remplacent pas la decision soignante;
-- le LLM est optionnel et retombe sur un fallback si indisponible.
-
 ## Organisation des fonctions
 
-Le backend se repartit en couches distinctes.
+Le backend est organise par responsabilites.
 
-- `Ingestion temps reel`
-  - recoit les messages MQTT;
-  - met a jour Redis, InfluxDB et le WebSocket;
-  - fichiers: `backend/main.py`, `simulator/main.py`.
+### Ingestion temps reel
 
-- `Regles et alertes`
-  - calcule les niveaux 1 a 5;
-  - integre NEWS2, capteurs, mouvement, routines et escalade;
-  - fichiers: `backend/alert_engine.py`, `backend/main.py`.
+- recoit les messages MQTT;
+- met a jour l'etat resident;
+- stocke les constantes;
+- diffuse au WebSocket.
 
-- `ML predictif`
-  - construit les features a partir des constantes et tendances;
-  - produit `risk_30min` et `risk_60min`;
-  - fichier: `backend/ml_model.py`.
+Fichiers principaux:
 
-- `Pipeline A2A`
-  - combine realtime, ML, comportement, alertes, LLM et transmission;
-  - fichier: `backend/a2a_agents.py`.
+- `backend/main.py`
+- `simulator/main.py`
+- `backend/ws_manager.py`
 
-- `Mini DPI et transmissions`
-  - agrege profil, constantes, capteurs, historique 30 jours et actions;
-  - endpoints: `/api/reports/daily/{date}/{resident_id}` et `/api/residents/{id}/dpi`.
+### Regles et alertes
 
-- `Soignants et notifications`
-  - gere sessions, affectations, prise en charge et audit;
-  - fichiers: `backend/auth.py`, `dashboard/public/soignant.html`.
+- calcule les niveaux 1 a 5;
+- integre constantes, mouvement, capteurs, routines et NEWS2;
+- gere escalade, acquittement, prise en charge et resolution.
 
-- `Famille`
-  - expose une vue non medicale du proche;
-  - masque constantes, scores et alertes brutes;
-  - fichiers: `dashboard/public/famille.html`, `backend/auth.py`.
+Fichiers principaux:
 
-## Separation regles / ML / LLM
+- `backend/alert_engine.py`
+- `backend/main.py`
 
-- `Regles`
-  - seuils immediats;
-  - alertes critiques;
-  - escalade et anti-bruit.
+### Prediction ML
 
-- `ML`
-  - score predictif 30-60 minutes;
-  - donnees synthetiques;
-  - aide a prioriser, ne diagnostique pas.
+- construit les features vitales et tendances;
+- calcule `risk_30min` et `risk_60min`;
+- expose les metriques du modele.
 
-- `LLM`
-  - explique, synthetise et reformule;
-  - utilise la KB locale;
-  - n'est pas fine-tune par le projet;
-  - fallback local si Ollama est indisponible.
+Fichier principal:
+
+- `backend/ml_model.py`
+
+### Pipeline A2A
+
+- combine realtime, ML, comportement, alertes et transmission;
+- produit des actions soignantes et points de vigilance.
+
+Fichier principal:
+
+- `backend/a2a_agents.py`
+
+### Mini DPI et transmissions
+
+- agrege profil, constantes, capteurs, historique 30 jours, risque et actions;
+- fournit une vue resident exploitable par le dashboard.
+
+Endpoints:
+
+- `/api/reports/daily/{date}/{resident_id}`
+- `/api/residents/{resident_id}/dpi`
+
+### Soignants et notifications
+
+- gere sessions personnel;
+- controle les acces DPI;
+- suit les affectations;
+- trace vues, prises en charge, acquittements et push.
+
+Fichiers principaux:
+
+- `backend/auth.py`
+- `dashboard/public/soignant.html`
+- `dashboard/public/mobile_resident.html`
+
+### Famille
+
+- compte individuel par famille;
+- token limite a un resident;
+- vue volontairement non medicale.
+
+Fichiers principaux:
+
+- `backend/auth.py`
+- `dashboard/public/famille.html`
+- `dashboard/public/admin_famille.html`
+
+## Alertes 5 niveaux
+
+| Niveau | Nom | Usage | Routage |
+|---|---|---|---|
+| 1 | Information | signal faible / suivi dashboard | dashboard |
+| 2 | Attention | anomalie a surveiller | soignant assigne |
+| 3 | Alerte | intervention recommandee | soignant + son |
+| 4 | Urgence | intervention rapide | tous soignants |
+| 5 | Danger vital | protocole critique | tous + direction + SAMU selon protocole |
+
+Points importants:
+
+- les niveaux 1-3 sont limites par une politique anti-bruit;
+- les alertes de routine seules ne montent pas artificiellement en danger vital;
+- le niveau 5 est reserve aux signaux critiques ou escalades graves;
+- le dashboard possede un rendu visuel specifique pour chaque niveau.
+
+## ML et prediction
+
+Le modele ML est une preuve de concept basee sur donnees synthetiques.
+
+Features principales:
+
+- frequence cardiaque;
+- SpO2;
+- pression arterielle systolique;
+- temperature;
+- inactivite;
+- tendance FC;
+- tendance SpO2;
+- facteur age;
+- facteur risque resident.
+
+Sorties:
+
+- `risk_30min`;
+- `risk_60min`;
+- tendance;
+- signaux faibles;
+- metriques exposees dans `/api/ml/metrics`.
+
+Message a retenir pour le jury:
+
+```text
+Le ML montre une chaine predictive technique 30-60 minutes. Il ne constitue pas
+une validation medicale reelle. En production, il faudrait des donnees EHPAD
+reelles, un split temporel et une validation clinique.
+```
+
+## Espace famille
+
+L'espace famille est volontairement limite.
+
+Visible:
+
+- nom du resident;
+- avatar;
+- chambre;
+- etat general;
+- activite;
+- soignant referent;
+- menu;
+- programme de vie;
+- dernieres activites.
+
+Masque:
+
+- frequence cardiaque;
+- SpO2;
+- pression arterielle;
+- temperature;
+- scores cliniques;
+- alertes brutes;
+- predictions ML detaillees.
+
+## Scalabilite
+
+Endpoint:
+
+```text
+GET /api/ops/scalability
+```
+
+Il expose:
+
+- nombre de residents;
+- debit MQTT total;
+- debit MQTT sur 60 secondes;
+- messages vitaux / ambiants;
+- age du dernier message;
+- estimation InfluxDB;
+- debit WebSocket;
+- frequence du pipeline de prediction;
+- recommandations de montee en charge.
+
+Objectif de demo:
+
+- montrer que 25 residents tournent en continu;
+- montrer que la cible 20 residents est depassee;
+- expliquer que Redis garde le live et InfluxDB garde l'historique.
 
 ## Services Docker
 
-- `simulator`: simulation des residents, routines et capteurs;
-- `mosquitto`: broker MQTT;
-- `backend`: API, WebSocket, alertes, ML, LLM, securite;
-- `dashboard`: dashboard HTML statique + proxy `/api`;
-- `redis`: etat courant, sessions, caches et audits;
-- `influxdb`: historique des constantes;
-- `llm_worker`: generation de rapports LLM quotidiens optionnels.
+| Service | Role | Port |
+|---|---|---|
+| `mosquitto` | broker MQTT | `1883`, `9001` |
+| `redis` | etat courant, sessions, cache | `6379` |
+| `influxdb` | historique capteurs | `8086` |
+| `simulator` | generation residents/capteurs | interne |
+| `backend` | API, WS, ML, alertes | `8001` |
+| `llm_worker` | rapports LLM quotidiens | interne |
+| `dashboard` | dashboard HTML + proxy API | `3002`, `3443` |
 
 ## Endpoints principaux
 
-- `GET /health`
-- `GET /api/residents`
-- `GET /api/alerts`
-- `GET /api/alerts/config`
-- `POST /api/alerts/{resident_id}/acknowledge`
-- `GET /api/reports/daily/{date}/{resident_id}`
-- `GET /api/a2a/predictions`
-- `GET /api/a2a/predict/{resident_id}`
-- `GET /api/ml/metrics`
-- `GET /api/staff`
-- `POST /api/staff/login`
-- `GET /api/famille/{resident_id}`
-- `POST /api/famille/login`
-- `GET /api/ops/scalability`
-- `WS /ws`
+| Endpoint | Description |
+|---|---|
+| `GET /health` | sante backend |
+| `GET /api/residents` | 25 residents live |
+| `GET /api/residents/{id}` | detail resident protege |
+| `GET /api/residents/{id}/dpi` | mini DPI protege |
+| `GET /api/reports/daily/{date}/{id}` | mini DPI frais pour dashboard |
+| `GET /api/alerts` | alertes actives + historique |
+| `GET /api/alerts/config` | configuration 5 niveaux |
+| `POST /api/alerts/{id}/acknowledge` | acquittement |
+| `GET /api/alerts/explain/{id}` | explication alerte |
+| `GET /api/a2a/predictions` | predictions 25 residents |
+| `GET /api/a2a/predict/{id}` | prediction protegee resident |
+| `GET /api/ml/metrics` | metriques ML |
+| `GET /api/staff` | personnel et affectations |
+| `POST /api/staff/login` | login soignant |
+| `GET /api/famille/{id}` | vue famille protegee |
+| `POST /api/famille/login` | login famille |
+| `GET /api/ops/scalability` | stats scalabilite |
+| `WS /ws` | flux live dashboard |
 
 ## Commandes utiles
 
@@ -368,7 +567,7 @@ Commande principale:
 docker compose up --build -d
 ```
 
-Support et verification:
+Support:
 
 ```bash
 docker compose ps
@@ -400,7 +599,7 @@ Invoke-RestMethod http://localhost:8001/api/ops/scalability
 1. Demarrer Docker avec `docker compose up --build -d`.
 2. Ouvrir le dashboard principal.
 3. Montrer les 25 residents et les constantes live.
-4. Montrer les alertes actives et la configuration des 5 niveaux.
+4. Montrer les alertes actives et la configuration 5 niveaux.
 5. Ouvrir un resident et son Mini DPI.
 6. Montrer le plan 2D / 3D et les capteurs.
 7. Ouvrir l'espace soignant avec `chef_garde / EHPAD2024!`.
@@ -408,15 +607,29 @@ Invoke-RestMethod http://localhost:8001/api/ops/scalability
 9. Ouvrir l'espace famille avec `piaf / piaf105`.
 10. Montrer ML/A2A et scalabilite.
 
-Guide detaille: `docs/demo.md`.
+Guide detaille:
 
-## Limites actuelles
+- `docs/demo.md`
 
-- Les donnees sont synthetiques.
-- Le ML doit etre valide sur donnees reelles avant usage clinique.
-- Le LLM local n'est pas obligatoire et peut etre lent selon la machine.
-- Les notifications push dependent du navigateur, du HTTPS et du support mobile.
-- Le mode demo reste prioritaire sur une exhaustivite clinique complete.
+## Tests et verification
+
+Le projet contient des tests pytest dans `tests/test_ehpad.py`.
+
+Verification minimale avant rendu:
+
+```bash
+docker compose up --build -d
+docker compose ps
+py -m pytest tests -q
+```
+
+Verification fonctionnelle:
+
+- `GET /health` doit repondre `ok`;
+- `/api/residents` doit retourner 25 residents;
+- `/api/alerts/config` doit retourner 5 niveaux;
+- `/api/ml/metrics` doit retourner les metriques;
+- `/api/ops/scalability` doit retourner les stats MQTT.
 
 ## Organisation des fichiers
 
@@ -430,6 +643,8 @@ projet spe Hepad/
 |   |-- auth.py
 |   |-- llm_service.py
 |   |-- routine_engine.py
+|   |-- resident_profiles.py
+|   |-- kb_loader.py
 |   |-- kb/
 |   `-- requirements.txt
 |-- simulator/
@@ -445,25 +660,56 @@ projet spe Hepad/
 |   |   |-- soignant.html
 |   |   |-- famille.html
 |   |   |-- admin_famille.html
+|   |   |-- simulateur_config.html
 |   |   |-- manifest.webmanifest
 |   |   `-- sw.js
 |   |-- server.js
 |   |-- package.json
 |   `-- Dockerfile
-|-- mosquitto/config/mosquitto.conf
+|-- mosquitto/
+|   `-- config/mosquitto.conf
 |-- docs/
-|-- tests/test_ehpad.py
-`-- docker-compose.yml
+|-- tests/
+|-- data/
+|-- docker-compose.yml
+`-- README.md
 ```
 
 ## Role des dossiers principaux
 
 - `backend`: logique centrale du projet.
 - `simulator`: generation des constantes et capteurs.
-- `dashboard`: interface HTML, mini app soignant et portail famille.
+- `dashboard`: interface HTML, mini app soignant, portail famille.
 - `docs`: architecture, audits, comptes demo et guide oral.
 - `tests`: tests automatises.
 - `data`: donnees generees localement.
+- `mosquitto`: configuration du broker MQTT.
+
+## Fichiers importants
+
+Backend:
+
+- `backend/main.py`: routes API, MQTT, WebSocket, rapports.
+- `backend/alert_engine.py`: moteur d'alertes 5 niveaux.
+- `backend/ml_model.py`: entrainement et prediction ML.
+- `backend/a2a_agents.py`: pipeline agentique.
+- `backend/auth.py`: sessions famille et personnel.
+- `backend/llm_service.py`: rapports LLM et fallback.
+
+Dashboard:
+
+- `dashboard/public/index.html`: dashboard principal.
+- `dashboard/public/resident.html`: Mini DPI complet.
+- `dashboard/public/mobile_resident.html`: fiche intervention mobile.
+- `dashboard/public/soignant.html`: app soignant / PWA / push.
+- `dashboard/public/famille.html`: portail famille.
+- `dashboard/server.js`: serveur statique + proxy API.
+
+Simulateur:
+
+- `simulator/main.py`: generation et publication MQTT.
+- `simulator/profiles.py`: residents, chambres, capteurs, profils.
+- `simulator/facility_map.py`: plan, zones et trajets.
 
 ## Securite
 
@@ -472,7 +718,27 @@ projet spe Hepad/
 - Acces dashboard au Mini DPI sans prompt, via rapport resident non modifiant.
 - Vue famille limitee: pas de constantes vitales ni scores cliniques.
 - Logs d'acces, notifications, bris de glace et actions d'alerte.
+- Redis protege par mot de passe via variable d'environnement.
 - Certificats locaux exclus du Git via `.gitignore`.
+- Les cles privees locales ne doivent jamais etre commitees.
+
+## Limites actuelles
+
+- Les donnees sont synthetiques.
+- Le ML doit etre valide sur donnees reelles avant usage clinique.
+- Le split temporel serait obligatoire avec des donnees reelles.
+- Le LLM local n'est pas obligatoire et peut etre lent selon la machine.
+- Les notifications push dependent du navigateur, du HTTPS et du support mobile.
+- Le mode demo reste prioritaire sur une exhaustivite clinique complete.
+
+## References utiles du projet
+
+- `docs/architecture.md`
+- `docs/demo.md`
+- `docs/securite_rgpd.md`
+- `docs/comptes_famille_demo.md`
+- `backend/kb/ehpad_watch_kb.json`
+- `docker-compose.yml`
 
 ## Arret
 
