@@ -163,7 +163,7 @@
   </main>
 
   <script>
-    const BACKEND_HTTP = `${location.protocol}//${location.hostname}:8001`;
+    const BACKEND_HTTP = '';
     const residentId = location.pathname.split('/').filter(Boolean)[1] || new URLSearchParams(location.search).get('id') || 'R005';
     let state = null;
     let dpi = null;
@@ -223,8 +223,8 @@
     const accessParams = new URLSearchParams(location.search);
     let staffId = accessParams.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
     let staffToken = accessParams.get('token') || localStorage.getItem('ehpad_staff_token') || '';
-    let breakGlassReason = accessParams.get('break_glass') || '';
     const returnPath = accessParams.get('return') || '';
+    const fromDashboard = accessParams.get('from') === 'dashboard' || accessParams.get('dashboard') === '1' || returnPath === '/';
 
     if (returnPath) {
       const backLink = document.getElementById('back-link');
@@ -238,14 +238,20 @@
     }
 
     function authHeaders(extra = {}) {
-      const headers = staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
-      if (breakGlassReason) headers['X-Break-Glass-Reason'] = breakGlassReason;
-      return headers;
+      return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
     }
 
-    async function ensureStaffSession() {
+    function clearStaffSession() {
+      staffId = '';
+      staffToken = '';
+      localStorage.removeItem('ehpad_staff_id');
+      localStorage.removeItem('ehpad_staff_token');
+    }
+
+    async function ensureStaffSession(force = false) {
+      if (force) clearStaffSession();
       if (staffToken) return true;
-      const id = prompt("Identifiant soignant pour ouvrir ce DPI :");
+      const id = prompt("Identifiant soignant autorisé pour ouvrir ce DPI (ex: chef_garde) :");
       if (!id) return false;
       const password = prompt("Mot de passe personnel :");
       if (!password) return false;
@@ -263,19 +269,48 @@
       return Boolean(staffToken);
     }
 
-    async function secureJson(url) {
-      let res = await fetch(url, { headers: authHeaders() });
-      if (res.status === 403 && !breakGlassReason) {
-        const reason = prompt("Resident non assigne. Justification bris de glace pour tracer l'ouverture du DPI :");
-        if (reason && reason.trim().length >= 8) {
-          breakGlassReason = reason.trim();
-          res = await fetch(url, { headers: authHeaders() });
-        }
+    async function secureJson(url, retry = true) {
+      const hasSession = await ensureStaffSession();
+      if (!hasSession) throw new Error('session soignant requise');
+      const res = await fetch(url, { headers: authHeaders() });
+      if (res.ok) return res.json();
+      if ((res.status === 401 || res.status === 403) && retry) {
+        const ok = await ensureStaffSession(true);
+        if (ok) return secureJson(url, false);
       }
-      return res.ok ? res.json() : null;
+      const detail = await res.json().catch(() => ({}));
+      throw new Error(detail.detail || `HTTP ${res.status}`);
+    }
+
+    async function publicJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
     }
 
     async function loadAll() {
+      if (fromDashboard) {
+        const today = new Date().toISOString().slice(0, 10);
+        const calls = await Promise.allSettled([
+          publicJson(`${BACKEND_HTTP}/api/residents`),
+          publicJson(`${BACKEND_HTTP}/api/reports/daily/${today}/${residentId}`),
+          fetch(`${BACKEND_HTTP}/api/alerts/explain/${residentId}`).then(r => r.ok ? r.json() : null),
+        ]);
+        const allResidents = calls[0].status === 'fulfilled' ? (calls[0].value?.residents || []) : [];
+        state = allResidents.find(r => r.id === residentId || r.resident_id === residentId) || null;
+        dpi = calls[1].status === 'fulfilled' ? calls[1].value : null;
+        alertExplain = calls[2].status === 'fulfilled' ? calls[2].value : null;
+        historyRows = [];
+        if (!state && !dpi) {
+          const reason = calls.find(c => c.status === 'rejected')?.reason?.message || 'donnees indisponibles';
+          document.getElementById('dpi-rows').innerHTML = `<div class="event">Mini DPI indisponible : ${reason}</div>`;
+          document.getElementById('transmission').innerHTML = `<div class="event">Aucune donnee resident disponible depuis le dashboard.</div>`;
+          return;
+        }
+        render();
+        return;
+      }
+
       const hasSession = await ensureStaffSession();
       if (!hasSession) return;
       const today = new Date().toISOString().slice(0, 10);
@@ -289,6 +324,12 @@
       dpi = calls[1].status === 'fulfilled' ? calls[1].value?.mini_dpi : null;
       alertExplain = calls[2].status === 'fulfilled' ? calls[2].value : null;
       historyRows = calls[3].status === 'fulfilled' ? (calls[3].value?.history || []) : [];
+      if (!state && !dpi) {
+        const reason = calls.find(c => c.status === 'rejected')?.reason?.message || 'acces refuse ou donnees indisponibles';
+        document.getElementById('dpi-rows').innerHTML = `<div class="event">Mini DPI indisponible : ${reason}</div>`;
+        document.getElementById('transmission').innerHTML = `<div class="event">Reconnecte-toi avec le soignant assigne ou chef_garde.</div>`;
+        return;
+      }
       render();
     }
 
@@ -299,7 +340,7 @@
       const vitals = current.vitals || report.current?.vitals || {};
       latestVitals = vitals;
       const movement = current.movement || {};
-      const name = current.name || report.name || profile.name || residentId;
+      const name = current.name || report.resident_name || report.name || profile.name || residentId;
       const room = current.room || report.room || profile.room || '-';
       const location = current.location_label || current.current_zone || report.current?.location || 'zone inconnue';
       const mlRisk = Number(current.ml_risk ?? report.risk?.ml_risk ?? historyRows.at(-1)?.ml_risk ?? 0);
@@ -798,16 +839,30 @@
     }
 
     function renderDpi(report, profile, current) {
-      const life = profile.life_profile || current.life_profile || {};
+      const reportProfile = report.profile || {};
+      const reportCurrent = report.current || {};
+      const safeProfile = Object.keys(profile || {}).length ? profile : reportProfile;
+      const safeCurrent = Object.keys(current || {}).length ? current : reportCurrent;
+      const life = safeProfile.life_profile || safeCurrent.life_profile || reportProfile.life_profile || {};
+      const history = report.history_30d || {};
+      const avg = history.avg_vitals || {};
+      const risk = report.risk || {};
+      const routine = safeCurrent.routine || safeCurrent.routine_label || safeCurrent.time_of_day || reportCurrent.routine || '-';
+      const scenario = safeCurrent.movement_scenario || safeCurrent.scenario_active || safeCurrent.scenario || 'routine';
+      const caregiver = safeCurrent.caregiver_name || report.caregiver || safeProfile.caregiver || '-';
       document.getElementById('dpi-rows').innerHTML = [
-        ['Soignant referent', current.caregiver_name || profile.caregiver || '-'],
-        ['Pathologies', (profile.pathologies || []).join(', ') || '-'],
-        ['Profil de vie', life.archetype_label || life.label || report.profile?.life_profile?.archetype_label || '-'],
-        ['Surveillance', life.supervision || report.profile?.life_profile?.supervision || '-'],
-        ['Routine actuelle', current.routine_label || current.time_of_day || '-'],
-        ['Scenario', current.movement_scenario || current.scenario || 'routine'],
-        ['Evenements 30j', report.history_30d?.alerts_count ?? historyRows.filter(r => r.alert_level > 0).length],
-        ['Tendance 30j', report.risk?.trend_30d || '-'],
+        ['Soignant referent', caregiver],
+        ['Pathologies', (safeProfile.pathologies || reportProfile.pathologies || []).join(', ') || '-'],
+        ['Mobilite / age', `${safeProfile.mobility || reportProfile.mobility || '-'} · ${safeProfile.age || reportProfile.age || '?'} ans`],
+        ['Profil de vie', life.archetype_label || life.label || '-'],
+        ['Surveillance', life.supervision || '-'],
+        ['Routine actuelle', routine],
+        ['Scenario', scenario],
+        ['Risque ML', `${Math.round((risk.ml_risk || 0) * 100)}% · ${risk.alert_level_name || 'Stable'}`],
+        ['Prediction 30/60 min', `${Math.round((risk.a2a_risk_30min || 0) * 100)}% / ${Math.round((risk.a2a_risk_60min || 0) * 100)}%`],
+        ['Moyennes 30j', `FC ${avg.heart_rate ?? '-'} · SpO2 ${avg.spo2 ?? '-'} · PA ${avg.blood_pressure_sys ?? '-'}`],
+        ['Evenements 30j', history.alerts_count ?? historyRows.filter(r => r.alert_level > 0).length],
+        ['Tendance 30j', risk.trend_30d || '-'],
       ].map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
     }
 

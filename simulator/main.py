@@ -10,7 +10,7 @@ import math
 import os
 import threading
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import paho.mqtt.client as mqtt
 import numpy as np
 from profiles import RESIDENTS, ZONES, CAREGIVERS, ROOM_ASSIGNMENTS, RESIDENT_ARCHETYPES, resident_archetype
@@ -25,8 +25,21 @@ NUM_RESIDENTS = int(os.getenv("NUM_RESIDENTS", 25))
 DEMO_RESIDENT = os.getenv("DEMO_RESIDENT")
 FACILITY_ROOM_COUNT = len(ROOM_ASSIGNMENTS)
 SIM_SPEED = float(os.getenv("SIM_SPEED", "1"))
+SIM_START_DATETIME = os.getenv("SIM_START_DATETIME", "2026-01-01T07:00:00+01:00")
 PUBLISH_LEGACY_TOPICS = os.getenv("PUBLISH_LEGACY_TOPICS", "false").lower() == "true"
 ROOM_AMBIENT_INTERVAL_TICKS = int(os.getenv("ROOM_AMBIENT_INTERVAL_TICKS", "10"))
+
+
+def _parse_sim_start(value: str) -> datetime:
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except Exception:
+        log.warning(f"SIM_START_DATETIME invalide ({value}), fallback 2026-01-01T07:00:00+01:00")
+        return datetime(2026, 1, 1, 7, 0, tzinfo=timezone(timedelta(hours=1)))
+
+
+SIM_START = _parse_sim_start(SIM_START_DATETIME)
+SIM_WEEKDAYS_FR = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
 
 
 def sensor_health(sensor_id, sensor_type, active, tick, critical=False):
@@ -225,8 +238,26 @@ class ResidentSimulator:
         log.info(f"[{self.id}] Profil simulateur mis a jour: mobilite={self.p.get('mobility')} risque={self.p.get('risk_factor')} scenarios={self.p.get('assigned_scenarios')}")
 
     def _simulated_minute(self):
-        """Une minute simulee par tick; le curseur vitesse accelere donc la journee."""
-        return (7 * 60 + self._tick) % (24 * 60)
+        """Minute dans la journee simulee; la date simulee continue d'avancer."""
+        dt = self._simulated_datetime()
+        return dt.hour * 60 + dt.minute
+
+    def _simulated_datetime(self):
+        """Une minute simulee par tick, sans reboucler sur la meme date."""
+        return SIM_START + timedelta(minutes=self._tick)
+
+    def _simulated_calendar(self):
+        dt = self._simulated_datetime()
+        day_index = max(0, (dt.date() - SIM_START.date()).days)
+        return {
+            "timestamp_simulated": dt.isoformat(),
+            "simulated_datetime": dt.isoformat(),
+            "simulated_date": dt.date().isoformat(),
+            "simulated_time": f"{dt.hour:02d}:{dt.minute:02d}",
+            "simulated_weekday": SIM_WEEKDAYS_FR[dt.weekday()],
+            "simulated_day_index": day_index,
+            "simulated_label": f"J+{day_index} · {SIM_WEEKDAYS_FR[dt.weekday()]} {dt.strftime('%d/%m/%Y')} {dt.strftime('%H:%M')}",
+        }
 
     def _time_of_day_factor(self):
         """Phase de vie quotidienne inspiree d'une journee type en EHPAD."""
@@ -248,8 +279,7 @@ class ResidentSimulator:
         return "nuit"
 
     def _simulated_clock_label(self):
-        m = self._simulated_minute()
-        return f"{m // 60:02d}:{m % 60:02d}"
+        return self._simulated_calendar()["simulated_time"]
 
     def _routine_label(self):
         tod = self._time_of_day_factor()
@@ -281,6 +311,8 @@ class ResidentSimulator:
             grouping = "transfert_zone_sensible"
         else:
             grouping = "routine_soins"
+        sim_calendar = self._simulated_calendar()
+        real_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         return {
             "period": tod,
             "label": self._routine_label(),
@@ -704,6 +736,8 @@ class ResidentSimulator:
             "couloir_principal", "couloir_aile_rdc", "couloir_aile_a_etage",
             "couloir_aile_b_etage", "salle_commune", "salle_manger", "salle_repos", "jardin", "patio"
         }) or sensor_events["fall_confirmed_by_room_sensor"]
+        sim_calendar = self._simulated_calendar()
+        real_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
         return {
             "resident_id": self.id,
@@ -731,7 +765,9 @@ class ResidentSimulator:
             "activity": self.current_activity,
             "sensor_events": sensor_events,
             "sensor_health": sensor_health_items,
-            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "timestamp": real_timestamp,
+            "timestamp_real": real_timestamp,
+            **sim_calendar,
             "vitals": {
                 "heart_rate": round(self._add_noise(self.hr, 1.5)),
                 "spo2": round(min(100, max(70, self._add_noise(self.spo2, 0.3))), 1),
@@ -781,6 +817,8 @@ class AmbientSensorSimulator:
     def tick(self, residents_states):
         """Met a jour les capteurs selon les residents reellement presents."""
         results = []
+        sim_ref = residents_states[0] if residents_states else {}
+        timestamp_real = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         for z in self.zones:
             sensors = z.get("sensors", [])
             present = [s for s in residents_states if s.get("current_zone") == z["id"] or s.get("location") == z["id"]]
@@ -810,7 +848,14 @@ class AmbientSensorSimulator:
                 )
                 for sensor in sensors
             ],
-            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "timestamp": timestamp_real,
+            "timestamp_real": timestamp_real,
+            "timestamp_simulated": sim_ref.get("timestamp_simulated"),
+            "simulated_datetime": sim_ref.get("simulated_datetime"),
+            "simulated_date": sim_ref.get("simulated_date"),
+            "simulated_time": sim_ref.get("simulated_time"),
+            "simulated_weekday": sim_ref.get("simulated_weekday"),
+            "simulated_day_index": sim_ref.get("simulated_day_index"),
                 "occupancy": occ,
                 "resident_ids": [s["resident_id"] for s in present],
                 "ble_seen": [s["resident_id"] for s in present] if any("ble" in sensor or "badge" in sensor for sensor in sensors) else [],
@@ -1008,8 +1053,18 @@ class EHPADSimulator:
 
     def _publish_summary(self, all_states):
         """Topic agrÃ©gÃ© pour le dashboard."""
+        ref = all_states[0] if all_states else {}
+        real_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         summary = {
-            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "timestamp": real_timestamp,
+            "timestamp_real": real_timestamp,
+            "timestamp_simulated": ref.get("timestamp_simulated"),
+            "simulated_datetime": ref.get("simulated_datetime"),
+            "simulated_date": ref.get("simulated_date"),
+            "simulated_time": ref.get("simulated_time"),
+            "simulated_weekday": ref.get("simulated_weekday"),
+            "simulated_day_index": ref.get("simulated_day_index"),
+            "simulated_label": ref.get("simulated_label"),
             "total_residents": len(all_states),
             "active_scenarios": sum(1 for s in all_states if s.get("scenario_active") or s.get("movement_scenario")),
             "residents": [
@@ -1030,6 +1085,16 @@ class EHPADSimulator:
                     "scenario": s.get("scenario_active"),
                     "movement_scenario": s.get("movement_scenario"),
                     "assigned_movement_scenario": s.get("assigned_movement_scenario"),
+                    "timestamp_simulated": s.get("timestamp_simulated"),
+                    "simulated_datetime": s.get("simulated_datetime"),
+                    "simulated_date": s.get("simulated_date"),
+                    "simulated_time": s.get("simulated_time"),
+                    "simulated_weekday": s.get("simulated_weekday"),
+                    "simulated_day_index": s.get("simulated_day_index"),
+                    "simulated_label": s.get("simulated_label"),
+                    "time_of_day": s.get("time_of_day"),
+                    "time_label": s.get("time_label"),
+                    "routine_label": s.get("routine_label"),
                     "caregiver": s["caregiver"],
                 }
                 for s in all_states

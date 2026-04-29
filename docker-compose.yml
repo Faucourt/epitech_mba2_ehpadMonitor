@@ -120,6 +120,9 @@ services:
       - FAMILLE_ADMIN_TOKEN=${FAMILLE_ADMIN_TOKEN:-ADMIN_EHPAD_2024}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3002,http://127.0.0.1:3002}
       - HTTPS_REQUIRED=${HTTPS_REQUIRED:-false}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-BN24BSDuKbRxhXfoXc3D7L5ciHbQ10h6Yq0f87hSTQFzDTnJdidR9wX-guVp_YAH10Um83gHe9Eyco_QpcRyS6k}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY:-ElrFmPXPbWGvQVsCoNFVJBeC1lNfZDJ5cL7mOuPhLVs}
+      - VAPID_CLAIMS_EMAIL=${VAPID_CLAIMS_EMAIL:-admin@ehpad.local}
     volumes:
       - ./data:/app/data
     networks:
@@ -172,11 +175,15 @@ services:
     restart: unless-stopped
     ports:
       - "3002:3000"
+      - "3443:3443"
     depends_on:
       backend:
         condition: service_healthy
     environment:
       - BACKEND_URL=http://backend:8000
+      - HTTPS_PORT=3443
+    volumes:
+      - ./dashboard/certs:/app/certs:ro
     networks:
       - ehpad_net
     healthcheck:

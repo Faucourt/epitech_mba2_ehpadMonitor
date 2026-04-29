@@ -19,6 +19,8 @@
     h2 { font-size: 12px; color: #9fb0c7; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
     button, a.button { border: 0; border-radius: 10px; background: #2563eb; color: white; padding: 9px 11px; font-weight: 800; text-decoration: none; cursor: pointer; font-size: 12px; line-height: 1.2; }
     a.button.secondary-link { background: #26334c; color: #dbeafe; border: 1px solid #334155; }
+    button.secondary { background: #26334c; color: #dbeafe; border: 1px solid #334155; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
     .content { padding: 12px; display: grid; gap: 12px; }
     .card { background: #151c2d; border: 1px solid #26334c; border-radius: 12px; padding: 12px; }
     .muted { color: #9fb0c7; }
@@ -41,6 +43,8 @@
     .row:last-child { border-bottom: 0; padding-bottom: 0; }
     .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; }
     .actions .full-dpi { grid-column: 1 / -1; background: #26334c; color: #dbeafe; border: 1px solid #334155; min-height: 34px; display: grid; place-items: center; font-size: 11px; padding: 7px 9px; }
+    .actions .wide { grid-column: 1 / -1; }
+    .action-status { margin-top: 8px; color: #9fb0c7; font-size: 12px; line-height: 1.35; }
     .danger { background: #dc2626; }
     .ok { background: #059669; }
     @media (max-width: 900px) {
@@ -89,27 +93,28 @@
 
       <div class="card">
         <h2>Action rapide</h2>
-        <div class="actions">
-          <button class="ok" onclick="trace('taken')">Je prends</button>
-          <button onclick="trace('seen')">Vu</button>
-          <button class="danger" onclick="trace('acknowledged')">Acquitter</button>
+        <div class="actions" id="action-panel">
+          <button class="ok" onclick="trace('taken')">Prendre en charge</button>
+          <button class="danger wide" onclick="trace('resolved')">Cloturer l'alerte</button>
           <a class="button full-dpi" href="#" id="full-link">DPI complet</a>
         </div>
+        <div class="action-status" id="action-status">Action non encore tracee depuis cette fiche.</div>
       </div>
     </section>
   </main>
 
   <script>
-    const BACKEND_HTTP = `${location.protocol}//${location.hostname}:8001`;
+    const BACKEND_HTTP = '';
     const residentId = location.pathname.split('/').filter(Boolean)[2] || 'R005';
     const params = new URLSearchParams(location.search);
     let staffId = params.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
     let staffToken = params.get('token') || localStorage.getItem('ehpad_staff_token') || '';
     const returnPath = params.get('return') || (staffId ? `/soignant/${staffId}` : '/soignant');
-    let breakGlassReason = '';
     let state = null;
     let dpi = null;
     let alertExplain = null;
+    let actionState = null;
+    const autoSeenKey = `ehpad_mobile_seen_${residentId}_${staffId}`;
 
     if (params.get('staff') && params.get('token')) {
       localStorage.setItem('ehpad_staff_id', staffId);
@@ -117,14 +122,20 @@
     }
 
     function authHeaders(extra = {}) {
-      const headers = staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
-      if (breakGlassReason) headers['X-Break-Glass-Reason'] = breakGlassReason;
-      return headers;
+      return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
     }
 
-    async function ensureStaffSession() {
+    function clearStaffSession() {
+      staffId = '';
+      staffToken = '';
+      localStorage.removeItem('ehpad_staff_id');
+      localStorage.removeItem('ehpad_staff_token');
+    }
+
+    async function ensureStaffSession(force = false) {
+      if (force) clearStaffSession();
       if (staffToken) return true;
-      const id = prompt("Identifiant soignant :");
+      const id = prompt("Identifiant soignant autorisé (ex: chef_garde) :");
       const password = id ? prompt("Mot de passe personnel :") : '';
       if (!id || !password) return false;
       const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
@@ -141,16 +152,17 @@
       return Boolean(staffToken);
     }
 
-    async function secureJson(url) {
-      let res = await fetch(url, { headers: authHeaders() });
-      if (res.status === 403 && !breakGlassReason) {
-        const reason = prompt("Acces hors perimetre. Justification bris de glace pour tracer l'ouverture du DPI :");
-        if (reason && reason.trim().length >= 8) {
-          breakGlassReason = reason.trim();
-          res = await fetch(url, { headers: authHeaders() });
-        }
+    async function secureJson(url, retry = true) {
+      const hasSession = await ensureStaffSession();
+      if (!hasSession) throw new Error('session soignant requise');
+      const res = await fetch(url, { headers: authHeaders() });
+      if (res.ok) return res.json();
+      if ((res.status === 401 || res.status === 403) && retry) {
+        const ok = await ensureStaffSession(true);
+        if (ok) return secureJson(url, false);
       }
-      return res.ok ? res.json() : null;
+      const detail = await res.json().catch(() => ({}));
+      throw new Error(detail.detail || `HTTP ${res.status}`);
     }
 
     function levelName(level) {
@@ -173,6 +185,10 @@
       state = calls[0].status === 'fulfilled' ? calls[0].value : null;
       dpi = calls[1].status === 'fulfilled' ? calls[1].value?.mini_dpi : null;
       alertExplain = calls[2].status === 'fulfilled' ? calls[2].value : null;
+      if (!state && !dpi) {
+        document.getElementById('status-card').innerHTML = '<div class="badge red">Acces refuse</div><h1>Mini DPI indisponible</h1><p class="muted small">Reconnecte-toi avec le soignant assigne ou chef_garde.</p>';
+        return;
+      }
       render();
     }
 
@@ -180,7 +196,7 @@
       const current = state || dpi?.current || {};
       const profile = state?.profile || dpi?.profile || {};
       const vitals = current.vitals || dpi?.current?.vitals || {};
-      const alert = alertExplain?.alert || current.active_alert || null;
+      const alert = currentAlert(current);
       const risk = dpi?.risk || {};
       const a2a = dpi?.a2a_prediction?.prediction || {};
       const level = Number(alert?.level || risk.alert_level || 0);
@@ -199,13 +215,34 @@
       }
       const fullParams = new URLSearchParams({ staff: staffId, token: staffToken });
       fullParams.set('return', returnPath);
-      if (breakGlassReason) fullParams.set('break_glass', breakGlassReason);
       document.getElementById('full-link').href = `/resident/${residentId}?${fullParams.toString()}`;
       document.getElementById('back-link').href = returnPath;
       renderAlert(alert, level, zone);
       renderPlan(current, room, zone, level, name);
       renderVitals(vitals);
       renderIA(risk, a2a);
+      renderActions(alert);
+      traceSeenOnce(alert);
+    }
+
+    function currentAlert(current = state || {}) {
+      if (alertExplain?.alert) return alertExplain.alert;
+      if (alertExplain?.alert_id) {
+        return {
+          id: alertExplain.alert_id,
+          resident_id: residentId,
+          level: alertExplain.level,
+          level_name: alertExplain.level_name,
+          reason: alertExplain.reason,
+          location_label: alertExplain.location?.label,
+          current_zone: alertExplain.location?.zone,
+          sensor_events: alertExplain.sensors?.events || {},
+          acknowledged: alertExplain.acknowledged,
+          taken_by: alertExplain.taken_by,
+          resolved: alertExplain.resolved,
+        };
+      }
+      return current?.active_alert || null;
     }
 
     function renderAlert(alert, level, zone) {
@@ -252,6 +289,47 @@
       ].map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
     }
 
+    function actionLabel(action) {
+      return {
+        seen: 'Consultee',
+        vu: 'Consultee',
+        prise_en_charge: 'Prise en charge',
+        taken: 'Prise en charge',
+        acknowledged: 'Lecture acquittee',
+        acquittee: 'Lecture acquittee',
+        resolved: 'Alerte cloturee',
+        resolue: 'Alerte cloturee',
+      }[action] || action || 'Action';
+    }
+
+    function renderActions(alert) {
+      const status = document.getElementById('action-status');
+      const panel = document.getElementById('action-panel');
+      const taken = actionState?.action === 'prise_en_charge' || alert?.taken_by;
+      const resolved = actionState?.action === 'resolue' || alert?.resolved;
+      if (resolved) {
+        panel.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        status.innerHTML = `<span class="badge green">Alerte cloturee</span> Intervention terminee et tracee${actionState?.at ? ` a ${new Date(actionState.at).toLocaleTimeString('fr-FR')}` : ''}.`;
+        return;
+      }
+      panel.querySelectorAll('button').forEach(btn => btn.disabled = false);
+      panel.querySelector('button.ok').textContent = taken ? 'Prise en charge active' : 'Prendre en charge';
+      panel.querySelector('button.ok').disabled = Boolean(taken);
+      if (taken) {
+        status.innerHTML = `<span class="badge green">Prise en charge</span> Escalade suspendue, pense a resoudre quand l'intervention est terminee.`;
+      } else if (actionState) {
+        status.innerHTML = `<span class="badge">${actionLabel(actionState.action)}</span> Tracee a ${new Date(actionState.at).toLocaleTimeString('fr-FR')}.`;
+      } else {
+        status.textContent = "Ouverture de la fiche tracee automatiquement. Choisis une action quand tu interviens.";
+      }
+    }
+
+    function traceSeenOnce(alert) {
+      if (!alert?.id || localStorage.getItem(autoSeenKey) === alert.id) return;
+      localStorage.setItem(autoSeenKey, alert.id);
+      trace('seen', true);
+    }
+
     function coordsForZone(zone, room) {
       const layout = Object.fromEntries(['101','102','103','104','105','106','107','108'].map((r, i) => [r, [30 + i * 38, 194]]));
       if (!String(room).startsWith('1')) {
@@ -291,9 +369,15 @@
       `;
     }
 
-    async function trace(action) {
-      const alert = alertExplain?.alert || {};
-      await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+    async function trace(action, silent = false) {
+      const hasSession = await ensureStaffSession();
+      if (!hasSession) {
+        if (!silent) document.getElementById('action-status').textContent = 'Action impossible: session soignant absente.';
+        return;
+      }
+      const alert = currentAlert() || {};
+      if (!silent) document.getElementById('action-status').textContent = 'Enregistrement en cours...';
+      const res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
         method: 'POST',
         headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
@@ -307,8 +391,15 @@
           reason: alert.reason || 'fiche intervention mobile',
           location: alert.location_label || state?.current_zone || null,
         }),
-      }).catch(() => {});
-      loadAll();
+      }).catch(() => null);
+      if (!res || !res.ok) {
+        if (!silent) document.getElementById('action-status').textContent = `Action non enregistree${res ? `: HTTP ${res.status}` : ''}.`;
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
+      actionState = data.trace || { action, at: new Date().toISOString() };
+      if (!silent) renderActions(alert);
+      if (!silent) setTimeout(loadAll, 600);
     }
 
     loadAll();

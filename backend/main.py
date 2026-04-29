@@ -1,10 +1,10 @@
-"""
-Backend EHPAD — FastAPI
-- Consomme MQTT (vitaux résidents + capteurs ambiants)
-- Stocke dans Redis (état courant) + InfluxDB (historique)
+﻿"""
+Backend EHPAD â€” FastAPI
+- Consomme MQTT (vitaux rÃ©sidents + capteurs ambiants)
+- Stocke dans Redis (Ã©tat courant) + InfluxDB (historique)
 - Moteur d'alertes 5 niveaux avec escalade
 - API REST + WebSocket pour le dashboard
-- Prédiction ML de malaise
+- PrÃ©diction ML de malaise
 """
 
 import json
@@ -66,6 +66,12 @@ RETENTION_ACCESS_LOG_DAYS = int(os.getenv("RETENTION_ACCESS_LOG_DAYS", "365"))
 RETENTION_AUDIT_DAYS = int(os.getenv("RETENTION_AUDIT_DAYS", "365"))
 PATIENT_DATA_DIR = Path(os.getenv("PATIENT_DATA_DIR", "/app/data/patients"))
 
+# --- Web Push VAPID ---
+VAPID_PUBLIC_KEY = os.getenv("VAPID_PUBLIC_KEY", "")
+VAPID_PRIVATE_KEY = os.getenv("VAPID_PRIVATE_KEY", "")
+VAPID_CLAIMS_EMAIL = os.getenv("VAPID_CLAIMS_EMAIL", "admin@ehpad.local")
+WEBPUSH_ENABLED = bool(VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY)
+
 SIMULATION_SCENARIOS = [
     "hypoxie", "tachycardie", "chute", "hypotension", "fievre",
     "chute_couloir", "chute_chambre", "malaise_salle_manger", "errance_nuit",
@@ -79,7 +85,7 @@ SIMULATION_SCENARIOS = [
     "risque_nuit", "jardin",
 ]
 
-# --- Profils résidents (importé depuis le simulateur, ou hardcodé)
+# --- Profils rÃ©sidents (importÃ© depuis le simulateur, ou hardcodÃ©)
 from resident_profiles import RESIDENTS_MAP, RESIDENTS_LIST, FAMILY_CODE_MAP, CAREGIVERS
 import auth as auth_module
 
@@ -109,11 +115,276 @@ ws_manager = WebSocketManager()
 alert_engine = AlertEngine(redis_client, ws_manager)
 ml_predictor = MalaisePredictor()
 
+# --- Web Push helpers ---
+def _push_subscriptions_key(staff_id: str) -> str:
+    return f"push:sub:{staff_id}"
+
+def _push_subscriptions_for_staff(staff_id: str) -> list[dict]:
+    raw = redis_client.get(_push_subscriptions_key(staff_id))
+    if not raw:
+        return []
+    try:
+        stored = json.loads(raw)
+        subs = stored if isinstance(stored, list) else [stored]
+        return [{**sub, "staff_id": staff_id} for sub in subs if isinstance(sub, dict)]
+    except Exception:
+        return []
+
+
+def _all_push_subscriptions() -> list[dict]:
+    """RÃ©cupÃ¨re toutes les souscriptions push actives (tous les soignants)."""
+    subs = []
+    for key in redis_client.scan_iter("push:sub:*"):
+        staff_id = key.split("push:sub:", 1)[-1]
+        raw = redis_client.get(key)
+        if raw:
+            try:
+                sub = json.loads(raw)
+                if isinstance(sub, list):
+                    subs.extend([{**s, "staff_id": staff_id} for s in sub if isinstance(s, dict)])
+                else:
+                    subs.append({**sub, "staff_id": staff_id})
+            except Exception:
+                pass
+    return subs
+
+def _send_web_push_sync(payload: dict, staff_ids: Optional[list[str]] = None) -> dict:
+    """Envoie un push cible par personnel (synchrone, Ã  appeler dans thread)."""
+    target_ids = list(dict.fromkeys(staff_ids or []))
+    result = {
+        "enabled": WEBPUSH_ENABLED,
+        "target_staff": target_ids,
+        "expected_staff": len(target_ids),
+        "subscriptions": 0,
+        "sent": 0,
+        "expired": 0,
+        "errors": [],
+        "staff": [],
+    }
+    if not WEBPUSH_ENABLED:
+        return result
+    try:
+        from pywebpush import webpush, WebPushException
+    except ImportError:
+        log.warning("pywebpush non installÃ©, push dÃ©sactivÃ©")
+        result["errors"].append("pywebpush non installe")
+        return result
+
+    import tempfile, base64
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    # Convertir la clÃ© privÃ©e base64url â†’ PEM si nÃ©cessaire
+    raw_key = VAPID_PRIVATE_KEY.replace("\\n", "\n").strip()
+    if "BEGIN" not in raw_key:
+        padding = "=" * ((4 - len(raw_key) % 4) % 4)
+        key_bytes = base64.urlsafe_b64decode(raw_key + padding)
+        private_value = int.from_bytes(key_bytes, "big")
+        private_key_obj = ec.derive_private_key(private_value, ec.SECP256R1())
+        pem = private_key_obj.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),
+        ).decode("utf-8")
+    else:
+        pem = raw_key
+
+    tmp = tempfile.NamedTemporaryFile(prefix="ehpad-vapid-", suffix=".pem", delete=False)
+    tmp.write(pem.encode("utf-8"))
+    tmp.flush()
+    tmp.close()
+    key_path = tmp.name
+
+    subs = []
+    if target_ids:
+        for staff_id in target_ids:
+            staff_subs = _push_subscriptions_for_staff(staff_id)
+            result["staff"].append({
+                "staff_id": staff_id,
+                "status": "pending" if staff_subs else "not_subscribed",
+                "subscriptions": len(staff_subs),
+                "sent": 0,
+                "expired": 0,
+                "errors": [],
+            })
+            subs.extend(staff_subs)
+    else:
+        subs = _all_push_subscriptions()
+        grouped = {}
+        for sub in subs:
+            grouped.setdefault(sub.get("staff_id", "unknown"), 0)
+            grouped[sub.get("staff_id", "unknown")] += 1
+        result["staff"] = [
+            {"staff_id": staff_id, "status": "pending", "subscriptions": count, "sent": 0, "expired": 0, "errors": []}
+            for staff_id, count in grouped.items()
+        ]
+    result["subscriptions"] = len(subs)
+
+    staff_result = {row["staff_id"]: row for row in result["staff"]}
+    for sub in subs:
+        staff_id = sub.get("staff_id", "unknown")
+        row = staff_result.get(staff_id)
+        try:
+            webpush(
+                subscription_info={"endpoint": sub["endpoint"], "keys": {"p256dh": sub["p256dh"], "auth": sub["auth"]}},
+                data=json.dumps(payload, ensure_ascii=False),
+                vapid_private_key=key_path,
+                vapid_claims={"sub": f"mailto:{VAPID_CLAIMS_EMAIL}"},
+                ttl=120,
+            )
+            result["sent"] += 1
+            if row:
+                row["sent"] += 1
+                row["status"] = "sent"
+        except WebPushException as exc:
+            code = getattr(getattr(exc, "response", None), "status_code", None)
+            if code in {404, 410}:
+                result["expired"] += 1
+                if row:
+                    row["expired"] += 1
+                    row["status"] = "expired"
+                # Souscription expirÃ©e â€” supprimer
+                key = _push_subscriptions_key(staff_id)
+                raw = redis_client.get(key)
+                if raw:
+                    try:
+                        stored = json.loads(raw)
+                        stored = [s for s in (stored if isinstance(stored, list) else [stored]) if s.get("endpoint") != sub["endpoint"]]
+                        redis_client.set(key, json.dumps(stored))
+                    except Exception:
+                        pass
+            else:
+                result["errors"].append(f"webpush {code or 'error'}")
+                if row:
+                    row["errors"].append(f"webpush {code or 'error'}")
+                    row["status"] = "error"
+        except Exception:
+            log.exception("Erreur envoi Web Push")
+            result["errors"].append("erreur envoi webpush")
+            if row:
+                row["errors"].append("erreur envoi webpush")
+                row["status"] = "error"
+    return result
+
+async def _send_web_push_async(payload: dict, staff_ids: Optional[list[str]] = None) -> dict:
+    return await asyncio.to_thread(_send_web_push_sync, payload, staff_ids)
+
+def _push_payload_for_alert(alert: dict) -> dict:
+    level = int(alert.get("level") or 0)
+    labels = {2: "Attention", 3: "Alerte", 4: "URGENCE", 5: "DANGER VITAL"}
+    return {
+        "title": f"N{level} {labels.get(level, 'Alerte')} - {alert.get('resident_name') or alert.get('resident_id')}",
+        "body": f"Ch.{alert.get('room', '?')} - {alert.get('reason', 'Alerte active')}",
+        "level": level,
+        "resident_id": alert.get("resident_id", ""),
+        "alert_id": alert.get("id", ""),
+    }
+
+def _push_target_staff_ids(alert: dict) -> list[str]:
+    """Retourne les destinataires smartphone reels selon les regles projet."""
+    level = int(alert.get("level") or 0)
+    if level < 2:
+        return []
+    ignored = {"dashboard", "samu_15", "son", "son_fort"}
+    ids = []
+    for item in alert.get("notified_staff") or []:
+        if not isinstance(item, dict):
+            continue
+        staff_id = item.get("id")
+        if staff_id and staff_id not in ignored and staff_id in CAREGIVERS and staff_id not in ids:
+            ids.append(staff_id)
+    if level in {2, 3}:
+        caregiver = alert.get("caregiver")
+        return [caregiver] if caregiver in CAREGIVERS else ids
+    if level == 4:
+        return [staff_id for staff_id in ("soignant_A", "soignant_B", "soignant_C", "chef_garde") if staff_id in CAREGIVERS]
+    return [staff_id for staff_id in ("soignant_A", "soignant_B", "soignant_C", "chef_garde", "direction") if staff_id in CAREGIVERS]
+
+
+def _push_delivery_key(alert_id: str) -> str:
+    return f"push:delivery:{alert_id}"
+
+
+def _record_push_delivery(alert: dict, result: dict, replay: bool = False) -> dict:
+    alert_id = alert.get("id") or alert.get("alert_id")
+    if not alert_id:
+        return result
+    delivered_staff = sum(1 for row in result.get("staff", []) if int(row.get("sent") or 0) > 0)
+    summary = {
+        "alert_id": alert_id,
+        "resident_id": alert.get("resident_id"),
+        "resident_name": alert.get("resident_name"),
+        "level": int(alert.get("level") or 0),
+        "target_staff": result.get("target_staff", []),
+        "expected_staff": result.get("expected_staff", 0),
+        "delivered_staff": delivered_staff,
+        "subscriptions": result.get("subscriptions", 0),
+        "sent": result.get("sent", 0),
+        "expired": result.get("expired", 0),
+        "errors": result.get("errors", []),
+        "staff": result.get("staff", []),
+        "replay": replay,
+        "at": datetime.utcnow().isoformat() + "Z",
+    }
+    redis_client.setex(_push_delivery_key(alert_id), RETENTION_AUDIT_DAYS * 86400, json.dumps(summary, ensure_ascii=False))
+    redis_client.lpush("push:audit", json.dumps(summary, ensure_ascii=False))
+    redis_client.ltrim("push:audit", 0, 999)
+    redis_client.expire("push:audit", RETENTION_AUDIT_DAYS * 86400)
+    return summary
+
+
+def _push_delivery_summary(alert_id: str) -> Optional[dict]:
+    raw = redis_client.get(_push_delivery_key(alert_id))
+    if not raw:
+        return None
+    try:
+        return json.loads(raw)
+    except Exception:
+        return None
+
+
+def _attach_push_delivery(alert: dict) -> dict:
+    if not alert or not alert.get("id"):
+        return alert
+    delivery = _push_delivery_summary(alert["id"])
+    if delivery:
+        alert = dict(alert)
+        alert["push_delivery"] = delivery
+    return alert
+
+
+def _dispatch_alert_push_sync(alert: dict, replay: bool = False, forced_staff_ids: Optional[list[str]] = None) -> dict:
+    level = int(alert.get("level") or 0)
+    if level < 2:
+        return {"enabled": WEBPUSH_ENABLED, "target_staff": [], "expected_staff": 0, "subscriptions": 0, "sent": 0, "expired": 0, "errors": [], "staff": []}
+    staff_ids = forced_staff_ids or _push_target_staff_ids(alert)
+    result = _send_web_push_sync(_push_payload_for_alert(alert), staff_ids=staff_ids)
+    return _record_push_delivery(alert, result, replay=replay)
+
+
+async def _dispatch_alert_push_async(alert: dict, replay: bool = False, forced_staff_ids: Optional[list[str]] = None) -> dict:
+    return await asyncio.to_thread(_dispatch_alert_push_sync, alert, replay, forced_staff_ids)
+
+
+def _replay_active_push_alerts_for_staff(staff_id: str) -> int:
+    """Renvoie les alertes actives quand un téléphone vient de s'inscrire."""
+    sent = 0
+    for alert in list(alert_engine.active_alerts.values()):
+        data = alert.to_dict() if hasattr(alert, "to_dict") else dict(alert)
+        if int(data.get("level") or 0) < 2:
+            continue
+        if staff_id not in _push_target_staff_ids(data):
+            continue
+        result = _dispatch_alert_push_sync(data, replay=True, forced_staff_ids=[staff_id])
+        if result.get("sent", 0) > 0:
+            sent += 1
+    return sent
+
 # InfluxDB
 influx = InfluxDBClient(url=INFLUX_HOST, token=INFLUX_TOKEN, org=INFLUX_ORG)
 write_api = influx.write_api(write_options=SYNCHRONOUS)
 
-# Loop asyncio partagée
+# Loop asyncio partagÃ©e
 _loop: Optional[asyncio.AbstractEventLoop] = None
 _last_influx_write: dict[str, float] = {}
 _last_ws_push: dict[str, float] = {}
@@ -816,6 +1087,13 @@ def _build_resident_daily_report(resident_id: str, report_date: Optional[str] = 
             "activity": state.get("activity"),
             "routine": state.get("routine_label") or state.get("time_of_day"),
             "time_label": state.get("time_label"),
+            "timestamp_simulated": state.get("timestamp_simulated"),
+            "simulated_datetime": state.get("simulated_datetime"),
+            "simulated_date": state.get("simulated_date"),
+            "simulated_time": state.get("simulated_time"),
+            "simulated_weekday": state.get("simulated_weekday"),
+            "simulated_day_index": state.get("simulated_day_index"),
+            "simulated_label": state.get("simulated_label"),
             "vitals": v,
             "movement": state.get("movement", {}),
             "sensor_events": state.get("sensor_events", {}),
@@ -978,7 +1256,7 @@ def predictive_analysis_loop():
 # ============================================================
 
 def on_connect(client, userdata, flags, rc):
-    log.info(f"Connecté au broker MQTT (rc={rc})")
+    log.info(f"ConnectÃ© au broker MQTT (rc={rc})")
     client.subscribe("ehpad/residents/+/vitals", qos=1)
     client.subscribe("ehpad/residents/+/movement", qos=1)
     client.subscribe("ehpad/zones/+/ambient", qos=0)
@@ -1021,7 +1299,7 @@ def on_message(client, userdata, msg):
 
 
 def _track_routine(state: dict):
-    """Enregistre le comportement horaire du résident et détecte les déviations (C4)."""
+    """Enregistre le comportement horaire du rÃ©sident et dÃ©tecte les dÃ©viations (C4)."""
     rid = state["resident_id"]
     tod = state.get("time_of_day", "unknown")
     v = state["vitals"]
@@ -1031,7 +1309,7 @@ def _track_routine(state: dict):
     })
     history_key = f"routine:{rid}:{tod}"
     redis_client.lpush(history_key, entry)
-    redis_client.ltrim(history_key, 0, 99)       # 100 mesures max par période
+    redis_client.ltrim(history_key, 0, 99)       # 100 mesures max par pÃ©riode
     redis_client.expire(history_key, 7 * 86400)  # TTL 7 jours
 
     history = redis_client.lrange(history_key, 1, -1)  # exclure la mesure courante
@@ -1056,7 +1334,7 @@ def _handle_vitals(state: dict):
         return
     now = time.time()
 
-    # Enrichir avec profil résident
+    # Enrichir avec profil rÃ©sident
     profile = RESIDENTS_MAP.get(rid, {})
     state["caregiver"] = _resident_caregiver(rid, profile)
     caregiver_info = _staff_status(state["caregiver"])
@@ -1065,7 +1343,7 @@ def _handle_vitals(state: dict):
     age = profile.get("age", 80)
     base_risk = profile.get("risk_factor", 0.3)
 
-    # Prédiction ML
+    # PrÃ©diction ML
     ml_prediction = ml_predictor.predict_horizons(
         rid, state["vitals"], state.get("movement", {}), age, base_risk
     )
@@ -1092,13 +1370,13 @@ def _handle_vitals(state: dict):
         }))
         redis_client.expire("sensors:health", 3600)
 
-    # Analyse de routine C4 : détecter déviations comportementales
+    # Analyse de routine C4 : dÃ©tecter dÃ©viations comportementales
     routine_analysis = update_and_detect(redis_client, state)
     state["routine_analysis"] = routine_analysis
     if routine_analysis.get("alert_level", 0) >= 2:
         state["routine_deviation"] = " ; ".join(routine_analysis.get("flags", [])[:3])
 
-    # Stocker état courant dans Redis
+    # Stocker Ã©tat courant dans Redis
     redis_client.setex(f"resident:{rid}:state", 30, json.dumps(state))
     redis_client.hset("residents:all", rid, json.dumps({
         "id": rid,
@@ -1127,6 +1405,14 @@ def _handle_vitals(state: dict):
         "time_of_day": state.get("time_of_day"),
         "time_label": state.get("time_label"),
         "routine_label": state.get("routine_label"),
+        "timestamp_real": state.get("timestamp_real") or state.get("timestamp"),
+        "timestamp_simulated": state.get("timestamp_simulated"),
+        "simulated_datetime": state.get("simulated_datetime"),
+        "simulated_date": state.get("simulated_date"),
+        "simulated_time": state.get("simulated_time"),
+        "simulated_weekday": state.get("simulated_weekday"),
+        "simulated_day_index": state.get("simulated_day_index"),
+        "simulated_label": state.get("simulated_label"),
         "care_level": state.get("care_level"),
         "meal_mode": state.get("meal_mode"),
         "dining_table": state.get("dining_table"),
@@ -1136,10 +1422,10 @@ def _handle_vitals(state: dict):
         "last_update": datetime.utcnow().isoformat() + "Z",
     }))
 
-    # Évaluer alertes
+    # Ã‰valuer alertes
     alert = alert_engine.evaluate(state)
 
-    # Écrire dans InfluxDB
+    # Ã‰crire dans InfluxDB
     if now - _last_influx_write.get(rid, 0) >= INFLUX_SAMPLE_INTERVAL_S:
         _last_influx_write[rid] = now
         _write_influx(state)
@@ -1176,6 +1462,14 @@ def _handle_vitals(state: dict):
                 "time_of_day": state.get("time_of_day"),
                 "time_label": state.get("time_label"),
                 "routine_label": state.get("routine_label"),
+                "timestamp_real": state.get("timestamp_real") or state.get("timestamp"),
+                "timestamp_simulated": state.get("timestamp_simulated"),
+                "simulated_datetime": state.get("simulated_datetime"),
+                "simulated_date": state.get("simulated_date"),
+                "simulated_time": state.get("simulated_time"),
+                "simulated_weekday": state.get("simulated_weekday"),
+                "simulated_day_index": state.get("simulated_day_index"),
+                "simulated_label": state.get("simulated_label"),
                 "care_level": state.get("care_level"),
                 "meal_mode": state.get("meal_mode"),
                 "dining_table": state.get("dining_table"),
@@ -1187,8 +1481,14 @@ def _handle_vitals(state: dict):
             _loop
         )
         if alert:
+            a = alert.to_dict()
+            if a.get("level", 0) >= 2 and WEBPUSH_ENABLED:
+                asyncio.run_coroutine_threadsafe(
+                    _dispatch_alert_push_async(a),
+                    _loop
+                )
             asyncio.run_coroutine_threadsafe(
-                ws_manager.send_alert(alert.to_dict()),
+                ws_manager.send_alert(a),
                 _loop
             )
 
@@ -1238,7 +1538,7 @@ def _handle_ambient(data: dict):
             }))
             redis_client.expire("sensors:health", 3600)
 
-        # Détection de fugue : résident en zone sortie ou hors site
+        # DÃ©tection de fugue : rÃ©sident en zone sortie ou hors site
         if data.get("zone_id") == "hors_ehpad" and data.get("occupancy", 0) > 0:
             _check_elopement(data)
         elif data.get("zone_type") == "entree" and data.get("occupancy", 0) > 0:
@@ -1248,7 +1548,7 @@ def _handle_ambient(data: dict):
 
 
 def _check_elopement(zone_data: dict):
-    """Vérifie si un résident désorienté (alzheimer) est à l'entrée hors horaires."""
+    """VÃ©rifie si un rÃ©sident dÃ©sorientÃ© (alzheimer) est Ã  l'entrÃ©e hors horaires."""
     alert = {
         "type": "elopement_risk",
         "zone": zone_data["zone_name"],
@@ -1289,7 +1589,7 @@ def _write_influx(state: dict):
 
 
 # ============================================================
-# Escalade périodique
+# Escalade pÃ©riodique
 # ============================================================
 
 def escalation_loop():
@@ -1298,6 +1598,11 @@ def escalation_loop():
             escalated = alert_engine.check_escalations()
             for alert_dict in escalated:
                 if _loop and not _loop.is_closed():
+                    if int(alert_dict.get("level") or 0) >= 2 and WEBPUSH_ENABLED:
+                        asyncio.run_coroutine_threadsafe(
+                            _dispatch_alert_push_async(alert_dict),
+                            _loop,
+                        )
                     asyncio.run_coroutine_threadsafe(
                         ws_manager.send_alert(alert_dict),
                         _loop,
@@ -1311,6 +1616,101 @@ def escalation_loop():
 # REST API
 # ============================================================
 
+# --- Web Push endpoints ---
+
+class PushSubscribeRequest(BaseModel):
+    staff_id: str = "soignant"
+    endpoint: str
+    p256dh: str
+    auth: str
+
+class PushTestRequest(BaseModel):
+    staff_id: str = "soignant_A"
+    resident_id: str = DEMO_RESIDENT
+    level: int = 3
+    title: Optional[str] = None
+    body: Optional[str] = None
+
+@app.get("/api/push/config")
+def push_config():
+    """Retourne la clÃ© publique VAPID et si le push est activÃ©."""
+    return {"enabled": WEBPUSH_ENABLED, "public_key": VAPID_PUBLIC_KEY}
+
+@app.get("/api/push/status")
+def push_status(authorization: str = Header(None)):
+    session = _require_staff_session(authorization)
+    staff_id = session["sub"]
+    raw = redis_client.get(_push_subscriptions_key(staff_id))
+    subs = json.loads(raw) if raw else []
+    return {"enabled": WEBPUSH_ENABLED, "staff_id": staff_id, "subscriptions": len(subs)}
+
+@app.post("/api/push/subscribe")
+def push_subscribe(body: PushSubscribeRequest, authorization: str = Header(None)):
+    """Enregistre une souscription push pour un soignant."""
+    session = _require_staff_session(authorization)
+    if session["sub"] != body.staff_id and not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Souscription refusee pour un autre personnel")
+    key = _push_subscriptions_key(body.staff_id)
+    raw = redis_client.get(key)
+    subs: list[dict] = json.loads(raw) if raw else []
+    # Ã‰vite les doublons d'endpoint
+    subs = [s for s in subs if s.get("endpoint") != body.endpoint]
+    subs.append({"endpoint": body.endpoint, "p256dh": body.p256dh, "auth": body.auth})
+    redis_client.set(key, json.dumps(subs))
+    redis_client.expire(key, 86400 * 30)  # expire aprÃ¨s 30 jours
+    replayed = _replay_active_push_alerts_for_staff(body.staff_id)
+    log.info(f"Push subscribe: staff={body.staff_id} endpoint={body.endpoint[:40]} - replayed={replayed}")
+    return {"status": "subscribed", "staff_id": body.staff_id, "subscriptions": len(subs), "replayed_active_alerts": replayed}
+
+@app.delete("/api/push/subscribe")
+def push_unsubscribe(endpoint: str, staff_id: str = "soignant"):
+    """Supprime une souscription push."""
+    key = _push_subscriptions_key(staff_id)
+    raw = redis_client.get(key)
+    if raw:
+        subs = [s for s in json.loads(raw) if s.get("endpoint") != endpoint]
+        redis_client.set(key, json.dumps(subs))
+    return {"status": "unsubscribed"}
+
+@app.post("/api/push/test")
+async def push_test(body: PushTestRequest, authorization: str = Header(None)):
+    """Envoie une notification de test au navigateur inscrit pour valider smartphone/PWA."""
+    session = _require_staff_session(authorization)
+    target_staff = body.staff_id
+    if session["sub"] != target_staff and not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Test push refuse pour un autre personnel")
+    payload = {
+        "title": body.title or f"Test push EHPAD - N{body.level}",
+        "body": body.body or f"Notification test pour {body.resident_id}",
+        "level": max(1, min(5, int(body.level or 3))),
+        "resident_id": body.resident_id,
+        "alert_id": f"test-{int(time.time())}",
+    }
+    result = await _send_web_push_async(payload, staff_ids=[target_staff])
+    return {"ok": True, "payload": payload, "result": result}
+
+
+@app.post("/api/push/test-all")
+async def push_test_all(body: PushTestRequest, authorization: str = Header(None)):
+    """Test admin: simule la diffusion large niveau 4/5 sur les telephones inscrits."""
+    session = _require_staff_session(authorization)
+    if not _is_privileged_staff(session["sub"], session.get("role")):
+        raise HTTPException(403, "Test global reserve chef de garde/direction")
+    level = max(4, min(5, int(body.level or 4)))
+    staff_ids = ["soignant_A", "soignant_B", "soignant_C", "chef_garde"]
+    if level >= 5:
+        staff_ids.append("direction")
+    payload = {
+        "title": body.title or f"Test diffusion EHPAD - N{level}",
+        "body": body.body or "Test de routage push collectif",
+        "level": level,
+        "resident_id": body.resident_id,
+        "alert_id": f"test-all-{int(time.time())}",
+    }
+    result = await _send_web_push_async(payload, staff_ids=staff_ids)
+    return {"ok": True, "payload": payload, "result": result}
+
+
 @app.get("/")
 def root():
     return {"service": "EHPAD Backend", "status": "ok"}
@@ -1318,7 +1718,7 @@ def root():
 
 @app.get("/health")
 def health():
-    """Healthcheck pour Docker — vérifie Redis + compte les résidents actifs."""
+    """Healthcheck pour Docker â€” vÃ©rifie Redis + compte les rÃ©sidents actifs."""
     try:
         redis_client.ping()
         resident_count = len(redis_client.hgetall("residents:all"))
@@ -1330,13 +1730,13 @@ def health():
 
 @app.get("/api/residents")
 def get_all_residents():
-    """Liste tous les résidents avec leur état courant."""
+    """Liste tous les rÃ©sidents avec leur Ã©tat courant."""
     data = redis_client.hgetall("residents:all")
     residents = []
     for rid, raw in data.items():
         try:
             r = json.loads(raw)
-            # Ajouter l'alerte active si présente
+            # Ajouter l'alerte active si prÃ©sente
             r["active_alert"] = _active_alert_for_resident(rid)
             residents.append(r)
         except Exception:
@@ -1349,7 +1749,7 @@ def get_resident(resident_id: str, request: Request, authorization: str = Header
     _require_resident_access(resident_id, authorization, request, "resident_live_view", x_break_glass_reason)
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "Résident non trouvé")
+        raise HTTPException(404, "RÃ©sident non trouvÃ©")
     state = json.loads(raw)
     # Historique comportemental
     profile = _effective_resident_profile(resident_id)
@@ -1362,7 +1762,7 @@ def get_resident(resident_id: str, request: Request, authorization: str = Header
 def get_resident_history(resident_id: str, request: Request, minutes: int = 60, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
     _require_resident_access(resident_id, authorization, request, "resident_history_view", x_break_glass_reason)
     minutes = max(1, min(int(minutes or 30), 24 * 60))
-    """Retourne l'historique InfluxDB du résident."""
+    """Retourne l'historique InfluxDB du rÃ©sident."""
     try:
         query_api = influx.query_api()
         query = f'''
@@ -1692,9 +2092,31 @@ def get_patient_dossier_history(
 
 @app.get("/api/alerts")
 def get_alerts():
-    active = alert_engine.get_all_active()
-    history = alert_engine.get_history(50)
+    active = [_attach_push_delivery(a) for a in alert_engine.get_all_active()]
+    history = [_attach_push_delivery(a) for a in alert_engine.get_history(50)]
     return {"active": active, "history": history}
+
+
+@app.get("/api/push/delivery/{alert_id}")
+def get_push_delivery(alert_id: str, authorization: str = Header(None)):
+    _require_staff_session(authorization)
+    delivery = _push_delivery_summary(alert_id)
+    if not delivery:
+        raise HTTPException(404, "Trace push introuvable")
+    return delivery
+
+
+@app.get("/api/push/audit")
+def get_push_audit(limit: int = 50, authorization: str = Header(None)):
+    _require_staff_session(authorization)
+    limit = max(1, min(limit, 200))
+    rows = []
+    for raw in redis_client.lrange("push:audit", 0, limit - 1):
+        try:
+            rows.append(json.loads(raw))
+        except Exception:
+            continue
+    return {"count": len(rows), "audit": rows}
 
 
 @app.get("/api/alerts/config")
@@ -1729,8 +2151,8 @@ def get_alert_config():
 def acknowledge_alert(resident_id: str, by: str = "soignant"):
     ok = alert_engine.acknowledge(resident_id, by)
     if not ok:
-        raise HTTPException(404, "Pas d'alerte active pour ce résident")
-    return {"ok": True, "message": f"Alerte acquittée par {by}"}
+        raise HTTPException(404, "Pas d'alerte active pour ce rÃ©sident")
+    return {"ok": True, "message": f"Alerte acquittÃ©e par {by}"}
 
 
 @app.get("/api/alerts/explain/{resident_id}")
@@ -1749,6 +2171,7 @@ def explain_alert(resident_id: str):
             "known": False,
             "professional_summary": "Aucune alerte active ou recente pour ce resident.",
         }
+    alert = _attach_push_delivery(alert)
     trigger = alert.get("trigger_data", {})
     return {
         "resident_id": resident_id,
@@ -1774,7 +2197,12 @@ def explain_alert(resident_id: str):
         },
         "action": alert.get("action"),
         "acknowledged": alert.get("acknowledged"),
+        "acknowledged_by": alert.get("acknowledged_by"),
+        "taken_by": alert.get("taken_by"),
+        "taken_at": alert.get("taken_at"),
+        "resolved": alert.get("resolved"),
         "notified_staff": alert.get("notified_staff", []),
+        "push_delivery": alert.get("push_delivery"),
         "professional_summary": (
             f"{alert.get('level_name')} pour {alert.get('resident_name')}: {alert.get('reason')} "
             f"a {alert.get('location_label') or alert.get('current_zone')}. "
@@ -1818,9 +2246,10 @@ def get_scalability_metrics():
     target_messages_s = resident_count * 6
     while _mqtt_window and now - _mqtt_window[0][0] > 60:
         _mqtt_window.popleft()
-    window_total = len(_mqtt_window)
-    window_vitals = sum(1 for _, topic in _mqtt_window if topic.endswith("/vitals"))
-    window_ambient = sum(1 for _, topic in _mqtt_window if "/ambient" in topic or "/door/" in topic)
+    mqtt_window = list(_mqtt_window)
+    window_total = len(mqtt_window)
+    window_vitals = sum(1 for _, topic in mqtt_window if topic.endswith("/vitals"))
+    window_ambient = sum(1 for _, topic in mqtt_window if "/ambient" in topic or "/door/" in topic)
     state_ages = []
     for raw in residents_raw.values():
         try:
@@ -1882,7 +2311,7 @@ def get_scalability_metrics():
 
 
 def _staff_snapshot() -> dict:
-    active_alerts = alert_engine.get_all_active()
+    active_alerts = [_attach_push_delivery(a) for a in alert_engine.get_all_active()]
     residents_raw = redis_client.hgetall("residents:all")
     live_residents = {}
     for rid, raw in residents_raw.items():
@@ -1936,6 +2365,7 @@ def _staff_snapshot() -> dict:
                     "location": a.get("location_label"),
                     "status": _notification_status(caregiver_id, _notification_key(a)).get("action", "envoyee"),
                     "status_at": _notification_status(caregiver_id, _notification_key(a)).get("at"),
+                    "push_delivery": a.get("push_delivery"),
                     "samu_status": (_ensure_samu_call(a) or {}).get("status") if int(a.get("level") or 0) >= 5 else None,
                 }
                 for a in notified_alerts
@@ -2424,7 +2854,7 @@ def get_summary():
     raw = redis_client.get("ehpad:summary")
     if raw:
         return json.loads(raw)
-    return {"error": "Pas encore de données"}
+    return {"error": "Pas encore de donnÃ©es"}
 
 
 @app.get("/api/project/readiness")
@@ -2507,7 +2937,7 @@ def get_daily_report(date: str):
 def get_daily_resident_report(date: str, resident_id: str):
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
-    return _build_resident_daily_report(resident_id, report_date=date, force=False)
+    return _build_resident_daily_report(resident_id, report_date=date, force=True)
 
 
 @app.get("/api/residents/{resident_id}/dpi")
@@ -2526,7 +2956,7 @@ def get_resident_dpi(
     return {
         "resident_id": resident_id,
         "date": report_date,
-        "mini_dpi": _build_resident_daily_report(resident_id, report_date=report_date, force=False),
+        "mini_dpi": _build_resident_daily_report(resident_id, report_date=report_date, force=True),
     }
 
 
@@ -2582,7 +3012,7 @@ def get_a2a_predictions():
 
 @app.get("/api/ml/metrics")
 def get_ml_metrics():
-    """Métriques de performance du modèle ML (accuracy, AUC, F1)."""
+    """MÃ©triques de performance du modÃ¨le ML (accuracy, AUC, F1)."""
     if not ml_predictor.metrics:
         return {"status": "model_loaded_from_disk", "metrics": {}}
     return {"status": "ok", "metrics": ml_predictor.metrics}
@@ -2670,7 +3100,7 @@ def famille_logout(authorization: str = _Header(None)):
 
 @app.get("/api/famille/{resident_id}")
 def get_famille_view(resident_id: str, authorization: str = _Header(None)):
-    """Vue famille C3 — etat general uniquement, sans donnees medicales."""
+    """Vue famille C3 â€” etat general uniquement, sans donnees medicales."""
     session = _require_famille_token(authorization)
     if session["resident_id"] != resident_id:
         raise HTTPException(403, "Acces refuse a ce resident")
@@ -2850,8 +3280,8 @@ def _llm_alerts_for_resident(resident_id: str) -> list[dict]:
 @app.get("/api/llm/report/{resident_id}")
 async def get_llm_report(resident_id: str, force: bool = False):
     """
-    Rapport LLM quotidien — synchrone, attend le résultat.
-    RAG KB clinique (HAS/RCP), sortie JSON structurée Pydantic, suivi latence.
+    Rapport LLM quotidien â€” synchrone, attend le rÃ©sultat.
+    RAG KB clinique (HAS/RCP), sortie JSON structurÃ©e Pydantic, suivi latence.
     """
     report_date = _local_report_date()
     if not force:
@@ -2862,7 +3292,7 @@ async def get_llm_report(resident_id: str, force: bool = False):
 
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "Résident non trouvé")
+        raise HTTPException(404, "RÃ©sident non trouvÃ©")
     state = json.loads(raw)
     profile = RESIDENTS_MAP.get(resident_id, {})
     alerts_today = _llm_alerts_for_resident(resident_id)
@@ -2891,12 +3321,12 @@ async def get_llm_report(resident_id: str, force: bool = False):
 @app.post("/api/llm/report/{resident_id}/start")
 async def start_llm_report(resident_id: str):
     """
-    Lance la génération LLM en arrière-plan, retourne un job_id immédiatement.
-    Utiliser GET /api/llm/result/{job_id} pour récupérer le résultat.
+    Lance la gÃ©nÃ©ration LLM en arriÃ¨re-plan, retourne un job_id immÃ©diatement.
+    Utiliser GET /api/llm/result/{job_id} pour rÃ©cupÃ©rer le rÃ©sultat.
     """
     raw = redis_client.get(f"resident:{resident_id}:state")
     if not raw:
-        raise HTTPException(404, "Résident non trouvé")
+        raise HTTPException(404, "RÃ©sident non trouvÃ©")
     state = json.loads(raw)
     profile = RESIDENTS_MAP.get(resident_id, {})
     alerts_today = _llm_alerts_for_resident(resident_id)
@@ -2984,13 +3414,13 @@ def daily_llm_report_loop():
 
 @app.get("/api/llm/result/{job_id}")
 async def get_llm_result(job_id: str):
-    """Résultat d'un job LLM lancé via /start — retourne pending ou done."""
+    """RÃ©sultat d'un job LLM lancÃ© via /start â€” retourne pending ou done."""
     return get_report_result(redis_client, job_id)
 
 
 @app.get("/api/llm/audit")
 async def get_llm_audit():
-    """Historique des 200 derniers appels LLM : latence, modèle, niveau risque."""
+    """Historique des 200 derniers appels LLM : latence, modÃ¨le, niveau risque."""
     raw_entries = redis_client.lrange("llm:audit", 0, 199)
     entries = [json.loads(e) for e in raw_entries]
     avg_ms = int(sum(e.get("duration_ms", 0) for e in entries) / len(entries)) if entries else 0
@@ -3005,7 +3435,7 @@ async def get_llm_audit():
 async def websocket_endpoint(websocket: WebSocket):
     await ws_manager.connect(websocket)
     try:
-        # Envoyer l'état initial
+        # Envoyer l'Ã©tat initial
         residents_raw = redis_client.hgetall("residents:all")
         residents = [json.loads(v) for v in residents_raw.values()]
         await websocket.send_json({
@@ -3050,7 +3480,7 @@ async def startup():
     except Exception as e:
         log.warning(f"Seed comptes personnel echoue : {e}")
 
-    # Connexion MQTT en thread séparé
+    # Connexion MQTT en thread sÃ©parÃ©
     def mqtt_thread():
         client = mqtt.Client(client_id=f"ehpad_backend_{os.getpid()}")
         client.on_connect = on_connect
@@ -3074,4 +3504,5 @@ async def startup():
     threading.Thread(target=predictive_analysis_loop, daemon=True).start()
     threading.Thread(target=daily_llm_report_loop, daemon=True).start()
 
-    log.info("Backend EHPAD démarré ✓")
+    log.info("Backend EHPAD dÃ©marrÃ© âœ“")
+

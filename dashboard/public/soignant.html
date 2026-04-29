@@ -1,9 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EPicare Palace — Soignants</title>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="EPicare Soignant">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <title>EPicare Palace â€” Soignants</title>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; background: #101522; color: #e5edf8; }
@@ -59,6 +66,19 @@
     .demo-row.header { color: #9fb0c7; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
     .demo-row code { display: block; background: #111827; border: 1px solid #26334c; color: #bfdbfe; border-radius: 8px; padding: 7px 8px; user-select: all; font-family: Consolas, monospace; min-width: 0; overflow-wrap: anywhere; }
     .demo-fill { background: #26334c; color: #dbeafe; border: 1px solid #334155; min-height: 34px; padding: 7px 9px; white-space: nowrap; }
+    .critical-overlay { position: fixed; inset: 0; z-index: 40; display: none; align-items: stretch; justify-content: center; background: #220608; color: #fff; }
+    .critical-overlay.show { display: flex; }
+    .critical-overlay.level-5 { background: #000; color: #ffdddd; animation: criticalBlink 1s step-end infinite; }
+    @keyframes criticalBlink { 0%, 100% { box-shadow: inset 0 0 0 0 rgba(255,0,0,.8); } 50% { box-shadow: inset 0 0 0 999px rgba(127,0,0,.16); } }
+    .critical-card { width: min(720px, 100%); min-height: 100dvh; padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)); display: grid; align-content: center; gap: 14px; }
+    .critical-level { font-size: clamp(28px, 8vw, 58px); font-weight: 950; letter-spacing: .03em; text-align: center; color: #fecaca; }
+    .critical-overlay.level-5 .critical-level { color: #ff3333; }
+    .critical-name { font-size: clamp(24px, 7vw, 46px); font-weight: 900; text-align: center; }
+    .critical-location { border: 2px solid rgba(254,202,202,.6); background: rgba(255,255,255,.08); border-radius: 14px; padding: 14px; font-size: clamp(18px, 5vw, 28px); font-weight: 850; text-align: center; }
+    .critical-reason { font-size: 15px; line-height: 1.45; color: #fee2e2; text-align: center; }
+    .critical-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .critical-actions button, .critical-actions .link-button { min-height: 52px; font-size: 14px; border-radius: 12px; }
+    .critical-actions .wide { grid-column: 1 / -1; }
     @media (max-width: 900px) {
       body { background: #0f172a; }
       .page { display: block; min-height: 100dvh; padding: 0; }
@@ -138,7 +158,7 @@
       <section class="panel">
         <h1>Acces global personnel</h1>
         <p>Adresse commune : <b>/soignant</b>. Chaque personne saisit son identifiant. Les liens directs restent possibles : <b>/soignant/soignant_C</b>.</p>
-        <p>Les actions <b>Vu</b>, <b>Je prends</b> et <b>Acquitter</b> sont enregistrees dans Redis avec l'identite, l'heure, le resident, le niveau et la localisation.</p>
+        <p>L'ouverture d'une alerte est tracee automatiquement. Les actions humaines visibles sont <b>Prendre en charge</b> puis <b>Cloturer l'alerte</b>.</p>
       </section>
       <section class="panel">
         <h2>Resume</h2>
@@ -155,8 +175,24 @@
     </aside>
   </main>
 
+  <section id="critical-overlay" class="critical-overlay" aria-live="assertive">
+    <div class="critical-card">
+      <div class="critical-level" id="critical-level">URGENCE</div>
+      <div class="critical-name" id="critical-name">Resident</div>
+      <div class="critical-location" id="critical-location">Localisation</div>
+      <div class="critical-reason" id="critical-reason">Motif</div>
+      <div class="critical-actions">
+        <button class="ok" onclick="criticalTake()">Prendre en charge</button>
+        <button class="danger" onclick="criticalResolve()">Cloturer l'alerte</button>
+        <button id="critical-samu-btn" class="danger" onclick="criticalSamu()">SAMU 15</button>
+        <button class="secondary wide" onclick="replayCriticalVoice()">Repeter voix</button>
+        <a id="critical-file-link" class="link-button wide" href="#" target="_blank">Ouvrir fiche patient</a>
+      </div>
+    </div>
+  </section>
+
   <script>
-    const BACKEND_HTTP = `${location.protocol}//${location.hostname}:8001`;
+    const BACKEND_HTTP = '';
     const pathParts = location.pathname.split('/').filter(Boolean);
     let staffId = pathParts[1] || new URLSearchParams(location.search).get('id') || '';
     let staffData = [];
@@ -166,6 +202,14 @@
     let tokenStaffId = localStorage.getItem('ehpad_staff_id') || '';
     let localStatus = JSON.parse(localStorage.getItem('ehpad_staff_notif_status') || '{}');
     let lastTopKey = '';
+    let lastCriticalKey = '';
+    let currentCriticalNotification = null;
+    let audioCtx = null;
+    const autoSeenKeys = new Set(JSON.parse(localStorage.getItem('ehpad_staff_auto_seen') || '[]'));
+
+    ['pointerdown', 'keydown', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, ensureAudioContext, { once: true, passive: true });
+    });
 
     function authHeaders(extra = {}) {
       return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : extra;
@@ -196,12 +240,146 @@
       return ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][level] || 'Alerte';
     }
 
+    function pushDeliveryLabel(delivery) {
+      if (!delivery) return '';
+      const expected = delivery.expected_staff || 0;
+      const delivered = delivery.delivered_staff || 0;
+      const missed = (delivery.staff || [])
+        .filter(s => s.status && s.status !== 'sent')
+        .map(s => `${s.staff_id}: ${s.status}`)
+        .slice(0, 2)
+        .join(' · ');
+      return `<br><span class="badge">push ${delivered}/${expected}</span>${missed ? `<br><small>${missed}</small>` : ''}`;
+    }
+
     function notificationKey(n) {
       return n.notification_key || n.alert_id || `${n.resident_id}-${n.level}-${n.time || ''}-${n.reason || n.event || ''}`;
     }
 
     function saveLocalStatus() {
       localStorage.setItem('ehpad_staff_notif_status', JSON.stringify(localStatus));
+    }
+
+    function rememberAutoSeen(key) {
+      autoSeenKeys.add(key);
+      localStorage.setItem('ehpad_staff_auto_seen', JSON.stringify([...autoSeenKeys].slice(-250)));
+    }
+
+    function ensureAudioContext() {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+      return audioCtx;
+    }
+
+    function playTone(start, duration, frequency, gainValue) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(gainValue, start + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.02);
+    }
+
+    function playCriticalAlarm(level) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime + 0.04;
+      const bursts = Number(level || 0) >= 5 ? 6 : 4;
+      for (let i = 0; i < bursts; i += 1) {
+        playTone(now + i * 0.34, 0.18, Number(level || 0) >= 5 ? 980 : 760, 0.16);
+      }
+      if (navigator.vibrate) navigator.vibrate(Number(level || 0) >= 5 ? [300, 120, 300, 120, 500] : [220, 90, 220]);
+    }
+
+    function criticalSpeechText(n) {
+      const level = Number(n?.level || 0);
+      const label = level >= 5 ? 'Danger vital' : 'Urgence';
+      const location = n?.location || n?.zone || `chambre ${n?.room || ''}`;
+      return `${label}. ${n?.resident_name || 'resident'}. ${location}. ${n?.reason || n?.event || 'alerte critique'}.`;
+    }
+
+    function speakCritical(n) {
+      if (!('speechSynthesis' in window) || !n) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(criticalSpeechText(n));
+      utterance.lang = 'fr-FR';
+      utterance.rate = 1.05;
+      utterance.volume = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function replayCriticalVoice() {
+      playCriticalAlarm(currentCriticalNotification?.level || 4);
+      speakCritical(currentCriticalNotification);
+    }
+
+    function hideCriticalOverlay() {
+      document.getElementById('critical-overlay')?.classList.remove('show', 'level-4', 'level-5');
+      currentCriticalNotification = null;
+    }
+
+    function showCriticalOverlay(n, key) {
+      if (!n) return;
+      currentCriticalNotification = n;
+      const level = Number(n.level || 0);
+      const overlay = document.getElementById('critical-overlay');
+      overlay.className = `critical-overlay show level-${level >= 5 ? 5 : 4}`;
+      document.getElementById('critical-level').textContent = level >= 5 ? 'DANGER VITAL N5' : 'URGENCE N4';
+      document.getElementById('critical-name').textContent = n.resident_name || n.resident_id || 'Resident';
+      document.getElementById('critical-location').textContent = n.location || n.zone || `Chambre ${n.room || '?'}`;
+      document.getElementById('critical-reason').textContent = n.reason || n.event || 'Alerte critique';
+      document.getElementById('critical-samu-btn').style.display = level >= 5 ? 'block' : 'none';
+      document.getElementById('critical-file-link').href = `/mobile/resident/${n.resident_id}?staff=${encodeURIComponent(staffId)}&token=${encodeURIComponent(staffToken)}&return=${encodeURIComponent(`/soignant/${staffId}`)}`;
+      if (key !== lastCriticalKey) {
+        lastCriticalKey = key;
+        playCriticalAlarm(level);
+        speakCritical(n);
+      }
+      traceSeenOnce(n);
+    }
+
+    function monitorCriticalNotifications(notifications) {
+      const critical = (notifications || [])
+        .filter(n => n.alert_id && Number(n.level || 0) >= 4)
+        .filter(n => {
+          const status = n.status || localStatus[notificationKey(n)]?.status || '';
+          return !['resolue', 'resolved', 'acquittee', 'acknowledged'].includes(status);
+        })
+        .sort((a, b) => Number(b.level || 0) - Number(a.level || 0))[0];
+      if (!critical) {
+        hideCriticalOverlay();
+        return;
+      }
+      showCriticalOverlay(critical, notificationKey(critical));
+    }
+
+    function criticalTake() {
+      if (!currentCriticalNotification) return;
+      traceAction(notificationKey(currentCriticalNotification), 'taken', currentCriticalNotification);
+      openResidentPage(currentCriticalNotification);
+    }
+
+    function criticalResolve() {
+      if (!currentCriticalNotification) return;
+      traceAction(notificationKey(currentCriticalNotification), 'resolved', currentCriticalNotification);
+      hideCriticalOverlay();
+    }
+
+    function criticalSamu() {
+      if (!currentCriticalNotification) return;
+      const previousTop = currentTopNotification;
+      currentTopNotification = currentCriticalNotification;
+      confirmSamuTop().finally(() => {
+        currentTopNotification = previousTop || currentCriticalNotification;
+      });
     }
 
     async function traceAction(key, action, notification = {}) {
@@ -228,6 +406,14 @@
         saveLocalStatus();
       } catch (_) {}
       await loadStaff();
+    }
+
+    function traceSeenOnce(notification) {
+      if (!notification?.alert_id) return;
+      const key = notificationKey(notification);
+      if (autoSeenKeys.has(key) || localStatus[key]?.status) return;
+      rememberAutoSeen(key);
+      traceAction(key, 'seen', notification);
     }
 
     async function acknowledge(n) {
@@ -379,6 +565,8 @@
       const notifications = currentStaff.notifications || [];
       const historical = currentStaff.recent_history || [];
       renderPush(notifications, historical);
+      monitorCriticalNotifications(notifications);
+      notifications.forEach(traceSeenOnce);
       renderNotifications(notifications);
       renderResidents(currentStaff.assigned_residents || []);
       renderSummary(currentStaff);
@@ -413,11 +601,9 @@
         <p>${top.location || top.zone || 'Localisation a confirmer'}</p>
         <p>${top.reason || top.event || 'Evenement simule'} - statut: <b>${status}</b></p>
         <div class="actions">
-          <button class="secondary" onclick="traceTop('seen')">Vu</button>
           ${isTaken
-            ? '<button class="ok" onclick="resolveTop()">Resolue</button>'
-            : `<button class="ok" onclick="traceTop('taken', true)">Je prends</button>`}
-          <button class="danger" onclick="acknowledgeTop()">Acquitter</button>
+            ? `<button class="danger" onclick="resolveTop()">Cloturer l'alerte</button>`
+            : `<button class="ok" onclick="traceTop('taken', true)">Prendre en charge</button>`}
           <a class="link-button" href="/mobile/resident/${top.resident_id}?staff=${encodeURIComponent(staffId)}&token=${encodeURIComponent(staffToken)}&return=${encodeURIComponent(`/soignant/${staffId}`)}" target="_blank">Fiche</a>
         </div>
         ${isLevel5 ? `
@@ -443,6 +629,7 @@
           ${n.location || 'zone ?'}<br>
           ${n.reason || ''}<br>
           <span class="badge">${n.status || localStatus[key]?.status || 'envoyee'}</span>
+          ${pushDeliveryLabel(n.push_delivery)}
         </div>`;
       }).join('');
     }
@@ -514,6 +701,176 @@
     loadStaff();
     setInterval(tickClock, 1000);
     setInterval(loadStaff, 8000);
+
+    // â”€â”€â”€ Web Push â€” alertes mÃªme tÃ©lÃ©phone verrouillÃ© â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    let _pushRegistered = false;
+
+    function urlBase64ToUint8Array(b64) {
+      const pad = '='.repeat((4 - b64.length % 4) % 4);
+      const base64 = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+      const raw = atob(base64);
+      return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+    }
+
+    async function registerPush() {
+      updatePushDiag('Demande push en cours...');
+      if (!window.isSecureContext) {
+        updatePushDiag('Refus: la page n est pas en contexte securise. Ouvre https://192.168.1.85:3443/soignant depuis l app installee.');
+        updatePushBtn('HTTPS requis: utilise https://192.168.1.85:3443', false); return;
+      }
+      if (!('serviceWorker' in navigator)) {
+        updatePushDiag('Refus: ServiceWorker non supporte par ce navigateur.');
+        updatePushBtn('ServiceWorker non supporte', false); return;
+      }
+      if (!('PushManager' in window)) {
+        updatePushDiag('Refus: PushManager absent. Sur iPhone, ouvre l app depuis l icone ajoutee a l ecran d accueil, pas depuis Safari.');
+        updatePushBtn('Push non supporte par ce navigateur', false); return;
+      }
+      if (!staffToken || !staffId) {
+        updatePushDiag('Refus: session soignant absente. Connecte-toi d abord, puis reclique sur Activer les alertes push.');
+        updatePushBtn('connexion soignant requise', false); return;
+      }
+      const cfg = await fetch(`${BACKEND_HTTP}/api/push/config`).then(r => r.json()).catch(() => null);
+      if (!cfg?.enabled || !cfg.public_key) {
+        updatePushDiag('Refus: le backend indique que le push serveur est desactive.');
+        updatePushBtn('push desactive cote serveur', false); return;
+      }
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') {
+        updatePushDiag(`Refus permission navigateur: ${perm}. Il faut reautoriser les notifications dans les reglages du site/app.`);
+        updatePushBtn(`permission ${perm}`, false); return;
+      }
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(cfg.public_key),
+        });
+      }
+      const keys = sub.toJSON().keys;
+      const subscribeRes = await fetch(`${BACKEND_HTTP}/api/push/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(staffToken ? { Authorization: `Bearer ${staffToken}` } : {}) },
+        body: JSON.stringify({
+          staff_id: localStorage.getItem('ehpad_staff_id') || 'soignant',
+          endpoint: sub.endpoint,
+          p256dh: keys.p256dh,
+          auth: keys.auth,
+        }),
+      });
+      if (!subscribeRes.ok) {
+        const detail = await subscribeRes.text().catch(() => '');
+        updatePushDiag(`Refus backend inscription: HTTP ${subscribeRes.status}. ${detail.slice(0, 120)}`);
+        updatePushBtn('inscription refusee: reconnecte-toi', false);
+        return;
+      }
+      const subscribeData = await subscribeRes.json();
+      _pushRegistered = true;
+      updatePushDiag(`OK: telephone inscrit pour ${staffId}. Souscriptions serveur: ${subscribeData.subscriptions || 1}.`);
+      updatePushBtn(`notifications actives ✓ (${subscribeData.subscriptions || 1})`, true);
+    }
+
+    function updatePushBtn(label, active) {
+      const btn = document.getElementById('push-enable-btn');
+      if (!btn) return;
+      btn.textContent = label;
+      btn.disabled = active;
+      btn.style.background = active ? '#059669' : '#1e3a5f';
+      const testBtn = document.getElementById('push-test-btn');
+      if (testBtn) testBtn.style.display = active ? 'block' : 'none';
+    }
+
+    function updatePushDiag(message) {
+      const box = document.getElementById('push-diagnostic');
+      if (!box) return;
+      const support = [
+        `secure=${window.isSecureContext}`,
+        `sw=${'serviceWorker' in navigator}`,
+        `push=${'PushManager' in window}`,
+        `notif=${'Notification' in window ? Notification.permission : 'absent'}`,
+        `staff=${staffId || 'non connecte'}`,
+      ].join(' | ');
+      box.textContent = `${message}\n${support}`;
+    }
+
+    async function sendTestPush() {
+      if (!staffToken) {
+        updatePushBtn('connexion soignant requise', false);
+        return;
+      }
+      await fetch(`${BACKEND_HTTP}/api/push/test`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          staff_id: staffId,
+          resident_id: currentTopNotification?.resident_id || 'R005',
+          level: 3,
+          title: 'Test alerte EHPAD',
+          body: 'Notification de test smartphone',
+        }),
+      }).then(r => r.json()).then(data => {
+        const result = data.result || {};
+        if (result.sent > 0) {
+          updatePushDiag(`OK: test push envoye a ${result.sent} telephone(s).`);
+          updatePushBtn(`test envoye ✓ (${result.sent})`, true);
+        } else if (result.subscriptions === 0) {
+          updatePushDiag('Aucun telephone inscrit cote serveur. Reclique sur Activer les alertes push apres connexion.');
+          updatePushBtn('aucun telephone inscrit', false);
+        } else {
+          updatePushDiag(`Erreur envoi push: ${result.errors?.[0] || 'erreur inconnue'}.`);
+          updatePushBtn(`test non envoye: ${result.errors?.[0] || 'erreur push'}`, false);
+        }
+      }).catch(err => {
+        updatePushDiag(`Erreur appel test push: ${err?.message || err}`);
+        updatePushBtn('erreur test push', false);
+      });
+    }
+
+    // Affiche le bouton push sous le push-box
+    function injectPushButton() {
+      if (document.getElementById('push-enable-btn')) return;
+      const btn = document.createElement('button');
+      btn.id = 'push-enable-btn';
+      btn.textContent = 'ðŸ”” Activer les alertes push';
+      btn.style.cssText = 'width:100%;margin:8px 0;padding:10px;border:0;border-radius:10px;background:#1e3a5f;color:#e5edf8;font-weight:700;font-size:13px;cursor:pointer;';
+      btn.onclick = registerPush;
+      const box = document.getElementById('push-box');
+      if (box) box.insertAdjacentElement('afterend', btn);
+
+      const testBtn = document.createElement('button');
+      testBtn.id = 'push-test-btn';
+      testBtn.textContent = 'Envoyer un test push';
+      testBtn.style.cssText = 'display:none;width:100%;margin:0 0 8px;padding:10px;border:0;border-radius:10px;background:#7c3aed;color:#fff;font-weight:700;font-size:13px;cursor:pointer;';
+      testBtn.onclick = sendTestPush;
+      btn.insertAdjacentElement('afterend', testBtn);
+
+      const diag = document.createElement('pre');
+      diag.id = 'push-diagnostic';
+      diag.style.cssText = 'white-space:pre-wrap;margin:0 0 8px;padding:8px;border:1px solid #334155;border-radius:10px;background:#0f172a;color:#9fb0c7;font-size:11px;line-height:1.35;';
+      diag.textContent = 'Diagnostic push en attente.';
+      testBtn.insertAdjacentElement('afterend', diag);
+
+      // VÃ©rifier si dÃ©jÃ  inscrit
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.getRegistration('/sw.js').then(reg => {
+          if (reg) return reg.pushManager.getSubscription();
+        }).then(sub => {
+          if (sub && Notification.permission === 'granted') {
+            fetch(`${BACKEND_HTTP}/api/push/status`, { headers: authHeaders() })
+              .then(r => r.ok ? r.json() : null)
+              .then(data => updatePushBtn(`notifications actives ✓ (${data?.subscriptions || 1})`, true))
+              .catch(() => updatePushBtn('notifications actives ✓', true));
+          }
+        }).catch(() => {});
+      }
+    }
+
+    // On injecte le bouton dÃ¨s le chargement
+    injectPushButton();
   </script>
 </body>
 </html>
+
+

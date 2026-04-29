@@ -11,3 +11,6 @@ redis_data/
 mosquitto_data/
 mosquitto_logs/
 .claude/
+dashboard/certs/
+dashboard/public/rootCA.crt
+dashboard/public/rootCA.pem

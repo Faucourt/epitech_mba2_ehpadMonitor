@@ -360,6 +360,10 @@
     <div class="time-value accent" id="sim-clock-main">--:--</div>
   </div>
   <div class="time-card">
+    <div class="time-label">Date simulée EHPAD</div>
+    <div class="time-value accent" id="sim-date-main">--/--/----</div>
+  </div>
+  <div class="time-card">
     <div class="time-label">Phase / vitesse</div>
     <div class="time-value" id="sim-phase-main">Routine · x1</div>
   </div>
@@ -601,17 +605,13 @@ let lastToastByAlert = {};
 let demoModeActive = false;
 let staffId = localStorage.getItem('ehpad_staff_id') || '';
 let staffToken = localStorage.getItem('ehpad_staff_token') || '';
-let breakGlassReasonByResident = {};
-
-function authHeaders(extra = {}, rid = null) {
-  const headers = staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
-  if (rid && breakGlassReasonByResident[rid]) headers['X-Break-Glass-Reason'] = breakGlassReasonByResident[rid];
-  return headers;
+function authHeaders(extra = {}) {
+  return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
 }
 
 async function ensureStaffSession() {
   if (staffToken) return true;
-  const id = prompt("Identifiant personnel pour acces DPI :");
+  const id = prompt("Identifiant personnel autorisé pour acces DPI (ex: chef_garde) :");
   const password = id ? prompt("Mot de passe personnel :") : '';
   if (!id || !password) return false;
   const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
@@ -628,18 +628,26 @@ async function ensureStaffSession() {
   return Boolean(staffToken);
 }
 
-async function secureResidentJson(url, rid) {
+function clearStaffSession() {
+  staffId = '';
+  staffToken = '';
+  localStorage.removeItem('ehpad_staff_id');
+  localStorage.removeItem('ehpad_staff_token');
+}
+
+async function secureResidentJson(url, retry = true) {
   const hasSession = await ensureStaffSession();
   if (!hasSession) throw new Error('session requise');
-  let res = await fetch(url, { headers: authHeaders({}, rid) });
-  if (res.status === 403 && !breakGlassReasonByResident[rid]) {
-    const reason = prompt("Resident hors perimetre. Justification bris de glace :");
-    if (reason && reason.trim().length >= 8) {
-      breakGlassReasonByResident[rid] = reason.trim();
-      res = await fetch(url, { headers: authHeaders({}, rid) });
-    }
+  const res = await fetch(url, { headers: authHeaders() });
+  if ((res.status === 401 || res.status === 403) && retry) {
+    clearStaffSession();
+    const ok = await ensureStaffSession();
+    if (ok) return secureResidentJson(url, false);
   }
-  if (!res.ok) throw new Error(res.status);
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(detail.detail || `HTTP ${res.status}`);
+  }
   return res.json();
 }
 
@@ -804,8 +812,17 @@ function getReferenceResident() {
 function updateTimeRibbon() {
   updateWallClock();
   const ref = getReferenceResident();
-  document.getElementById('sim-clock-main').textContent = ref.time_label || '--:--';
+  document.getElementById('sim-clock-main').textContent = ref.simulated_time || ref.time_label || '--:--';
+  document.getElementById('sim-date-main').textContent = formatSimulatedDate(ref);
   document.getElementById('sim-phase-main').textContent = `${ref.routine_label || 'Routine'} · x${simulatorSpeed}`;
+}
+
+function formatSimulatedDate(ref = {}) {
+  if (!ref.simulated_date) return '--/--/----';
+  const [year, month, day] = String(ref.simulated_date).split('-');
+  const weekday = ref.simulated_weekday ? `${ref.simulated_weekday} ` : '';
+  const index = Number.isFinite(Number(ref.simulated_day_index)) ? ` · J+${ref.simulated_day_index}` : '';
+  return `${weekday}${day}/${month}/${year}${index}`;
 }
 
 function renderGrid() {
@@ -842,10 +859,9 @@ function renderGrid() {
 
 function openResidentDossier(rid) {
   if (!rid) return;
-  const params = new URLSearchParams();
+  const params = new URLSearchParams({ from: 'dashboard', return: '/' });
   if (staffId) params.set('staff', staffId);
   if (staffToken) params.set('token', staffToken);
-  if (breakGlassReasonByResident[rid]) params.set('break_glass', breakGlassReasonByResident[rid]);
   const suffix = params.toString() ? `?${params.toString()}` : '';
   window.open(`/resident/${rid}${suffix}`, '_blank');
 }
@@ -1029,6 +1045,7 @@ function updateAlertSidebar() {
       <div class="alert-reason">${a.reason}</div>
       <div class="alert-reason">Position: ${formatAlertLocation(a)}</div>
       <div class="alert-reason">Soignants notifiés: ${formatNotifiedStaff(a.notified_staff)}</div>
+      ${formatPushDelivery(a.push_delivery)}
       <div style="display:flex;justify-content:space-between;margin-top:4px">
         <span class="alert-time">Chambre ${a.room} · ${formatSensorEvents(a.sensor_events)}</span>
         <span class="alert-time">${a.time_since_s}s</span>
@@ -1069,6 +1086,18 @@ function formatNotifiedStaff(staff = []) {
     .filter(Boolean);
   if (!names.length) return 'dashboard uniquement';
   return [...new Set(names)].slice(0, 6).join(', ');
+}
+
+function formatPushDelivery(delivery) {
+  if (!delivery) return '';
+  const expected = delivery.expected_staff || 0;
+  const delivered = delivery.delivered_staff || 0;
+  const missed = (delivery.staff || [])
+    .filter(s => s.status && s.status !== 'sent')
+    .map(s => `${s.staff_id}: ${s.status}`)
+    .slice(0, 3)
+    .join(' · ');
+  return `<div class="alert-reason">Push téléphone: ${delivered}/${expected}${missed ? ` (${missed})` : ''}</div>`;
 }
 
 function renderHistoryTab() {
@@ -1342,8 +1371,10 @@ async function loadResidentDpi(rid) {
   if (!residentId || !panel) return;
   panel.innerHTML = '<div class="no-alerts">Chargement du mini DPI...</div>';
   try {
-    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${date}`, residentId);
-    renderResidentDpi(data.mini_dpi);
+    const res = await fetch(`${BACKEND_HTTP}/api/reports/daily/${date}/${residentId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const report = await res.json();
+    renderResidentDpi(report);
   } catch (err) {
     panel.innerHTML = `<div class="no-alerts">Mini DPI indisponible: ${err.message}</div>`;
   }
@@ -1682,22 +1713,31 @@ function renderResidentDpi(report) {
   const alerts = report.alerts_today || [];
   const a2a = report.a2a_prediction?.prediction || {};
   const life = report.profile?.life_profile || {};
+  const risk = report.risk || {};
+  const profile = report.profile || {};
+  const current = report.current || {};
+  const routine = current.routine || current.routine_label || current.time_of_day || '—';
+  const scenario = current.movement_scenario || current.scenario_active || current.scenario || 'routine';
   panel.innerHTML = `
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:10px">
       <div>
         <div style="font-weight:800">${report.resident_name}</div>
-        <div style="font-size:12px;color:var(--text2)">Ch. ${report.room || '—'} · ${report.profile?.age || '?'} ans · ${report.profile?.mobility || 'mobilité inconnue'}</div>
+        <div style="font-size:12px;color:var(--text2)">Ch. ${report.room || '—'} · ${profile.age || '?'} ans · ${profile.mobility || 'mobilité inconnue'}</div>
       </div>
       <button class="filter-btn" onclick="openDetail('${report.resident_id}')">Live</button>
     </div>
     <div class="dpi-grid">
-      <div class="dpi-row"><span>Position</span><b>${report.current?.location || '—'}</b></div>
+      <div class="dpi-row"><span>Soignant référent</span><b>${report.caregiver || profile.caregiver || '—'}</b></div>
+      <div class="dpi-row"><span>Pathologies</span><b>${(profile.pathologies || []).join(', ') || '—'}</b></div>
+      <div class="dpi-row"><span>Position</span><b>${current.location || '—'}</b></div>
+      <div class="dpi-row"><span>Routine actuelle</span><b>${routine}</b></div>
+      <div class="dpi-row"><span>Scénario</span><b>${scenario}</b></div>
       <div class="dpi-row"><span>Profil de vie</span><b>${life.archetype_label || life.label || 'standard'}</b></div>
       <div class="dpi-row"><span>Surveillance</span><b>${life.supervision || 'standard'}</b></div>
-      <div class="dpi-row"><span>Risque actuel</span><b style="color:${getMLRiskColor(report.risk?.ml_risk || 0)}">${Math.round((report.risk?.ml_risk || 0) * 100)}% · ${report.risk?.alert_level_name || 'Stable'}</b></div>
+      <div class="dpi-row"><span>Risque actuel</span><b style="color:${getMLRiskColor(risk.ml_risk || 0)}">${Math.round((risk.ml_risk || 0) * 100)}% · ${risk.alert_level_name || 'Stable'}</b></div>
       <div class="dpi-row"><span>Niveau agents</span><b>${a2a.recommended_level_name || 'Stable'}</b></div>
-      <div class="dpi-row"><span>Tendance prédictive</span><b>${a2a.prediction_trend || report.risk?.prediction_trend || 'indisponible'} ${Number.isFinite(a2a.risk_delta_15min) ? `(${Math.round(a2a.risk_delta_15min * 100)} pts/15min)` : ''}</b></div>
-      <div class="dpi-row"><span>Tendance 30 jours</span><b>${report.risk?.trend_30d || 'stable'}</b></div>
+      <div class="dpi-row"><span>Tendance prédictive</span><b>${a2a.prediction_trend || risk.prediction_trend || 'indisponible'} ${Number.isFinite(a2a.risk_delta_15min) ? `(${Math.round(a2a.risk_delta_15min * 100)} pts/15min)` : ''}</b></div>
+      <div class="dpi-row"><span>Tendance 30 jours</span><b>${risk.trend_30d || 'stable'}</b></div>
       <div class="dpi-row"><span>FC / SpO2</span><b>${v.heart_rate ?? '—'} bpm · ${v.spo2 ?? '—'}%</b></div>
       <div class="dpi-row"><span>PA / Temp.</span><b>${v.blood_pressure_sys ?? '—'} mmHg · ${v.temperature ?? '—'}°C</b></div>
       <div class="dpi-row"><span>Moyennes 30j</span><b>FC ${avg.heart_rate ?? '—'} · SpO2 ${avg.spo2 ?? '—'} · PA ${avg.blood_pressure_sys ?? '—'}</b></div>
@@ -2131,6 +2171,7 @@ function openDetail(rid) {
         <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Position: ${formatAlertLocation(alert)}</div>
         <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Capteurs actifs: ${formatSensorEvents(alert.sensor_events)}</div>
         <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Soignants notifiés: ${formatNotifiedStaff(alert.notified_staff)}</div>
+        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">${formatPushDelivery(alert.push_delivery).replace('class="alert-reason"', '')}</div>
         <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="loadAlertExplanation('${rid}')">Voir explication</button>
         <div id="alert-explain-block" style="margin-top:8px"></div>
       </div>
@@ -2169,7 +2210,8 @@ function openDetail(rid) {
 
   html += `
     <div class="section-sub">Vie quotidienne simulée</div>
-    <div class="vital-row"><span style="color:var(--text2)">Heure simulée</span><span>${r.time_label || '--:--'}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Date simulée</span><span>${formatSimulatedDate(r)}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Heure simulée</span><span>${r.simulated_time || r.time_label || '--:--'}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Phase</span><span>${r.routine_label || r.time_of_day || 'routine'}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Score écart routine</span><span>${routine.status === 'learning' ? `Apprentissage (${routine.baseline?.samples || 0}/20)` : `${Math.round((routine.score || 0) * 100)}%`}</span></div>
     <div class="vital-row"><span style="color:var(--text2)">Écart routine</span><span>${routineFlags.slice(0, 2).join(' ; ') || 'Routine compatible'}</span></div>
