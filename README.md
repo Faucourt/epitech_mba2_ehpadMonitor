@@ -422,7 +422,8 @@ flowchart TB
     ROOT --> TESTS[tests/]
     ROOT --> DATA[data/]
 
-    BACK --> B1[main.py]
+    BACK --> APP[app/]
+    BACK --> B1[main.py<br/>entree FastAPI actuelle]
     BACK --> B2[alert_engine.py]
     BACK --> B3[ml_model.py]
     BACK --> B4[a2a_agents.py]
@@ -430,6 +431,10 @@ flowchart TB
     BACK --> B6[routine_engine.py]
     BACK --> B7[auth.py]
     BACK --> B8[kb/ehpad_watch_kb.json]
+
+    APP --> CORE[core/<br/>config + middleware]
+    APP --> DB[db/<br/>Redis + Influx]
+    APP --> DOMAIN[domain/<br/>scenarios]
 
     DASH --> D1[public/index.html]
     DASH --> D2[public/resident.html]
@@ -1061,6 +1066,22 @@ Verification fonctionnelle:
 ```text
 projet spe Hepad/
 |-- backend/
+|   |-- app/
+|   |   |-- api/
+|   |   |   `-- routers/
+|   |   |       |-- health.py
+|   |   |       `-- project.py
+|   |   |-- core/
+|   |   |   |-- config.py
+|   |   |   `-- middleware.py
+|   |   |-- db/
+|   |   |   |-- redis_client.py
+|   |   |   `-- influx_client.py
+|   |   `-- domain/
+|   |       |-- readiness.py
+|   |       |-- residents.py
+|   |       |-- scenario_kb_mapping.py
+|   |       `-- scenarios.py
 |   |-- main.py
 |   |-- alert_engine.py
 |   |-- ml_model.py
@@ -1074,6 +1095,7 @@ projet spe Hepad/
 |   `-- requirements.txt
 |-- simulator/
 |   |-- main.py
+|   |-- scenario_scheduler.py
 |   |-- profiles.py
 |   |-- facility_map.py
 |   `-- requirements.txt
@@ -1106,7 +1128,12 @@ projet spe Hepad/
 ## Role des dossiers principaux
 
 - `backend`: logique centrale du projet.
+- `backend/app/api`: routers FastAPI extraits progressivement de `main.py`.
+- `backend/app/core`: configuration et middleware FastAPI transverses.
+- `backend/app/db`: clients Redis et InfluxDB centralises.
+- `backend/app/domain`: constantes metier partagees, comme les scenarios.
 - `simulator`: generation des constantes et capteurs.
+- `simulator/scenario_scheduler.py`: ponderation temporelle et clinique des 31 scenarios.
 - `dashboard`: interface HTML, mini app soignant, portail famille.
 - `docs`: architecture, audits, comptes demo et guide oral.
 - `tests`: tests automatises.
@@ -1117,7 +1144,17 @@ projet spe Hepad/
 
 Backend:
 
-- `backend/main.py`: routes API, MQTT, WebSocket, rapports.
+- `backend/main.py`: entree FastAPI actuelle, routes API et orchestration legacy.
+- `backend/app/api/routers/health.py`: route racine et healthcheck Docker.
+- `backend/app/api/routers/project.py`: readiness jury et plan de vie/scenarios.
+- `backend/app/core/config.py`: variables d'environnement centralisees.
+- `backend/app/core/middleware.py`: CORS, HTTPS local, entetes securite, charset UTF-8.
+- `backend/app/db/redis_client.py`: client Redis unique.
+- `backend/app/db/influx_client.py`: client InfluxDB et write API.
+- `backend/app/domain/readiness.py`: matrice de validation projet et plan de vie.
+- `backend/app/domain/residents.py`: archetypes resident et classification.
+- `backend/app/domain/scenario_kb_mapping.py`: mapping simulateur vers KB clinique et conduite a tenir.
+- `backend/app/domain/scenarios.py`: catalogue des scenarios de simulation.
 - `backend/alert_engine.py`: moteur d'alertes 5 niveaux.
 - `backend/ml_model.py`: entrainement et prediction ML.
 - `backend/a2a_agents.py`: pipeline agentique.
@@ -1125,6 +1162,17 @@ Backend:
 - `backend/llm_service.py`: rapports LLM et fallback.
 - `backend/kb/official_elderly_complications_kb.json`: KB officielle pathologies,
   complications, premiers secours et conduite a tenir.
+
+Note architecture:
+
+Le backend reste volontairement un monolithe FastAPI pour la demo Epitech et le
+deploiement Docker Compose. Le refactor en cours le transforme progressivement
+en monolithe modulaire: `main.py` garde encore l'orchestration legacy, tandis
+que la configuration, les clients d'infrastructure, le middleware, les
+constantes metier, le healthcheck et les routes projet sont deja sortis dans `backend/app/`.
+L'etape production suivante consiste a deplacer progressivement les autres
+routes dans `app/api/routers/` puis les blocs MQTT, push et residents dans
+`app/services/`.
 
 Dashboard:
 

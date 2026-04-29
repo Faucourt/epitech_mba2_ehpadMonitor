@@ -10,6 +10,7 @@ from functools import lru_cache
 KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "ehpad_watch_kb.json")
 OFFICIAL_KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "official_elderly_complications_kb.json")
 EPIDOR_KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "epidor_kb_mapping_v4.json")
+CHARLES_TERRAIN_KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "charles_terrain_kb.json")
 
 
 @lru_cache(maxsize=1)
@@ -29,6 +30,14 @@ def load_epidor_mapping() -> dict:
     if not os.path.exists(EPIDOR_KB_PATH):
         return {}
     with open(EPIDOR_KB_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@lru_cache(maxsize=1)
+def load_charles_terrain_kb() -> dict:
+    if not os.path.exists(CHARLES_TERRAIN_KB_PATH):
+        return {}
+    with open(CHARLES_TERRAIN_KB_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -80,6 +89,39 @@ def get_official_cross_complications() -> list:
 
 def get_first_aid_actions() -> list:
     return load_official_kb().get("first_aid_actions", [])
+
+
+def get_charles_terrains() -> list:
+    return load_charles_terrain_kb().get("terrains", [])
+
+
+def get_charles_terrains_for_profile(profile: dict) -> list[dict]:
+    pathologies = {str(p).lower() for p in profile.get("pathologies", []) or []}
+    meds = {str(m).lower() for m in profile.get("likely_medications", []) or []}
+    scenarios = {str(s).lower() for s in profile.get("preferred_scenarios", []) or []}
+    age = profile.get("age")
+    mobility = str(profile.get("mobility", "")).lower()
+    risk_factor = float(profile.get("risk_factor", 0) or 0)
+    matched: list[dict] = []
+    for terrain in get_charles_terrains():
+        rule = terrain.get("match", {}) or {}
+        ok = False
+        if rule.get("pathologies_any"):
+            ok = ok or bool(pathologies.intersection({str(x).lower() for x in rule["pathologies_any"]}))
+        if rule.get("medications_any"):
+            needles = {str(x).lower() for x in rule["medications_any"]}
+            ok = ok or any(any(needle in med for needle in needles) for med in meds)
+        if rule.get("scenario_any"):
+            ok = ok or bool(scenarios.intersection({str(x).lower() for x in rule["scenario_any"]}))
+        if rule.get("age_gte") is not None and age is not None:
+            ok = ok or float(age) >= float(rule["age_gte"])
+        if rule.get("mobility_in"):
+            ok = ok or mobility in {str(x).lower() for x in rule["mobility_in"]}
+        if rule.get("risk_factor_gte") is not None:
+            ok = ok or risk_factor >= float(rule["risk_factor_gte"])
+        if ok:
+            matched.append(terrain)
+    return matched
 
 
 def get_epidor_ml_rule_weights() -> dict:

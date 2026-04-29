@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field, ValidationError
 from kb_loader import (
     get_first_aid_actions,
     get_archetype,
+    get_charles_terrains_for_profile,
     get_medication_risks,
     get_official_cross_complications,
     get_official_profiles_for_pathologies,
@@ -28,6 +29,7 @@ from kb_loader import (
     get_scenarios,
     scenario_for_archetype,
 )
+from app.domain.scenario_kb_mapping import scenario_kb_links_for_state
 
 log = logging.getLogger(__name__)
 
@@ -58,6 +60,7 @@ class LLMReport(BaseModel):
     signaux_rassurants: list[str] = Field(default_factory=list)
     incertitudes: list[str] = Field(default_factory=list)
     message_famille: str | None = None
+    rapport_medical: dict[str, Any] = Field(default_factory=dict)
     llm_trace: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -85,6 +88,16 @@ def _med_risk_description(entry: dict) -> str:
     return ", ".join(risks[:5]) if risks else ""
 
 
+def _fall_detected(state: dict) -> bool:
+    movement = state.get("movement") or {}
+    return bool(
+        state.get("fall_detected")
+        or movement.get("fall_detected")
+        or movement.get("is_fall_detected")
+        or movement.get("ambient_fall_confirmed")
+    )
+
+
 def _profile_antecedent_kb_links(profile: dict) -> list[dict[str, Any]]:
     pathologies = profile.get("pathologies", []) or []
     likely_meds = profile.get("likely_medications", []) or []
@@ -99,6 +112,23 @@ def _profile_antecedent_kb_links(profile: dict) -> list[dict[str, Any]]:
             "thresholds": item.get("trigger_adaptation", {}),
             "conduct": item.get("conduct", [])[:5],
             "sources": item.get("source_ids", []),
+        })
+
+    for terrain in get_charles_terrains_for_profile(profile)[:6]:
+        impact = terrain.get("impact_rapport", {}) or {}
+        links.append({
+            "type": "terrain_charles",
+            "id": terrain.get("id"),
+            "label": terrain.get("label"),
+            "patient_context": "terrain extrait KB Charles compatible resident",
+            "watch": terrain.get("points_a_verifier", [])[:6],
+            "thresholds": terrain.get("threshold_hints", {}),
+            "conduct": [
+                impact.get("interventions"),
+                impact.get("surveillance"),
+                impact.get("appel_medecin"),
+            ],
+            "sources": terrain.get("source_refs", []),
         })
 
     medication_risks = get_medication_risks()
@@ -246,7 +276,7 @@ def _clinical_focus_from_profile(profile: dict, state: dict, alert_level: int) -
         focus.append("Traitements a risque possibles: iatrogenie pouvant favoriser chute, confusion, somnolence ou hypotension.")
         differential.append("iatrogenie medicamenteuse ou effet sedatif/hypotenseur")
         conduct.append("rechercher introduction/changement recent de psychotrope, benzodiazepine, anticholinergique ou antihypertenseur")
-    if movement.get("is_fall_detected") or movement.get("ambient_fall_confirmed") or state.get("fall_detected"):
+    if _fall_detected(state):
         focus.append("Chute detectee: traumatisme et duree au sol a evaluer avant mobilisation.")
         escalade.append("traumatisme cranien, douleur intense, deformation, anticoagulant, trouble conscience")
 
@@ -383,12 +413,24 @@ def _select_kb_scenarios(profile: dict, state: dict, ml_risk: float, alert_level
         direct_ids.append("SCN007_WANDERING_ELOPEMENT_ALZHEIMER")
     if routine.get("score", routine.get("anomaly_score", 0)) and float(routine.get("score", routine.get("anomaly_score", 0)) or 0) >= 0.4:
         direct_ids.append("SCN008_ROUTINE_BREAKDOWN_APATHY_ISOLATION")
-    if movement.get("fall_detected") or state.get("fall_detected"):
+    if _fall_detected(state):
         direct_ids.append("SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT")
     if "insuffisance_cardiaque" in pathologies:
         direct_ids.append("SCN013_HEART_FAILURE_DECOMPENSATION")
     if ml_risk >= 0.7 or alert_level >= 3:
         direct_ids.append("SCN011_ACUTE_CONFUSION_DELIRIUM")
+
+    scenario_links = scenario_kb_links_for_state(state)
+    active_statuses = {"active_vital", "active_movement"}
+    direct_ids = [
+        link["kb_id"]
+        for link in scenario_links
+        if link.get("status") in active_statuses
+    ] + direct_ids + [
+        link["kb_id"]
+        for link in scenario_links
+        if link.get("status") not in active_statuses
+    ]
 
     for sid in direct_ids:
         scenario = get_scenario(sid)
@@ -400,17 +442,17 @@ def _select_kb_scenarios(profile: dict, state: dict, ml_risk: float, alert_level
         if scenario and scenario["id"] not in selected:
             selected[scenario["id"]] = scenario
 
-    if len(selected) < 5 and (ml_risk >= 0.5 or alert_level >= 2):
+    if len(selected) < 3 and (ml_risk >= 0.5 or alert_level >= 2):
         for scenario in get_scenarios():
             if scenario["id"] in selected:
                 continue
             tags = scenario.get("resident_profile_match", {}).get("any", [])
             if any(_patho_matches_tag(pathologies, tag) for tag in tags):
                 selected[scenario["id"]] = scenario
-            if len(selected) >= 5:
+            if len(selected) >= 3:
                 break
 
-    return list(selected.values())[:5]
+    return list(selected.values())[:3]
 
 
 def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -> dict[str, Any]:
@@ -544,7 +586,7 @@ def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -
     breathing_status = str(state.get("breathing_status") or movement.get("breathing_status") or "").lower()
     if alert_level >= 2 or ml_risk >= 0.5:
         selected_first_aid.append("psc_malaise")
-    if movement.get("is_fall_detected") or movement.get("ambient_fall_confirmed") or state.get("fall_detected"):
+    if _fall_detected(state):
         selected_first_aid.append("psc_traumatisme_chute")
     unconscious = consciousness in {"inconscient", "unconscious", "unresponsive", "ne_repond_pas"}
     abnormal_breathing = breathing_status in {"absente", "anormale", "gasp", "ne_respire_pas", "not_breathing", "abnormal"}
@@ -583,6 +625,67 @@ def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -
         "conduite": (first_aid_conduct + official_conduct + scenario_conduct)[:14],
         "donnees_a_verifier": list(dict.fromkeys(checks))[:10],
     }
+
+
+def _allowed_source_ids(profile: dict, state: dict, alerts_today: list[dict]) -> set[str]:
+    alert_level = max((int(a.get("level", 0) or 0) for a in alerts_today), default=0)
+    ml_risk = float(state.get("ml_risk", 0) or state.get("prediction_risk", 0) or 0)
+    ids: set[str] = set()
+    for item in _kb_guidance(profile, state, ml_risk, alert_level).get("sources_kb", []):
+        if item:
+            ids.add(str(item))
+    for scenario in _select_kb_scenarios(profile, state, ml_risk, alert_level):
+        sid = scenario.get("id")
+        if sid:
+            ids.add(str(sid))
+    for link in scenario_kb_links_for_state(state):
+        for key in ("kb_id", "scenario_id", "id"):
+            value = link.get(key)
+            if value:
+                ids.add(str(value))
+    for link in _profile_antecedent_kb_links(profile):
+        if link.get("id"):
+            ids.add(str(link["id"]))
+        for source in link.get("sources", []) or []:
+            if source:
+                ids.add(str(source))
+    return ids
+
+
+def _filter_source_list(values: Any, allowed_sources: set[str]) -> list[str]:
+    if not isinstance(values, list):
+        return []
+    filtered: list[str] = []
+    for value in values:
+        sid = str(value or "").strip()
+        if sid and sid in allowed_sources and sid not in filtered:
+            filtered.append(sid)
+    return filtered
+
+
+def _filter_partial_sources(partial: dict[str, Any], allowed_sources: set[str] | None) -> dict[str, Any]:
+    if not allowed_sources:
+        return partial
+    partial = dict(partial)
+    if "sources_kb" in partial:
+        partial["sources_kb"] = _filter_source_list(partial.get("sources_kb"), allowed_sources)
+    for field in ("hypotheses", "complications_possibles", "conduite_a_tenir_kb"):
+        if not isinstance(partial.get(field), list):
+            continue
+        cleaned_items: list[Any] = []
+        for item in partial[field]:
+            if not isinstance(item, dict):
+                cleaned_items.append(item)
+                continue
+            item = dict(item)
+            if "sources_kb" in item:
+                item["sources_kb"] = _filter_source_list(item.get("sources_kb"), allowed_sources)
+            sid = item.get("scenario_id")
+            if sid and str(sid).startswith("SCN") and str(sid) not in allowed_sources:
+                item.pop("scenario_id", None)
+            cleaned_items.append(item)
+        partial[field] = cleaned_items
+    return partial
 
 
 def build_kb_context(
@@ -630,6 +733,11 @@ def build_kb_context(
     )
 
     if scenario_objects:
+        sim_links = scenario_kb_links_for_state(state or {})
+        if sim_links:
+            lines.append("\nMapping scenarios simulateur -> KB clinique:")
+            for link in sim_links[:10]:
+                lines.append(f"  {link.get('scenario')} ({link.get('status')}) -> {link.get('kb_id')}")
         lines.append("\nScenarios cliniques pertinents:")
         for scenario in scenario_objects:
             rationale = scenario.get("clinical_rationale", "")[:180]
@@ -700,7 +808,7 @@ def build_kb_context(
         selected_first_aid: list[str] = []
         if alert_level >= 2 or ml_risk >= 0.5:
             selected_first_aid.append("psc_malaise")
-        if movement.get("is_fall_detected") or movement.get("ambient_fall_confirmed") or (state or {}).get("fall_detected"):
+        if _fall_detected(state or {}):
             selected_first_aid.append("psc_traumatisme_chute")
         unconscious = consciousness in {"inconscient", "unconscious", "unresponsive", "ne_repond_pas"}
         abnormal_breathing = breathing_status in {"absente", "anormale", "gasp", "ne_respire_pas", "not_breathing", "abnormal"}
@@ -795,6 +903,778 @@ def _alert_label(alert: dict) -> str:
     return alert.get("reason") or alert.get("message") or alert.get("title") or "alerte non qualifiee"
 
 
+def _safe_float(value: Any) -> float | None:
+    try:
+        if value is None:
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _problem_text(hypotheses: list[dict[str, Any]], kb: dict[str, Any] | None = None, profile: dict | None = None) -> str:
+    chunks: list[str] = []
+    for hypothesis in hypotheses or []:
+        chunks.append(str(hypothesis.get("hypothese", "")))
+        chunks.extend(str(x) for x in hypothesis.get("sources_kb", []) or [])
+        chunks.extend(str(x) for x in hypothesis.get("arguments", []) or [])
+    if kb:
+        for item in kb.get("conduite", []) or []:
+            chunks.append(str(item.get("scenario_id") or item.get("niveau") or ""))
+            chunks.append(str(item.get("action") or ""))
+        for item in kb.get("complications", []) or []:
+            chunks.append(str(item.get("scenario_id") or ""))
+            chunks.append(str(item.get("nom") or ""))
+        chunks.extend(str(x) for x in kb.get("sources_kb", []) or [])
+    if profile:
+        chunks.extend(str(x) for x in profile.get("pathologies", []) or [])
+        chunks.extend(str(x) for x in profile.get("likely_medications", []) or [])
+    return " ".join(chunks).lower()
+
+
+def _dominant_problem(
+    vitals: dict,
+    state: dict,
+    hypotheses: list[dict[str, Any]],
+    routine_score: float,
+    profile: dict | None = None,
+    kb: dict[str, Any] | None = None,
+) -> str:
+    spo2 = vitals.get("spo2")
+    sys = vitals.get("blood_pressure_sys")
+    temp = vitals.get("temperature")
+    hr = vitals.get("heart_rate")
+    spo2_f = _safe_float(spo2)
+    sys_f = _safe_float(sys)
+    temp_f = _safe_float(temp)
+    hr_f = _safe_float(hr)
+    text = _problem_text(hypotheses, kb=kb, profile=profile)
+    if _fall_detected(state):
+        return "chute_traumatisme"
+    if spo2_f is not None and spo2_f < 93:
+        return "respiratoire_hypoxemie"
+    if temp_f is not None and temp_f >= 38 or "scn004" in text or "sepsis" in text:
+        return "infectieux"
+    if "scn012" in text:
+        return "avc_suspect"
+    if "scn015" in text or "cardiac_malaise" in text:
+        return "cardiaque_malaise"
+    if "scn006" in text or ("diabete" in text and any(word in text for word in ("hypogly", "malaise", "confusion"))):
+        return "diabete_hypoglycemie"
+    if sys_f is not None and (sys_f < 95 or sys_f > 180):
+        return "tensionnel"
+    if "scn013" in text or "insuffisance cardiaque" in text:
+        return "insuffisance_cardiaque"
+    if "scn005" in text or "deshydratation" in text or ("insuffisance_renale" in text and any(word in text for word in ("hypotension", "confusion", "canicule"))):
+        return "deshydratation_renal"
+    if "scn010" in text or "retention" in text or "fecalome" in text:
+        return "douleur_retention_fecalome"
+    if "scn007" in text or "errance" in text or "fugue" in text:
+        return "errance_fugue"
+    if "scn014" in text or "denutrition" in text or "fragilite" in text:
+        return "denutrition_fragilite"
+    if "scn009" in text or "iatrogen" in text or "medicament" in text:
+        return "iatrogenie_medicamenteuse"
+    if "scn011" in text or routine_score >= 0.4 or any("confusion" in str(h.get("hypothese", "")).lower() for h in hypotheses):
+        return "confusion_delirium"
+    if hr_f is not None and (hr_f >= 120 or hr_f <= 50):
+        return "cardiaque_rythme"
+    return "surveillance"
+
+
+def _build_medical_structured_note(
+    resident_name: str,
+    profile: dict,
+    state: dict,
+    alerts_today: list[dict],
+    clinical_history: dict,
+    evidence: list[dict[str, Any]],
+    hypotheses: list[dict[str, Any]],
+    actions: list[dict[str, Any]],
+    surveillance: list[dict[str, Any]],
+    kb: dict[str, Any],
+    niveau: str,
+) -> dict[str, Any]:
+    vitals = state.get("vitals", {}) or {}
+    movement = state.get("movement") or {}
+    routine = state.get("routine_analysis") or {}
+    routine_score = float(routine.get("score", routine.get("anomaly_score", 0)) or 0)
+    pathologies = profile.get("pathologies", []) or []
+    likely_meds = profile.get("likely_medications", []) or []
+    medication_risks = get_medication_risks()
+    charles_terrains = get_charles_terrains_for_profile(profile)
+    traitements = []
+    for med in likely_meds:
+        entry = medication_risks.get(med, {})
+        traitements.append({
+            "id": med,
+            "nom": entry.get("label", med),
+            "points_vigilance": entry.get("risks", [])[:4],
+            "statut": "probable_deduit_du_profil_kb",
+        })
+    terrain_context = [
+        {
+            "id": terrain.get("id"),
+            "label": terrain.get("label"),
+            "apports": terrain.get("apporte_au_projet", [])[:4],
+            "points_a_verifier": terrain.get("points_a_verifier", [])[:6],
+            "impact_rapport": terrain.get("impact_rapport", {}),
+            "sources": terrain.get("source_refs", []),
+        }
+        for terrain in charles_terrains
+    ]
+
+    active_alert = alerts_today[0] if alerts_today else {}
+    location = state.get("location_label") or state.get("location") or state.get("current_zone") or profile.get("room")
+    problem = _dominant_problem(vitals, state, hypotheses, routine_score, profile=profile, kb=kb)
+    spo2 = vitals.get("spo2")
+    rr = vitals.get("respiratory_rate")
+    hr = vitals.get("heart_rate")
+    sys = vitals.get("blood_pressure_sys")
+    dia = vitals.get("blood_pressure_dia")
+    temp = vitals.get("temperature")
+
+    appel_medecin = [
+        "prevenir medecin coordonnateur/traitant selon protocole si anomalie confirmee ou aggravation",
+        "transmettre constantes completes, evolution, contexte, antecedents, traitements probables et actions deja realisees",
+    ]
+    appel_urgence = [
+        "appeler 15/112 selon protocole si detresse vitale, trouble conscience, douleur thoracique, signe neurologique, dyspnee severe ou aggravation rapide"
+    ]
+    if problem == "respiratoire_hypoxemie":
+        appel_medecin.insert(0, "contacter IDE puis medecin si SpO2 reste basse apres controle capteur ou si dyspnee/toux/fievre/fausse route")
+        appel_urgence.insert(0, "appeler 15/112 si SpO2 <= 88-90% persistante, cyanose, tirage, parole impossible, confusion ou douleur thoracique")
+    elif problem == "tensionnel":
+        appel_medecin.insert(0, "contacter IDE/medecin si PA reste tres basse ou tres elevee apres repos et controle brassard")
+        appel_urgence.insert(0, "appeler 15/112 si syncope, deficit FAST/VITE, douleur thoracique, dyspnee severe ou trouble conscience")
+    elif problem == "infectieux":
+        appel_medecin.insert(0, "contacter IDE/medecin si fievre confirmee avec alteration etat general ou foyer infectieux suspect")
+        appel_urgence.insert(0, "appeler 15/112 si signes de sepsis: confusion, hypotension, tachypnee, marbrures, SpO2 basse ou degradation rapide")
+    elif problem == "chute_traumatisme":
+        appel_medecin.insert(0, "contacter IDE/medecin avant mobilisation si douleur, traumatisme, anticoagulant ou doute")
+        appel_urgence.insert(0, "appeler 15/112 si perte de connaissance, traumatisme cranien, deformation, douleur intense ou deficit neurologique")
+    elif problem == "diabete_hypoglycemie":
+        appel_medecin.insert(0, "contacter IDE/medecin si malaise, sueurs, tremblements, confusion ou glycemie anormale chez resident diabetique")
+        appel_urgence.insert(0, "appeler 15/112 si perte de connaissance, convulsions, impossibilite de resucrage oral ou trouble de vigilance persistant")
+    elif problem == "confusion_delirium":
+        appel_medecin.insert(0, "contacter IDE/medecin si confusion brutale, douleur, fievre, retention, hypoxie, hypoglycemie ou changement comportemental net")
+        appel_urgence.insert(0, "appeler 15/112 si deficit neurologique, trouble de conscience, SpO2 basse, hypotension, sepsis suspect ou agitation dangereuse")
+    elif problem == "avc_suspect":
+        appel_medecin.insert(0, "prevenir IDE/medecin apres appel urgent et tracer l'heure de debut ou de derniere fois vu normal")
+        appel_urgence.insert(0, "appeler 15/112 immediatement si visage asymetrique, faiblesse d'un bras, trouble parole, trouble visuel ou deficit brutal")
+    elif problem in {"cardiaque_malaise", "cardiaque_rythme"}:
+        appel_medecin.insert(0, "contacter IDE/medecin si douleur thoracique, malaise, palpitations, dyspnee, sueurs ou FC tres anormale")
+        appel_urgence.insert(0, "appeler 15/112 si douleur thoracique persistante, syncope, dyspnee severe, trouble conscience ou signes de choc")
+    elif problem == "insuffisance_cardiaque":
+        appel_medecin.insert(0, "contacter IDE/medecin si dyspnee, oedemes, prise de poids rapide, toux nocturne ou baisse SpO2 sur terrain cardiaque")
+        appel_urgence.insert(0, "appeler 15/112 si detresse respiratoire, douleur thoracique, cyanose, hypotension ou aggravation rapide")
+    elif problem == "deshydratation_renal":
+        appel_medecin.insert(0, "contacter IDE/medecin si apports bas, diuretique, insuffisance renale, hypotension, confusion ou signes de deshydratation")
+        appel_urgence.insert(0, "appeler 15/112 si syncope, hypotension severe, trouble conscience, signes de choc ou deshydratation majeure")
+    elif problem == "douleur_retention_fecalome":
+        appel_medecin.insert(0, "contacter IDE/medecin si douleur inexpliquee, agitation, globe urinaire suspect, absence de selles ou abdomen douloureux")
+        appel_urgence.insert(0, "appeler 15/112 si abdomen aigu, douleur intense, vomissements, malaise, sepsis suspect ou alteration rapide")
+    elif problem == "errance_fugue":
+        appel_medecin.insert(0, "prevenir IDE/responsable de secteur si resident introuvable, sortie non autorisee, confusion ou risque de fugue")
+        appel_urgence.insert(0, "appeler 15/112 si resident retrouve avec traumatisme, hypothermie/deshydratation, confusion severe ou danger immediat")
+    elif problem == "denutrition_fragilite":
+        appel_medecin.insert(0, "contacter IDE/medecin si perte d'appetit durable, perte de poids, apports insuffisants, fatigue majeure ou chute fonctionnelle")
+        appel_urgence.insert(0, "appeler 15/112 seulement si malaise, trouble conscience, detresse vitale ou deshydratation severe associee")
+    elif problem == "iatrogenie_medicamenteuse":
+        appel_medecin.insert(0, "contacter IDE/medecin si changement recent de traitement avec chute, somnolence, confusion, hypotension ou bradycardie")
+        appel_urgence.insert(0, "appeler 15/112 si trouble conscience important, depression respiratoire, traumatisme grave ou malaise severe")
+
+    traitements_a_realiser = [
+        "aucun traitement medicamenteux autonome par le systeme; appliquer uniquement prescriptions/protocoles de l'etablissement via IDE/medecin",
+        "preparer le dossier de transmission: constantes, heure, evolution, antecedents, traitements probables, allergies si connues",
+    ]
+    if problem == "respiratoire_hypoxemie":
+        traitements_a_realiser.insert(0, "installer au repos, position demi-assise si dyspnee, verifier SpO2/FR et tolerance avant toute mobilisation")
+        traitements_a_realiser.append("oxygene/traitement inhalé uniquement si prescription ou protocole local active par IDE/medecin")
+    if problem == "tensionnel":
+        traitements_a_realiser.insert(0, "reprendre PA systolique/diastolique apres repos, bras adapte, brassard adapte, comparer a la baseline")
+    if problem == "infectieux":
+        traitements_a_realiser.insert(0, "recontroler temperature et rechercher foyer infectieux; hydratation uniquement selon etat clinique/protocole")
+    if problem == "chute_traumatisme":
+        traitements_a_realiser.insert(0, "ne pas relever si douleur, traumatisme suspect, trouble conscience ou doute; proteger, couvrir, rassurer")
+    if problem == "diabete_hypoglycemie":
+        traitements_a_realiser.insert(0, "verifier glycemie capillaire si disponible; mettre au repos; ne pas faire marcher; resucrage uniquement selon protocole si conscient")
+    if problem == "confusion_delirium":
+        traitements_a_realiser.insert(0, "mettre en securite, environnement calme, lunettes/appareillage si besoin, rechercher douleur, retention, fievre, hypoxie ou hypoglycemie")
+    if problem == "avc_suspect":
+        traitements_a_realiser.insert(0, "noter heure debut/derniere fois vu normal; ne pas donner a boire ou manger si trouble deglutition; surveiller conscience")
+    if problem in {"cardiaque_malaise", "cardiaque_rythme", "insuffisance_cardiaque"}:
+        traitements_a_realiser.insert(0, "repos strict, constantes completes, eviter effort, rechercher douleur thoracique/dyspnee/sueurs/syncope")
+    if problem == "deshydratation_renal":
+        traitements_a_realiser.insert(0, "mettre au repos, verifier apports/diurese, bouche seche, pli cutane, poids recent; hydratation selon tolerance/protocole")
+    if problem == "douleur_retention_fecalome":
+        traitements_a_realiser.insert(0, "evaluer douleur, abdomen, dernieres selles, mictions; ne pas banaliser agitation nouvelle chez sujet age")
+    if problem == "errance_fugue":
+        traitements_a_realiser.insert(0, "securiser la zone, rechercher le resident selon protocole, verifier sortie, chute, exposition au froid/chaud et constantes au retour")
+    if problem == "denutrition_fragilite":
+        traitements_a_realiser.insert(0, "evaluer apports, poids, fatigue, hydratation, troubles deglutition; transmettre pour plan nutritionnel")
+    if problem == "iatrogenie_medicamenteuse":
+        traitements_a_realiser.insert(0, "verifier changement recent de traitement, horaire de prise, double prise possible, somnolence, hypotension et chute")
+
+    problem_source_ids = {
+        "respiratoire_hypoxemie": {"hypoxemia_emergency", "bpco", "psc_malaise", "SCN003_HYPOXEMIA_BPCO_OR_PNEUMONIA"},
+        "tensionnel": {"hypotension_malaise", "hypertension_neuro_cardio", "psc_malaise", "SCN002_HYPOTENSION_ORTHOSTATIC_MALAISE"},
+        "infectieux": {"infection_sepsis_watch", "psc_malaise", "SCN004_UTI_SEPSIS_EARLY_DETERIORATION"},
+        "chute_traumatisme": {"psc_traumatisme_chute", "SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT"},
+        "diabete_hypoglycemie": {"diabete", "SCN006_HYPOGLYCEMIA_DIABETES", "psc_malaise"},
+        "confusion_delirium": {"SCN011_ACUTE_CONFUSION_DELIRIUM", "confusion_aigue", "alzheimer", "psc_malaise"},
+        "avc_suspect": {"SCN012_STROKE_FAST_SUSPECTED", "avc_suspect", "hypertension_neuro_cardio"},
+        "cardiaque_malaise": {"SCN015_CHEST_PAIN_CARDIAC_MALAISE", "heart_rate_abnormal", "psc_malaise"},
+        "cardiaque_rythme": {"heart_rate_abnormal", "psc_malaise"},
+        "insuffisance_cardiaque": {"SCN013_HEART_FAILURE_DECOMPENSATION", "insuffisance_cardiaque", "hypoxemia_emergency"},
+        "deshydratation_renal": {"SCN005_DEHYDRATION_HEATWAVE_DIURETICS", "deshydratation_canicule", "insuffisance_renale", "hypotension_malaise"},
+        "douleur_retention_fecalome": {"SCN010_PAIN_URINARY_RETENTION_FECALOMA_AGITATION"},
+        "errance_fugue": {"SCN007_WANDERING_ELOPEMENT_ALZHEIMER", "alzheimer"},
+        "denutrition_fragilite": {"SCN014_DENUTRITION_FRAILTY_DECLINE", "sujet_age_fragile"},
+        "iatrogenie_medicamenteuse": {"SCN009_IATROGENIC_FALL_CONFUSION_AFTER_MED_CHANGE"},
+        "surveillance": set(),
+    }
+    kb_solutions = []
+    for item in kb.get("conduite", []):
+        action = item.get("action")
+        if not action:
+            continue
+        source = str(item.get("scenario_id") or item.get("niveau") or "")
+        is_problem_source = source in problem_source_ids.get(problem, set()) or problem in {"cardiaque_rythme", "surveillance"}
+        if is_problem_source:
+            kb_solutions.append({
+                "delai": item.get("delai", "maintenant"),
+                "action": action,
+                "source_kb": source,
+                "niveau": item.get("niveau"),
+            })
+
+    if problem == "respiratoire_hypoxemie":
+        solutions_adaptees = {
+            "probleme_cible": "Hypoxemie / desaturation sur terrain BPCO",
+            "objectif": "confirmer la mesure, evaluer la tolerance respiratoire, eviter l'effort, escalader vite si mauvaise tolerance",
+            "a_faire_immediatement": [
+                "Aller voir le resident sans attendre et verifier conscience, parole et respiration.",
+                "Mettre au repos, position assise ou demi-assise si dyspnee; ne pas faire marcher le resident.",
+                "Reprendre SpO2 au doigt, verifier qualite du signal/capteur et comparer a la baseline BPCO.",
+                "Compter la frequence respiratoire sur 1 minute et reprendre FC, PA, temperature, etat de conscience.",
+            ],
+            "a_rechercher_cliniquement": [
+                "dyspnee au repos ou a l'effort",
+                "cyanose, tirage, impossibilite de parler",
+                "douleur thoracique, malaise, sueurs",
+                "toux, fievre, encombrement bronchique",
+                "fausse route recente: repas, toux pendant/apres repas, voix mouillee",
+                "confusion, somnolence ou changement brutal de comportement",
+            ],
+            "surveillance_rapprochee": [
+                "Recontrole SpO2/FR/FC/PA/temperature a 15 min si anomalie confirmee.",
+                "Tracer tendance SpO2 et FR; verifier si SpO2 baisse ou reste sous baseline.",
+                "Surveiller douleur thoracique, dyspnee, cyanose, confusion et tolerance au repos.",
+            ],
+            "appel_ide_medecin": [
+                "IDE sans delai si SpO2 reste basse apres controle capteur ou si dyspnee/toux/fievre/fausse route.",
+                "Medecin selon protocole si anomalie persistante, aggravation, suspicion pneumonie/exacerbation BPCO ou besoin de prescription.",
+            ],
+            "appel_15_112": [
+                "SpO2 <= 88-90% persistante ou baisse rapide sous baseline.",
+                "dyspnee au repos, cyanose, tirage, parole impossible.",
+                "douleur thoracique, trouble neurologique, confusion/somnolence, detresse respiratoire.",
+            ],
+            "traitements_protocoles": [
+                "Oxygene, aerosol/bronchodilatateur ou autre traitement uniquement si prescription ou protocole local active par IDE/medecin.",
+                "Ne pas donner a boire/manger si suspicion de fausse route ou trouble de conscience.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "tensionnel":
+        solutions_adaptees = {
+            "probleme_cible": "Anomalie tensionnelle / malaise possible",
+            "objectif": "confirmer PA systolique/diastolique, securiser le resident et rechercher signes neuro-cardio",
+            "a_faire_immediatement": [
+                "Installer au repos assis ou couche selon tolerance.",
+                "Reprendre PA apres 5 minutes avec brassard adapte, noter systolique et diastolique.",
+                "Controler FC, SpO2, temperature, conscience et symptomes.",
+            ],
+            "a_rechercher_cliniquement": ["vertiges", "syncope/malaise", "douleur thoracique", "dyspnee", "signes FAST/VITE", "deshydratation ou traitement recent"],
+            "surveillance_rapprochee": ["Recontrole PA/FC a 15 min si anomalie confirmee.", "Eviter lever seul tant que malaise ou hypotension possible."],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": ["Traitement antihypertenseur/hydratation uniquement selon prescription ou protocole IDE/medecin."],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "infectieux":
+        solutions_adaptees = {
+            "probleme_cible": "Syndrome infectieux / sepsis a exclure",
+            "objectif": "confirmer constantes, rechercher foyer et reperer signes de gravite chez sujet age",
+            "a_faire_immediatement": ["Recontroler temperature, FR, FC, PA, SpO2 et conscience.", "Rechercher toux/encombrement, douleur urinaire, plaie, frissons, douleurs, baisse etat general."],
+            "a_rechercher_cliniquement": ["confusion aigue", "hypotension", "tachypnee", "SpO2 basse", "marbrures", "degradation rapide"],
+            "surveillance_rapprochee": ["Recontrole constantes a 15-30 min selon gravite.", "Tracer foyer suspect et evolution."],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": ["Antipyretique, antibiotique, hydratation medicalisee uniquement selon prescription/protocole."],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "chute_traumatisme":
+        solutions_adaptees = {
+            "probleme_cible": "Chute / traumatisme possible",
+            "objectif": "ne pas aggraver une lesion, evaluer conscience/respiration/douleur et alerter selon gravite",
+            "a_faire_immediatement": ["Ne pas relever si douleur importante, traumatisme suspect ou trouble conscience.", "Controler conscience, respiration, douleur, plaie/saignement, deformation.", "Couvrir, rassurer, surveiller constantes."],
+            "a_rechercher_cliniquement": ["traumatisme cranien", "douleur intense", "deformation", "deficit neurologique", "anticoagulant", "duree au sol"],
+            "surveillance_rapprochee": ["Recontrole douleur, conscience et constantes.", "Tracer circonstances et heure probable de chute."],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": ["Antalgie ou mobilisation uniquement selon evaluation IDE/medecin/protocole."],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "diabete_hypoglycemie":
+        solutions_adaptees = {
+            "probleme_cible": "Malaise diabetique / hypoglycemie a exclure",
+            "objectif": "securiser le resident, verifier la glycemie et traiter uniquement selon protocole si trouble compatible",
+            "a_faire_immediatement": [
+                "Mettre au repos, ne pas faire marcher le resident et rester avec lui.",
+                "Verifier conscience, parole, sueurs, tremblements, faim, paleur, agitation ou confusion.",
+                "Controler glycemie capillaire si materiel/protocole disponible, puis reprendre FC, PA, SpO2 et temperature.",
+                "Verifier repas saute, effort, insuline/antidiabetique recent ou erreur de prise.",
+            ],
+            "a_rechercher_cliniquement": [
+                "sueurs, tremblements, paleur, faim brutale",
+                "confusion, agitation, somnolence ou trouble parole",
+                "perte de connaissance ou convulsions",
+                "repas non pris, vomissements, infection ou changement traitement",
+            ],
+            "surveillance_rapprochee": [
+                "Recontrole clinique et glycemie selon protocole apres correction ou si symptomes persistent.",
+                "Tracer valeur glycemique, heure, repas, traitement recent et evolution neurologique.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Resucrage oral uniquement si resident conscient, capable d'avaler et protocole local valide.",
+                "Ne rien donner par la bouche si trouble de conscience ou trouble de deglutition.",
+                "Glucagon/traitement injectable uniquement par professionnel habilite selon prescription/protocole.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "confusion_delirium":
+        solutions_adaptees = {
+            "probleme_cible": "Syndrome confusionnel aigu / delirium",
+            "objectif": "identifier une cause reversible et reperer vite les signes de gravite chez la personne agee",
+            "a_faire_immediatement": [
+                "Mettre le resident en securite, parler calmement, limiter stimulation et risque de chute.",
+                "Verifier constantes completes: FC, PA, SpO2, FR, temperature, douleur, glycemie si possible.",
+                "Comparer au comportement habituel: debut brutal, fluctuation, sommeil, alimentation, hydratation.",
+                "Rechercher douleur, retention urinaire, fecalome, infection, hypoxie, hypoglycemie ou medicament recent.",
+            ],
+            "a_rechercher_cliniquement": [
+                "debut brutal ou fluctuant",
+                "somnolence, agitation ou hallucinations",
+                "douleur, globe urinaire, constipation",
+                "fievre, toux, signes urinaires, deshydratation",
+                "deficit neurologique FAST/VITE",
+            ],
+            "surveillance_rapprochee": [
+                "Surveillance rapprochee comportement + constantes toutes 15-30 min si trouble actif.",
+                "Tracer ecart a la baseline, facteurs declenchants possibles et reponse aux mesures de securisation.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Contention ou sedatif uniquement selon decision medicale/protocole et en dernier recours.",
+                "Corriger cause simple uniquement selon protocole: douleur, hypoglycemie, hypoxie, hydratation, retention.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "avc_suspect":
+        solutions_adaptees = {
+            "probleme_cible": "Suspicion AVC / deficit neurologique brutal",
+            "objectif": "declencher l'urgence, dater le debut et eviter toute perte de chance",
+            "a_faire_immediatement": [
+                "Faire test FAST/VITE: visage, bras, parole, heure de debut.",
+                "Appeler 15/112 sans attendre si signe neurologique brutal.",
+                "Noter heure de debut ou derniere fois vu normal.",
+                "Surveiller conscience, respiration, SpO2, PA et glycemie si possible.",
+            ],
+            "a_rechercher_cliniquement": [
+                "asymetrie visage",
+                "faiblesse ou engourdissement d'un bras/jambe",
+                "trouble parole ou comprehension",
+                "trouble visuel, vertige brutal, cephalee inhabituelle",
+                "chute ou trouble deglutition associe",
+            ],
+            "surveillance_rapprochee": [
+                "Ne pas laisser seul; reevaluer conscience et respiration en attendant secours.",
+                "Preparer antecedents, traitements anticoagulants/antiagregants et heure de debut.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Ne pas donner a boire, manger ou medicament si trouble deglutition/conscience.",
+                "Ne pas retarder l'appel pour refaire plusieurs mesures.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem in {"cardiaque_malaise", "cardiaque_rythme"}:
+        solutions_adaptees = {
+            "probleme_cible": "Malaise cardiaque / trouble du rythme possible",
+            "objectif": "mettre au repos, reperer signes coronariens ou choc et escalader rapidement",
+            "a_faire_immediatement": [
+                "Installer au repos, eviter tout effort et rester a proximite.",
+                "Controler FC, regularite du pouls si possible, PA, SpO2, FR, temperature et conscience.",
+                "Rechercher douleur thoracique, oppression, dyspnee, sueurs, nausees, malaise ou syncope.",
+                "Verifier terrain cardio, anticoagulant/antiagregant et medicament recent.",
+            ],
+            "a_rechercher_cliniquement": [
+                "douleur thoracique ou oppression",
+                "dyspnee, sueurs, paleur, nausees",
+                "syncope, malaise, palpitations",
+                "FC tres rapide, tres lente ou irreguliere",
+            ],
+            "surveillance_rapprochee": [
+                "Surveiller conscience, douleur, dyspnee, SpO2, FC et PA jusqu'a avis.",
+                "Tracer heure debut, duree, facteurs declenchants et evolution.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Aucun traitement cardiaque autonome; appliquer prescription/protocole uniquement via IDE/medecin.",
+                "Ne pas faire marcher le resident tant que malaise ou douleur non evalue.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "insuffisance_cardiaque":
+        solutions_adaptees = {
+            "probleme_cible": "Decompensation cardiaque / dyspnee sur terrain fragile",
+            "objectif": "evaluer tolerance respiratoire et signes de surcharge, transmettre rapidement",
+            "a_faire_immediatement": [
+                "Mettre au repos, position demi-assise si dyspnee.",
+                "Controler SpO2, FR, FC, PA, temperature et tolerance a la parole.",
+                "Rechercher oedemes, prise de poids recente, toux nocturne, orthopnee, fatigue inhabituelle.",
+                "Comparer SpO2 et dyspnee a la baseline du resident.",
+            ],
+            "a_rechercher_cliniquement": [
+                "dyspnee au repos ou allonge",
+                "oedemes membres inferieurs",
+                "prise de poids rapide",
+                "toux nocturne, crepitants si evaluation IDE",
+                "douleur thoracique ou malaise",
+            ],
+            "surveillance_rapprochee": [
+                "Recontrole SpO2/FR/FC/PA a 15-30 min si dyspnee ou SpO2 basse.",
+                "Tracer poids recent, oedemes, tolerance et traitements cardio/diuretiques probables.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Diuretique, oxygene ou adaptation traitement uniquement selon prescription/protocole.",
+                "Eviter effort et position allongee si dyspnee.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "deshydratation_renal":
+        solutions_adaptees = {
+            "probleme_cible": "Deshydratation / risque renal / hypotension",
+            "objectif": "evaluer apports, diurese et tolerance hemodynamique, prevenir aggravation renale",
+            "a_faire_immediatement": [
+                "Installer au repos, securiser lever et marche.",
+                "Controler PA couche/assis si possible, FC, temperature, SpO2, conscience.",
+                "Verifier apports hydriques, diurese, diarrhee/vomissements, canicule, diuretique ou insuffisance renale.",
+                "Rechercher bouche seche, pli cutane, vertiges, confusion, fatigue inhabituelle.",
+            ],
+            "a_rechercher_cliniquement": [
+                "hypotension orthostatique ou malaise au lever",
+                "baisse diurese ou urines foncees",
+                "confusion, somnolence, faiblesse",
+                "vomissements, diarrhee, fievre, chaleur",
+            ],
+            "surveillance_rapprochee": [
+                "Recontrole PA/FC/conscience apres repos et selon protocole.",
+                "Tracer apports, diurese, poids si disponible et medicaments a risque.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Hydratation orale seulement si resident conscient, sans fausse route, et selon protocole.",
+                "Adaptation diuretique/traitement renal uniquement sur avis medical.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "douleur_retention_fecalome":
+        solutions_adaptees = {
+            "probleme_cible": "Douleur, retention urinaire ou fecalome possible",
+            "objectif": "chercher une cause somatique d'agitation/douleur et eviter retard de prise en charge",
+            "a_faire_immediatement": [
+                "Evaluer douleur avec echelle adaptee et observer agitation, grimace, position antalgique.",
+                "Verifier abdomen, derniere miction, dernieres selles, nausees/vomissements et temperature.",
+                "Reprendre constantes completes et rechercher confusion associee.",
+                "Prevenir IDE si globe urinaire, abdomen douloureux ou douleur inhabituelle.",
+            ],
+            "a_rechercher_cliniquement": [
+                "absence de miction ou globe suspect",
+                "constipation prolongee ou fecalome suspect",
+                "douleur abdominale, vomissements",
+                "agitation/confusion comme signe de douleur",
+                "fievre ou alteration generale",
+            ],
+            "surveillance_rapprochee": [
+                "Tracer douleur, selles/mictions, abdomen et evolution comportementale.",
+                "Recontrole constantes si douleur persistante ou agitation.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Antalgie, sondage, laxatif/lavement uniquement selon prescription/protocole.",
+                "Ne pas attribuer une agitation nouvelle uniquement au comportement sans recherche somatique.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "errance_fugue":
+        solutions_adaptees = {
+            "probleme_cible": "Errance / sortie non autorisee / risque de fugue",
+            "objectif": "localiser et securiser le resident, puis chercher cause clinique ou environnementale",
+            "a_faire_immediatement": [
+                "Verifier localisation capteurs, chambre, zones communes et sorties selon protocole.",
+                "Prevenir equipe/responsable de secteur et declencher recherche interne si resident introuvable.",
+                "Au retour, controler constantes, douleur, chute, exposition froid/chaud, hydratation et confusion.",
+                "Rechercher declencheur: douleur, besoin toilette, anxiete, bruit, changement routine.",
+            ],
+            "a_rechercher_cliniquement": [
+                "chute ou traumatisme pendant errance",
+                "desorientation brutale ou delirium",
+                "douleur, retention, faim/soif, besoin d'elimination",
+                "hypothermie, coup de chaleur, fatigue",
+            ],
+            "surveillance_rapprochee": [
+                "Surveillance localisation renforcee et transmissions equipe/famille selon protocole.",
+                "Analyser horaire/lieu de recurrence pour adapter plan de soins.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Mesures de securisation environnementale selon protocole, pas de contention sans decision medicale.",
+                "Rechercher et traiter cause somatique avant de conclure a un trouble comportemental isole.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "denutrition_fragilite":
+        solutions_adaptees = {
+            "probleme_cible": "Denutrition / fragilite / declin fonctionnel",
+            "objectif": "objectiver baisse des apports et retentissement fonctionnel pour declencher plan nutritionnel",
+            "a_faire_immediatement": [
+                "Verifier repas pris, hydratation, poids recent, fatigue et capacite a se mobiliser.",
+                "Rechercher douleur buccale/dentaire, trouble deglutition, nausees, constipation, humeur depressive.",
+                "Controler constantes si faiblesse, malaise, chute ou confusion.",
+                "Transmettre au referent/IDE pour suivi nutritionnel et pesee programmee.",
+            ],
+            "a_rechercher_cliniquement": [
+                "perte de poids ou vetements devenus amples",
+                "repas non termines, refus alimentaire",
+                "fatigue, sarcopenie, baisse marche",
+                "trouble deglutition, fausse route, douleur buccale",
+                "isolement ou tristesse",
+            ],
+            "surveillance_rapprochee": [
+                "Suivre apports repas/hydratation et poids selon protocole.",
+                "Tracer evolution autonomie, chutes, fatigue et refus alimentaire.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Complement nutritionnel, texture adaptee ou bilan dietetique uniquement selon prescription/protocole.",
+                "Ne pas forcer alimentation si trouble deglutition suspect: demander evaluation.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    elif problem == "iatrogenie_medicamenteuse":
+        solutions_adaptees = {
+            "probleme_cible": "Iatrogenie medicamenteuse / effet indesirable possible",
+            "objectif": "relier les signes au changement therapeutique possible et prevenir chute, confusion ou depression respiratoire",
+            "a_faire_immediatement": [
+                "Verifier changement recent de traitement, nouvelle dose, double prise, oubli ou automedication.",
+                "Controler conscience, PA, FC, SpO2, FR, douleur et risque de chute.",
+                "Rechercher somnolence, confusion, vertiges, hypotension, bradycardie, dyspnee ou chute.",
+                "Transmettre rapidement medicaments probables et horaire de prise a l'IDE/medecin.",
+            ],
+            "a_rechercher_cliniquement": [
+                "somnolence ou trouble de vigilance",
+                "chute, vertige, hypotension",
+                "confusion nouvelle",
+                "bradycardie, malaise, dyspnee",
+                "prise benzodiazepine, diuretique, antidiabetique, anticoagulant ou antihypertenseur",
+            ],
+            "surveillance_rapprochee": [
+                "Surveiller conscience, respiration, PA/FC et risque de chute jusqu'a avis.",
+                "Tracer medicament, dose, heure, symptomes et evolution.",
+            ],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": [
+                "Ne jamais modifier un traitement sans avis medical.",
+                "Mesures de securite anti-chute et surveillance rapprochee en attendant avis.",
+            ],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+    else:
+        solutions_adaptees = {
+            "probleme_cible": problem,
+            "objectif": "surveillance adaptee au profil et verification clinique des signaux capteurs",
+            "a_faire_immediatement": [a.get("action") for a in actions[:4] if a.get("action")],
+            "a_rechercher_cliniquement": kb.get("donnees_a_verifier", [])[:8],
+            "surveillance_rapprochee": [s.get("seuil") for s in surveillance if s.get("seuil")],
+            "appel_ide_medecin": appel_medecin[:4],
+            "appel_15_112": appel_urgence[:4],
+            "traitements_protocoles": traitements_a_realiser[:4],
+            "actions_kb_sources": kb_solutions[:8],
+        }
+
+    note = {
+        "titre": "Note clinique structuree Mini-DPI",
+        "statut": "aide_a_la_decision_non_diagnostic",
+        "identite": {
+            "nom": resident_name,
+            "age": profile.get("age"),
+            "chambre": profile.get("room"),
+            "mobilite": profile.get("mobility"),
+            "soignant_referent": profile.get("caregiver"),
+        },
+        "contexte_appel": {
+            "localisation": location,
+            "probleme_dominant": problem,
+            "niveau_risque": niveau,
+            "alerte_active": _alert_label(active_alert) if active_alert else None,
+            "historique_30j": {
+                "alertes": (clinical_history.get("history_30d", {}) if isinstance(clinical_history, dict) else {}).get("alerts_count"),
+                "tendance": (clinical_history.get("history_30d", {}) if isinstance(clinical_history, dict) else {}).get("risk_trend"),
+            },
+        },
+        "antecedents": pathologies,
+        "terrains_kb": terrain_context,
+        "traitements_probables_ou_a_verifier": traitements,
+        "observation_initiale": {
+            "constantes": {
+                "fc_bpm": hr,
+                "spo2_pct": spo2,
+                "fr_min": rr,
+                "pa_mmhg": _fmt_bp(sys, dia),
+                "temperature_c": temp,
+            },
+            "etat_capteurs": {
+                "chute_detectee": _fall_detected(state),
+                "activite": state.get("activity"),
+                "inactivite_min": movement.get("no_movement_minutes") or state.get("no_movement_minutes"),
+                "routine_score": routine_score,
+            },
+            "preuves": evidence[:6],
+        },
+        "hypotheses_differentielles": hypotheses[:4],
+        "solutions_kb_adaptees": solutions_adaptees,
+        "conduite_immediate_soignant": actions[:8],
+        "surveillance": surveillance,
+        "traitements_gestes_a_realiser": traitements_a_realiser,
+        "criteres_appel_medecin_ide": list(dict.fromkeys(appel_medecin))[:6],
+        "criteres_appel_15_112": list(dict.fromkeys(appel_urgence))[:5],
+        "transmissions_a_tracer": [
+            "heure de debut et heure de controle",
+            "constantes completes avec PA systolique/diastolique et FR comptee",
+            "signes cliniques observes et tolerance",
+            "actions realisees, personne alertee, reponse obtenue",
+            "evolution a 15 min puis 30-60 min",
+        ],
+        "limites": [
+            "rapport d'aide a la decision, ne remplace pas l'examen clinique",
+            "traitements medicamenteux uniquement selon prescription/protocole local",
+        ],
+        "sources_kb": kb.get("sources_kb", []),
+    }
+    note["compte_rendu_medical"] = _build_medical_narrative(note)
+    return note
+
+
+def _build_medical_narrative(note: dict[str, Any]) -> dict[str, Any]:
+    identite = note.get("identite", {})
+    contexte = note.get("contexte_appel", {})
+    observation = note.get("observation_initiale", {})
+    constantes = observation.get("constantes", {})
+    solutions = note.get("solutions_kb_adaptees", {})
+    hypotheses = note.get("hypotheses_differentielles", [])
+    main_hyp = hypotheses[0] if hypotheses else {}
+    antecedents = note.get("antecedents", [])
+    terrains = note.get("terrains_kb", [])
+    traitements = note.get("traitements_probables_ou_a_verifier", [])
+
+    atcd_txt = ", ".join(str(x) for x in antecedents) if antecedents else "aucun antecedent renseigne"
+    terrain_txt = ", ".join(str(t.get("label") or t.get("id")) for t in terrains if isinstance(t, dict)) or "aucun terrain KB complementaire"
+    traitements_txt = ", ".join(
+        str(t.get("nom") or t.get("id")) for t in traitements if isinstance(t, dict)
+    ) or "traitements habituels non renseignes dans le projet, a verifier dans le DPI reel"
+    constants_txt = (
+        f"FC {constantes.get('fc_bpm')} bpm, SpO2 {constantes.get('spo2_pct')}%, "
+        f"FR {constantes.get('fr_min')}/min, PA {constantes.get('pa_mmhg')}, "
+        f"T {constantes.get('temperature_c')} C"
+    )
+    diagnosis = main_hyp.get("hypothese") or contexte.get("probleme_dominant") or "situation a evaluer"
+    arguments = main_hyp.get("arguments", []) if isinstance(main_hyp, dict) else []
+    checks = main_hyp.get("a_verifier", []) if isinstance(main_hyp, dict) else []
+    escalation = main_hyp.get("criteres_escalade", []) if isinstance(main_hyp, dict) else []
+    immediate = solutions.get("a_faire_immediatement", [])
+    search = solutions.get("a_rechercher_cliniquement", [])
+    follow = solutions.get("surveillance_rapprochee", [])
+    protocols = solutions.get("traitements_protocoles", [])
+
+    return {
+        "titre": "Compte rendu medical IA - Mini-DPI",
+        "avertissement": "Document d'aide a la decision pour transmission soignante; ne remplace pas l'examen clinique ni la decision medicale.",
+        "identification_resident": (
+            f"{identite.get('nom')} ({identite.get('age')} ans), chambre {identite.get('chambre')}, "
+            f"mobilite {identite.get('mobilite')}, soignant referent {identite.get('soignant_referent')}."
+        ),
+        "diagnostic_initial": {
+            "texte": (
+                f"Le resident presente un probleme dominant {contexte.get('probleme_dominant')} avec un niveau de risque "
+                f"{contexte.get('niveau_risque')}. Les antecedents connus sont: {atcd_txt}. "
+                f"Terrains KB retenus: {terrain_txt}. "
+                f"L'observation initiale retrouve {constants_txt}. L'hypothese prioritaire est: {diagnosis}."
+            ),
+            "arguments_cliniques": arguments,
+            "elements_a_verifier": checks,
+            "examens_ou_controles_utiles": [
+                "controle manuel/fiabilise des constantes",
+                "examen clinique par soignant/IDE selon protocole",
+                "avis medical si anomalie persistante ou signe de gravite",
+            ],
+        },
+        "traitements_et_interventions": {
+            "texte": (
+                "La prise en charge immediate vise a securiser le resident, confirmer les donnees capteurs "
+                "et appliquer les conduites issues de la KB et du protocole d'etablissement. "
+                f"Traitements habituels/probables a verifier: {traitements_txt}."
+            ),
+            "interventions_immediates": immediate,
+            "signes_a_rechercher": search,
+            "traitements_protocoles": protocols,
+            "justification": solutions.get("objectif"),
+        },
+        "suivi_et_evolution": {
+            "texte": (
+                "Le suivi doit documenter l'evolution des symptomes, la tolerance clinique, la reponse aux gestes "
+                "realises et l'apparition de tout critere d'aggravation."
+            ),
+            "surveillance": follow,
+            "criteres_aggravation": escalation,
+            "transmissions": note.get("transmissions_a_tracer", []),
+        },
+        "conclusion_et_recommandations": {
+            "texte": (
+                "La situation necessite une surveillance rapprochee et une transmission structuree a l'equipe. "
+                "L'appel IDE/medecin ou 15/112 depend de la persistance des anomalies et de la tolerance clinique."
+            ),
+            "appel_ide_medecin": note.get("criteres_appel_medecin_ide", []),
+            "appel_15_112": note.get("criteres_appel_15_112", []),
+            "limites": note.get("limites", []),
+        },
+    }
+
+
 def _structured_fallback_report(
     resident_name: str,
     profile: dict,
@@ -859,7 +1739,7 @@ def _structured_fallback_report(
     if no_move_min and float(no_move_min) >= 60:
         evidence.append({"signal": "Inactivite prolongee", "valeur": f"{float(no_move_min):.0f} min", "interpretation": "a verifier selon routine et contexte de sommeil", "gravite": "moyenne"})
 
-    if state.get("fall_detected") or movement.get("fall_detected"):
+    if _fall_detected(state):
         evidence.append({"signal": "Chute detectee", "valeur": "capteur positif", "interpretation": "verification immediate necessaire", "gravite": "haute"})
 
     routine_score = float(routine.get("score", routine.get("anomaly_score", 0)) or 0)
@@ -948,7 +1828,7 @@ def _structured_fallback_report(
             "criteres_escalade": ["confusion brutale", "danger pour resident/autrui", "chute", "sortie hors EHPAD", "constantes anormales"],
             "sources_kb": ["HAS_ALZHEIMER_TCP_2012", "SCN011_ACUTE_CONFUSION_DELIRIUM"],
         })
-    if state.get("fall_detected") or movement.get("fall_detected") or movement.get("is_fall_detected"):
+    if _fall_detected(state):
         hypotheses.append({
             "hypothese": "chute ou traumatisme",
             "probabilite": "elevee",
@@ -971,7 +1851,10 @@ def _structured_fallback_report(
 
     action_now = "Passer voir le resident, confirmer la localisation et refaire les constantes."
     if niveau == "eleve":
-        action_now = "Controle immediat au lit ou sur zone: conscience, respiration, SpO2 au doigt, FR sur 1 minute, FC, PA, temperature, douleur, dyspnee et chute."
+        if _fall_detected(state):
+            action_now = "Controle immediat au lit ou sur zone: conscience, respiration, SpO2 au doigt, FR sur 1 minute, FC, PA, temperature, douleur, dyspnee et signes de traumatisme/chute."
+        else:
+            action_now = "Controle immediat au lit ou sur zone: conscience, respiration, SpO2 au doigt, FR sur 1 minute, FC, PA, temperature, douleur, dyspnee et malaise."
     actions = [
         {"delai": "maintenant", "action": action_now, "responsable": "soignant assigne"},
         {"delai": "15 min", "action": "Recontrole SpO2/FR/FC/PA/temperature, noter l'evolution et verifier si les signes respiratoires ou neurologiques persistent.", "responsable": "soignant assigne / IDE"},
@@ -1022,6 +1905,20 @@ def _structured_fallback_report(
     if history_watch:
         vigilance = list(dict.fromkeys(vigilance + [str(p) for p in history_watch[:3]]))
 
+    rapport_medical = _build_medical_structured_note(
+        resident_name=resident_name,
+        profile=profile,
+        state=state,
+        alerts_today=alerts_today,
+        clinical_history=clinical_history,
+        evidence=evidence,
+        hypotheses=hypotheses,
+        actions=actions,
+        surveillance=surveillance,
+        kb=kb,
+        niveau=niveau,
+    )
+
     return LLMReport(
         resume=resume,
         synthese_clinique=resume,
@@ -1048,6 +1945,7 @@ def _structured_fallback_report(
             "Les causes proposees sont des hypotheses a confirmer.",
         ],
         message_famille="Surveillance renforcee en cours par l'equipe, avec verification des constantes et du comportement.",
+        rapport_medical=rapport_medical,
         sources_kb=kb["sources_kb"],
     )
 
@@ -1152,12 +2050,15 @@ def parse_llm_output(
 ) -> LLMReport:
     try:
         data = json.loads(_extract_json_block(raw))
+        data = _filter_partial_sources(data, _allowed_source_ids(profile, state, alerts_today))
         report = LLMReport(**data)
         fallback = _structured_fallback_report(resident_name, profile, state, alerts_today, clinical_history=clinical_history, source_note="analyse structuree completee automatiquement")
         merged = fallback.model_dump()
         merged.update({k: v for k, v in report.model_dump().items() if v not in (None, [], {})})
+        allowed_sources = _allowed_source_ids(profile, state, alerts_today)
         if report.sources_kb and fallback.sources_kb:
-            merged["sources_kb"] = list(dict.fromkeys(report.sources_kb + fallback.sources_kb))
+            merged["sources_kb"] = _filter_source_list(list(dict.fromkeys(report.sources_kb + fallback.sources_kb)), allowed_sources)
+        merged = _filter_partial_sources(merged, allowed_sources)
         return LLMReport(**merged)
     except (json.JSONDecodeError, ValidationError, Exception):
         return _structured_fallback_report(resident_name, profile, state, alerts_today, clinical_history=clinical_history, source_note=source_note or "sortie LLM invalide, repli clinique structure")
@@ -1222,6 +2123,15 @@ def _normalize_action_text(value: Any) -> str:
     return _human_action(text)
 
 
+def _max_risk_label(left: Any, right: Any) -> str:
+    order = {"faible": 0, "modere": 1, "eleve": 2}
+    left_norm = _normalize_risk_label(left)
+    right_norm = _normalize_risk_label(right)
+    if order.get(str(right_norm), -1) > order.get(str(left_norm), -1):
+        return str(right_norm)
+    return str(left_norm if left_norm in order else right_norm if right_norm in order else "faible")
+
+
 def _normalize_report_partial(partial: dict[str, Any]) -> dict[str, Any]:
     if "niveau_risque" in partial:
         partial["niveau_risque"] = _normalize_risk_label(partial.get("niveau_risque"))
@@ -1259,6 +2169,33 @@ def _normalize_report_partial(partial: dict[str, Any]) -> dict[str, Any]:
     return partial
 
 
+def _sanitize_fast_summary(partial: dict[str, Any], state: dict) -> dict[str, Any]:
+    if not isinstance(partial, dict):
+        return {}
+    partial = dict(partial)
+    if _fall_detected(state):
+        return partial
+
+    fall_tokens = ("chute", "fall", "traumatisme")
+    for field in ("resume", "synthese_clinique", "message_famille"):
+        value = partial.get(field)
+        if isinstance(value, str) and any(token in value.lower() for token in fall_tokens):
+            partial.pop(field, None)
+            continue
+        if isinstance(value, str):
+            lowered = value.lower()
+            if ("fréquence cardiaque" in lowered or "frequence cardiaque" in lowered or "fc" in lowered) and "mmhg" in lowered:
+                partial.pop(field, None)
+    for field in ("points_vigilance", "actions_soignants"):
+        values = partial.get(field)
+        if isinstance(values, list):
+            partial[field] = [
+                item for item in values
+                if not any(token in str(item).lower() for token in fall_tokens)
+            ]
+    return partial
+
+
 def _summary_is_specific(value: Any) -> bool:
     if not isinstance(value, str):
         return False
@@ -1291,6 +2228,13 @@ def _compact_prompt_context(profile: dict, state: dict, alerts_today: list[dict]
         "archetype_id": profile.get("archetype_id"),
         "likely_medications": profile.get("likely_medications", [])[:8],
         "preferred_scenarios": profile.get("preferred_scenarios", [])[:6],
+        "simulator_scenarios": {
+            "active_vital": state.get("scenario") or state.get("scenario_active"),
+            "active_movement": state.get("movement_scenario"),
+            "planned_primary": state.get("assigned_movement_scenario"),
+            "possible_profile": (state.get("assigned_scenarios") or [])[:6],
+            "kb_links": scenario_kb_links_for_state(state)[:10],
+        },
         "antecedents_kb_links": _profile_antecedent_kb_links(profile)[:6],
         "clinical_focus": _clinical_focus_from_profile(
             profile,
@@ -1334,25 +2278,87 @@ def _build_fast_summary_prompt(
     alerts_today: list[dict],
     clinical_history: dict | None = None,
 ) -> str:
-    context = _compact_prompt_context(profile, state, alerts_today, clinical_history)
+    vitals = state.get("vitals", {}) or {}
+    movement = state.get("movement") or {}
+    alert = alerts_today[0] if alerts_today else {}
+    alert_level = max((int(a.get("level", 0) or 0) for a in alerts_today), default=0)
+    ml_risk = float(state.get("ml_risk", 0) or state.get("prediction_risk", 0) or 0)
+    kb = _kb_guidance(profile, state, ml_risk, alert_level)
+    clinical_focus = _clinical_focus_from_profile(profile, state, alert_level)
+    main_complications = [
+        {
+            "id": item.get("scenario_id"),
+            "nom": item.get("nom"),
+            "signes": item.get("signes_a_rechercher", [])[:3],
+        }
+        for item in kb.get("complications", [])[:3]
+    ]
+    kb_actions = [
+        {
+            "delai": item.get("delai"),
+            "action": item.get("action"),
+            "source": item.get("scenario_id"),
+        }
+        for item in kb.get("conduite", [])[:5]
+    ]
+    context = {
+        "resident": resident_name or profile.get("name") or profile.get("id"),
+        "age": profile.get("age"),
+        "chambre": profile.get("room") or profile.get("chambre"),
+        "terrain": profile.get("pathologies", [])[:6],
+        "constantes": {
+            "FC": vitals.get("heart_rate"),
+            "SpO2": vitals.get("spo2"),
+            "temperature": vitals.get("temperature"),
+            "PA": _fmt_bp(vitals.get("blood_pressure_sys"), vitals.get("blood_pressure_dia")),
+            "FR": vitals.get("respiratory_rate"),
+        },
+        "risque_ml": round(ml_risk, 2),
+        "alerte": {
+            "niveau": alert.get("level"),
+            "message": _alert_label(alert) if alert else None,
+        },
+        "faits_capteurs": {
+            "chute_detectee": _fall_detected(state),
+            "inactivite_minutes": movement.get("no_movement_minutes") or state.get("no_movement_minutes"),
+            "zone": movement.get("zone") or state.get("current_zone"),
+        },
+        "scenario_actif": state.get("scenario") or state.get("scenario_active") or state.get("movement_scenario"),
+        "focus_clinique": clinical_focus.get("focus", [])[:4],
+        "complications_kb": main_complications,
+        "cat_kb_prioritaire": kb_actions,
+        "sources_kb": kb.get("sources_kb", [])[:6],
+    }
     return f"""
-Tu es un assistant de transmission EHPAD. Tache courte: reformuler un resume soignant et un message famille non alarmiste.
+Tu es un assistant de transmission EHPAD. Tache courte, mais clinique.
 
-Contexte compact:
-{context}
+Resident: {context["resident"]}, {context.get("age")} ans, chambre {context.get("chambre") or "non precisee"}
+Terrain: {", ".join(str(x) for x in context["terrain"]) or "non precise"}
+Constantes: FC={context["constantes"]["FC"]} bpm | SpO2={context["constantes"]["SpO2"]}% | Temp={context["constantes"]["temperature"]}C | PA tension arterielle={context["constantes"]["PA"]} mmHg | FR={context["constantes"]["FR"]}/min
+Risque ML: {context["risque_ml"]}
+Alerte: niveau {context["alerte"]["niveau"]} - {context["alerte"]["message"]}
+Faits capteurs: chute_detectee={str(context["faits_capteurs"]["chute_detectee"]).lower()} | inactivite_min={context["faits_capteurs"]["inactivite_minutes"]} | zone={context["faits_capteurs"]["zone"]}
+Scenario actif: {context["scenario_actif"] or "aucun"}
+Focus clinique KB: {json.dumps(context["focus_clinique"], ensure_ascii=False)}
+Complications KB possibles: {json.dumps(context["complications_kb"], ensure_ascii=False)}
+Conduites KB prioritaires: {json.dumps(context["cat_kb_prioritaire"], ensure_ascii=False)}
+Sources KB: {", ".join(str(x) for x in context["sources_kb"]) or "aucune"}
 
-Reponds uniquement en JSON valide:
+Reponds en JSON valide avec exactement ces 5 champs:
 {{
-  "resume": "2 phrases maximum, utile pour transmission soignante",
+  "resume": "2 phrases pour transmission soignante, citer 1 constante ou alerte precise",
   "synthese_clinique": "1 phrase clinique concise",
-  "points_vigilance": ["3 points maximum"],
-  "actions_soignants": ["3 actions concretes maximum"],
-  "message_famille": "1 phrase simple, sans diagnostic certain"
+  "points_vigilance": ["point 1", "point 2", "point 3"],
+  "actions_soignants": ["action 1", "action 2", "action 3"],
+  "message_famille": "1 phrase simple, pas de diagnostic"
 }}
 
 Contraintes:
 - ne pose pas de diagnostic certain;
-- le resume doit citer le risque ML ou une alerte/constante precise;
+- le resume doit suivre les faits capteurs et les constantes; n'invente jamais une chute si chute_detectee=false;
+- ne confonds jamais FC et PA: FC est en bpm, PA est la tension arterielle en mmHg;
+- les actions doivent reprendre les conduites KB prioritaires adaptees au probleme dominant;
+- cite le probleme dominant: respiratoire, tensionnel, infectieux, chute/trauma, confusion, routine, ou stable;
 - sois concret: verifier quoi, quand, et qui alerter si aggravation;
 - si les donnees sont rassurantes, le dire sans surmedicaliser.
 """.strip()
@@ -1366,11 +2372,10 @@ def _build_clinical_router_prompt(
     clinical_history: dict | None = None,
 ) -> str:
     compact = _compact_prompt_context(profile, state, alerts_today, clinical_history)
-    kb_slice = kb_context[:5200]
+    kb_slice = kb_context[:2500]
     return f"""
-Tu es un copilote clinique pour EHPAD. Tu utilises uniquement les donnees fournies et la KB officielle.
-Objectif: hypotheses differentielles, conduite a tenir soignant, surveillance et sources.
-Important: relie explicitement chaque conduite a tenir aux antecedents/pathologies du resident quand ils sont fournis.
+Tu es un copilote clinique EHPAD. Utilise uniquement les donnees fournies.
+Objectif: hypotheses differentielles et conduite a tenir soignante reliees au terrain du resident.
 
 Contexte patient:
 {compact}
@@ -1381,30 +2386,25 @@ KB officielle / scenarios pertinents:
 Reponds uniquement en JSON valide:
 {{
   "niveau_risque": "faible|modere|eleve",
-  "preuves": [{{"signal": "...", "valeur": "...", "interpretation": "...", "gravite": "basse|moyenne|haute"}}],
   "hypotheses": [{{"hypothese": "...", "probabilite": "faible|moderee|elevee|a confirmer", "arguments": ["..."], "a_verifier": ["..."], "conduite_soignant": ["..."], "criteres_escalade": ["..."], "sources_kb": ["..."]}}],
   "actions_prioritaires": [{{"delai": "maintenant|15 min|30-60 min|si aggravation", "action": "...", "responsable": "..."}}],
-  "plan_surveillance": [{{"parametre": "...", "frequence": "...", "seuil": "..."}}],
-  "complications_possibles": [{{"scenario_id": "...", "nom": "...", "explication": "...", "signes_a_rechercher": ["..."]}}],
   "donnees_a_verifier": ["..."],
   "conduite_a_tenir_kb": [{{"scenario_id": "...", "delai": "...", "action": "...", "niveau": "..."}}],
-  "incertitudes": ["..."],
   "sources_kb": ["..."]
 }}
 
 Contraintes obligatoires:
-- maximum 3 preuves, 3 hypotheses, 4 actions, 3 surveillances et 5 sources;
-- au moins 3 actions concretes avec delai et responsable;
+- maximum 2 hypotheses, 4 actions prioritaires, 5 donnees a verifier, 4 conduites KB et 5 sources;
 - si SpO2 <= 90%, prioriser hypoxemie aigue, tolerance respiratoire, controle SpO2/FR et criteres d'appel urgent;
 - relier la CAT au terrain: Parkinson/fausse route/chute, hypertension/neuro-cardio, traitements a risque/iatrogenie;
 - chaque hypothese doit contenir a_verifier, conduite_soignant et criteres_escalade;
 - reprendre les conduites PSC/AFPS pertinentes si elles sont presentes dans la KB;
-- citer les ids de sources/scenarios utilises dans sources_kb;
-- ne jamais inventer de source absente du contexte.
+- sources_kb doit contenir uniquement des IDs presents dans la KB ci-dessus.
 """.strip()
 
 
-def _merge_report_from_partial(base: LLMReport, partial: dict[str, Any]) -> LLMReport:
+def _merge_report_from_partial(base: LLMReport, partial: dict[str, Any], allowed_sources: set[str] | None = None) -> LLMReport:
+    partial = _filter_partial_sources(partial, allowed_sources)
     partial = _normalize_report_partial(dict(partial))
     merged = base.model_dump()
     allowed = set(merged.keys())
@@ -1461,10 +2461,14 @@ def _merge_report_from_partial(base: LLMReport, partial: dict[str, Any]) -> LLMR
             merged[key] = combined[:limits.get(key, 10)]
         elif isinstance(merged.get(key), dict) and isinstance(value, dict):
             merged[key] = value
+        elif key == "niveau_risque":
+            merged[key] = _max_risk_label(merged.get(key), value)
         elif not isinstance(merged.get(key), (list, dict)):
             merged[key] = value
     if base.sources_kb and isinstance(partial.get("sources_kb"), list):
         merged["sources_kb"] = list(dict.fromkeys([*partial["sources_kb"], *base.sources_kb]))
+    if allowed_sources:
+        merged["sources_kb"] = _filter_source_list(merged.get("sources_kb"), allowed_sources)
     return LLMReport(**merged)
 
 
@@ -1521,6 +2525,7 @@ def _build_result(
         "ml_risk": round(float(state.get("ml_risk", 0) or 0), 2),
         "alerts_count_today": len(alerts_today),
         "kb_context_injected": bool(kb_ctx),
+        "scenario_kb_links": scenario_kb_links_for_state(state)[:12],
         "rag_enabled": True,
         "clinical_decision_support": True,
         "uses_patient_history": bool(clinical_history),
@@ -1603,6 +2608,7 @@ async def _generate_report_core_routed(
     used_models: list[str] = []
     failed_models: list[str] = []
     trace_steps: list[dict[str, Any]] = []
+    allowed_sources = _allowed_source_ids(profile, state, alerts_today)
 
     fast_model = LLM_FAST_MODEL or ollama_model
     clinical_model = LLM_CLINICAL_MODEL or ollama_model
@@ -1614,13 +2620,14 @@ async def _generate_report_core_routed(
             ollama_host,
             fast_model,
             fast_prompt,
-            timeout_s=35.0,
-            num_predict=260,
+            timeout_s=50.0,
+            num_predict=420,
             temperature=0.1,
         )
         duration_ms += int(fast_duration * 1000)
         fast_data = _json_from_llm_text(raw_fast)
-        report = _merge_report_from_partial(report, fast_data)
+        fast_data = _sanitize_fast_summary(fast_data, state)
+        report = _merge_report_from_partial(report, fast_data, allowed_sources=allowed_sources)
         used_models.append(f"fast={fast_model}")
         trace_steps.append({
             "agent": "Synthese rapide",
@@ -1654,7 +2661,7 @@ async def _generate_report_core_routed(
         )
         duration_ms += int(clinical_duration * 1000)
         clinical_data = _json_from_llm_text(raw_clinical)
-        report = _merge_report_from_partial(report, clinical_data)
+        report = _merge_report_from_partial(report, clinical_data, allowed_sources=allowed_sources)
         used_models.append(f"clinical={clinical_model}")
         trace_steps.append({
             "agent": "Analyse clinique KB",
@@ -1662,7 +2669,7 @@ async def _generate_report_core_routed(
             "role": "Hypotheses differentielles, conduite a tenir, surveillance, sources KB",
             "status": "ok",
             "duration_ms": int(clinical_duration * 1000),
-            "fields": sorted([k for k in clinical_data.keys() if k in {"niveau_risque", "preuves", "hypotheses", "actions_prioritaires", "plan_surveillance", "complications_possibles", "donnees_a_verifier", "conduite_a_tenir_kb", "sources_kb"}]),
+            "fields": sorted([k for k in clinical_data.keys() if k in {"niveau_risque", "hypotheses", "actions_prioritaires", "donnees_a_verifier", "conduite_a_tenir_kb", "sources_kb"}]),
         })
         log.info("LLM clinical %s - %s ms - prompt %s chars", resident_id, int(clinical_duration * 1000), len(clinical_prompt))
     except Exception as exc:
@@ -1731,7 +2738,8 @@ async def _generate_report_core_routed(
         "status": "ok",
         "fields": ["preuves", "hypotheses", "actions_prioritaires", "conduite_a_tenir_kb"],
     })
-    merged = report.model_dump()
+    merged = _filter_partial_sources(report.model_dump(), allowed_sources)
+    merged["sources_kb"] = _filter_source_list(merged.get("sources_kb"), allowed_sources)
     merged["llm_trace"] = {
         "routing_enabled": True,
         "source": source,

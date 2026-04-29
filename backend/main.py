@@ -20,17 +20,18 @@ from typing import Optional
 
 import numpy as np
 
-import redis
 import paho.mqtt.client as mqtt
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request, Header
-from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 from pydantic import BaseModel
-from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client import Point, WritePrecision
 
+from app.api import register_routers
+from app.core.config import settings
+from app.core.middleware import create_limiter, setup_middlewares
+from app.db.redis_client import redis_client
+from app.db.influx_client import influx, write_api, query_api
+from app.domain.residents import RESIDENT_ARCHETYPES, resident_archetype as _resident_archetype
+from app.domain.scenarios import SIMULATION_SCENARIOS
 from alert_engine import AlertEngine, LEVEL_CONFIG
 from ws_manager import WebSocketManager
 from ml_model import MalaisePredictor
@@ -42,32 +43,26 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s [BACKEND] %(message)
 log = logging.getLogger(__name__)
 
 # --- Config ---
-MQTT_HOST = os.getenv("MQTT_HOST", "localhost")
-MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-MQTT_USERNAME = os.getenv("MQTT_USERNAME", "")
-MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
-REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
-INFLUX_HOST = os.getenv("INFLUX_HOST", "http://localhost:8086")
-INFLUX_TOKEN = os.getenv("INFLUX_TOKEN", "ehpad-super-secret-token")
-INFLUX_ORG = os.getenv("INFLUX_ORG", "ehpad")
-INFLUX_BUCKET = os.getenv("INFLUX_BUCKET", "residents")
-DEMO_RESIDENT = os.getenv("DEMO_RESIDENT", "R005")
-INFLUX_SAMPLE_INTERVAL_S = float(os.getenv("INFLUX_SAMPLE_INTERVAL_S", "5"))
-WS_RESIDENT_MIN_INTERVAL_S = float(os.getenv("WS_RESIDENT_MIN_INTERVAL_S", "2"))
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "meditron:7b")
-LLM_DAILY_AUTO_ENABLED = os.getenv("LLM_DAILY_AUTO_ENABLED", "true").lower() not in {"0", "false", "no"}
-LLM_DAILY_TTL_DAYS = int(os.getenv("LLM_DAILY_TTL_DAYS", "45"))
-FAMILLE_ADMIN_TOKEN = os.getenv("FAMILLE_ADMIN_TOKEN", "ADMIN_EHPAD_2024")
-SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-change-me-session-secret")
-STAFF_DEMO_PASSWORD = os.getenv("STAFF_DEMO_PASSWORD", "EHPAD2024!")
-ALLOWED_ORIGINS = [x.strip() for x in os.getenv("ALLOWED_ORIGINS", "http://localhost:3002,http://127.0.0.1:3002").split(",") if x.strip()]
-HTTPS_REQUIRED = os.getenv("HTTPS_REQUIRED", "false").lower() in {"1", "true", "yes"}
-RETENTION_ACCESS_LOG_DAYS = int(os.getenv("RETENTION_ACCESS_LOG_DAYS", "365"))
-RETENTION_AUDIT_DAYS = int(os.getenv("RETENTION_AUDIT_DAYS", "365"))
-PATIENT_DATA_DIR = Path(os.getenv("PATIENT_DATA_DIR", "/app/data/patients"))
+MQTT_HOST = settings.mqtt_host
+MQTT_PORT = settings.mqtt_port
+MQTT_USERNAME = settings.mqtt_username
+MQTT_PASSWORD = settings.mqtt_password
+INFLUX_BUCKET = settings.influx_bucket
+DEMO_RESIDENT = settings.demo_resident
+INFLUX_SAMPLE_INTERVAL_S = settings.influx_sample_interval_s
+WS_RESIDENT_MIN_INTERVAL_S = settings.ws_resident_min_interval_s
+OLLAMA_HOST = settings.ollama_host
+OLLAMA_MODEL = settings.ollama_model
+LLM_DAILY_AUTO_ENABLED = settings.llm_daily_auto_enabled
+LLM_DAILY_TTL_DAYS = settings.llm_daily_ttl_days
+FAMILLE_ADMIN_TOKEN = settings.famille_admin_token
+SESSION_SECRET = settings.session_secret
+STAFF_DEMO_PASSWORD = settings.staff_demo_password
+ALLOWED_ORIGINS = settings.allowed_origins
+HTTPS_REQUIRED = settings.https_required
+RETENTION_ACCESS_LOG_DAYS = settings.retention_access_log_days
+RETENTION_AUDIT_DAYS = settings.retention_audit_days
+PATIENT_DATA_DIR = settings.patient_data_dir
 
 
 def _fmt_bp(vitals: dict) -> str:
@@ -88,50 +83,21 @@ def _fmt_bp(vitals: dict) -> str:
     return f"{sys_txt}/{dia_txt} mmHg"
 
 # --- Web Push VAPID ---
-VAPID_PUBLIC_KEY = os.getenv("VAPID_PUBLIC_KEY", "")
-VAPID_PRIVATE_KEY = os.getenv("VAPID_PRIVATE_KEY", "")
-VAPID_CLAIMS_EMAIL = os.getenv("VAPID_CLAIMS_EMAIL", "admin@ehpad.local")
-WEBPUSH_ENABLED = bool(VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY)
-
-SIMULATION_SCENARIOS = [
-    "hypoxie", "tachycardie", "chute", "hypotension", "fievre",
-    "chute_couloir", "chute_chambre", "malaise_salle_manger", "errance_nuit",
-    "sortie_patio", "immobilite_salle_repos", "aller_toilettes_nuit",
-    "desorientation_ascenseur", "agitation_couloir", "isolement_chambre",
-    "retour_kine_fatigue", "promenade_jardin", "sortie_jardin_non_accompagnee",
-    "chute_jardin", "fugue_hors_ehpad", "chute_trajet_repas",
-    "desorientation_avant_repas", "malaise_retour_repas", "malaise_repas",
-    "chute_salle_bain", "toilette_matinale_fatigue", "desorientation_patio",
-    "regroupement_patio_fatigue", "retour_jardin_fatigue",
-    "risque_nuit", "jardin",
-]
+VAPID_PUBLIC_KEY = settings.vapid_public_key
+VAPID_PRIVATE_KEY = settings.vapid_private_key
+VAPID_CLAIMS_EMAIL = settings.vapid_claims_email
+WEBPUSH_ENABLED = settings.webpush_enabled
 
 # --- Profils résidents (importé depuis le simulateur, ou hardcodé)
 from resident_profiles import RESIDENTS_MAP, RESIDENTS_LIST, FAMILY_CODE_MAP, CAREGIVERS
 import auth as auth_module
 
 # --- Init ---
-limiter = Limiter(key_func=get_remote_address)
+limiter = create_limiter()
 app = FastAPI(title="EHPAD API", version="1.0.0")
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Authorization", "Content-Type", "X-Break-Glass-Reason"])
+setup_middlewares(app, limiter)
+register_routers(app)
 
-
-@app.middleware("http")
-async def force_utf8_charset(request, call_next):
-    if HTTPS_REQUIRED and request.url.scheme != "https" and request.client and request.client.host not in {"127.0.0.1", "localhost"}:
-        raise HTTPException(426, "HTTPS requis")
-    response = await call_next(request)
-    content_type = response.headers.get("content-type", "")
-    if content_type.startswith("application/json") and "charset" not in content_type:
-        response.headers["content-type"] = "application/json; charset=utf-8"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["Referrer-Policy"] = "no-referrer"
-    return response
-
-redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD or None, decode_responses=True)
 ws_manager = WebSocketManager()
 alert_engine = AlertEngine(redis_client, ws_manager)
 ml_predictor = MalaisePredictor()
@@ -409,8 +375,6 @@ def _replay_active_push_alerts_for_staff(staff_id: str) -> int:
     return sent
 
 # InfluxDB
-influx = InfluxDBClient(url=INFLUX_HOST, token=INFLUX_TOKEN, org=INFLUX_ORG)
-write_api = influx.write_api(write_options=SYNCHRONOUS)
 
 # Loop asyncio partagée
 _loop: Optional[asyncio.AbstractEventLoop] = None
@@ -424,108 +388,6 @@ _mqtt_ambient_count = 0
 _ws_push_count = 0
 _last_mqtt_message_at: Optional[float] = None
 _mqtt_window: deque[tuple[float, str]] = deque(maxlen=20000)
-
-RESIDENT_ARCHETYPES = {
-    "autonome": {
-        "label": "Autonome",
-        "daily_focus": "vie sociale, activites, repas en salle",
-        "main_risks": ["chute trajet", "malaise effort", "retard alerte si isolement"],
-        "supervision": "surveillance standard",
-    },
-    "accompagne": {
-        "label": "Deplacement accompagne",
-        "daily_focus": "repas encadre, kine, trajets surveilles",
-        "main_risks": ["chute couloir", "fatigue post-kine", "hypotension post-repas"],
-        "supervision": "surveillance renforcee aux transferts",
-    },
-    "chambre": {
-        "label": "Reste principalement en chambre",
-        "daily_focus": "soins au lit, repas en chambre, prevention escarres",
-        "main_risks": ["inactivite", "sortie de lit", "chute chambre"],
-        "supervision": "passages soignants programmes",
-    },
-    "cognitif": {
-        "label": "Troubles cognitifs / fugue",
-        "daily_focus": "repas et activites securises, controle sorties",
-        "main_risks": ["errance", "fugue", "desorientation escalier/ascenseur"],
-        "supervision": "surveillance sorties et zones sensibles",
-    },
-    "respiratoire": {
-        "label": "Fragilite respiratoire",
-        "daily_focus": "tolerance effort, SpO2 personnalisee, repos",
-        "main_risks": ["desaturation", "fatigue retour repas", "dyspnee nocturne"],
-        "supervision": "seuils SpO2 adaptes au profil",
-    },
-    "cardio": {
-        "label": "Fragilite cardio-metabolique",
-        "daily_focus": "surveillance tension, FC, malaise postural",
-        "main_risks": ["tachycardie", "hypotension", "malaise post-repas"],
-        "supervision": "controle cardio rapproche si tendance monte",
-    },
-}
-
-
-def _resident_archetype(profile: dict) -> str:
-    pathologies = set(profile.get("pathologies", []))
-    mobility = profile.get("mobility", "moyenne")
-    risk = float(profile.get("risk_factor", 0.3))
-    if pathologies.intersection({"alzheimer", "demence", "dementia"}):
-        return "cognitif"
-    if "bpco" in pathologies:
-        return "respiratoire"
-    if pathologies.intersection({"insuffisance_cardiaque", "hypertension"}) and risk >= 0.45:
-        return "cardio"
-    if mobility == "tres_faible" and risk >= 0.6:
-        return "chambre"
-    if mobility in {"faible", "tres_faible"}:
-        return "accompagne"
-    return "autonome"
-
-
-PROJECT_READINESS = [
-    {
-        "axis": "20-50 residents",
-        "status": "done",
-        "proof": "25 residents actifs, extensible par NUM_RESIDENTS et profils",
-        "improve": "tester une charge 50 residents avec seuils WebSocket/Influx adaptes",
-    },
-    {
-        "axis": "Duree continue mois/annees",
-        "status": "partial",
-        "proof": "simulation continue Docker + historique simule 30 jours + InfluxDB",
-        "improve": "ajouter politique retention InfluxDB et sauvegarde Redis planifiee",
-    },
-    {
-        "axis": "IA prediction malaise",
-        "status": "done",
-        "proof": "ML/A2A relance toutes les 5 min, risque 30 et 60 min, memoire de tendance",
-        "improve": "calibrer sur donnees reelles et mesurer recall/specifite par profil",
-    },
-    {
-        "axis": "Alertes 5 niveaux",
-        "status": "done",
-        "proof": "moteur niveaux 1-5, anti-bruit, localisation, escalade et acquittement",
-        "improve": "journaliser le delai d'intervention et les faux positifs par type d'alerte",
-    },
-    {
-        "axis": "Capteurs vitaux + ambiants",
-        "status": "done",
-        "proof": "wearable, SpO2, FC, PA, temperature, respiration, PIR, radar, porte, sol, matelas, BLE/GPS",
-        "improve": "suivre la qualite signal/batterie et les capteurs muets dans le temps",
-    },
-    {
-        "axis": "Vue par resident",
-        "status": "done",
-        "proof": "detail live, mini DPI, historique 30 jours, prediction, transmission",
-        "improve": "ajouter validation soignant et export PDF",
-    },
-    {
-        "axis": "Complexite scale + prediction",
-        "status": "partial",
-        "proof": "MQTT QoS, Redis et WebSocket throttling, Influx echantillonne, LLM pas appele a chaque seconde",
-        "improve": "benchmark 120 msg/s puis 300 msg/s avec p95 latence dashboard",
-    },
-]
 
 STAFF_DEFAULTS = {
     "soignant_A": {"sector": "RDC + aile A", "shift": "jour", "status": "disponible"},
@@ -698,6 +560,8 @@ daily_reports = DailyReportService(
     effective_resident_profile=_effective_resident_profile,
     resident_caregiver=_resident_caregiver,
     resident_archetype=_resident_archetype,
+    influx_query_api=query_api,
+    influx_bucket=INFLUX_BUCKET,
 )
 
 _simulated_history_rows = daily_reports.simulated_history_rows
@@ -1228,23 +1092,6 @@ async def push_test_all(body: PushTestRequest, authorization: str = Header(None)
     return {"ok": True, "payload": payload, "result": result}
 
 
-@app.get("/")
-def root():
-    return {"service": "EHPAD Backend", "status": "ok"}
-
-
-@app.get("/health")
-def health():
-    """Healthcheck pour Docker - vérifie Redis + compte les résidents actifs."""
-    try:
-        redis_client.ping()
-        resident_count = len(redis_client.hgetall("residents:all"))
-        return {"status": "ok", "residents": resident_count, "ts": datetime.utcnow().isoformat()}
-    except Exception as e:
-        from fastapi.responses import JSONResponse
-        return JSONResponse(status_code=503, content={"status": "degraded", "error": str(e)})
-
-
 @app.get("/api/residents")
 def get_all_residents():
     """Liste tous les résidents avec leur état courant."""
@@ -1343,9 +1190,46 @@ def _fallback_recent_history(resident_id: str, minutes: int = 30) -> list[dict]:
 @app.get("/api/residents/{resident_id}/history/simulated")
 def get_resident_simulated_history(resident_id: str, request: Request, days: int = 30, step_hours: int = 6, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
     _require_resident_access(resident_id, authorization, request, "resident_history_simulated_view", x_break_glass_reason)
-    """Historique simule long terme pour tester un mois de scenarios sans attendre InfluxDB."""
+    days = max(30, min(days, 730))
+    # Lire depuis InfluxDB si données disponibles
+    try:
+        from history_injector import _MEASUREMENT
+        minutes = days * 24 * 60
+        qa = influx.query_api()
+        q = f'''
+from(bucket: "{INFLUX_BUCKET}")
+  |> range(start: -{minutes}m)
+  |> filter(fn: (r) => r._measurement == "{_MEASUREMENT}")
+  |> filter(fn: (r) => r.resident_id == "{resident_id}")
+  |> pivot(rowKey: ["_time", "resident_id", "event"], columnKey: ["_field"], valueColumn: "_value")
+  |> sort(columns: ["_time"])
+'''
+        tables = qa.query(q)
+        rows = []
+        for table in tables:
+            for record in table.records:
+                v = record.values
+                rows.append({
+                    "time": record.get_time().isoformat().replace("+00:00", "Z"),
+                    "resident_id": resident_id,
+                    "zone": v.get("zone", ""),
+                    "event": v.get("event", "routine"),
+                    "alert_level": int(v.get("alert_level") or 0),
+                    "heart_rate": v.get("heart_rate"),
+                    "spo2": v.get("spo2"),
+                    "blood_pressure_sys": v.get("blood_pressure_sys"),
+                    "blood_pressure_dia": v.get("blood_pressure_dia"),
+                    "temperature": v.get("temperature"),
+                    "respiratory_rate": v.get("respiratory_rate"),
+                    "ml_risk": v.get("ml_risk"),
+                })
+        if len(rows) >= 10:
+            return {"resident_id": resident_id, "days": days, "step_hours": step_hours, "history": rows, "source": "influxdb"}
+    except Exception as exc:
+        log.warning("History simulated InfluxDB fallback pour %s : %s", resident_id, exc)
+    # Fallback simulé
     rows = _simulated_history_rows(resident_id, days=days, step_hours=step_hours)
-    return {"resident_id": resident_id, "days": max(30, days), "step_hours": step_hours, "history": rows}
+    return {"resident_id": resident_id, "days": days, "step_hours": step_hours, "history": rows, "source": "simulated"}
 
 
 @app.get("/api/simulator/speed")
@@ -2248,7 +2132,7 @@ def get_security_policy(authorization: str = Header(None)):
         "roles": {"privileged": ["chef_garde", "direction", "medecin", "admin"], "strict_backend": True},
         "cors": {"allowed_origins": ALLOWED_ORIGINS},
         "https_required": HTTPS_REQUIRED,
-        "redis_password_enabled": bool(REDIS_PASSWORD),
+        "redis_password_enabled": bool(settings.redis_password),
         "retention": {
             "access_log_days": RETENTION_ACCESS_LOG_DAYS,
             "notification_audit_days": RETENTION_AUDIT_DAYS,
@@ -2384,63 +2268,6 @@ def get_summary():
     if raw:
         return json.loads(raw)
     return {"error": "Pas encore de données"}
-
-
-@app.get("/api/project/readiness")
-def get_project_readiness():
-    """Matrice de validation pour le rendu pro du projet EHPAD."""
-    residents = []
-    for profile in RESIDENTS_MAP.values():
-        archetype = _resident_archetype(profile)
-        residents.append({
-            "resident_id": profile["id"],
-            "name": profile["name"],
-            "room": profile["room"],
-            "archetype": archetype,
-            **RESIDENT_ARCHETYPES[archetype],
-        })
-    counts = {}
-    for item in residents:
-        counts[item["archetype"]] = counts.get(item["archetype"], 0) + 1
-    return {
-        "project": "EHPAD Monitor",
-        "target": "20-50 residents, surveillance continue, prediction malaise, alertes 5 niveaux",
-        "readiness": PROJECT_READINESS,
-        "resident_profile_counts": counts,
-        "resident_profiles": residents,
-        "validation_order": [
-            "1. profils et scenarios de vie",
-            "2. alertes et localisation",
-            "3. prediction ML/A2A 30-60 min",
-            "4. plan 2D/3D capteurs",
-            "5. mini DPI et transmissions",
-            "6. scalabilite MQTT/Redis/Influx/WebSocket",
-        ],
-    }
-
-
-@app.get("/api/scenarios/life-plan")
-def get_life_plan():
-    return {
-        "day_template": [
-            {"time": "06:00-07:30", "period": "lever_toilette", "zones": ["chambre", "couloir"], "risk": "transfert, chute chambre"},
-            {"time": "07:30-09:00", "period": "petit_dej", "zones": ["salle_manger", "chambre"], "risk": "trajet repas, hypotension posturale"},
-            {"time": "09:00-10:00", "period": "soins_matin", "zones": ["infirmerie", "kinesitherapie", "chambre"], "risk": "fatigue soins"},
-            {"time": "10:00-11:45", "period": "animation_matin", "zones": ["salle_commune", "activites", "jardin"], "risk": "effort, desorientation"},
-            {"time": "11:45-13:15", "period": "trajet_dejeuner/dejeuner", "zones": ["couloirs", "ascenseur", "salle_manger"], "risk": "chute trajet, malaise repas"},
-            {"time": "13:15-15:00", "period": "sieste", "zones": ["chambre", "salle_repos"], "risk": "inactivite normale vs anormale"},
-            {"time": "15:00-16:45", "period": "animation_apres_midi/gouter", "zones": ["salle_commune", "jardin", "salle_manger"], "risk": "fatigue, regroupement"},
-            {"time": "18:00-19:30", "period": "trajet_diner/diner", "zones": ["couloirs", "salle_manger"], "risk": "chute trajet, malaise retour repas"},
-            {"time": "20:30-06:00", "period": "coucher/nuit", "zones": ["chambre", "couloir si errance"], "risk": "sortie de lit, errance, fugue"},
-        ],
-        "scenario_types": [
-            "chute_chambre", "chute_couloir", "chute_trajet_repas", "chute_jardin",
-            "malaise_salle_manger", "malaise_retour_repas", "retour_kine_fatigue",
-            "errance_nuit", "desorientation_ascenseur", "fugue_hors_ehpad",
-            "isolement_chambre", "immobilite_salle_repos", "promenade_jardin",
-        ],
-        "profile_logic": RESIDENT_ARCHETYPES,
-    }
 
 
 @app.post("/api/reports/daily/generate")
@@ -3304,6 +3131,23 @@ async def startup():
                 time.sleep(3)
 
     threading.Thread(target=mqtt_thread, daemon=True).start()
+
+    # Injection historique InfluxDB (une seule fois, en arrière-plan)
+    def _history_injection_thread():
+        try:
+            from history_injector import inject_all_history
+            inject_all_history(
+                write_api=write_api,
+                influx_bucket=INFLUX_BUCKET,
+                residents_map=RESIDENTS_MAP,
+                effective_profile_fn=_effective_resident_profile,
+                redis_client=redis_client,
+                simulated_rows_fn=daily_reports.simulated_history_rows,
+            )
+        except Exception as exc:
+            log.warning("Injection historique echouee : %s", exc)
+
+    threading.Thread(target=_history_injection_thread, daemon=True).start()
 
     # Thread d'escalade
     threading.Thread(target=escalation_loop, daemon=True).start()

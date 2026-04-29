@@ -15,6 +15,7 @@ import paho.mqtt.client as mqtt
 import numpy as np
 from profiles import RESIDENTS, ZONES, CAREGIVERS, ROOM_ASSIGNMENTS, RESIDENT_ARCHETYPES, resident_archetype
 from facility_map import DINING_SEATS, ROUTINE_LABELS, ROUTINE_TARGETS, SCENARIO_LIBRARY, shortest_path, zone_position
+from scenario_scheduler import SCENARIO_RULES, VITAL_SCENARIOS, ScenarioScheduler, resolve_alias
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [SIM] %(message)s')
 log = logging.getLogger(__name__)
@@ -163,19 +164,49 @@ class ResidentSimulator:
         self.ambient_fall_confirmed = False
         self.current_activity = "repos"
         self.movement_scenario = None
-        scenario_index = (int(self.id[1:]) - 1) % len(SCENARIO_LIBRARY) if self.id[1:].isdigit() else 0
-        self.assigned_movement_scenario = SCENARIO_LIBRARY[scenario_index]["type"]
-        if self.care_level == "chambre":
-            self.assigned_movement_scenario = random.choice(["chute_chambre", "isolement_chambre"])
-        if "alzheimer" in profile.get("pathologies", []) and int(self.id[1:]) % 2 == 1:
-            self.assigned_movement_scenario = "fugue_hors_ehpad"
-        if self.care_level == "chambre":
-            self.assigned_movement_scenario = random.choice(["chute_chambre", "isolement_chambre"])
+        self.scenario_scheduler = ScenarioScheduler()
+        self.assigned_scenarios = self._scenario_pool_for_profile()
+        self.assigned_movement_scenario = self.assigned_scenarios[0]
         self.next_forced_movement_tick = random.randint(900, 2400)
         self.fall_started_tick = None
         self._tick = 0
         if DEMO_RESIDENT == self.id:
             self.start_scenario("hypoxie", duration=3600)
+
+    def _scenario_pool_for_profile(self):
+        """Construit plusieurs scenarios plausibles pour le resident."""
+        known = {item["type"] for item in SCENARIO_LIBRARY}
+        configured = [s for s in self.p.get("assigned_scenarios", []) if s in known]
+        scenarios = list(configured)
+
+        scenario_index = (int(self.id[1:]) - 1) % len(SCENARIO_LIBRARY) if self.id[1:].isdigit() else 0
+        scenarios.append(SCENARIO_LIBRARY[scenario_index]["type"])
+        scenarios += ["sortie_patio", "promenade_jardin", "isolement_chambre"]
+
+        pathologies = set(self.p.get("pathologies", []))
+        mobility = self.p.get("mobility", "moyenne")
+        risk = float(self.p.get("risk_factor", 0.3))
+
+        if self.care_level == "chambre":
+            scenarios += ["isolement_chambre", "chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue"]
+        if mobility in {"faible", "tres_faible"}:
+            scenarios += ["chute_couloir", "chute_trajet_repas", "aller_toilettes_nuit", "desorientation_ascenseur"]
+        if "alzheimer" in pathologies or "demence" in pathologies:
+            scenarios += ["errance_nuit", "fugue_hors_ehpad", "desorientation_ascenseur", "desorientation_patio", "isolement_chambre"]
+        if "bpco" in pathologies:
+            scenarios += ["retour_kine_fatigue", "malaise_retour_repas", "regroupement_patio_fatigue", "promenade_jardin"]
+        if "insuffisance_cardiaque" in pathologies or "hypertension" in pathologies:
+            scenarios += ["malaise_salle_manger", "malaise_retour_repas", "retour_kine_fatigue", "chute_trajet_repas"]
+        if risk >= 0.55:
+            scenarios += ["chute_chambre", "immobilite_salle_repos", "sortie_jardin_non_accompagnee"]
+        if mobility == "bonne" and risk < 0.3:
+            scenarios += ["promenade_jardin", "sortie_patio", "desorientation_patio"]
+
+        deduped = []
+        for scenario in scenarios:
+            if scenario in known and scenario not in deduped:
+                deduped.append(scenario)
+        return deduped[:6] or [SCENARIO_LIBRARY[scenario_index]["type"]]
 
     def _care_level(self):
         """Autonomie de deplacement: certains residents restent en chambre."""
@@ -195,11 +226,13 @@ class ResidentSimulator:
 
     def start_scenario(self, scenario_type, duration=None):
         """Demarre explicitement un scenario de malaise pour ce resident."""
+        scenario_type = resolve_alias(scenario_type)
         self.malaise_scenario = {
             "type": scenario_type,
             "start_tick": self._tick,
             "duration": duration or random.randint(120, 600),
         }
+        self.scenario_scheduler.register_forced(scenario_type, self._tick)
         log.warning(f"[{self.id}] Scenario declenche: {scenario_type}")
 
     def force_validation_scenario(self, scenario_type):
@@ -215,7 +248,8 @@ class ResidentSimulator:
             "jardin": "promenade_jardin",
             "chute_jardin": "chute_jardin",
         }
-        self.movement_scenario = mapping.get(scenario_type, scenario_type)
+        self.movement_scenario = resolve_alias(mapping.get(scenario_type, scenario_type))
+        self.scenario_scheduler.register_forced(self.movement_scenario, self._tick)
         self.fall_started_tick = None
         self.next_forced_movement_tick = self._tick
         log.warning(f"[{self.id}] Scenario validation force: {self.movement_scenario}")
@@ -229,15 +263,14 @@ class ResidentSimulator:
         for key, value in (profile_update or {}).items():
             if key in allowed and value is not None:
                 self.p[key] = value
-        if "assigned_scenarios" in self.p and self.p["assigned_scenarios"]:
-            self.assigned_movement_scenario = self.p["assigned_scenarios"][0]
-        else:
-            self.care_level = self._care_level()
         self.care_level = self.p.get("care_level") or self._care_level()
         self.meal_mode = self.p.get("meal_mode") or ("chambre" if self.care_level == "chambre" else ("accompagne" if self.care_level == "accompagne" else "salle"))
         self.life_archetype = resident_archetype(self.p)
         self.life_profile = RESIDENT_ARCHETYPES.get(self.life_archetype, RESIDENT_ARCHETYPES["autonome"])
-        log.info(f"[{self.id}] Profil simulateur mis a jour: mobilite={self.p.get('mobility')} risque={self.p.get('risk_factor')} scenarios={self.p.get('assigned_scenarios')}")
+        self.assigned_scenarios = self._scenario_pool_for_profile()
+        self.assigned_movement_scenario = self.assigned_scenarios[0]
+        self.p["assigned_scenarios"] = self.assigned_scenarios
+        log.info(f"[{self.id}] Profil simulateur mis a jour: mobilite={self.p.get('mobility')} risque={self.p.get('risk_factor')} scenarios={self.assigned_scenarios}")
 
     def _simulated_minute(self):
         """Minute dans la journee simulee; la date simulee continue d'avancer."""
@@ -328,22 +361,19 @@ class ResidentSimulator:
         }
 
     def _maybe_trigger_scenario(self):
-        """Déclenche aléatoirement un scénario de malaise selon le facteur de risque."""
+        """Declenche un scenario vital rare, pondere par profil et heure."""
         if self.malaise_scenario:
             return
-        risk = self.p["risk_factor"]
-        # Probabilité par tick (~1/seconde) : risque élevé = scénario plus fréquent
-        if random.random() < risk * 0.00005:
-            scenarios = ["hypoxie", "tachycardie", "chute", "hypotension", "fievre"]
-            chosen = random.choice(scenarios)
-            # BPCO -> hypoxie plus probable
-            if "bpco" in self.p["pathologies"]:
-                chosen = random.choice(["hypoxie", "hypoxie", "tachycardie"])
-            if "insuffisance_cardiaque" in self.p["pathologies"]:
-                chosen = random.choice(["tachycardie", "hypotension", "hypoxie"])
+        chosen = self.scenario_scheduler.choose(
+            self.p,
+            sorted(VITAL_SCENARIOS),
+            self._time_of_day_factor(),
+            self._tick,
+            kind="vital",
+        )
+        if chosen:
             self.start_scenario(chosen)
-            log.warning(f"[{self.id}] Scénario déclenché: {chosen}")
-
+            log.warning(f"[{self.id}] Scenario vital pondere: {chosen}")
     def _apply_scenario(self):
         """Dégrade progressivement les constantes selon le scénario actif."""
         if not self.malaise_scenario:
@@ -482,62 +512,22 @@ class ResidentSimulator:
         return target
 
     def _maybe_start_movement_scenario(self):
+        """Declenche un scenario de mouvement selon un scheduler pondere."""
         if self.movement_scenario or self.malaise_scenario:
             return
-        risk = self.p["risk_factor"]
-        tod = self._time_of_day_factor()
-        if self.care_level == "chambre":
-            if self._tick >= self.next_forced_movement_tick:
-                self.movement_scenario = random.choices(["isolement_chambre", "chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue"], weights=[8, 1, 1, 2])[0]
-                self.next_forced_movement_tick = self._tick + random.randint(1800, 4200)
-                log.info(f"[{self.id}] Scenario chambre: {self.movement_scenario}")
+        chosen = self.scenario_scheduler.choose(
+            self.p,
+            self.assigned_scenarios,
+            self._time_of_day_factor(),
+            self._tick,
+            kind="movement",
+        )
+        if not chosen:
             return
-        if tod in {"trajet_dejeuner", "trajet_diner"} and self._tick - self.last_meal_risk_tick > 90 and random.random() < risk * 0.008:
-            self.last_meal_risk_tick = self._tick
-            self.movement_scenario = random.choice(["chute_trajet_repas", "desorientation_avant_repas"])
-            log.warning(f"[{self.id}] Scenario trajet repas: {self.movement_scenario}")
-            return
-        if tod in {"lever_toilette", "coucher"} and random.random() < risk * 0.0016:
-            self.movement_scenario = random.choice(["chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue", "aller_toilettes_nuit", "desorientation_ascenseur"])
-            log.warning(f"[{self.id}] Scenario transfert chambre: {self.movement_scenario}")
-            return
-        if tod in {"animation_matin", "animation_apres_midi"} and self.life_archetype in {"respiratoire", "cardio"} and random.random() < risk * 0.0012:
-            self.movement_scenario = random.choice(["retour_kine_fatigue", "promenade_jardin", "retour_jardin_fatigue", "regroupement_patio_fatigue", "malaise_retour_repas"])
-            log.warning(f"[{self.id}] Scenario activite fragile: {self.movement_scenario}")
-            return
-        if tod in {"dejeuner", "diner"} and self._tick - self.last_meal_risk_tick > 120 and random.random() < risk * 0.004:
-            self.last_meal_risk_tick = self._tick
-            self.movement_scenario = random.choice(["malaise_salle_manger", "malaise_retour_repas"])
-            log.warning(f"[{self.id}] Scenario repas: {self.movement_scenario}")
-            return
-        if self._tick >= self.next_forced_movement_tick:
-            self.next_forced_movement_tick = self._tick + random.randint(1400, 3600)
-            if random.random() > max(0.12, risk * 0.35):
-                return
-            self.movement_scenario = self.assigned_movement_scenario
-            log.info(f"[{self.id}] Scenario mouvement assigne: {self.movement_scenario}")
-            return
-        # Ponderation chutes par heure (epidemiologie EHPAD)
-        _FALL_WEIGHTS = {
-            "lever_toilette": 2.5, "soins_matin": 1.5, "petit_dej": 1.5,
-            "trajet_dejeuner": 2.0, "trajet_diner": 2.0,
-            "coucher": 2.2, "nuit": 1.8, "aller_toilettes_nuit": 2.0,
-            "sieste": 0.3, "dejeuner": 0.5, "diner": 0.5,
-            "animation_matin": 0.7, "animation_apres_midi": 0.7,
-            "gouter": 0.7, "soiree": 1.2,
-        }
-        time_weight = _FALL_WEIGHTS.get(tod, 1.0)
-        if random.random() >= risk * 0.00015 * time_weight:
-            return
-        candidates = SCENARIO_LIBRARY[:]
-        if "alzheimer" in self.p["pathologies"]:
-            candidates += [s for s in SCENARIO_LIBRARY if s["type"] in ["errance_nuit", "sortie_patio"]]
-        if self.p["mobility"] in ["faible", "tres_faible"]:
-            candidates += [s for s in SCENARIO_LIBRARY if s["type"].startswith("chute")]
-        chosen = random.choice(candidates)
-        self.movement_scenario = chosen["type"]
-        log.warning(f"[{self.id}] Scenario mouvement: {self.movement_scenario}")
-
+        self.movement_scenario = chosen
+        self.assigned_movement_scenario = chosen
+        self.next_forced_movement_tick = self._tick + random.randint(900, 2400)
+        log.info(f"[{self.id}] Scenario mouvement pondere: {self.movement_scenario}")
     def _set_route_to(self, target):
         self.target_zone = target
         self.route = shortest_path(self.current_zone, target)[1:]
@@ -795,7 +785,7 @@ class ResidentSimulator:
             "scenario_active": self.malaise_scenario["type"] if self.malaise_scenario else None,
             "movement_scenario": self.movement_scenario,
             "assigned_movement_scenario": self.assigned_movement_scenario,
-            "assigned_scenarios": self.p.get("assigned_scenarios", [self.assigned_movement_scenario]),
+            "assigned_scenarios": self.assigned_scenarios,
             "time_of_day": self._time_of_day_factor(),
             "time_label": self._simulated_clock_label(),
             "routine_label": routine_context["label"],

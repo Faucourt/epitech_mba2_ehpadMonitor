@@ -32,6 +32,8 @@ class DailyReportService:
         effective_resident_profile: Callable[[str], dict],
         resident_caregiver: Callable[[str, Optional[dict]], str],
         resident_archetype: Callable[[dict], str],
+        influx_query_api=None,
+        influx_bucket: str = "residents",
     ):
         self.redis_client = redis_client
         self.alert_engine = alert_engine
@@ -40,6 +42,8 @@ class DailyReportService:
         self.effective_resident_profile = effective_resident_profile
         self.resident_caregiver = resident_caregiver
         self.resident_archetype = resident_archetype
+        self.influx_query_api = influx_query_api
+        self.influx_bucket = influx_bucket
 
     def simulated_history_rows(self, resident_id: str, days: int = 30, step_hours: int = 6):
         profile = self.effective_resident_profile(resident_id)
@@ -266,6 +270,17 @@ class DailyReportService:
         return None
 
     def history_summary(self, resident_id: str) -> dict:
+        # Essayer d'abord les vraies données InfluxDB
+        if self.influx_query_api is not None:
+            try:
+                from history_injector import get_real_history_summary
+                real = get_real_history_summary(self.influx_query_api, self.influx_bucket, resident_id, days=30)
+                if real:
+                    return real
+            except Exception:
+                pass
+
+        # Fallback : historique simulé calculé à la volée
         rows = self.simulated_history_rows(resident_id, days=30, step_hours=6)
         if not rows:
             return {}
@@ -276,6 +291,7 @@ class DailyReportService:
         avg = lambda key: round(float(np.mean([r[key] for r in rows if r.get(key) is not None])), 1)
         trend = rows[-1]["ml_risk"] - rows[max(0, len(rows) - 15)]["ml_risk"]
         return {
+            "source": "simulated",
             "days": 30,
             "points": len(rows),
             "avg_vitals": {

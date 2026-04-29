@@ -1,186 +1,134 @@
 [
   {
-    "date": "2025-05-02",
+    "date": "2025-05-04",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
-    "zones": {
-      "jardin": 1
-    }
-  },
-  {
-    "date": "2025-05-03",
-    "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
-    "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
     }
   },
   {
-    "date": "2025-05-04",
-    "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
-    "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
-    "zones": {
-      "couloir_principal": 1
-    }
-  },
-  {
     "date": "2025-05-05",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-06",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-07",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-08",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-09",
     "samples": 1,
-    "avg_hr": 83.0,
+    "avg_hr": 79.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-10",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-11",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-12",
     "samples": 1,
-    "avg_hr": 77.0,
+    "avg_hr": 78.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -190,116 +138,102 @@
     "date": "2025-05-13",
     "samples": 1,
     "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-14",
     "samples": 1,
-    "avg_hr": 79.0,
+    "avg_hr": 78.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-15",
     "samples": 1,
     "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-16",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-17",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-18",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-19",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -308,32 +242,28 @@
   {
     "date": "2025-05-20",
     "samples": 1,
-    "avg_hr": 76.0,
+    "avg_hr": 80.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-21",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -342,117 +272,103 @@
   {
     "date": "2025-05-22",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-23",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
     "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-24",
     "samples": 1,
     "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-25",
     "samples": 1,
     "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-26",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-27",
     "samples": 1,
     "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-28",
     "samples": 1,
     "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -461,32 +377,28 @@
   {
     "date": "2025-05-29",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-05-30",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -495,49 +407,43 @@
   {
     "date": "2025-05-31",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-01",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-02",
     "samples": 1,
-    "avg_hr": 77.0,
+    "avg_hr": 80.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -546,117 +452,103 @@
   {
     "date": "2025-06-03",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-04",
     "samples": 1,
     "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-05",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-06",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-07",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-08",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-09",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 94.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -665,31 +557,29 @@
   {
     "date": "2025-06-10",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-11",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 92.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.63,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
     "dominant_zone": "ch102",
     "zones": {
@@ -699,117 +589,103 @@
   {
     "date": "2025-06-12",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-13",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-14",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 92.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-15",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-16",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-17",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-18",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -818,32 +694,28 @@
   {
     "date": "2025-06-19",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-20",
     "samples": 1,
-    "avg_hr": 77.0,
+    "avg_hr": 81.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -852,117 +724,103 @@
   {
     "date": "2025-06-21",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-22",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-23",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-24",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-25",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-26",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-27",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -971,66 +829,58 @@
   {
     "date": "2025-06-28",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-29",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-06-30",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-01",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1039,117 +889,103 @@
   {
     "date": "2025-07-02",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.51,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-03",
     "samples": 1,
-    "avg_hr": 79.0,
+    "avg_hr": 82.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-04",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-05",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-06",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-07",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-08",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1158,32 +994,28 @@
   {
     "date": "2025-07-09",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-10",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1192,117 +1024,103 @@
   {
     "date": "2025-07-11",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-12",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-13",
     "samples": 1,
     "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-14",
     "samples": 1,
-    "avg_hr": 81.0,
+    "avg_hr": 80.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-15",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-16",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-17",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1311,151 +1129,133 @@
   {
     "date": "2025-07-18",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-19",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-20",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 76.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-21",
     "samples": 1,
     "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-22",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-23",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-24",
     "samples": 1,
     "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-25",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-26",
     "samples": 1,
     "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1464,202 +1264,178 @@
   {
     "date": "2025-07-27",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-28",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-29",
     "samples": 1,
-    "avg_hr": 70.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-30",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-07-31",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-01",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-02",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-03",
     "samples": 1,
-    "avg_hr": 80.0,
+    "avg_hr": 82.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-04",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-05",
     "samples": 1,
     "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 95.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-06",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 95.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-07",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1668,151 +1444,133 @@
   {
     "date": "2025-08-08",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-09",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 94.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-10",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-11",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.52,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-12",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-13",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-14",
     "samples": 1,
     "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-15",
     "samples": 1,
-    "avg_hr": 83.0,
+    "avg_hr": 80.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-16",
     "samples": 1,
-    "avg_hr": 84.0,
+    "avg_hr": 79.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1821,151 +1579,133 @@
   {
     "date": "2025-08-17",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 78.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-18",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-19",
     "samples": 1,
-    "avg_hr": 70.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 79.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-20",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-21",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-22",
     "samples": 1,
-    "avg_hr": 81.0,
+    "avg_hr": 82.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-23",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-24",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-25",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -1974,202 +1714,178 @@
   {
     "date": "2025-08-26",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-27",
     "samples": 1,
-    "avg_hr": 69.0,
+    "avg_hr": 85.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-28",
     "samples": 1,
-    "avg_hr": 70.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-29",
     "samples": 1,
-    "avg_hr": 71.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-30",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-08-31",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-01",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-02",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-03",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-04",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-05",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-06",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 80.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -2178,151 +1894,133 @@
   {
     "date": "2025-09-07",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-08",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 92.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-09",
     "samples": 1,
-    "avg_hr": 70.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-10",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-11",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-12",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-13",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-14",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-15",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -2331,151 +2029,135 @@
   {
     "date": "2025-09-16",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-17",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-18",
     "samples": 1,
-    "avg_hr": 70.0,
+    "avg_hr": 81.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-19",
     "samples": 1,
-    "avg_hr": 71.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-20",
     "samples": 1,
-    "avg_hr": 80.0,
+    "avg_hr": 83.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.53,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-21",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-22",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 92.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.66,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
-    "dominant_zone": "patio",
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-23",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 92.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-24",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -2484,219 +2166,193 @@
   {
     "date": "2025-09-25",
     "samples": 1,
-    "avg_hr": 68.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-26",
     "samples": 1,
-    "avg_hr": 69.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-27",
     "samples": 1,
-    "avg_hr": 70.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-28",
     "samples": 1,
-    "avg_hr": 71.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-29",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-09-30",
     "samples": 1,
-    "avg_hr": 81.0,
+    "avg_hr": 87.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-01",
     "samples": 1,
-    "avg_hr": 71.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-02",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-03",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-04",
     "samples": 1,
-    "avg_hr": 74.0,
+    "avg_hr": 85.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-05",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-06",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-07",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -2705,151 +2361,133 @@
   {
     "date": "2025-10-08",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-09",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 92.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-10",
     "samples": 1,
-    "avg_hr": 71.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 92.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-11",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 92.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-12",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-13",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-14",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-15",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-16",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -2858,151 +2496,133 @@
   {
     "date": "2025-10-17",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-18",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-19",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-20",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-21",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 95.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-22",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 95.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-23",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 95.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-24",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-25",
     "samples": 1,
-    "avg_hr": 77.0,
+    "avg_hr": 84.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -3011,202 +2631,178 @@
   {
     "date": "2025-10-26",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-27",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-28",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-29",
     "samples": 1,
-    "avg_hr": 81.0,
+    "avg_hr": 84.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-30",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.54,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-10-31",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-01",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-02",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-03",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-04",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-05",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-06",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -3215,151 +2811,135 @@
   {
     "date": "2025-11-07",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-08",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-09",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-10",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-11",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-12",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 97.0,
+    "avg_spo2": 91.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.67,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
-    "dominant_zone": "salle_repos",
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-13",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 94.0,
+    "avg_spo2": 91.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-14",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-15",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -3368,151 +2948,133 @@
   {
     "date": "2025-11-16",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-17",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-18",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-19",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 92.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-20",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-21",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-22",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-23",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-24",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -3521,185 +3083,163 @@
   {
     "date": "2025-11-25",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 92.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-26",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-27",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 92.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-28",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-29",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-11-30",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-01",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 92.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-02",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 92.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-03",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 92.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-04",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-05",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -3708,151 +3248,133 @@
   {
     "date": "2025-12-06",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-07",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-08",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-09",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.55,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-10",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-11",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-12",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 92.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-13",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-14",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -3861,151 +3383,133 @@
   {
     "date": "2025-12-15",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-16",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-17",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-18",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-19",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-20",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-21",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-22",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-23",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 81.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -4014,236 +3518,208 @@
   {
     "date": "2025-12-24",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-25",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-26",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-27",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-28",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-29",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-30",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2025-12-31",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-01",
     "samples": 1,
-    "avg_hr": 72.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-02",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-03",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-04",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-05",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-06",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -4252,151 +3728,133 @@
   {
     "date": "2026-01-07",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-08",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-09",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-10",
     "samples": 1,
-    "avg_hr": 72.0,
+    "avg_hr": 86.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-11",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-12",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-13",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-14",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 94.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-15",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -4405,151 +3863,137 @@
   {
     "date": "2026-01-16",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-17",
     "samples": 1,
-    "avg_hr": 79.0,
+    "avg_hr": 81.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-18",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 92.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.68,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
-    "dominant_zone": "salle_commune",
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-19",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 92.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.56,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-20",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 99.0,
+    "avg_spo2": 90.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.69,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
-    "dominant_zone": "salle_commune",
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-21",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 96.0,
+    "avg_spo2": 91.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-22",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 92.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-23",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 94.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-24",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 92.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -4558,202 +4002,178 @@
   {
     "date": "2026-01-25",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 93.0,
+    "avg_spo2": 92.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-26",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-27",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 92.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-28",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-29",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-30",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-01-31",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-01",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-02",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-03",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 84.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-04",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 94.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-05",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -4762,151 +4182,133 @@
   {
     "date": "2026-02-06",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-07",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-08",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-09",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-10",
     "samples": 1,
-    "avg_hr": 73.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-11",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-12",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-13",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 83.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-14",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -4915,151 +4317,133 @@
   {
     "date": "2026-02-15",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-16",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-17",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-18",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-19",
     "samples": 1,
-    "avg_hr": 82.0,
+    "avg_hr": 88.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-20",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-21",
     "samples": 1,
-    "avg_hr": 75.0,
+    "avg_hr": 88.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-22",
     "samples": 1,
-    "avg_hr": 76.0,
+    "avg_hr": 87.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-23",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5068,151 +4452,133 @@
   {
     "date": "2026-02-24",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-25",
     "samples": 1,
-    "avg_hr": 79.0,
+    "avg_hr": 87.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-26",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 94.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-27",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-02-28",
     "samples": 1,
-    "avg_hr": 82.0,
+    "avg_hr": 87.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.57,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-01",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-02",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 82.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-03",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-04",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5221,151 +4587,133 @@
   {
     "date": "2026-03-05",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-06",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-07",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-08",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-09",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 85.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-10",
     "samples": 1,
-    "avg_hr": 74.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-11",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 92.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-12",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-13",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5374,151 +4722,135 @@
   {
     "date": "2026-03-14",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-15",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-16",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 100.0,
+    "avg_spo2": 91.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.7,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
-    "dominant_zone": "salle_commune",
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-17",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 97.0,
+    "avg_spo2": 92.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-18",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 95.0,
+    "avg_spo2": 91.7,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-19",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 95.0,
+    "avg_spo2": 92.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-20",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 95.0,
+    "avg_spo2": 92.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-21",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 92.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-22",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5527,117 +4859,103 @@
   {
     "date": "2026-03-23",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 94.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-24",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 92.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-25",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-26",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-27",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-28",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-29",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5646,32 +4964,28 @@
   {
     "date": "2026-03-30",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-03-31",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5680,49 +4994,43 @@
   {
     "date": "2026-04-01",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-02",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-03",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5731,151 +5039,133 @@
   {
     "date": "2026-04-04",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-05",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 93.4,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-06",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-07",
     "samples": 1,
-    "avg_hr": 81.0,
+    "avg_hr": 88.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-08",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-09",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.58,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-10",
     "samples": 1,
-    "avg_hr": 75.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-11",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 88.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-12",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 94.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -5884,117 +5174,103 @@
   {
     "date": "2026-04-13",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-14",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-15",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 90.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-16",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 91.0,
+    "avg_spo2": 94.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-17",
     "samples": 1,
-    "avg_hr": 82.0,
+    "avg_hr": 90.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-18",
     "samples": 1,
-    "avg_hr": 83.0,
+    "avg_hr": 89.0,
     "avg_spo2": 94.0,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-19",
     "samples": 1,
-    "avg_hr": 84.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 86.0,
+    "avg_spo2": 93.9,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
     "dominant_zone": "ch102",
     "zones": {
       "ch102": 1
@@ -6003,31 +5279,29 @@
   {
     "date": "2026-04-20",
     "samples": 1,
-    "avg_hr": 76.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 87.0,
+    "avg_spo2": 93.6,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-21",
     "samples": 1,
-    "avg_hr": 77.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 101.0,
+    "avg_spo2": 92.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
+    "avg_ml_risk": 0.71,
+    "max_alert_level": 2,
     "alert_count": 1,
     "events": [
-      "inactivite"
+      "constantes_hors_norme"
     ],
     "dominant_zone": "ch102",
     "zones": {
@@ -6037,103 +5311,121 @@
   {
     "date": "2026-04-22",
     "samples": 1,
-    "avg_hr": 78.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 96.0,
+    "avg_spo2": 92.3,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "couloir_principal",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "couloir_principal": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-23",
     "samples": 1,
-    "avg_hr": 79.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 93.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_manger",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_manger": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-24",
     "samples": 1,
-    "avg_hr": 80.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 89.0,
+    "avg_spo2": 93.1,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_commune",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_commune": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-25",
     "samples": 1,
-    "avg_hr": 81.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 92.0,
+    "avg_spo2": 93.2,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "salle_repos",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "salle_repos": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-26",
     "samples": 1,
-    "avg_hr": 82.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 93.0,
+    "avg_spo2": 93.5,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "patio",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "patio": 1
+      "ch102": 1
     }
   },
   {
     "date": "2026-04-27",
     "samples": 1,
-    "avg_hr": 83.0,
-    "avg_spo2": 94.0,
+    "avg_hr": 95.0,
+    "avg_spo2": 93.8,
     "avg_bp_sys": null,
-    "avg_ml_risk": 0.5,
-    "max_alert_level": 1,
-    "alert_count": 1,
-    "events": [
-      "inactivite"
-    ],
-    "dominant_zone": "jardin",
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
     "zones": {
-      "jardin": 1
+      "ch102": 1
+    }
+  },
+  {
+    "date": "2026-04-28",
+    "samples": 1,
+    "avg_hr": 93.0,
+    "avg_spo2": 93.2,
+    "avg_bp_sys": null,
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
+    "zones": {
+      "ch102": 1
+    }
+  },
+  {
+    "date": "2026-04-29",
+    "samples": 1,
+    "avg_hr": 96.0,
+    "avg_spo2": 93.1,
+    "avg_bp_sys": null,
+    "avg_ml_risk": 0.59,
+    "max_alert_level": 0,
+    "alert_count": 0,
+    "events": [],
+    "dominant_zone": "ch102",
+    "zones": {
+      "ch102": 1
     }
   }
 ]

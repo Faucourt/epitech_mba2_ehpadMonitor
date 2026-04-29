@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "name": "Charles terrain KB extract for EHPAD residents",
+    "version": "1.0.0",
+    "source_zip": "D:/projet Iade/charles/kb.zip",
+    "purpose": "Couche terrain extraite de la KB Charles et adaptee aux residents EHPAD: fragilite, BPCO, diabete, insuffisance renale, risque cardio-vasculaire et anticoagulants.",
+    "clinical_status": "Support pedagogique et aide a la decision; ne remplace pas les protocoles de l'etablissement."
+  },
+  "terrains": [
+    {
+      "id": "sujet_age_fragile",
+      "label": "Sujet age fragile",
+      "match": {
+        "age_gte": 75,
+        "mobility_in": ["faible", "tres_faible"],
+        "risk_factor_gte": 0.5
+      },
+      "apporte_au_projet": [
+        "augmente la vigilance sur l'hypotension, l'hypothermie, la confusion et la degradation rapide",
+        "justifie une comparaison systematique a la baseline individuelle",
+        "renforce la surveillance des effets cumulatifs: age, mobilite, traitements, nutrition, hydratation"
+      ],
+      "points_a_verifier": [
+        "autonomie habituelle et rupture fonctionnelle",
+        "perte de poids ou baisse d'apports",
+        "confusion ou somnolence nouvelle",
+        "tolerance clinique plutot que valeur isolee"
+      ],
+      "impact_rapport": {
+        "diagnostic_initial": "preciser le terrain fragile et la reserve physiologique reduite",
+        "interventions": "eviter mobilisation inutile, securiser, recontroler plus tot",
+        "surveillance": "surveillance rapprochee si constante hors baseline ou changement comportemental",
+        "appel_medecin": "seuil d'appel abaisse si deterioration rapide ou signes vitaux anormaux"
+      },
+      "source_refs": ["sfar_agearisk", "sfar_fragilite"]
+    },
+    {
+      "id": "bpco_asthme",
+      "label": "Terrain respiratoire chronique BPCO / asthme",
+      "match": {
+        "pathologies_any": ["bpco", "asthme", "insuffisance_respiratoire"]
+      },
+      "apporte_au_projet": [
+        "personnalise les seuils SpO2 selon baseline respiratoire",
+        "oriente le diagnostic differentiel vers hypoxemie, exacerbation, pneumonie, bronchospasme ou fausse route",
+        "renforce les conduites: repos, demi-assis, controle SpO2 au doigt, FR sur 1 minute, signes de mauvaise tolerance"
+      ],
+      "points_a_verifier": [
+        "SpO2 comparee a la baseline",
+        "dyspnee, cyanose, tirage, parole impossible",
+        "toux, fievre, encombrement, fausse route",
+        "frequence respiratoire et etat de conscience"
+      ],
+      "threshold_hints": {
+        "attention": "SpO2 < 93% ou baisse sous baseline",
+        "urgent": "SpO2 <= 88-90% persistante ou mauvaise tolerance"
+      },
+      "impact_rapport": {
+        "diagnostic_initial": "faire apparaitre BPCO/terrain respiratoire comme facteur explicatif",
+        "interventions": "repos, position demi-assise, controle capteur, FR, recherche dyspnee/fausse route",
+        "surveillance": "recontrole SpO2/FR/FC/PA/T a 15 min si anomalie",
+        "appel_medecin": "IDE/medecin si SpO2 reste basse, dyspnee, fievre, toux ou fausse route"
+      },
+      "source_refs": ["sfar_bronchospasme", "mapar_bronchospasme_adulte", "AMELI_BPCO"]
+    },
+    {
+      "id": "diabete",
+      "label": "Diabete / risque hypoglycemie",
+      "match": {
+        "pathologies_any": ["diabete"]
+      },
+      "apporte_au_projet": [
+        "ajoute l'hypoglycemie au diagnostic differentiel des malaises, chutes, sueurs, tremblements et confusions",
+        "rappelle de verifier repas saute, apports et glycemie si disponible",
+        "conditionne les gestes: ne pas faire marcher seul, resucrage uniquement selon protocole si conscient"
+      ],
+      "points_a_verifier": [
+        "glycemie capillaire si disponible",
+        "repas saute ou baisse d'apports",
+        "sueurs, tremblements, paleur, faim",
+        "confusion, trouble de vigilance, chute ou malaise"
+      ],
+      "threshold_hints": {
+        "hypoglycemie_grave": "glycemie basse avec trouble de conscience, convulsions ou impossibilite de resucrage oral"
+      },
+      "impact_rapport": {
+        "diagnostic_initial": "mentionner hypoglycemie possible si malaise/confusion/chute",
+        "interventions": "glycemie si disponible, repos, surveillance, resucrage selon protocole si conscient",
+        "surveillance": "reevaluer vigilance, constantes et prise alimentaire",
+        "appel_medecin": "alerter si trouble conscience, impossibilite de resucrage ou recidive"
+      },
+      "source_refs": ["sfar_diabete_perioperatoire", "mapar_controle_glycemique", "AMELI_HYPOGLYCEMIE_DIABETE"]
+    },
+    {
+      "id": "insuffisance_renale",
+      "label": "Insuffisance renale / vulnerabilite medicamenteuse",
+      "match": {
+        "pathologies_any": ["insuffisance_renale"]
+      },
+      "apporte_au_projet": [
+        "augmente la vigilance sur deshydratation, hypotension, confusion et iatrogenie",
+        "rappelle que la diurese isolee ne suffit pas a exclure une deterioration renale",
+        "renforce la verification des traitements recents et des apports"
+      ],
+      "points_a_verifier": [
+        "apports hydriques et diurese si suivie",
+        "PA, FC, temperature, confusion",
+        "diuretiques ou traitement recent",
+        "diarrhee, vomissements, chaleur, fievre"
+      ],
+      "impact_rapport": {
+        "diagnostic_initial": "relier malaise/hypotension/confusion a terrain renal possible",
+        "interventions": "controler PA/FC/T, rechercher deshydratation et medicament recent",
+        "surveillance": "surveillance hydratation/diurese selon protocole et evolution clinique",
+        "appel_medecin": "alerter si hypotension, confusion, trouble conscience ou degradation rapide"
+      },
+      "source_refs": ["sfar_insuffisance_renale_aigue", "sfar_protection_renale"]
+    },
+    {
+      "id": "cardiovasculaire_haut_risque",
+      "label": "Terrain cardiovasculaire haut risque",
+      "match": {
+        "pathologies_any": ["hypertension", "insuffisance_cardiaque", "arythmie", "coronaropathie"]
+      },
+      "apporte_au_projet": [
+        "individualise l'interpretation PA/FC par rapport a la baseline",
+        "renforce les criteres douleur thoracique, dyspnee, malaise, signes FAST/VITE",
+        "evite de banaliser une hypotension relative ou une poussee hypertensive symptomatique"
+      ],
+      "points_a_verifier": [
+        "PA systolique/diastolique apres repos",
+        "douleur thoracique, dyspnee, sueurs, malaise",
+        "signes FAST/VITE",
+        "oedemes, prise de poids rapide si insuffisance cardiaque"
+      ],
+      "impact_rapport": {
+        "diagnostic_initial": "faire apparaitre le risque neuro-cardio ou insuffisance cardiaque",
+        "interventions": "repos, reprise PA, recherche signes FAST/douleur thoracique/dyspnee",
+        "surveillance": "suivre tendance PA/FC/SpO2 et tolerance clinique",
+        "appel_medecin": "appel IDE/medecin si symptomes persistants; 15/112 si douleur thoracique, deficit FAST, dyspnee severe"
+      },
+      "source_refs": ["sfar_optimisation_hemodynamique", "sofia_controle_pression_arterielle", "AMELI_AVC", "AMELI_INSUFFISANCE_CARDIAQUE"]
+    },
+    {
+      "id": "anticoagulants_antiagregants",
+      "label": "Anticoagulants / antiagregants possibles",
+      "match": {
+        "medications_any": ["anticoagulant", "antiplatelet", "antiagregant"],
+        "scenario_any": ["SCN001_FALL_NIGHT_ALZHEIMER_ANTICOAGULANT"]
+      },
+      "apporte_au_projet": [
+        "renforce la gravite d'une chute, surtout traumatisme cranien ou saignement",
+        "ameliore les transmissions: traitement a verifier, heure de chute, signe neurologique",
+        "abaisse le seuil d'appel medical apres chute avec impact tete ou trouble neurologique"
+      ],
+      "points_a_verifier": [
+        "traitement anticoagulant ou antiagregant reel dans le DPI",
+        "traumatisme cranien, plaie, hematome, saignement",
+        "deficit neurologique ou trouble conscience",
+        "heure de chute et duree au sol"
+      ],
+      "impact_rapport": {
+        "diagnostic_initial": "mentionner risque hemorragique si traitement confirme",
+        "interventions": "ne pas relever sans evaluation si douleur/traumatisme; surveillance neurologique",
+        "surveillance": "douleur, conscience, signes neurologiques, saignement",
+        "appel_medecin": "appel medical plus rapide si chute tete, anticoagulant confirme ou signe neurologique"
+      },
+      "source_refs": ["sfar_antiplaquettaires", "sfar_aod_urgence", "HAS_CHUTES_REPETEES"]
+    }
+  ]
+}
