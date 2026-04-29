@@ -167,8 +167,8 @@ Les variables principales sont documentees dans `.env.example`.
 | `OLLAMA_MODEL` | `meditron:7b` | modele LLM local |
 | `LLM_ROUTING_ENABLED` | `true` | active le routage multi-modeles LLM |
 | `LLM_FAST_MODEL` | `llama3.2:3b` | synthese courte soignant/famille |
-| `LLM_CLINICAL_MODEL` | `qwen2.5:7b` | hypotheses, CAT, surveillance et sources KB |
-| `LLM_MEDICAL_MODEL` | `meditron:7b` | fallback rapport medical complet |
+| `LLM_CLINICAL_MODEL` | `meditron:7b` | hypotheses, CAT, surveillance et sources KB |
+| `LLM_MEDICAL_MODEL` | `qwen2.5:7b` | secours rapport medical si le modele clinique echoue |
 | `LLM_DAILY_AUTO_ENABLED` | `false` backend, `true` worker | generation auto rapports LLM |
 | `MQTT_USERNAME` / `MQTT_PASSWORD` | comptes service | authentification MQTT |
 | `HTTPS_REQUIRED` | `false` | force HTTPS hors localhost si active |
@@ -352,8 +352,8 @@ flowchart TD
     LIVE[Constantes + alertes + historique]
     BASE[Base deterministe<br/>rules + ML + KB]
     FAST[llama3.2:3b<br/>resume court]
-    CLIN[qwen2.5:7b<br/>hypotheses + CAT + surveillance]
-    MED[meditron:7b<br/>fallback rapport complet]
+    CLIN[meditron:7b<br/>hypotheses + CAT + surveillance]
+    MED[qwen2.5:7b<br/>secours rapport complet]
     DOC[Document clinique structure<br/>Redis medical_report:v1]
     MINI[Mini DPI resident]
 
@@ -373,8 +373,8 @@ Ce qui est affiche dans le rapport:
 
 - `Base deterministe`: garantit un rapport minimal meme sans LLM.
 - `Synthese rapide / llama3.2:3b`: resume soignant, vigilance courte, message famille.
-- `Analyse clinique KB / qwen2.5:7b`: hypotheses differentielles, conduite a tenir, surveillance, sources.
-- `Rapport medical complet / meditron:7b`: secours si les agents specialises echouent.
+- `Analyse clinique KB / meditron:7b`: hypotheses differentielles, conduite a tenir, surveillance, sources.
+- `Rapport medical de secours / qwen2.5:7b`: secours si le modele clinique echoue ou repond hors format.
 
 Le document stocke suit une structure inspiree FHIR `DiagnosticReport` +
 `Composition`: metadata, conclusion, sections, sources et tracabilite. Il est
@@ -778,8 +778,8 @@ reelles, un split temporel et une validation clinique.
 
 - utilise un routage multi-modeles local;
 - reformule une synthese clinique courte avec `llama3.2:3b`;
-- construit hypotheses, CAT, surveillance et sources KB avec `qwen2.5:7b`;
-- garde `meditron:7b` comme fallback de rapport complet;
+- construit hypotheses, CAT, surveillance et sources KB avec `meditron:7b`;
+- garde `qwen2.5:7b` comme secours de rapport complet si le modele clinique echoue;
 - utilise contexte resident, historique, alertes, antecedents, traitements probables et KB locale;
 - stocke un document clinique structure dans le Mini DPI;
 - n'est pas fine-tune par le projet;
@@ -885,8 +885,8 @@ Routage utilise en pratique:
 | Tache | Modele | Role |
 |---|---|---|
 | Synthese courte | `llama3.2:3b` | resume soignant, vigilance courte, message famille |
-| Analyse clinique KB | `qwen2.5:7b` | hypotheses differentielles, CAT, surveillance, sources |
-| Rapport complet / fallback medical | `meditron:7b` | secours si les agents specialises echouent |
+| Analyse clinique KB | `meditron:7b` | hypotheses differentielles, CAT, surveillance, sources |
+| Rapport complet / secours medical | `qwen2.5:7b` | secours si le modele clinique echoue ou repond hors format |
 
 Activation avant la demo:
 
@@ -1012,9 +1012,45 @@ avant le passage jury.
 | `POST /api/push/test` | test push soignant |
 | `GET /api/llm/report/{id}` | rapport LLM resident |
 | `GET /api/llm/daily/{date}` | statut rapports quotidiens |
-| `GET /api/security/access-log` | journal acces DPI |
+| `GET /api/security/access-logs` | journal acces DPI |
 | `GET /api/security/break-glass` | journal bris de glace |
 | `WS /ws` | flux live dashboard |
+
+## Endpoints techniques et audit
+
+Ces endpoints ne sont pas des pages metier principales. Ils sont conserves pour
+la soutenance, les tests, l'audit et l'exploitation technique.
+
+| Endpoint | Usage | Statut |
+|---|---|---|
+| `GET /api/kb/scenarios` | verifier la KB scenarios et les conduites a tenir | outil technique |
+| `GET /api/kb/scenarios/{id}` | inspecter un scenario KB precis | outil technique |
+| `GET /api/kb/archetypes` | verifier les archetypes residents | outil technique |
+| `GET /api/kb/residents` | verifier mapping residents -> archetypes/KB | outil technique |
+| `GET /api/kb/official` | verifier les sources officielles integrees | outil technique |
+| `GET /api/kb/epidor` | verifier la KB importee EPIDOR | outil technique |
+| `GET /api/a2a/agents` | montrer les agents A2A disponibles | outil validation |
+| `GET /api/a2a/predictions` | alimenter dashboard Validation pro | utilise dashboard |
+| `GET /api/a2a/predict/{id}` | debug/prediction resident protegee | outil technique |
+| `GET /api/ml/metrics` | verifier les metriques ML | outil validation |
+| `POST /api/llm/report/{id}/start` | generation LLM asynchrone | utilise dashboard/Mini DPI |
+| `GET /api/llm/result/{job_id}` | recuperation resultat LLM async | utilise dashboard/Mini DPI |
+| `GET /api/llm/audit` | audit des appels LLM | outil audit |
+| `GET /api/push/audit` | audit des notifications push | outil audit |
+| `GET /api/notifications/audit` | audit actions soignants | utilise soignant/audit |
+| `GET /api/simulator/config` | configuration simulateur | utilise configuration/demo |
+| `PUT /api/simulator/config/residents/{id}` | modification profil demo | utilise configuration/demo |
+| `POST /api/simulator/config/history/generate` | regeneration historique dossier patient | outil demo |
+| `GET /api/residents/{id}/dossier/history` | historique 12 mois dossier patient | utilise dashboard |
+| `GET /api/summary` | synthese legacy/debug | compatibilite ancien dashboard |
+
+Decision actuelle:
+
+- ne pas supprimer ces endpoints avant la soutenance;
+- les presenter comme couche de validation technique;
+- utiliser `/api/llm/report/{id}/start` et `/api/llm/result/{job_id}` pour les
+  generations longues: le dashboard affiche un statut puis recupere le resultat;
+- documenter que les endpoints KB/ML/A2A servent a prouver l'explicabilite.
 
 ## Commandes utiles
 
@@ -1109,6 +1145,12 @@ Guide detaille:
 ## Tests et verification
 
 Le projet contient des tests pytest dans `tests/test_ehpad.py`.
+
+Scripts de support conserves:
+
+- `backend/benchmark_scalability.py`: benchmark charge MQTT/API pour preuve jury.
+- `backend/test_history_before_after.py`: outil manuel de comparaison historique
+  avant/apres injection; non lance en production.
 
 Verification minimale avant rendu:
 

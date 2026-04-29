@@ -4,14 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EPicare Palace — Tableau de bord</title>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
-  }
-}
-</script>
 <style>
   :root {
     --bg: #0f1117; --bg2: #1a1d2e; --bg3: #242840;
@@ -759,7 +751,10 @@ function connect() {
       liveResidents[r.resident_id] = { ...liveResidents[r.resident_id], ...r, id: r.resident_id };
       if (r.alert) liveActiveAlerts[r.resident_id] = r.alert;
       else if (r.active_alert) liveActiveAlerts[r.resident_id] = r.active_alert;
-      else if (Object.prototype.hasOwnProperty.call(r, 'active_alert') || Number(r.alert_level || 0) === 0) {
+      else if (
+        (Object.prototype.hasOwnProperty.call(r, 'alert') && r.alert === null) ||
+        (Object.prototype.hasOwnProperty.call(r, 'active_alert') && r.active_alert === null)
+      ) {
         delete liveActiveAlerts[r.resident_id];
       }
       captureTimelineSnapshot();
@@ -845,6 +840,10 @@ async function ensureThirtyMinuteHistory(rid) {
 function getAlertLevel(rid) {
   const a = activeAlerts[rid];
   return a && !a.resolved ? a.level : 0;
+}
+
+function isPendingAlert(alert) {
+  return Boolean(alert && !alert.resolved && !alert.acknowledged && !alert.taken_by);
 }
 
 function getMLRiskColor(risk) {
@@ -1083,7 +1082,7 @@ function updateResidentCard(rid) {
 
 function updateStats() {
   const all = Object.values(residents);
-  const alertCount = Object.values(activeAlerts).filter(a => !a.resolved).length;
+  const alertCount = Object.values(activeAlerts).filter(isPendingAlert).length;
   const mlHigh = all.filter(r => (r.ml_risk || 0) > 0.5).length;
   const ok = all.filter(r => getAlertLevel(r.id) === 0 && (r.ml_risk || 0) < 0.5).length;
 
@@ -1112,14 +1111,14 @@ function updateDemoBanner() {
 
 function updateAlertSidebar() {
   const list = document.getElementById('alert-list');
-  const alerts = Object.values(activeAlerts).filter(a => !a.resolved).sort((a,b) => b.level - a.level);
+  const alerts = Object.values(activeAlerts).filter(isPendingAlert).sort((a,b) => b.level - a.level);
   const toggle = document.getElementById('alert-toggle');
   const count = document.getElementById('alert-toggle-count');
   if (count) count.textContent = alerts.length;
   if (toggle) toggle.classList.toggle('has-alerts', alerts.length > 0);
 
   if (!alerts.length) {
-    list.innerHTML = '<div class="no-alerts">✓ Aucune alerte active</div>';
+    list.innerHTML = '<div class="no-alerts">✓ Aucune alerte à acquitter</div>';
     return;
   }
 
@@ -1153,6 +1152,12 @@ function updateAlertSidebar() {
         <span class="alert-time">${a.time_since_s}s</span>
       </div>
       <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); openDetail('${a.resident_id}'); loadAlertExplanation('${a.resident_id}')">Explication</button>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        ${a.acknowledged
+          ? `<button class="filter-btn" style="flex:1;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); takeAlertInCharge('${a.resident_id}')">Prendre en charge</button>`
+          : `<button class="filter-btn" style="flex:1;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); acknowledgeAlert('${a.resident_id}')">Acquitter</button>`}
+        <button class="ack-btn" style="flex:1;margin-top:0;padding:5px 8px;font-size:11px;background:#16a34a" onclick="event.stopPropagation(); validateAlert('${a.resident_id}')">Valider / clôturer</button>
+      </div>
       ${escaladeBar}
     </div>`;
   }).join('');
@@ -1253,7 +1258,7 @@ function renderHistoryTab() {
 function updateQuickHistory() {
   const list = document.getElementById('quick-history-list');
   if (!list) return;
-  const liveAlerts = Object.values(activeAlerts).filter(a => !a.resolved);
+  const liveAlerts = Object.values(activeAlerts).filter(isPendingAlert);
   const recent = [...liveAlerts, ...historyData]
     .filter(Boolean)
     .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
@@ -2238,16 +2243,52 @@ function renderClinicalLlmReport(data, compact = false) {
     </div>`;
 }
 
+function renderLlmAsyncStatus(jobId, attempt, maxAttempts) {
+  return `
+    <div style="border:1px solid var(--border);border-radius:8px;padding:10px;background:rgba(59,130,246,0.08);font-size:12px;color:var(--text2)">
+      <b style="color:var(--text)">Rapport IA en cours...</b><br>
+      Job ${jobId || 'initialisation'} · vérification ${attempt}/${maxAttempts}<br>
+      Modèle clinique: meditron:7b · temps estimé 30-90s
+    </div>
+  `;
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function startAndPollLlmReport(residentId, onProgress) {
+  const startRes = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}/start`, { method: 'POST' });
+  if (!startRes.ok) throw new Error(`start ${startRes.status}`);
+  const started = await startRes.json();
+  const jobId = started.job_id;
+  if (!jobId) throw new Error('job_id absent');
+
+  const maxAttempts = 45;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (onProgress) onProgress(jobId, attempt, maxAttempts);
+    await wait(attempt === 1 ? 1200 : 2500);
+    const resultRes = await fetch(`${BACKEND_HTTP}/api/llm/result/${jobId}`);
+    if (!resultRes.ok) throw new Error(`result ${resultRes.status}`);
+    const result = await resultRes.json();
+    if (result.status === 'done') return result;
+    if (result.status === 'not_found' || result.status === 'error') {
+      throw new Error(result.error || result.status);
+    }
+  }
+  throw new Error('timeout génération LLM');
+}
+
 async function loadLlmReport(residentId) {
   const block = document.getElementById('llm-report-block');
   const btn = document.getElementById(`llm-btn-${residentId}`);
   if (!block) return;
-  block.innerHTML = '<div style="color:var(--text2);font-size:12px;padding:8px 0">Génération en cours (10-30s)…</div>';
-  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  block.innerHTML = renderLlmAsyncStatus(null, 0, 45);
+  if (btn) { btn.disabled = true; btn.textContent = 'En cours'; }
   try {
-    const res = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}`);
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
+    const data = await startAndPollLlmReport(residentId, (jobId, attempt, maxAttempts) => {
+      block.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
+    });
     block.innerHTML = renderClinicalLlmReport(data);
     await loadResidentDpi(residentId);
   } catch (e) {
@@ -2640,7 +2681,11 @@ function openDetail(rid) {
         <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="loadAlertExplanation('${rid}')">Voir explication</button>
         <div id="alert-explain-block" style="margin-top:8px"></div>
       </div>
-      <button class="ack-btn" onclick="acknowledgeAlert('${rid}')">✓ Acquitter l'alerte</button>
+      ${alert.acknowledged
+        ? `<div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:10px">Alerte acquittee par ${alert.acknowledged_by || 'soignant'}</div>
+           <button class="filter-btn" style="width:100%;margin-top:8px;padding:9px 10px;font-size:13px" onclick="takeAlertInCharge('${rid}')">Prendre en charge</button>`
+        : `<button class="ack-btn" onclick="acknowledgeAlert('${rid}')">✓ Acquitter l'alerte</button>`}
+      <button class="ack-btn" style="background:#16a34a" onclick="validateAlert('${rid}')">✓ Valider / clôturer l'alerte</button>
     `;
   }
 
@@ -2788,13 +2833,13 @@ async function loadDetailLlmReport(residentId) {
   const block = document.getElementById('dp-llm-block');
   const btn   = document.getElementById('dp-llm-btn');
   if (!block) return;
-  block.innerHTML = '<div style="color:var(--text2);font-size:12px;padding:6px 0">Génération en cours…</div>';
-  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  block.innerHTML = renderLlmAsyncStatus(null, 0, 45);
+  if (btn) { btn.disabled = true; btn.textContent = 'En cours'; }
   block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
-    const res = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}`);
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
+    const data = await startAndPollLlmReport(residentId, (jobId, attempt, maxAttempts) => {
+      block.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
+    });
     const rendered = renderClinicalLlmReport(data, true);
     block.innerHTML = rendered;
     _llmReportCache[residentId] = rendered;
@@ -2989,12 +3034,15 @@ function closeDetail() {
 }
 
 function acknowledgeAlert(rid) {
+  const markAcknowledged = () => {
+    if (!activeAlerts[rid]) return;
+    activeAlerts[rid].acknowledged = true;
+    activeAlerts[rid].acknowledged_by = 'soignant_dashboard';
+    activeAlerts[rid].acknowledged_at = new Date().toISOString();
+  };
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ type: 'acknowledge', resident_id: rid, by: 'soignant_dashboard' }));
-    if (activeAlerts[rid]) {
-      activeAlerts[rid].acknowledged = true;
-      activeAlerts[rid].resolved = true;
-    }
+    markAcknowledged();
     updateAlertSidebar();
     openDetail(rid);
     return;
@@ -3002,14 +3050,68 @@ function acknowledgeAlert(rid) {
   fetch(`${BACKEND_HTTP}/api/alerts/${rid}/acknowledge?by=soignant_dashboard`, { method: 'POST' })
     .then(r => {
       if (!r.ok) throw new Error('Alerte deja cloturee ou inexistante');
-      if (activeAlerts[rid]) {
-        activeAlerts[rid].acknowledged = true;
-        activeAlerts[rid].resolved = true;
-      }
+      markAcknowledged();
       updateAlertSidebar();
       openDetail(rid);
     })
     .catch(err => alert(err.message));
+}
+
+async function recordAlertWorkflowAction(rid, action) {
+  await ensureStaffSession();
+  const a = activeAlerts[rid] || liveActiveAlerts[rid] || {};
+  const payload = {
+    caregiver_id: staffId || 'chef_garde',
+    action,
+    alert_id: a.id || null,
+    resident_id: rid,
+    resident_name: a.resident_name || residents[rid]?.name || rid,
+    level: a.level || null,
+    reason: a.reason || null,
+    location: formatAlertLocation(a),
+  };
+  const res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+    method: 'POST',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(detail.detail || `Action impossible (${res.status})`);
+  }
+  return res.json();
+}
+
+async function takeAlertInCharge(rid) {
+  try {
+    await recordAlertWorkflowAction(rid, 'prise_en_charge');
+    if (activeAlerts[rid]) {
+      activeAlerts[rid].taken_by = staffId || 'chef_garde';
+      activeAlerts[rid].taken_at = new Date().toISOString();
+    }
+    if (liveActiveAlerts[rid]) {
+      liveActiveAlerts[rid].taken_by = staffId || 'chef_garde';
+      liveActiveAlerts[rid].taken_at = new Date().toISOString();
+    }
+    updateAlertSidebar();
+    openDetail(rid);
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+async function validateAlert(rid) {
+  try {
+    await recordAlertWorkflowAction(rid, 'resolue');
+    delete activeAlerts[rid];
+    delete liveActiveAlerts[rid];
+    updateResidentCard(rid);
+    updateStats();
+    updateAlertSidebar();
+    if (currentDetailResident === rid) openDetail(rid);
+  } catch (err) {
+    alert(err.message);
+  }
 }
 
 async function loadAlertExplanation(rid) {
@@ -3203,6 +3305,26 @@ const SENSOR_STYLE = {
   dashboard: ['Dashboard', 0xffffff], garde_corps: ['Garde-corps', 0x94a3b8],
 };
 
+function getFreshEHPAD3DCanvas() {
+  const canvas = document.getElementById('ehpad-3d');
+  if (!canvas) return null;
+  const fresh = canvas.cloneNode(false);
+  canvas.replaceWith(fresh);
+  return fresh;
+}
+
+function createEHPAD3DRenderer(THREE, canvas) {
+  try {
+    return new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+  } catch (firstError) {
+    try {
+      return new THREE.WebGLRenderer({ canvas, antialias: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' });
+    } catch (_) {
+      throw firstError;
+    }
+  }
+}
+
 async function initEHPAD3D() {
   if (model3D.ready || model3D.loading) {
     resizeEHPAD3D();
@@ -3214,13 +3336,14 @@ async function initEHPAD3D() {
     const THREE = await import('three');
     const { MapControls } = await import('three/addons/controls/MapControls.js');
     model3D.THREE = THREE;
-    const canvas = document.getElementById('ehpad-3d');
+    const canvas = getFreshEHPAD3DCanvas();
+    if (!canvas) throw new Error('canvas 3D introuvable');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0b1018);
     scene.fog = new THREE.Fog(0x0b1018, 42, 95);
     const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 180);
     camera.position.set(0, 34, 26);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    const renderer = createEHPAD3DRenderer(THREE, canvas);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
     const controls = new MapControls(camera, renderer.domElement);

@@ -1108,7 +1108,7 @@
       requestAnimationFrame(animateScopes);
     }
 
-    async function loadLlmReport() {
+    async function loadLlmReportLegacySync() {
       const block = document.getElementById('llm-report');
       const btn   = document.getElementById('llm-btn');
       block.innerHTML = '<p class="muted small" style="margin-top:8px">Génération en cours (10-30s)…</p>';
@@ -1184,15 +1184,50 @@
         </div>`;
     }
 
+    function renderLlmAsyncStatus(jobId, attempt, maxAttempts) {
+      return `
+        <div style="border:1px solid #26334c;border-radius:8px;padding:10px;background:rgba(59,130,246,0.08);font-size:12px;color:#9fb0c7;margin-top:8px">
+          <b style="color:#e7edf7">Rapport IA en cours...</b><br>
+          Job ${jobId || 'initialisation'} - verification ${attempt}/${maxAttempts}<br>
+          Modele clinique: meditron:7b - temps estime 30-90s
+        </div>
+      `;
+    }
+
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function startAndPollLlmReport() {
+      const startRes = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}/start`, { method: 'POST' });
+      if (!startRes.ok) throw new Error(`start ${startRes.status}`);
+      const started = await startRes.json();
+      const jobId = started.job_id;
+      if (!jobId) throw new Error('job_id absent');
+
+      const maxAttempts = 45;
+      const block = document.getElementById('llm-report');
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        if (block) block.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
+        await wait(attempt === 1 ? 1200 : 2500);
+        const resultRes = await fetch(`${BACKEND_HTTP}/api/llm/result/${jobId}`);
+        if (!resultRes.ok) throw new Error(`result ${resultRes.status}`);
+        const result = await resultRes.json();
+        if (result.status === 'done') return result;
+        if (result.status === 'not_found' || result.status === 'error') {
+          throw new Error(result.error || result.status);
+        }
+      }
+      throw new Error('timeout generation LLM');
+    }
+
     loadLlmReport = async function() {
       const block = document.getElementById('llm-report');
       const btn = document.getElementById('llm-btn');
-      block.innerHTML = '<p class="muted small" style="margin-top:8px">Generation en cours (10-30s)...</p>';
-      if (btn) { btn.disabled = true; btn.textContent = '...'; }
+      block.innerHTML = renderLlmAsyncStatus(null, 0, 45);
+      if (btn) { btn.disabled = true; btn.textContent = 'En cours'; }
       try {
-        const res = await fetch(`${BACKEND_HTTP}/api/llm/report/${residentId}`);
-        if (!res.ok) throw new Error(res.status);
-        const data = await res.json();
+        const data = await startAndPollLlmReport();
         block.innerHTML = renderClinicalLlmReport(data);
         await loadAll();
       } catch (e) {

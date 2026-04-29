@@ -28,10 +28,20 @@ from influxdb_client import Point, WritePrecision
 from app.api import register_routers
 from app.core.config import settings
 from app.core.middleware import create_limiter, setup_middlewares
+from app.core.security import SecurityService
 from app.db.redis_client import redis_client
 from app.db.influx_client import influx, write_api, query_api
 from app.domain.residents import RESIDENT_ARCHETYPES, resident_archetype as _resident_archetype
 from app.domain.scenarios import SIMULATION_SCENARIOS
+from app.services.resident_service import (
+    effective_resident_profile,
+    get_live_resident,
+    list_live_residents,
+    resident_caregiver,
+    resident_config,
+    resident_file_profile,
+)
+from app.services.staff_service import staff_status
 from alert_engine import AlertEngine, LEVEL_CONFIG
 from ws_manager import WebSocketManager
 from ml_model import MalaisePredictor
@@ -101,6 +111,15 @@ register_routers(app)
 ws_manager = WebSocketManager()
 alert_engine = AlertEngine(redis_client, ws_manager)
 ml_predictor = MalaisePredictor()
+security_service = SecurityService(
+    redis_client=redis_client,
+    caregivers=CAREGIVERS,
+    residents_map=RESIDENTS_MAP,
+    session_secret=SESSION_SECRET,
+    retention_access_log_days=RETENTION_ACCESS_LOG_DAYS,
+    resident_caregiver=lambda resident_id, profile=None: _resident_caregiver(resident_id, profile),
+    active_alert_for_resident=lambda resident_id: _active_alert_for_resident(resident_id),
+)
 
 # --- Web Push helpers ---
 def _push_subscriptions_key(staff_id: str) -> str:
@@ -389,76 +408,28 @@ _ws_push_count = 0
 _last_mqtt_message_at: Optional[float] = None
 _mqtt_window: deque[tuple[float, str]] = deque(maxlen=20000)
 
-STAFF_DEFAULTS = {
-    "soignant_A": {"sector": "RDC + aile A", "shift": "jour", "status": "disponible"},
-    "soignant_B": {"sector": "RDC + aile B", "shift": "jour", "status": "disponible"},
-    "soignant_C": {"sector": "1er etage", "shift": "jour", "status": "disponible"},
-    "chef_garde": {"sector": "tous secteurs", "shift": "astreinte", "status": "disponible"},
-    "direction": {"sector": "administration", "shift": "astreinte", "status": "disponible"},
-}
-
-
 def _staff_status(caregiver_id: str) -> dict:
-    base = {
-        "id": caregiver_id,
-        **CAREGIVERS.get(caregiver_id, {"name": caregiver_id, "role": "soignant", "phone": ""}),
-        **STAFF_DEFAULTS.get(caregiver_id, {"sector": "non defini", "shift": "jour", "status": "disponible"}),
-    }
-    raw = redis_client.get(f"staff:{caregiver_id}:status")
-    if raw:
-        try:
-            base.update(json.loads(raw))
-        except Exception:
-            pass
-    return base
+    return staff_status(caregiver_id, CAREGIVERS)
 
 
 def _bearer_token(authorization: Optional[str]) -> Optional[str]:
-    if authorization and authorization.lower().startswith("bearer "):
-        return authorization[7:].strip()
-    return None
+    return security_service.bearer_token(authorization)
 
 
 def _require_staff_session(authorization: Optional[str] = None) -> dict:
-    session = auth_module.validate_staff_token(redis_client, _bearer_token(authorization), SESSION_SECRET)
-    if not session:
-        raise HTTPException(401, "Session personnel expiree ou invalide")
-    if session.get("sub") not in CAREGIVERS:
-        raise HTTPException(403, "Personnel inconnu")
-    return session
+    return security_service.require_staff_session(authorization)
 
 
 def _is_privileged_staff(staff_id: str, role: Optional[str] = None) -> bool:
-    return staff_id in {"chef_garde", "direction"} or role in {"medecin", "direction", "admin"}
+    return security_service.is_privileged_staff(staff_id, role)
 
 
 def _can_staff_access_resident(staff_id: str, resident_id: str, role: Optional[str] = None) -> bool:
-    if _is_privileged_staff(staff_id, role):
-        return True
-    return _resident_caregiver(resident_id, RESIDENTS_MAP.get(resident_id, {})) == staff_id
+    return security_service.can_staff_access_resident(staff_id, resident_id, role)
 
 
 def _log_access(user_id: str, role: str, resident_id: str, action: str, outcome: str, request: Optional[Request] = None, reason: Optional[str] = None):
-    row = {
-        "at": datetime.utcnow().isoformat() + "Z",
-        "user_id": user_id,
-        "role": role,
-        "resident_id": resident_id,
-        "resident_name": RESIDENTS_MAP.get(resident_id, {}).get("name", resident_id),
-        "action": action,
-        "outcome": outcome,
-        "reason": reason,
-        "ip": request.client.host if request and request.client else None,
-        "path": str(request.url.path) if request else None,
-    }
-    redis_client.lpush("security:access_log", json.dumps(row, ensure_ascii=False))
-    redis_client.ltrim("security:access_log", 0, 4999)
-    redis_client.expire("security:access_log", RETENTION_ACCESS_LOG_DAYS * 86400)
-    if outcome == "break_glass":
-        redis_client.lpush("security:break_glass", json.dumps(row, ensure_ascii=False))
-        redis_client.ltrim("security:break_glass", 0, 999)
-        redis_client.expire("security:break_glass", RETENTION_ACCESS_LOG_DAYS * 86400)
-    return row
+    return security_service.log_access(user_id, role, resident_id, action, outcome, request, reason)
 
 
 def _require_resident_access(
@@ -468,55 +439,29 @@ def _require_resident_access(
     action: str,
     break_glass_reason: Optional[str] = None,
 ) -> dict:
-    session = _require_staff_session(authorization)
-    staff_id = session["sub"]
-    role = session.get("role", "soignant")
-    if _can_staff_access_resident(staff_id, resident_id, role):
-        _log_access(staff_id, role, resident_id, action, "allowed", request)
-        return session
-    active = _active_alert_for_resident(resident_id)
-    if break_glass_reason and len(break_glass_reason.strip()) >= 8 and active and int(active.get("level") or 0) >= 3:
-        _log_access(staff_id, role, resident_id, action, "break_glass", request, break_glass_reason.strip())
-        return session
-    _log_access(staff_id, role, resident_id, action, "denied", request, break_glass_reason)
-    raise HTTPException(403, "Acces refuse: resident non assigne. Bris de glace requis si urgence.")
+    return security_service.require_resident_access(
+        resident_id=resident_id,
+        authorization=authorization,
+        request=request,
+        action=action,
+        break_glass_reason=break_glass_reason,
+    )
 
 
 def _require_security_admin(authorization: Optional[str] = None) -> dict:
-    session = _require_staff_session(authorization)
-    if not _is_privileged_staff(session["sub"], session.get("role")):
-        raise HTTPException(403, "Acces reserve chef de garde / direction")
-    return session
+    return security_service.require_security_admin(authorization)
 
 
 def _resident_caregiver(resident_id: str, profile: Optional[dict] = None) -> str:
-    override = redis_client.get(f"resident:{resident_id}:caregiver")
-    return override or (profile or RESIDENTS_MAP.get(resident_id, {})).get("caregiver", "")
+    return resident_caregiver(resident_id, RESIDENTS_MAP, profile)
 
 
 def _resident_config(resident_id: str) -> dict:
-    file_profile = _resident_file_profile(resident_id)
-    if file_profile:
-        return file_profile
-    raw = redis_client.get(f"sim:profile:{resident_id}")
-    if not raw:
-        return {}
-    try:
-        return json.loads(raw)
-    except Exception:
-        return {}
+    return resident_config(resident_id)
 
 
 def _effective_resident_profile(resident_id: str) -> dict:
-    base = dict(RESIDENTS_MAP.get(resident_id, {}))
-    cfg = _resident_config(resident_id)
-    for key in [
-        "age", "pathologies", "mobility", "risk_factor", "caregiver",
-        "meal_mode", "care_level", "assigned_scenarios", "notes",
-    ]:
-        if key in cfg:
-            base[key] = cfg[key]
-    return base
+    return effective_resident_profile(resident_id, RESIDENTS_MAP)
 
 
 def _staff_notification_preview(caregiver_id: str, level: int) -> list[dict]:
@@ -804,6 +749,8 @@ def _handle_vitals(state: dict):
 
     # Évaluer alertes
     alert = alert_engine.evaluate(state)
+    active_alert = alert or alert_engine.active_alerts.get(rid)
+    active_alert_payload = active_alert.to_dict() if active_alert else None
 
     # Écrire dans InfluxDB
     if now - _last_influx_write.get(rid, 0) >= INFLUX_SAMPLE_INTERVAL_S:
@@ -856,7 +803,7 @@ def _handle_vitals(state: dict):
                 "dining_seat": state.get("dining_seat"),
                 "caregiver": state.get("caregiver", ""),
                 "caregiver_name": state.get("caregiver_name"),
-                "alert": alert.to_dict() if alert else None,
+                "alert": active_alert_payload,
             }),
             _loop
         )
@@ -1094,30 +1041,15 @@ async def push_test_all(body: PushTestRequest, authorization: str = Header(None)
 @app.get("/api/residents")
 def get_all_residents():
     """Liste tous les résidents avec leur état courant."""
-    data = redis_client.hgetall("residents:all")
-    residents = []
-    for rid, raw in data.items():
-        try:
-            r = json.loads(raw)
-            # Ajouter l'alerte active si présente
-            r["active_alert"] = _active_alert_for_resident(rid)
-            residents.append(r)
-        except Exception:
-            pass
-    return {"residents": residents, "count": len(residents)}
+    return list_live_residents(_active_alert_for_resident)
 
 
 @app.get("/api/residents/{resident_id}")
 def get_resident(resident_id: str, request: Request, authorization: str = Header(None), x_break_glass_reason: str = Header(None)):
     _require_resident_access(resident_id, authorization, request, "resident_live_view", x_break_glass_reason)
-    raw = redis_client.get(f"resident:{resident_id}:state")
-    if not raw:
+    state = get_live_resident(resident_id, _effective_resident_profile)
+    if not state:
         raise HTTPException(404, "Résident non trouvé")
-    state = json.loads(raw)
-    # Historique comportemental
-    profile = _effective_resident_profile(resident_id)
-    state["profile"] = profile
-    state["avatar"] = state.get("avatar") or profile.get("avatar", "")
     return state
 
 
@@ -1320,17 +1252,7 @@ def _patient_file_paths(resident_id: str) -> dict:
 
 
 def _resident_file_profile(resident_id: str) -> dict:
-    path = _patient_dir(resident_id) / "profile.json"
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    # Ancien format export: {"base":..., "config":..., "effective":...}
-    if isinstance(payload, dict) and isinstance(payload.get("effective"), dict):
-        return payload["effective"]
-    return payload if isinstance(payload, dict) else {}
+    return resident_file_profile(resident_id)
 
 
 def _export_patient_profile_files(resident_id: str) -> None:
@@ -1984,6 +1906,7 @@ def record_notification_action(payload: NotificationAction, authorization: str =
         "acquitte": "acquittee",
         "resolved": "resolue",
         "resolu": "resolue",
+        "resolue": "resolue",
         "escalated": "escalade",
         "escalade": "escalade",
     }
@@ -3095,7 +3018,32 @@ def daily_llm_report_loop():
 @app.get("/api/llm/result/{job_id}")
 async def get_llm_result(job_id: str):
     """Résultat d'un job LLM lancé via /start - retourne pending ou done."""
-    return get_report_result(redis_client, job_id)
+    result = get_report_result(redis_client, job_id)
+    if result.get("status") != "done":
+        return result
+
+    resident_id = result.get("resident_id")
+    if not resident_id:
+        return result
+
+    report_date = _local_report_date()
+    result.setdefault("date", report_date)
+    result.setdefault("generated_at", datetime.utcnow().isoformat() + "Z")
+    result.setdefault(
+        "patient_profile",
+        _profile_with_patient_file(resident_id, RESIDENTS_MAP.get(resident_id, {})),
+    )
+
+    clinical_history = _build_resident_daily_report(resident_id, report_date=report_date, force=False)
+    document = _store_medical_report_document(result, clinical_history)
+    result["medical_document"] = _medical_report_summary(document)
+
+    ttl = LLM_DAILY_TTL_DAYS * 86400
+    redis_client.setex(_llm_daily_key(report_date, resident_id), ttl, json.dumps(result, ensure_ascii=False))
+    redis_client.hset(_llm_daily_index_key(report_date), resident_id, json.dumps(result, ensure_ascii=False))
+    redis_client.expire(_llm_daily_index_key(report_date), ttl)
+    redis_client.setex(f"llm:job:{job_id}", ttl, json.dumps(result, ensure_ascii=False))
+    return result
 
 
 @app.get("/api/llm/audit")

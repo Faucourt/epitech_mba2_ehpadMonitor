@@ -542,6 +542,11 @@ class AlertEngine:
         alert = self.active_alerts.get(resident_id)
         if not alert:
             return
+        if alert.level >= AlertLevel.ATTENTION and not alert.acknowledged and not alert.taken_by:
+            # Une alerte clinique reste visible tant qu'un soignant ne l'a pas vue
+            # ou prise en charge. Sinon elle peut disparaitre sans trace explicite
+            # dans le dashboard si les constantes redeviennent stables.
+            return
         now = time.time()
         stable_since = getattr(self, "_stable_since", {})
         if not hasattr(self, "_stable_since"):

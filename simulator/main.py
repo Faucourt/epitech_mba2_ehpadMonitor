@@ -1121,12 +1121,16 @@ class EHPADSimulator:
 
         while self.running:
             start = time.time()
+            publish_interval_ticks = max(1, int(round(self.speed_multiplier)))
+            should_publish_residents = tick_count % publish_interval_ticks == 0
 
             # Tick tous les résidents
             all_states = []
             for r in self.residents:
                 state = r.tick()
-                self._publish_resident(state, tick_count)
+                critical = bool(state.get("movement", {}).get("is_fall_detected") or state.get("movement", {}).get("sos_pressed"))
+                if should_publish_residents or critical:
+                    self._publish_resident(state, tick_count)
                 all_states.append(state)
 
             # Capteurs ambiants (toutes les 5 secondes)
