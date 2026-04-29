@@ -8,8 +8,11 @@ from slowapi import _rate_limit_exceeded_handler
 from app.core.config import settings
 
 
+limiter = Limiter(key_func=get_remote_address)
+
+
 def create_limiter() -> Limiter:
-    return Limiter(key_func=get_remote_address)
+    return limiter
 
 
 def setup_middlewares(app: FastAPI, limiter: Limiter) -> None:

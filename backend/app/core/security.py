@@ -88,7 +88,6 @@ class SecurityService:
 
     def require_resident_access(
         self,
-        *,
         resident_id: str,
         authorization: Optional[str],
         request: Optional[Request],

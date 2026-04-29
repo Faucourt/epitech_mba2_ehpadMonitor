@@ -10,6 +10,8 @@ from dataclasses import dataclass, field
 from typing import Optional
 from enum import IntEnum
 
+import kb_loader as _kb_loader
+
 log = logging.getLogger(__name__)
 
 
@@ -252,6 +254,7 @@ class AlertEngine:
         self._escalation_thread_running = False
         self._pending: dict[str, dict] = {}
         self._resolved_recently: dict[str, float] = {}
+        self._synergy_rules: list[dict] = _kb_loader.get_epidor_ml_rule_weights().get("synergy_bonus", [])
 
     def _new_id(self):
         self._alert_counter += 1
@@ -437,6 +440,29 @@ class AlertEngine:
         elif last_mv > immobility_thr_1:
             level = AlertLevel.INFO
             reason = f"Resident inactif depuis {last_mv//60} min"
+
+        # --- SYNERGIES CLINIQUES (base de connaissance JSON) ---
+        medications = set(state.get("medications") or state.get("profile", {}).get("medications") or [])
+        _feat = {
+            "impact_detected": is_fall or ambient_fall,
+            "immobility_after_impact": (is_fall or ambient_fall) and last_mv > 60,
+            "anticoagulant": "anticoagulant" in medications,
+            "new_confusion": cognitive_risk and (spo2 < 92 or bp < 90 or temp > 38.5),
+            "diuretic": "diuretic" in medications or "diuretique" in medications,
+            "temperature_abnormal": temp > 38.5 or temp < 35.5,
+            "bp_low": bp < 90,
+            "exit_door_open": bool(sensor_events.get("door_open")) or current_zone == "hors_ehpad",
+            "routine_deviation": routine_change,
+            "spo2_drop": spo2 < baseline_spo2 - 3,
+            "rr_high": bool(rr and rr > 20),
+            "activity_drop_50": last_mv > 3600,
+        }
+        for rule in self._synergy_rules:
+            if all(_feat.get(c, False) for c in rule.get("conditions", [])):
+                forced = rule.get("force_alert_level")
+                if forced and (level is None or forced > int(level)):
+                    level = AlertLevel(forced)
+                    reason = f"[KB:{rule['id']}] {rule.get('description', 'Synergie clinique detectee')}"
 
         if level is None:
             # Résoudre l'alerte existante si les constantes sont revenues à la normale

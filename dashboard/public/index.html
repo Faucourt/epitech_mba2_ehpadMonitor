@@ -478,7 +478,7 @@
             <div class="sensor-key"><span class="sensor-dot" style="color:#f59e0b;background:#f59e0b"></span>Sol / matelas</div>
             <div class="sensor-key"><span class="sensor-dot" style="color:#ef4444;background:#ef4444"></span>Porte / RFID / SOS</div>
             <div class="sensor-key"><span class="sensor-dot" style="color:#22d3ee;background:#22d3ee"></span>CO2 / son / environnement</div>
-            <div class="sensor-key"><span class="sensor-dot" style="color:#22d3ee;background:#22d3ee"></span>Salle de bain / mouvement</div>
+            <div class="sensor-key"><span class="sensor-dot" style="color:#a78bfa;background:#a78bfa"></span>Salle de bain / mouvement</div>
           </div>
           <div class="model-controls">
             <label>Residents <input id="toggle-residents-3d" type="checkbox" checked onchange="set3DLayer('residents', this.checked)"></label>
@@ -2447,11 +2447,11 @@ function renderFloorPlan(floor) {
     html += `
       <g style="cursor:pointer" onclick="openDetail('${resident?.id || ''}')">
         <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="${fillColor}" rx="6" stroke="${borderColor}" stroke-width="${level > 0 ? 2 : 1}"/>
-        <rect x="${x + rw - 23}" y="${y + 7}" width="17" height="18" fill="#1f3b4d" rx="3" stroke="#22d3ee" stroke-width="0.8"/>
-        <circle cx="${x + rw - 14.5}" cy="${y + 14}" r="2.8" fill="#22d3ee">
+        <rect x="${x + rw - 23}" y="${y + 7}" width="17" height="18" fill="#1f3b4d" rx="3" stroke="#a78bfa" stroke-width="0.8"/>
+        <circle cx="${x + rw - 14.5}" cy="${y + 14}" r="2.8" fill="#a78bfa">
           <title>Salle de bain chambre ${room} · capteur mouvement</title>
         </circle>
-        <text x="${x + rw - 14.5}" y="${y + 22}" fill="#67e8f9" font-size="5.8" text-anchor="middle" font-family="system-ui">SDB</text>
+        <text x="${x + rw - 14.5}" y="${y + 22}" fill="#c4b5fd" font-size="5.8" text-anchor="middle" font-family="system-ui">SDB</text>
         <line x1="${x + rw/2 - 10}" y1="${y + rh}" x2="${x + rw/2 + 10}" y2="${y + rh}" stroke="#ef4444" stroke-width="2.4" stroke-linecap="round">
           <title>Porte chambre ${room} · capteur ouverture</title>
         </line>
@@ -3301,7 +3301,7 @@ const SENSOR_STYLE = {
   matelas: ['Matelas', 0xf59e0b], sol: ['Sol intelligent', 0xf59e0b],
   porte: ['Porte', 0xef4444], rfid: ['RFID', 0xef4444], ir: ['IR', 0xef4444], sos: ['SOS', 0xef4444],
   co2: ['CO2', 0x22d3ee], son: ['Son', 0x22d3ee], ambient: ['Ambiant', 0x22d3ee], fumee: ['Fumee', 0xef4444], co: ['CO', 0xef4444], temp: ['Temperature', 0x22d3ee],
-  sdb_pir: ['Mouvement salle de bain', 0x22d3ee],
+  sdb_pir: ['Mouvement salle de bain', 0xa78bfa],
   dashboard: ['Dashboard', 0xffffff], garde_corps: ['Garde-corps', 0x94a3b8],
 };
 
@@ -3314,19 +3314,57 @@ function getFreshEHPAD3DCanvas() {
 }
 
 function createEHPAD3DRenderer(THREE, canvas) {
-  try {
-    return new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-  } catch (firstError) {
+  const options = [
+    { canvas, antialias: true, preserveDrawingBuffer: false, powerPreference: 'high-performance' },
+    { canvas, antialias: false, preserveDrawingBuffer: false, powerPreference: 'default' },
+  ];
+  let firstError = null;
+  for (const opts of options) {
     try {
-      return new THREE.WebGLRenderer({ canvas, antialias: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' });
-    } catch (_) {
-      throw firstError;
+      return new THREE.WebGLRenderer(opts);
+    } catch (err) {
+      firstError ||= err;
     }
+  }
+  throw firstError || new Error('WebGL renderer indisponible');
+}
+
+function resetEHPAD3D() {
+  try {
+    if (model3D.renderer) {
+      model3D.renderer.forceContextLoss?.();
+      model3D.renderer.dispose?.();
+    }
+  } catch (_) {}
+  model3D.ready = false;
+  model3D.loading = false;
+  model3D.scene = null;
+  model3D.camera = null;
+  model3D.renderer = null;
+  model3D.controls = null;
+  model3D.interactives = [];
+  model3D.residentMeshes = {};
+  model3D.residentTargets = {};
+}
+
+async function retryEHPAD3D() {
+  resetEHPAD3D();
+  await initEHPAD3D();
+}
+
+function hasLive3DContext() {
+  try {
+    const gl = model3D.renderer?.getContext?.();
+    return Boolean(gl && !gl.isContextLost?.());
+  } catch (_) {
+    return false;
   }
 }
 
 async function initEHPAD3D() {
   if (model3D.ready || model3D.loading) {
+    if (model3D.ready && !hasLive3DContext()) resetEHPAD3D();
+    if (!model3D.ready) return initEHPAD3D();
     resizeEHPAD3D();
     return;
   }
@@ -3366,6 +3404,11 @@ async function initEHPAD3D() {
     model3D.pointer = new THREE.Vector2();
     buildEHPAD3D();
     set3DFloorMode('all');
+    canvas.addEventListener('webglcontextlost', (event) => {
+      event.preventDefault();
+      resetEHPAD3D();
+      if (detail) detail.textContent = 'Vue 3D interrompue par le navigateur. Cliquez sur Recharger la 3D.';
+    }, false);
     renderer.domElement.addEventListener('pointerdown', pickEHPAD3D);
     renderer.domElement.addEventListener('pointermove', hoverEHPAD3D);
     renderer.domElement.addEventListener('pointerleave', hideResidentTooltip3D);
@@ -3377,7 +3420,7 @@ async function initEHPAD3D() {
     updateEHPAD3D();
   } catch (err) {
     model3D.loading = false;
-    detail.textContent = `Vue 3D indisponible: ${err.message}`;
+    detail.innerHTML = `Vue 3D indisponible: ${err.message}<br><button class="filter-btn" style="margin-top:8px" onclick="retryEHPAD3D()">Recharger la 3D</button>`;
   }
 }
 
@@ -3587,11 +3630,11 @@ function addBathroom3D(space) {
   });
   const sensor = new THREE.Mesh(
     new THREE.SphereGeometry(0.16, 16, 10),
-    new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 0.55 })
+    new THREE.MeshStandardMaterial({ color: 0xa78bfa, emissive: 0xa78bfa, emissiveIntensity: 0.55 })
   );
   sensor.position.set(bx, y + 1.25, bz);
   sensor.userData = { type: 'sensor', sensor: 'sdb_pir', label: 'Mouvement salle de bain', location: `Salle de bain ${space.room}`, room: space.room, floor: space.floor };
-  const label = makeLabelSprite('SDB', 0x67e8f9, 0.42);
+  const label = makeLabelSprite('SDB', 0xc4b5fd, 0.42);
   label.position.set(bx, y + 1.52, bz);
   label.userData.floor = space.floor;
   model3D.wallsGroup.add(bath, sensor, label);

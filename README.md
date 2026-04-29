@@ -276,7 +276,14 @@ Important:
 
 - `http://IP_DU_PC:3002` suffit pour la demo mobile.
 - `https://IP_DU_PC:3443` est necessaire pour les push reels.
+- les Web Push reels demandent aussi `WEBPUSH_ENABLED=true` et une paire de
+  cles VAPID (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`).
 - Les certificats locaux et cles privees ne doivent pas etre commites dans Git.
+
+En Docker local, le projet laisse `WEBPUSH_ENABLED=false` tant que les cles
+VAPID ne sont pas configurees. Dans ce mode, on teste bien les routes backend,
+le ciblage des soignants et l'audit, mais aucune notification systeme reelle
+n'est envoyee par le navigateur.
 
 ## Objectif du projet
 
@@ -321,6 +328,7 @@ flowchart LR
     SIM[Simulator Python<br/>25 residents]
     MQTT[Broker Mosquitto<br/>MQTT 1883 / WS 9001]
     API[Backend FastAPI<br/>API + WS + alertes + ML]
+    LLMAPP[Services LLM modulaires<br/>KB context + parser + client]
     REDIS[(Redis<br/>etat live + sessions)]
     INF[(InfluxDB<br/>historique capteurs)]
     DASH[Dashboard HTML/JS<br/>port 3002]
@@ -332,7 +340,8 @@ flowchart LR
     MQTT --> API
     API --> REDIS
     API --> INF
-    API --> LLM
+    API --> LLMAPP
+    LLMAPP --> LLM
     DASH -->|REST /api| API
     DASH -->|WebSocket /ws| API
     TEL --> DASH
@@ -350,6 +359,8 @@ flowchart TD
     DPI[Profil resident<br/>pathologies + traitements probables]
     KB[KB officielle<br/>pathologies, PSC/AFPS, scenarios]
     LIVE[Constantes + alertes + historique]
+    FACADE[llm_service.py<br/>facade compatibilite]
+    MODS[app/services/llm/<br/>models + kb_context + report_builder<br/>prompts + parser + client]
     BASE[Base deterministe<br/>rules + ML + KB]
     FAST[llama3.2:3b<br/>resume court]
     CLIN[meditron:7b<br/>hypotheses + CAT + surveillance]
@@ -360,6 +371,8 @@ flowchart TD
     DPI --> BASE
     KB --> BASE
     LIVE --> BASE
+    FACADE --> MODS
+    MODS --> BASE
     BASE --> FAST
     BASE --> CLIN
     BASE --> MED
@@ -379,6 +392,16 @@ Ce qui est affiche dans le rapport:
 Le document stocke suit une structure inspiree FHIR `DiagnosticReport` +
 `Composition`: metadata, conclusion, sections, sources et tracabilite. Il est
 conserve dans Redis par resident/date et rattache au Mini DPI.
+
+Depuis le refactor de pre-rendu, `backend/llm_service.py` est une facade courte
+de compatibilite. Le code LLM est decoupe dans `backend/app/services/llm/`:
+
+- `models.py`: modele `LLMReport`;
+- `kb_context.py`: contexte KB/RAG, sources et filtrage;
+- `report_builder.py`: rapport deterministe, fallback et niveau de risque;
+- `prompts.py`: prompts Ollama;
+- `parser.py`: parsing JSON, normalisation et fusion;
+- `client.py`: appels Ollama, jobs Redis et execution synchrone/asynchrone.
 
 Lecture rapide:
 
@@ -427,7 +450,7 @@ flowchart TB
     BACK --> B2[alert_engine.py]
     BACK --> B3[ml_model.py]
     BACK --> B4[a2a_agents.py]
-    BACK --> B5[llm_service.py]
+    BACK --> B5[llm_service.py<br/>facade LLM]
     BACK --> B6[routine_engine.py]
     BACK --> B7[auth.py]
     BACK --> B8[kb/ehpad_watch_kb.json]
@@ -435,6 +458,8 @@ flowchart TB
     APP --> CORE[core/<br/>config + middleware]
     APP --> DB[db/<br/>Redis + Influx]
     APP --> DOMAIN[domain/<br/>scenarios]
+    APP --> SERVICES[services/<br/>LLM + push + reports + scheduler]
+    SERVICES --> LLMMOD[llm/<br/>models, kb_context,<br/>report_builder, prompts,<br/>parser, client]
 
     DASH --> D1[public/index.html]
     DASH --> D2[public/resident.html]
@@ -842,7 +867,37 @@ Objectif de demo:
 
 ## Notifications
 
-Le projet supporte:
+Le projet distingue deux niveaux de notifications.
+
+### Notifications internes dashboard
+
+Elles sont visibles dans l'interface web soignant:
+
+- alertes actives et historiques;
+- acquittement;
+- prise en charge;
+- validation / cloture;
+- audit des actions soignantes.
+
+Ces notifications internes fonctionnent en environnement Docker local.
+
+### Notifications navigateur / Web Push
+
+Les Web Push servent a afficher une notification systeme sur un navigateur ou
+un smartphone compatible. Elles necessitent une configuration plus stricte:
+
+- HTTPS ou contexte securise;
+- cles VAPID `VAPID_PUBLIC_KEY` et `VAPID_PRIVATE_KEY`;
+- `WEBPUSH_ENABLED=true`;
+- permission utilisateur accordee dans le navigateur;
+- service worker actif cote dashboard.
+
+En environnement Docker local, `WEBPUSH_ENABLED=false` par defaut si les cles
+VAPID ne sont pas renseignees. Les routes backend, le ciblage soignant et
+l'audit sont testables, mais l'envoi reel d'une notification systeme depend de
+la configuration HTTPS/VAPID du poste ou du serveur.
+
+Le projet supporte techniquement:
 
 - notifications live dans l'application soignant;
 - notifications navigateur via Service Worker;
@@ -862,9 +917,13 @@ Routes associees:
 
 Limites importantes:
 
+- onglet ouvert: comportement le plus fiable;
 - les push reels demandent HTTPS sur telephone;
+- les push reels demandent une paire de cles VAPID valide;
 - un onglet ferme peut recevoir les notifications selon navigateur;
-- un navigateur totalement ferme depend du systeme mobile et du navigateur;
+- un navigateur totalement ferme depend de l'OS, du navigateur et des reglages
+  batterie;
+- iOS/Safari et certains navigateurs imposent des restrictions supplementaires;
 - pour la demo jury, la fiche mobile fonctionne sans push.
 
 ## LLM local
@@ -1082,6 +1141,7 @@ NO_BROWSER=1 ./start.sh
 Tests:
 
 ```bash
+py -m pip install -r backend/requirements-dev.txt
 py -m pytest tests -q
 py -m py_compile .\backend\main.py
 py -m py_compile .\simulator\main.py
@@ -1144,7 +1204,18 @@ Guide detaille:
 
 ## Tests et verification
 
-Le projet contient des tests pytest dans `tests/test_ehpad.py`.
+Le projet contient 120 fonctions de test Python. Le test des 25 comptes famille
+est parametre, donc Pytest collecte actuellement 144 cas.
+
+Derniere validation pre-rendu:
+
+- `144 passed, 2 warnings`;
+- backend Docker reconstruit et `healthy`;
+- `GET /health` retourne `ok` avec 25 residents;
+- `pip-audit -r requirements.txt` ne trouve plus de vulnerabilite connue;
+- Trivy cible sur `backend/requirements.txt`: 0 HIGH / CRITICAL;
+- Bandit: 0 High / 0 Medium, uniquement des Low a traiter hors blocage;
+- `python -m py_compile llm_service.py app/services/llm/*.py` passe dans le conteneur backend.
 
 Scripts de support conserves:
 
@@ -1157,8 +1228,14 @@ Verification minimale avant rendu:
 ```bash
 docker compose up --build -d
 docker compose ps
+py -m pip install -r backend/requirements-dev.txt
 py -m pytest tests -q
 ```
+
+En cas de test depuis Docker, installer temporairement les outils de test dans
+le conteneur backend ou utiliser un environnement Python 3.11/3.12 local. Le
+Python 3.14 n'est pas recommande pour ce projet car certaines dependances
+scientifiques n'ont pas de wheel compatible avec les versions epinglees.
 
 Verification fonctionnelle:
 
@@ -1168,6 +1245,26 @@ Verification fonctionnelle:
 - `/api/ml/metrics` doit retourner les metriques;
 - `/api/ops/scalability` doit retourner les stats MQTT.
 
+Verification securite pre-rendu:
+
+```bash
+py -m pip install -r backend/requirements-dev.txt
+cd backend && bandit -r . -x app/services/llm/__pycache__ && pip-audit -r requirements.txt
+cd ..
+docker run --rm -v "${PWD}:/repo" zricethezav/gitleaks:latest detect --source=/repo --verbose --no-git
+docker run --rm -v "${PWD}:/repo" aquasec/trivy:latest fs /repo --severity CRITICAL,HIGH --no-progress
+```
+
+Notes securite:
+
+- `dashboard/certs/` contient des certificats locaux de developpement, ignorees
+  par Git; Gitleaks/Trivy les signalent si le dossier existe localement.
+- `fastapi`, `pydantic` et `starlette` ont ete alignes sur des versions corrigees
+  pour supprimer le signal CVE Starlette remonte par `pip-audit`.
+- `python-multipart` a ete mis a jour en `0.0.26`.
+- `scikit-learn` a ete mis a jour en `1.5.0`.
+- `hashlib.md5` a ete remplace par `sha256` dans l'injecteur d'historique.
+
 ## Organisation des fichiers
 
 ```text
@@ -1176,19 +1273,42 @@ projet spe Hepad/
 |   |-- app/
 |   |   |-- api/
 |   |   |   `-- routers/
+|   |   |       |-- a2a_ml.py
+|   |   |       |-- alerts.py
+|   |   |       |-- famille.py
 |   |   |       |-- health.py
-|   |   |       `-- project.py
+|   |   |       |-- kb.py
+|   |   |       |-- live.py
+|   |   |       |-- llm.py
+|   |   |       |-- project.py
+|   |   |       |-- push.py
+|   |   |       |-- reports.py
+|   |   |       |-- simulator.py
+|   |   |       `-- staff.py
 |   |   |-- core/
 |   |   |   |-- config.py
 |   |   |   `-- middleware.py
 |   |   |-- db/
 |   |   |   |-- redis_client.py
 |   |   |   `-- influx_client.py
-|   |   `-- domain/
+|   |   |-- domain/
 |   |       |-- readiness.py
 |   |       |-- residents.py
 |   |       |-- scenario_kb_mapping.py
 |   |       `-- scenarios.py
+|   |   `-- services/
+|   |       |-- llm/
+|   |       |   |-- models.py
+|   |       |   |-- kb_context.py
+|   |       |   |-- report_builder.py
+|   |       |   |-- prompts.py
+|   |       |   |-- parser.py
+|   |       |   `-- client.py
+|   |       |-- llm_report_service.py
+|   |       |-- patient_files_service.py
+|   |       |-- push_service.py
+|   |       |-- scalability_service.py
+|   |       `-- scheduler_service.py
 |   |-- main.py
 |   |-- alert_engine.py
 |   |-- ml_model.py
@@ -1199,7 +1319,8 @@ projet spe Hepad/
 |   |-- resident_profiles.py
 |   |-- kb_loader.py
 |   |-- kb/
-|   `-- requirements.txt
+|   |-- requirements.txt
+|   `-- requirements-dev.txt
 |-- simulator/
 |   |-- main.py
 |   |-- scenario_scheduler.py
@@ -1239,6 +1360,8 @@ projet spe Hepad/
 - `backend/app/core`: configuration et middleware FastAPI transverses.
 - `backend/app/db`: clients Redis et InfluxDB centralises.
 - `backend/app/domain`: constantes metier partagees, comme les scenarios.
+- `backend/app/services`: services applicatifs extraits, dont LLM, push,
+  fichiers patient, scalabilite et scheduler.
 - `simulator`: generation des constantes et capteurs.
 - `simulator/scenario_scheduler.py`: ponderation temporelle et clinique des 31 scenarios.
 - `dashboard`: interface HTML, mini app soignant, portail famille.
@@ -1266,20 +1389,21 @@ Backend:
 - `backend/ml_model.py`: entrainement et prediction ML.
 - `backend/a2a_agents.py`: pipeline agentique.
 - `backend/auth.py`: sessions famille et personnel.
-- `backend/llm_service.py`: rapports LLM et fallback.
+- `backend/llm_service.py`: facade de compatibilite LLM.
+- `backend/app/services/llm/`: modules LLM decoupes par responsabilite
+  (`models`, `kb_context`, `report_builder`, `prompts`, `parser`, `client`).
 - `backend/kb/official_elderly_complications_kb.json`: KB officielle pathologies,
   complications, premiers secours et conduite a tenir.
 
 Note architecture:
 
 Le backend reste volontairement un monolithe FastAPI pour la demo Epitech et le
-deploiement Docker Compose. Le refactor en cours le transforme progressivement
-en monolithe modulaire: `main.py` garde encore l'orchestration legacy, tandis
-que la configuration, les clients d'infrastructure, le middleware, les
-constantes metier, le healthcheck et les routes projet sont deja sortis dans `backend/app/`.
-L'etape production suivante consiste a deplacer progressivement les autres
-routes dans `app/api/routers/` puis les blocs MQTT, push et residents dans
-`app/services/`.
+deploiement Docker Compose. Il est maintenant organise comme un monolithe
+modulaire: `main.py` garde encore une partie de l'orchestration legacy, tandis
+que la configuration, le middleware, les routes API, les services LLM/push,
+les services patient et les constantes metier sont sortis dans `backend/app/`.
+L'etape production suivante consiste a finir de vider `main.py` vers
+`app/api/routers/` et `app/services/`, puis a ajouter une CI GitHub Actions.
 
 Dashboard:
 

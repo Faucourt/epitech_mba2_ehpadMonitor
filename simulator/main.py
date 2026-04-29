@@ -169,6 +169,9 @@ class ResidentSimulator:
         self.assigned_movement_scenario = self.assigned_scenarios[0]
         self.next_forced_movement_tick = random.randint(900, 2400)
         self.fall_started_tick = None
+        self.alert_freeze = False
+        self.freeze_zone = None
+        self.freeze_release_tick = 0
         self._tick = 0
         if DEMO_RESIDENT == self.id:
             self.start_scenario("hypoxie", duration=3600)
@@ -535,7 +538,64 @@ class ResidentSimulator:
 
     def _update_navigation(self):
         self._maybe_start_movement_scenario()
+
+        _FREEZE_MOVEMENT = {
+            "chute_couloir", "chute_trajet_repas", "chute_jardin",
+            "malaise_salle_manger", "malaise_retour_repas",
+            "immobilite_salle_repos", "retour_kine_fatigue",
+            "regroupement_patio_fatigue", "retour_jardin_fatigue",
+        }
+
+        if not self.alert_freeze and self.malaise_scenario:
+            s = self.malaise_scenario
+            stype = s["type"]
+            progress = min((self._tick - s["start_tick"]) / max(s["duration"], 1), 1.0)
+            if stype == "chute":
+                # Chute = freeze immédiat, durée longue pour laisser le temps à l'intervention
+                self.alert_freeze = True
+                self.freeze_zone = self.current_zone
+                self.freeze_release_tick = self._tick + 600
+            elif stype in {"hypoxie", "hypotension", "tachycardie"} and progress >= 0.4:
+                # Freeze quand la situation devient critique (40% du scénario)
+                self.alert_freeze = True
+                self.freeze_zone = self.current_zone
+                self.freeze_release_tick = s["start_tick"] + s["duration"] + 300
+
+        if not self.alert_freeze and self.movement_scenario in _FREEZE_MOVEMENT and not self.route and not self.malaise_scenario:
+            self.alert_freeze = True
+            self.freeze_zone = self.current_zone
+            self.freeze_release_tick = self._tick + 600
+
+        if self.alert_freeze and self._tick >= self.freeze_release_tick and not self.malaise_scenario:
+            self.alert_freeze = False
+            self.freeze_zone = None
+            self.movement_scenario = None
+
+        if self.alert_freeze and self.freeze_zone:
+            self.current_zone = self.freeze_zone
+            self.current_location = self.freeze_zone
+            self.target_zone = self.freeze_zone
+            self.position = list(zone_position(self.freeze_zone))
+            self.route = []
+            self.zone_progress = 1.0
+            self.current_activity = "immobile_alerte"
+            return
+
         tod = self._time_of_day_factor()
+
+        # Bloquer tout mouvement si résident dans sa chambre la nuit/sieste sans scénario actif
+        if (
+            tod in {"nuit", "sieste"}
+            and self.current_zone == self.home_zone
+            and not self.movement_scenario
+            and not self.malaise_scenario
+        ):
+            self.route = []
+            self.zone_progress = 1.0
+            self.position = list(zone_position(self.home_zone))
+            self.current_activity = "immobile"
+            return
+
         if self.care_level == "chambre":
             if self.movement_scenario == "chute_chambre" and self.fall_started_tick is None:
                 self.start_scenario("chute", duration=90)
@@ -783,6 +843,8 @@ class ResidentSimulator:
             },
             "location": self.current_location,
             "scenario_active": self.malaise_scenario["type"] if self.malaise_scenario else None,
+            "alert_freeze": self.alert_freeze,
+            "freeze_zone": self.freeze_zone,
             "movement_scenario": self.movement_scenario,
             "assigned_movement_scenario": self.assigned_movement_scenario,
             "assigned_scenarios": self.assigned_scenarios,

@@ -29,7 +29,7 @@ def _profile_hash(profile: dict) -> str:
         "mobility": profile.get("mobility"),
         "age": profile.get("age"),
     }, sort_keys=True)
-    return hashlib.md5(key.encode()).hexdigest()[:12]
+    return hashlib.sha256(key.encode()).hexdigest()[:12]
 
 
 def inject_all_history(

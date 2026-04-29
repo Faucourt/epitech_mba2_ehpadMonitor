@@ -79,7 +79,8 @@ mais l'appel soignant/15/112 suit toujours le protocole de l'etablissement.
 
 ## Utilisation par le LLM
 
-`backend/llm_service.py` injecte maintenant dans le prompt:
+Le pipeline LLM injecte maintenant dans le prompt via
+`backend/app/services/llm/kb_context.py` et la facade `backend/llm_service.py`:
 
 - les scenarios KB deja pertinents;
 - les profils officiels correspondant aux pathologies du resident;

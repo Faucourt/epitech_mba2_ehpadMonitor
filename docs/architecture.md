@@ -1,300 +1,196 @@
-# Architecture technique — EPicare Palace
+# Architecture technique - HEPAD Monitor
 
-## Vue d'ensemble
+## Vue D'ensemble
+
+Le projet est un monolithe modulaire FastAPI + dashboard HTML/JS + simulateur
+MQTT, orchestre par Docker Compose. Le LLM est optionnel et tourne via Ollama
+local sur la machine hote.
 
 ```mermaid
-graph TB
-    subgraph SIM["Simulateur Python"]
-        S1["25 résidents · profils cliniques\nrythme circadien 24h"]
-        S2["18 scénarios\nchute · hypoxie · fugue · sepsis"]
-    end
+flowchart LR
+    SIM[Simulator Python<br/>25 residents]
+    MQTT[Broker Mosquitto<br/>MQTT 1883 / WS 9001]
+    API[Backend FastAPI<br/>API + WebSocket + alertes + ML]
+    REDIS[(Redis<br/>etat live + sessions + caches)]
+    INF[(InfluxDB<br/>historique capteurs)]
+    DASH[Dashboard HTML/JS<br/>port 3002]
+    STAFF[App soignant mobile]
+    FAMILY[Espace famille]
+    LLMAPP[Services LLM modulaires<br/>app/services/llm]
+    OLLAMA[Ollama local<br/>llama3.2 + qwen2.5 + meditron]
 
-    subgraph BRK["Mosquitto MQTT"]
-        M1["vitals — QoS 1\nfall / SOS — QoS 2\nambient — QoS 0"]
-    end
-
-    subgraph BACK["Backend FastAPI"]
-        B1["Moteur alertes 5 niveaux\nNEWS2 · escalade auto · WebSocket"]
-        B2["Prédiction ML\nGradientBoost · 30-60 min"]
-        B3["KB clinique HAS/RCP\n15 scénarios · 8 archétypes"]
-        B4["Auth famille\nSHA-256+sel · tokens Redis 24h"]
-        B5["LLM RAG · Meditron:7b\nPydantic · async jobs"]
-    end
-
-    subgraph STORE["Persistance"]
-        R1[("Redis\nétat courant · routine σ\ncomptes famille · tokens")]
-        I1[("InfluxDB\nséries temporelles\nvitaux capteurs 5s")]
-    end
-
-    subgraph DASH["Dashboard Soignant :3002"]
-        D1["Grille 25 résidents · WebSocket"]
-        D2["Plan SVG 2D + 3D Three.js"]
-        D3["Alertes · acquittement · escalade"]
-        D4["Drill-down · Mini DPI · LLM"]
-    end
-
-    subgraph FAM["Espace Famille"]
-        F1["Login compte individuel\ntoken 24h · vue sans médicaux"]
-    end
-
-    LLM["Ollama local\nMeditron:7b\nRGPD-compliant"]
-
-    SIM -- "150 msg/s MQTT" --> BRK
-    BRK --> BACK
-    BACK <-- "état courant / routine" --> R1
-    BACK <-- "séries 5s" --> I1
-    BACK -- "WebSocket + REST" --> DASH
-    BACK -- "REST API Bearer" --> FAM
-    BACK -- "HTTP local" --> LLM
+    SIM -->|vitals QoS1<br/>ambient QoS0<br/>critical QoS2| MQTT
+    MQTT --> API
+    API --> REDIS
+    API --> INF
+    API --> LLMAPP
+    LLMAPP --> OLLAMA
+    DASH -->|REST /api| API
+    DASH -->|WebSocket /ws| API
+    STAFF --> DASH
+    FAMILY --> DASH
 ```
 
----
+## Services Docker
 
-## 1. Simulateur (`simulator/main.py`)
-
-### Residents
-
-25 residents sur 2 niveaux avec profils cliniques complets :
-pathologies, mobilite, facteur de risque, soignant referent, code famille, archetype KB.
-
-### Rythme circadien
-
-Chaque constante suit un cycle physiologique 24h modelise par des gaussiennes :
-
-- BP : +12 mmHg a 8h, +6 mmHg a 14h, -10 mmHg a 4h
-- HR : -8 bpm a 4h, +5 bpm a midi, +4 bpm a 18h30
-- Temp : -0.4 C a 4h, +0.4 C a 17h
-- SpO2 : cycles d'apnee du sommeil si risque > 0.4
-
-### Scenarios (18)
-
-Declenchement par probabilite x ponderation temporelle :
-
-| Periode | Poids chute |
-|---|---|
-| lever_toilette | 2.5x |
-| coucher | 2.2x |
-| trajet_dejeuner / diner | 2.0x |
-| nuit | 1.8x |
-| sieste | 0.3x |
-
-Scenarios : hypoxie, chute, fugue, malaise_repas, hypotension, infection, deshydratation, AVC suspect...
-
-### MQTT
-
-| Topic | QoS | Contenu |
+| Service | Role | Exposition locale |
 |---|---|---|
-| `ehpad/resident/{id}/vitals` | 1 | FC, SpO2, PA, Temp, FR |
-| `ehpad/resident/{id}/fall` | 2 | Impact g, position |
-| `ehpad/resident/{id}/sos` | 2 | Declenchement manuel |
-| `ehpad/zone/{zone}/ambient` | 0 | Temp, humidite, CO2, mouvement |
+| `backend` | FastAPI, MQTT consumer, alertes, ML, WebSocket | `localhost:8001` |
+| `dashboard` | UI soignant/famille/mobile, proxy API | `localhost:3002`, `localhost:3443` |
+| `simulator` | publication MQTT de constantes et capteurs | interne |
+| `mosquitto` | broker MQTT avec comptes et ACL | `127.0.0.1:1883`, `127.0.0.1:9001` |
+| `redis` | etat courant, sessions, caches, audits | `127.0.0.1:6379` |
+| `influxdb` | historique de constantes | `127.0.0.1:8086` |
+| `llm_worker` | rapports LLM quotidiens | interne |
 
----
+Ollama n'est pas un service Compose dans la demo actuelle. Le backend appelle
+`http://host.docker.internal:11434`.
 
-## 2. Backend (`backend/main.py`)
+## Flux Temps Reel
 
-Framework : FastAPI + Pydantic + asyncio
+```mermaid
+sequenceDiagram
+    participant S as Simulator
+    participant M as Mosquitto
+    participant B as Backend
+    participant R as Redis
+    participant I as InfluxDB
+    participant D as Dashboard
 
-### Moteur d'alertes (`alert_engine.py`)
+    S->>M: publish vitals / movement / ambient
+    M->>B: consume ehpad/#
+    B->>R: etat resident live + alertes + sessions
+    B->>I: echantillons de constantes
+    B->>B: NEWS2 + routines + ML + A2A + alertes
+    B->>D: WebSocket live update
+    D->>B: REST details / Mini DPI / staff / famille
+```
 
-5 niveaux avec escalade automatique :
+## Backend
 
-| Niveau | Nom | Declencheurs principaux | Escalade |
-|---|---|---|---|
-| 1 | Information | Inactivite inhabituelle 30 min | — |
-| 2 | Attention | SpO2 < 95%, FC > 100, NEWS2 >= 3 | → L3 en 10 min |
-| 3 | Alerte | SpO2 < 93%, FC > 120, chute legere, NEWS2 >= 5 | → L4 en 5 min |
-| 4 | Urgence | Chute + immobilite, SpO2 < 88%, NEWS2 >= 7 | → L5 en 3 min |
-| 5 | Danger vital | SpO2 < 85% + FC > 130, PA critique, NEWS2 >= 9 | — |
+Le backend reste deploye comme un seul service FastAPI, mais le code est
+organise par modules.
 
-**Mode nuit** : seuils SpO2 assouplis pendant le sommeil (SpO2 L2=92% vs 95% le jour).
+```text
+backend/
+|-- main.py                         # orchestration legacy FastAPI/MQTT/WS
+|-- llm_service.py                  # facade de compatibilite LLM
+|-- alert_engine.py                 # moteur alertes 5 niveaux + NEWS2
+|-- ml_model.py                     # GradientBoostingClassifier
+|-- a2a_agents.py                   # synthese agentique
+|-- auth.py                         # sessions famille et staff
+|-- history_injector.py             # injection historique InfluxDB
+|-- app/
+|   |-- api/routers/                # routes FastAPI extraites
+|   |-- core/                       # config, middleware, runtime
+|   |-- db/                         # clients Redis / InfluxDB
+|   |-- domain/                     # readiness, residents, scenarios, mapping KB
+|   `-- services/
+|       |-- llm/                    # LLM decoupe par responsabilite
+|       |-- llm_report_service.py
+|       |-- patient_files_service.py
+|       |-- push_service.py
+|       |-- scalability_service.py
+|       `-- scheduler_service.py
+|-- kb/
+`-- requirements.txt
+```
 
-### Score NEWS2
+## Architecture LLM
 
-National Early Warning Score 2 (Royal College of Physicians, 2017).
-6 parametres : FC, FR, SpO2, PA systolique, temperature, conscience/confusion.
-Ajoute comme condition OR sur les niveaux d'alerte — ne remplace pas les regles directes.
+`backend/llm_service.py` est une facade courte. Elle conserve les imports
+historiques utilises par le backend et les tests, tandis que la logique est dans
+`backend/app/services/llm/`.
 
-### Modele ML (`ml_model.py`)
+```mermaid
+flowchart TD
+    F[llm_service.py<br/>facade compatibilite]
+    M[models.py<br/>LLMReport]
+    K[kb_context.py<br/>RAG, sources, filtrage]
+    R[report_builder.py<br/>fallback deterministe]
+    P[prompts.py<br/>prompts Ollama]
+    J[parser.py<br/>JSON, normalisation, merge]
+    C[client.py<br/>Ollama + jobs Redis]
+    O[Ollama local]
 
-Algorithme : `GradientBoostingClassifier` (scikit-learn)
+    F --> M
+    F --> K
+    F --> R
+    F --> P
+    F --> J
+    F --> C
+    C --> O
+    C --> P
+    C --> J
+    C --> R
+    R --> K
+    J --> R
+```
 
-Justification du choix vs alternatives :
+Principes:
 
-| Algorithme | Avantage | Inconvenient retenu |
-|---|---|---|
-| GradientBoosting | Robuste, interpretable, performant sur tabular | Plus lent a entrainer |
-| Random Forest | Stable | Moins performant sur desequilibre de classes |
-| SVM | Bon en haute dimension | Peu interpretable, lent sur gros volumes |
-| Reseau de neurones | Tres puissant | Necessite beaucoup de donnees reelles |
-| Logistic Regression | Simple | Insuffisant pour interactions non lineaires |
+- le LLM ne decide pas les alertes;
+- le fallback deterministe produit toujours un rapport minimal;
+- la KB et les sources filtrent ce que le LLM peut citer;
+- `client.py` est le seul module LLM qui fait de l'I/O reseau;
+- les exports historiques restent disponibles depuis `llm_service.py`.
 
-9 features : FC, SpO2, PA, Temp, inactivite, delta FC 10 min, delta SpO2 10 min, age_factor, risk_factor.
+## Donnees Et Persistance
 
-Metriques medicales exposees :
-- **Sensibilite** (recall malaise) : minimise les malaises manques
-- **Specificite** (recall normal) : minimise les fausses alarmes (fatigue soignants)
-- AUC-ROC, F1, matrice de confusion, importance des features
-
-### Analyse de routine (`_track_routine`)
-
-Par resident et par periode de la journee, stocke les 100 dernieres valeurs de FC dans Redis.
-Alerte si deviation > 2.5 sigma (et ecart-type > 2 bpm pour eviter les faux positifs).
-Cle Redis : `routine:{resident_id}:{time_of_day}`, TTL 7 jours.
-
-### Base de connaissances clinique (`kb_loader.py`)
-
-Fichier : `backend/kb/ehpad_watch_kb.json`
-
-| Section | Contenu |
+| Stockage | Usage |
 |---|---|
-| sources | 16 references (HAS, RCP, WHO, CDC, Ameli, VIDAL, NCBI, HL7/FHIR) |
-| scenarios | 15 scenarios cliniques avec regles de declenchement et signaux precoces |
-| archetypes | 8 profils residents avec baseline et scenarios preferes |
-| medication_risk_library | 13 classes medicamenteuses avec facteurs de boost |
-| family_interface_policy | Champs interdits pour l'espace famille |
-| nursing_transmission | Format SBAR pour les transmissions IDE |
+| Redis | etat resident courant, alertes, sessions famille/staff, caches LLM, audits |
+| InfluxDB | series temporelles des constantes vitales |
+| `data/patients/` | profils modifiables, historiques generes et fichiers demo |
+| `backend/kb/` | base de connaissances clinique et validations KB |
 
-Chargement unique au demarrage (`@lru_cache`).
-Chaque resident est enrichi automatiquement : `archetype_id`, `likely_medications`, `preferred_scenarios`.
+## Securite Demo
 
-### Authentification famille (`auth.py`)
+- `.env` n'est pas versionne.
+- `dashboard/certs/` est ignore par Git et contient uniquement des certificats
+  locaux de developpement.
+- Redis et Mosquitto sont proteges par mots de passe/ACL dans Docker Compose.
+- Les ports MQTT, Redis et InfluxDB sont exposes uniquement sur `127.0.0.1`.
+- `fastapi`, `pydantic` et `starlette` sont epingles sur des versions corrigees
+  apres audit de dependances.
+- `python-multipart` est mis a jour en `0.0.26`.
+- `scikit-learn` est mis a jour en `1.5.0`.
+- Le hash MD5 de l'injecteur historique a ete remplace par SHA-256.
 
-- Comptes stockes dans Redis : `famille:account:{username}`
-- Mot de passe hache : SHA-256 + sel aleatoire (16 octets)
-- Token de session : `secrets.token_urlsafe(32)`, TTL 24h dans Redis
-- Cle token : `famille:token:{token}`
-- 25 comptes demo crees au demarrage (`seed_demo_accounts`)
-- Admin protege par token env `FAMILLE_ADMIN_TOKEN`
+Limites pre-production:
 
-En production : remplacer SHA-256 par bcrypt (cost=12), ajouter rate limiting (5 req/min sur /login), HTTPS obligatoire.
+- plusieurs endpoints sensibles doivent encore etre durcis par auth staff;
+- WebSocket doit etre authentifie en production;
+- TLS MQTT 8883 n'est pas active dans la demo locale;
+- les identifiants demo visibles dans le dashboard doivent etre retires en
+  environnement reel.
 
-### Rapport LLM (`/api/llm/report/{id}`)
+## Tests Et Validation
 
-Modele : **Meditron:7b** via Ollama (local, `http://host.docker.internal:11434`).
-Meditron est un LLM open-source fine-tune sur PubMed et guidelines medicales (EPFL, 2023).
-Aucune donnee ne quitte la machine — conformite RGPD / HDS.
-Repli automatique si Ollama indisponible.
+Etat pre-rendu valide:
 
----
+- 120 fonctions de test Python;
+- 144 cas Pytest collectes et executes;
+- `144 passed, 2 warnings`;
+- backend Docker reconstruit et `healthy`;
+- `/health` retourne `ok` avec 25 residents;
+- `pip-audit -r requirements.txt`: aucune vulnerabilite connue;
+- Trivy cible `backend/requirements.txt`: 0 HIGH / CRITICAL;
+- Bandit: 0 High / 0 Medium, seulement des Low;
+- benchmark jury valide autour de 120 msg/s cible.
 
-## 3. Persistance
+Commandes de verification:
 
-### Dossiers patient JSON
-
-Les profils configurables et les historiques generes sont visibles sur disque:
-
-```text
-data/patients/R001/profile.json
-data/patients/R001/history_daily.json
-data/patients/R001/history_detailed.json
-data/patients/R001/history_meta.json
+```bash
+docker compose up --build -d
+docker compose ps
+py -m pip install -r backend/requirements-dev.txt
+py -m pytest tests -q
 ```
 
-`profile.json` est la source lisible du profil resident pour la demo. Quand la page Config simulateur modifie un resident, le backend met a jour ce JSON, pousse la modification dans Redis/MQTT pour le live, puis regenere automatiquement son historique.
+Scans securite:
 
-### Redis
-
-| Cle | Type | Contenu | TTL |
-|---|---|---|---|
-| `resident:{id}:state` | String JSON | Etat courant complet | — |
-| `sim:profile:{id}` | String JSON | Cache live du profil source JSON | — |
-| `patient:{id}:history:*` | String/List JSON | Copie cache de l'historique genere | — |
-| `alert:{id}:active` | String JSON | Alerte active | — |
-| `routine:{id}:{period}` | List | 100 derniers HR | 7 jours |
-| `famille:account:{username}` | String JSON | Hash + sel + resident_id | — |
-| `famille:token:{token}` | String JSON | resident_id + username | 24h |
-
-### InfluxDB
-
-Historique des constantes vitales echantillonne toutes les 5 secondes.
-Bucket : `residents`, organisation : `ehpad`.
-
----
-
-## 4. Dashboard (`dashboard/public/`)
-
-| Fichier | Description |
-|---|---|
-| `index.html` | Dashboard soignant : grille, detail, plan SVG, vue 3D, alertes, transmissions |
-| `famille.html` | Espace famille : login par compte, vue unique resident sans donnees medicales |
-| `admin_famille.html` | Administration : creation/suppression comptes famille |
-
-Transport : WebSocket (`/ws`) pour les mises a jour temps reel.
-Acces famille : `POST /api/famille/login` → token → `GET /api/famille/{id}` avec `Authorization: Bearer`.
-
----
-
-## 5. Structure des fichiers
-
-```text
-.
-├── docker-compose.yml
-├── .gitignore
-├── README.md
-├── backend/
-│   ├── main.py                  # FastAPI — routes, WebSocket, MQTT, auth, KB
-│   ├── alert_engine.py          # Alertes 5 niveaux + NEWS2 + mode nuit
-│   ├── ml_model.py              # GradientBoost + metriques medicales
-│   ├── auth.py                  # Comptes famille (SHA-256+sel, tokens Redis)
-│   ├── kb_loader.py             # Chargeur KB clinique v2 (lru_cache)
-│   ├── resident_profiles.py     # 25 profils + enrichissement KB auto
-│   ├── ws_manager.py            # Gestionnaire WebSocket broadcast
-│   ├── a2a_agents.py            # Agents A2A (predictions aggregees)
-│   ├── kb/
-│   │   └── ehpad_watch_kb.json  # KB clinique v2 (15 scenarios, 8 archetypes)
-│   └── requirements.txt
-├── simulator/
-│   ├── main.py                  # 25 residents, rythme circadien, 18 scenarios
-│   ├── profiles.py              # Profils physiologiques
-│   └── requirements.txt
-├── dashboard/
-│   ├── public/
-│   │   ├── index.html           # Dashboard soignant
-│   │   ├── famille.html         # Espace famille
-│   │   └── admin_famille.html   # Admin comptes famille
-│   ├── server.js
-│   └── package.json
-├── mosquitto/
-│   └── config/mosquitto.conf
-├── docs/
-│   ├── architecture.md          # Ce fichier
-│   ├── demo.md                  # Guide demo oral (10 etapes)
-│   └── comptes_famille_demo.md  # Identifiants demo famille (25 comptes)
-└── tests/
-    └── test_ehpad.py            # 60+ tests pytest
+```bash
+docker run --rm -v "${PWD}:/repo" zricethezav/gitleaks:latest detect --source=/repo --verbose --no-git
+docker run --rm -v "${PWD}:/repo" aquasec/trivy:latest fs /repo --severity CRITICAL,HIGH --no-progress
 ```
-
----
-
-## 6. Flux de donnees complet
-
-```text
-1. Simulateur publie vitaux toutes les 2s (MQTT QoS 1)
-2. Backend recoit via paho-mqtt (thread dedie)
-3. Etat mis a jour dans Redis
-4. Moteur d'alertes evalue :
-   a. Regles directes (SpO2, FC, chute...)
-   b. Score NEWS2 (6 parametres)
-   c. Prediction ML (toutes les 5 min)
-   d. Deviation de routine (sigma Redis)
-   e. Mode nuit (seuils adaptes)
-5. Si alerte : stockage Redis + broadcast WebSocket
-6. Si non acquittee : escalade automatique apres delai
-7. Dashboard rafraichi en temps reel via WebSocket
-8. Espace famille : polling toutes les 30s via API REST
-```
-
----
-
-## 7. Scalabilite
-
-Capacite theorique actuelle :
-
-```
-25 residents x 6 constantes x 1 mesure/seconde = 150 messages/seconde
-```
-
-Endpoint de suivi : `GET /api/ops/scalability`
-
-Pour 50 residents industriels : MQTT cluster, Redis Cluster, InfluxDB retention policies, ML inference asynchrone, WebSocket sharding.
