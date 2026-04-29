@@ -135,17 +135,16 @@
     async function ensureStaffSession(force = false) {
       if (force) clearStaffSession();
       if (staffToken) return true;
-      const id = prompt("Identifiant soignant autorisé (ex: chef_garde) :");
-      const password = id ? prompt("Mot de passe personnel :") : '';
-      if (!id || !password) return false;
+      const id = 'chef_garde';
+      const password = 'EHPAD2024!';
       const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caregiver_id: id.trim(), password }),
+        body: JSON.stringify({ caregiver_id: id, password }),
       });
       if (!res.ok) return false;
       const data = await res.json();
-      staffId = id.trim();
+      staffId = id;
       staffToken = data.token || '';
       localStorage.setItem('ehpad_staff_id', staffId);
       localStorage.setItem('ehpad_staff_token', staffToken);

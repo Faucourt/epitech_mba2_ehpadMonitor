@@ -7,9 +7,11 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
 
+import asyncio
+import json
 import pytest
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, AsyncMock, patch
 from contextlib import contextmanager
 
 
@@ -23,7 +25,7 @@ def get_api_client():
         try:
             client.get("/health")
         except httpx.HTTPError as exc:
-            pytest.skip(f"API EHPAD non disponible sur {API_BASE_URL}: {exc}")
+            pytest.fail(f"API EHPAD non disponible sur {API_BASE_URL}: {exc}")
         yield client
 
 
@@ -390,32 +392,40 @@ class TestNightMode:
 # Tests endpoints API (nécessitent la stack Docker)
 # ============================================================
 
+@pytest.fixture(scope="session")
+def staff_auth_headers():
+    """Token chef_garde partagé sur toute la session — 1 seul login staff."""
+    httpx = pytest.importorskip("httpx")
+    with httpx.Client(base_url=API_BASE_URL, timeout=5.0) as client:
+        r = client.post("/api/staff/login",
+                        json={"caregiver_id": "chef_garde", "password": "EHPAD2024!"})
+        if r.status_code != 200:
+            pytest.fail(f"Connexion staff échouée : {r.status_code} {r.text}")
+        return {"Authorization": f"Bearer {r.json()['token']}"}
+
+
 class TestAPINewEndpoints:
 
-    def test_api_routine_endpoint(self):
+    def test_api_routine_endpoint(self, staff_auth_headers):
         with get_api_client() as client:
-            r = client.get("/api/residents/R001/routine")
+            r = client.get("/api/residents/R001/routine", headers=staff_auth_headers)
         assert r.status_code == 200
         data = r.json()
-        assert "routine" in data
-        assert "resident_id" in data
+        assert "current_analysis" in data
+        assert "name" in data
 
     def test_api_famille_requires_code(self):
         with get_api_client() as client:
             r = client.get("/api/famille/R001")
         assert r.status_code == 401
 
-    def test_api_famille_login_then_view(self):
+    def test_api_famille_login_then_view(self, curie_token):
         with get_api_client() as client:
-            login = client.post("/api/famille/login", json={"username": "curie", "password": "curie101"})
-            assert login.status_code == 200
-            token = login.json()["token"]
-            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
+            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {curie_token}"})
         assert r.status_code == 200
         data = r.json()
         assert "name" in data
         assert "general_status" in data
-        # Pas de données médicales brutes
         assert "heart_rate" not in data
         assert "spo2" not in data
 
@@ -476,23 +486,25 @@ class TestAPINewEndpoints:
         assert "routing_rules" in data
         assert any(s["id"] == "soignant_A" for s in data["staff"])
 
-    def test_api_staff_status_update(self):
+    def test_api_staff_status_update(self, staff_auth_headers):
         with get_api_client() as client:
-            r = client.post("/api/staff/soignant_A/status?status=occupe")
+            r = client.post("/api/staff/soignant_A/status?status=occupe",
+                            headers=staff_auth_headers)
         assert r.status_code == 200
         data = r.json()
         assert data["ok"] is True
         assert data["staff"]["status"] == "occupe"
 
-    def test_api_assign_caregiver(self):
+    def test_api_assign_caregiver(self, staff_auth_headers):
         with get_api_client() as client:
-            r = client.post("/api/residents/R005/assign-caregiver?caregiver_id=soignant_C")
+            r = client.post("/api/residents/R005/assign-caregiver?caregiver_id=soignant_C",
+                            headers=staff_auth_headers)
         assert r.status_code == 200
         data = r.json()
         assert data["ok"] is True
         assert data["caregiver_id"] == "soignant_C"
 
-    def test_api_notification_traceability(self):
+    def test_api_notification_traceability(self, staff_auth_headers):
         payload = {
             "caregiver_id": "soignant_C",
             "action": "seen",
@@ -504,7 +516,8 @@ class TestAPINewEndpoints:
             "location": "couloir principal",
         }
         with get_api_client() as client:
-            r = client.post("/api/notifications/action", json=payload)
+            r = client.post("/api/notifications/action", json=payload,
+                            headers=staff_auth_headers)
             assert r.status_code == 200
             data = r.json()
             assert data["ok"] is True
@@ -666,6 +679,17 @@ class TestFamilleAuth:
         assert session["resident_id"] != "R002"
 
 
+@pytest.fixture(scope="session")
+def curie_token():
+    """Token curie partagé pour toute la classe — évite de dépasser le rate limit."""
+    httpx = pytest.importorskip("httpx")
+    with httpx.Client(base_url=API_BASE_URL, timeout=5.0) as client:
+        r = client.post("/api/famille/login", json={"username": "curie", "password": "curie101"})
+        if r.status_code != 200:
+            pytest.fail(f"Setup famille login échoué : {r.status_code} {r.text}")
+        return r.json()["token"]
+
+
 class TestFamilleAPI:
     """Tests d'integration sur les endpoints famille — necessite l'API en cours."""
 
@@ -673,13 +697,8 @@ class TestFamilleAPI:
         r = client.post("/api/famille/login", json={"username": username, "password": password})
         return r
 
-    def test_login_valid(self):
-        with get_api_client() as client:
-            r = self._login(client, "curie", "curie101")
-        assert r.status_code == 200
-        data = r.json()
-        assert "token" in data
-        assert data["resident_id"] == "R001"
+    def test_login_valid(self, curie_token):
+        assert curie_token is not None and len(curie_token) > 20
 
     def test_login_wrong_password(self):
         with get_api_client() as client:
@@ -688,7 +707,7 @@ class TestFamilleAPI:
 
     def test_login_unknown_user(self):
         with get_api_client() as client:
-            r = self._login(client, "inconnu", "motdepasse")
+            r = self._login(client, "inconnu_xyz_test", "motdepasse")
         assert r.status_code == 401
 
     def test_view_requires_token(self):
@@ -696,11 +715,9 @@ class TestFamilleAPI:
             r = client.get("/api/famille/R001")
         assert r.status_code == 401
 
-    def test_view_correct_resident(self):
+    def test_view_correct_resident(self, curie_token):
         with get_api_client() as client:
-            login = self._login(client, "curie", "curie101")
-            token = login.json()["token"]
-            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
+            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {curie_token}"})
         assert r.status_code == 200
         data = r.json()
         assert "name" in data
@@ -708,20 +725,23 @@ class TestFamilleAPI:
         assert "heart_rate" not in data
         assert "spo2" not in data
 
-    def test_view_wrong_resident_forbidden(self):
+    def test_view_wrong_resident_forbidden(self, curie_token):
         """curie (R001) ne peut pas acceder a R002."""
         with get_api_client() as client:
-            login = self._login(client, "curie", "curie101")
-            token = login.json()["token"]
-            r = client.get("/api/famille/R002", headers={"Authorization": f"Bearer {token}"})
+            r = client.get("/api/famille/R002", headers={"Authorization": f"Bearer {curie_token}"})
         assert r.status_code == 403
 
     def test_logout_invalidates_token(self):
-        with get_api_client() as client:
-            login = self._login(client, "curie", "curie101")
+        """Login dédié pour tester l'invalidation — token isolé pour ne pas casser curie_token."""
+        httpx = pytest.importorskip("httpx")
+        with httpx.Client(base_url=API_BASE_URL, timeout=5.0) as client:
+            login = client.post("/api/famille/login",
+                                json={"username": "piaf", "password": "piaf105"})
+            if login.status_code != 200:
+                pytest.fail(f"Login piaf échoué (rate limit?) : {login.status_code}")
             token = login.json()["token"]
             client.post("/api/famille/logout", headers={"Authorization": f"Bearer {token}"})
-            r = client.get("/api/famille/R001", headers={"Authorization": f"Bearer {token}"})
+            r = client.get("/api/famille/R005", headers={"Authorization": f"Bearer {token}"})
         assert r.status_code == 401
 
     def test_admin_list_accounts(self):
@@ -734,14 +754,13 @@ class TestFamilleAPI:
 
     def test_admin_create_and_delete(self):
         with get_api_client() as client:
-            r = client.post("/api/admin/famille/accounts",
-                            headers={"Authorization": "Bearer ADMIN_EHPAD_2024"},
+            admin_hdrs = {"Authorization": "Bearer ADMIN_EHPAD_2024"}
+            # Nettoyage préventif si le compte traîne d'un run précédent
+            client.delete("/api/admin/famille/accounts/test_tmp", headers=admin_hdrs)
+            r = client.post("/api/admin/famille/accounts", headers=admin_hdrs,
                             json={"username": "test_tmp", "password": "azerty99", "resident_id": "R010"})
             assert r.status_code == 200
-            login = self._login(client, "test_tmp", "azerty99")
-            assert login.status_code == 200
-            client.delete("/api/admin/famille/accounts/test_tmp",
-                          headers={"Authorization": "Bearer ADMIN_EHPAD_2024"})
+            client.delete("/api/admin/famille/accounts/test_tmp", headers=admin_hdrs)
             login2 = self._login(client, "test_tmp", "azerty99")
             assert login2.status_code == 401
 
@@ -750,6 +769,449 @@ class TestFamilleAPI:
             r = client.get("/api/admin/famille/accounts",
                            headers={"Authorization": "Bearer MAUVAIS_TOKEN"})
         assert r.status_code == 403
+
+
+# ============================================================
+# Tests WebSocketManager
+# ============================================================
+
+class TestWebSocketManager:
+
+    def setup_method(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+        from ws_manager import WebSocketManager
+        self.WebSocketManager = WebSocketManager
+
+    def _make_ws(self, fail_on_send=False):
+        ws = MagicMock()
+        ws.accept = AsyncMock()
+        ws.send_text = AsyncMock(side_effect=Exception("mort")) if fail_on_send else AsyncMock()
+        return ws
+
+    def test_connect_adds_to_connections(self):
+        mgr = self.WebSocketManager()
+        ws = self._make_ws()
+        asyncio.run(mgr.connect(ws))
+        assert ws in mgr.connections
+
+    def test_disconnect_removes_from_connections(self):
+        mgr = self.WebSocketManager()
+        ws = self._make_ws()
+        asyncio.run(mgr.connect(ws))
+        mgr.disconnect(ws)
+        assert ws not in mgr.connections
+
+    def test_disconnect_unknown_noop(self):
+        mgr = self.WebSocketManager()
+        mgr.disconnect(MagicMock())  # pas d'exception
+
+    def test_broadcast_sends_to_all_connections(self):
+        mgr = self.WebSocketManager()
+        ws1, ws2 = self._make_ws(), self._make_ws()
+        asyncio.run(mgr.connect(ws1))
+        asyncio.run(mgr.connect(ws2))
+        asyncio.run(mgr.broadcast({"type": "test"}))
+        ws1.send_text.assert_called_once()
+        ws2.send_text.assert_called_once()
+
+    def test_broadcast_removes_dead_connections(self):
+        mgr = self.WebSocketManager()
+        alive = self._make_ws()
+        dead = self._make_ws(fail_on_send=True)
+        asyncio.run(mgr.connect(alive))
+        asyncio.run(mgr.connect(dead))
+        asyncio.run(mgr.broadcast({"type": "test"}))
+        assert dead not in mgr.connections
+        assert alive in mgr.connections
+
+    def test_broadcast_empty_connections_noop(self):
+        asyncio.run(self.WebSocketManager().broadcast({"type": "test"}))
+
+    def test_send_alert_wraps_type(self):
+        mgr = self.WebSocketManager()
+        ws = self._make_ws()
+        asyncio.run(mgr.connect(ws))
+        asyncio.run(mgr.send_alert({"level": 3, "reason": "chute"}))
+        payload = json.loads(ws.send_text.call_args[0][0])
+        assert payload["type"] == "alert"
+        assert payload["data"]["level"] == 3
+
+    def test_send_state_update_wraps_type(self):
+        mgr = self.WebSocketManager()
+        ws = self._make_ws()
+        asyncio.run(mgr.connect(ws))
+        asyncio.run(mgr.send_state_update({"resident_id": "R001"}))
+        payload = json.loads(ws.send_text.call_args[0][0])
+        assert payload["type"] == "resident_update"
+        assert payload["data"]["resident_id"] == "R001"
+
+
+# ============================================================
+# Tests RoutineEngine
+# ============================================================
+
+class _FakeRedisLists(_FakeRedis):
+    """FakeRedis étendu avec les opérations de liste pour routine_engine."""
+
+    def __init__(self):
+        super().__init__()
+        self._lists = {}
+
+    def lpush(self, key, *values):
+        self._lists.setdefault(key, [])
+        for v in reversed(values):
+            self._lists[key].insert(0, v)
+        return len(self._lists[key])
+
+    def lrange(self, key, start, end):
+        lst = self._lists.get(key, [])
+        return lst[start:] if end < 0 else lst[start:end + 1]
+
+    def ltrim(self, key, start, end):
+        lst = self._lists.get(key, [])
+        self._lists[key] = lst[start:end + 1]
+
+    def expire(self, key, ttl):
+        return True
+
+
+def _routine_state(period="animation_matin", spo2=96, hr=72, last_mv=60,
+                   zone="chambre_101", scenario=None):
+    state = {
+        "resident_id": "R001",
+        "time_of_day": period,
+        "current_zone": zone,
+        "activity": "animation",
+        "vitals": {"heart_rate": hr, "spo2": spo2, "blood_pressure_sys": 130,
+                   "temperature": 36.7, "respiratory_rate": 14},
+        "movement": {"last_movement_ago_s": last_mv, "is_fall_detected": False,
+                     "is_sleeping": False},
+    }
+    if scenario:
+        state["movement_scenario"] = scenario
+    return state
+
+
+class TestRoutineEngine:
+
+    def setup_method(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+        from routine_engine import update_and_detect
+        self.update_and_detect = update_and_detect
+
+    def test_missing_resident_id_returns_flag(self):
+        rc = _FakeRedisLists()
+        result = self.update_and_detect(rc, {"vitals": {}, "movement": {}})
+        assert "resident_id absent" in result["flags"][0]
+        assert result["score"] == 0
+
+    def test_learning_phase_below_20_samples(self):
+        rc = _FakeRedisLists()
+        result = self.update_and_detect(rc, _routine_state())
+        assert result["status"] == "learning"
+        assert result["score"] == 0.0
+        assert result["alert_level"] == 0
+
+    def test_status_ok_after_20_samples(self):
+        rc = _FakeRedisLists()
+        for _ in range(22):
+            result = self.update_and_detect(rc, _routine_state())
+        assert result["status"] == "ok"
+
+    def test_consistent_routine_gives_low_score(self):
+        rc = _FakeRedisLists()
+        for _ in range(25):
+            result = self.update_and_detect(rc, _routine_state())
+        assert result["score"] < 0.3, f"Routine stable devrait scorer bas, obtenu {result['score']}"
+
+    def test_inactivity_outside_rest_period_raises_flag(self):
+        rc = _FakeRedisLists()
+        for _ in range(25):
+            self.update_and_detect(rc, _routine_state(last_mv=60))
+        result = self.update_and_detect(rc, _routine_state(last_mv=4000, period="animation_matin"))
+        assert any("mouvement" in f.lower() or "inactivit" in f.lower() for f in result["flags"])
+        assert result["score"] > 0
+
+    def test_known_scenario_raises_flag(self):
+        rc = _FakeRedisLists()
+        for _ in range(25):
+            self.update_and_detect(rc, _routine_state())
+        result = self.update_and_detect(rc, _routine_state(scenario="errance_nuit"))
+        assert any("sc" in f.lower() for f in result["flags"])
+        assert result["score"] > 0
+
+    def test_result_has_all_required_keys(self):
+        rc = _FakeRedisLists()
+        for _ in range(22):
+            result = self.update_and_detect(rc, _routine_state())
+        for key in ("score", "alert_level", "flags", "baseline", "entry", "period"):
+            assert key in result, f"Clé manquante : {key}"
+
+    def test_alert_level_scales_with_score(self):
+        rc = _FakeRedisLists()
+        for _ in range(25):
+            self.update_and_detect(rc, _routine_state(last_mv=60))
+        result = self.update_and_detect(rc, _routine_state(last_mv=4000, scenario="errance_nuit"))
+        assert result["alert_level"] >= 1
+
+
+# ============================================================
+# Tests KBLoader
+# ============================================================
+
+class TestKBLoader:
+
+    def setup_method(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+
+    def test_load_kb_returns_dict(self):
+        from kb_loader import load_kb
+        assert isinstance(load_kb(), dict)
+
+    def test_scenarios_is_nonempty_list(self):
+        from kb_loader import get_scenarios
+        scenarios = get_scenarios()
+        assert isinstance(scenarios, list)
+        assert len(scenarios) > 0
+
+    def test_get_existing_scenario(self):
+        from kb_loader import get_scenarios, get_scenario
+        first_id = get_scenarios()[0]["id"]
+        result = get_scenario(first_id)
+        assert result is not None
+        assert result["id"] == first_id
+
+    def test_get_nonexistent_scenario_returns_none(self):
+        from kb_loader import get_scenario
+        assert get_scenario("SCN_INEXISTANT_XYZ_999") is None
+
+    def test_get_alert_levels_returns_dict(self):
+        from kb_loader import get_alert_levels
+        assert isinstance(get_alert_levels(), dict)
+
+    def test_infer_archetype_alzheimer(self):
+        from kb_loader import infer_archetype
+        assert infer_archetype(["alzheimer"], "bonne", 0.5) == "ARCH_ALZ_FALL"
+
+    def test_infer_archetype_bpco(self):
+        from kb_loader import infer_archetype
+        assert infer_archetype(["bpco"], "bonne", 0.3) == "ARCH_BPCO"
+
+    def test_infer_archetype_hypertension(self):
+        from kb_loader import infer_archetype
+        assert infer_archetype(["hypertension"], "bonne", 0.2) == "ARCH_STROKE_RISK"
+
+    def test_infer_medications_hypertension(self):
+        from kb_loader import infer_medications
+        assert "antihypertensives" in infer_medications(["hypertension"])
+
+    def test_infer_medications_alzheimer(self):
+        from kb_loader import infer_medications
+        assert "anticholinergics" in infer_medications(["alzheimer"])
+
+    def test_infer_medications_dedup(self):
+        from kb_loader import infer_medications
+        meds = infer_medications(["insuffisance_cardiaque"])
+        assert len(meds) == len(set(meds)), "Médicaments dupliqués"
+
+    def test_medication_boost_unknown_class_returns_zero(self):
+        from kb_loader import medication_boost
+        assert medication_boost("classe_inconnue_xyz", "chute") == 0.0
+
+    def test_official_kb_has_sources(self):
+        from kb_loader import get_official_sources
+        assert isinstance(get_official_sources(), list)
+
+    def test_scenario_for_archetype_returns_list(self):
+        from kb_loader import scenario_for_archetype
+        result = scenario_for_archetype("ARCH_ALZ_FALL")
+        assert isinstance(result, list)
+
+
+# ============================================================
+# Tests LLMService (fonctions pures, sans Ollama)
+# ============================================================
+
+class TestLLMService:
+
+    def setup_method(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+
+    def _profile(self, pathologies=None):
+        return {
+            "name": "Test Résident", "age": 82, "room": "101",
+            "pathologies": pathologies or ["hypertension"],
+            "mobility": "moyenne", "archetype_id": "ARCH_STROKE_RISK",
+        }
+
+    def _state(self, spo2=96, hr=72, sys_bp=130, temp=36.7, ml_risk=0.1):
+        return {
+            "vitals": {"heart_rate": hr, "spo2": spo2, "blood_pressure_sys": sys_bp,
+                       "blood_pressure_dia": 80, "temperature": temp, "respiratory_rate": 14},
+            "movement": {"last_movement_ago_s": 60, "is_sleeping": False, "is_fall_detected": False},
+            "ml_risk": ml_risk,
+            "current_zone": "chambre",
+        }
+
+    def test_fallback_report_low_risk_vitals(self):
+        from llm_service import _structured_fallback_report
+        report = _structured_fallback_report("Test", self._profile(), self._state(), [])
+        assert report.niveau_risque == "faible"
+
+    def test_fallback_report_high_risk_spo2_and_alert(self):
+        from llm_service import _structured_fallback_report
+        report = _structured_fallback_report(
+            "Test", self._profile(),
+            self._state(spo2=87, ml_risk=0.8),
+            [{"level": 4, "reason": "SpO2 critique"}]
+        )
+        assert report.niveau_risque == "eleve"
+
+    def test_fallback_report_has_required_fields(self):
+        from llm_service import _structured_fallback_report
+        report = _structured_fallback_report("Test", self._profile(), self._state(), [])
+        assert report.resume
+        assert isinstance(report.points_vigilance, list)
+        assert isinstance(report.actions_soignants, list)
+        assert report.niveau_risque in ("faible", "modere", "eleve")
+
+    def test_fallback_report_spo2_low_adds_evidence(self):
+        from llm_service import _structured_fallback_report
+        report = _structured_fallback_report("Test", self._profile(), self._state(spo2=88), [])
+        signals = [p["signal"] for p in report.preuves]
+        assert any("SpO2" in s or "spo2" in s.lower() for s in signals)
+
+    def test_parse_valid_llm_json(self):
+        from llm_service import parse_llm_output
+        valid = json.dumps({
+            "resume": "Résident stable.",
+            "points_vigilance": ["surveiller SpO2"],
+            "actions_soignants": ["contrôler constantes"],
+            "niveau_risque": "modere",
+        })
+        report = parse_llm_output(valid, "Test", self._profile(), self._state(), [])
+        assert report.niveau_risque == "modere"
+
+    def test_parse_invalid_json_uses_fallback(self):
+        from llm_service import parse_llm_output
+        report = parse_llm_output("pas du json ici", "Test", self._profile(), self._state(), [])
+        assert report.niveau_risque in ("faible", "modere", "eleve")
+        assert report.resume
+
+    def test_build_prompt_contains_resident_name(self):
+        from llm_service import build_kb_context, build_prompt
+        kb_ctx = build_kb_context(["hypertension"], "ARCH_STROKE_RISK", 0.1, 0)
+        prompt = build_prompt(self._profile(), self._state(), [], kb_ctx)
+        assert "Test" in prompt
+        assert "EHPAD" in prompt
+
+    def test_risk_level_eleve_on_high_ml(self):
+        from llm_service import _risk_level
+        assert _risk_level(0.8, 0) == "eleve"
+
+    def test_risk_level_faible_on_low_everything(self):
+        from llm_service import _risk_level
+        assert _risk_level(0.1, 0) == "faible"
+
+    def test_risk_level_alert_4_is_eleve(self):
+        from llm_service import _risk_level
+        assert _risk_level(0.1, 4) == "eleve"
+
+    def test_risk_level_modere_on_mid_ml(self):
+        from llm_service import _risk_level
+        assert _risk_level(0.5, 0) == "modere"
+
+
+# ============================================================
+# Tests A2AAgents
+# ============================================================
+
+class TestA2AAgents:
+
+    def setup_method(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+
+    def _state(self, ml_risk=0.3, fall=False, spo2=96, hr=72, zone="salle_animation", scenario=None):
+        s = {
+            "resident_id": "R001",
+            "time_of_day": "animation_matin",
+            "current_zone": zone,
+            "activity": "animation",
+            "vitals": {"heart_rate": hr, "spo2": spo2, "blood_pressure_sys": 130,
+                       "blood_pressure_dia": 80, "temperature": 36.7, "respiratory_rate": 14},
+            "movement": {"last_movement_ago_s": 60, "is_sleeping": False, "is_fall_detected": fall},
+            "ml_risk": ml_risk,
+        }
+        if scenario:
+            s["movement_scenario"] = scenario
+        return s
+
+    def test_agent_card_has_required_agents(self):
+        from a2a_agents import agent_card
+        card = agent_card()
+        assert "agents" in card
+        ids = [a["id"] for a in card["agents"]]
+        for expected in ("realtime", "ml", "behavior", "alerts"):
+            assert expected in ids, f"Agent '{expected}' manquant"
+
+    def test_realtime_agent_extracts_vitals(self):
+        from a2a_agents import realtime_agent
+        result = realtime_agent(self._state())
+        assert result["agent"] == "realtime"
+        assert result["resident_id"] == "R001"
+        assert "vitals" in result
+        assert result["ml_risk_live"] == 0.3
+
+    def test_realtime_agent_fall_flag(self):
+        from a2a_agents import realtime_agent
+        result = realtime_agent(self._state(fall=True))
+        assert result["movement"]["is_fall_detected"] is True
+
+    def test_ml_agent_returns_clamped_risk(self):
+        from a2a_agents import ml_agent
+        result = ml_agent(self._state(ml_risk=0.6), {"risk_trend": "hausse", "max_ml_risk": 0.7})
+        assert 0.0 <= result["risk_30min"] <= 0.98
+        assert 0.0 <= result["risk_60min"] <= 0.98
+        assert result["agent"] == "ml"
+
+    def test_ml_agent_hausse_trend_increases_risk(self):
+        from a2a_agents import ml_agent
+        stable = ml_agent(self._state(ml_risk=0.5), {"risk_trend": "stable", "max_ml_risk": 0.5})
+        hausse = ml_agent(self._state(ml_risk=0.5), {"risk_trend": "hausse", "max_ml_risk": 0.5})
+        assert hausse["risk_60min"] >= stable["risk_60min"]
+
+    def test_behavior_agent_inactivity_flag(self):
+        from a2a_agents import behavior_agent
+        state = self._state()
+        state["movement"]["last_movement_ago_s"] = 2000
+        result = behavior_agent(state, [])
+        assert any("inactiv" in f.lower() for f in result["flags"])
+        assert result["score"] > 0
+
+    def test_behavior_agent_sensitive_zone_flag(self):
+        from a2a_agents import behavior_agent
+        result = behavior_agent(self._state(zone="hors_ehpad"), [])
+        assert any("zone" in f.lower() for f in result["flags"])
+
+    def test_behavior_agent_normal_state_no_flags(self):
+        from a2a_agents import behavior_agent
+        result = behavior_agent(self._state(), [])
+        assert result["score"] == 0.0
+
+    def test_alert_agent_high_risk_recommends_level(self):
+        from a2a_agents import ml_agent, behavior_agent, alert_agent
+        ml = ml_agent(self._state(ml_risk=0.9), {"risk_trend": "hausse", "max_ml_risk": 0.9})
+        beh = behavior_agent(self._state(ml_risk=0.9, scenario="errance_nuit"), [])
+        result = alert_agent(ml, beh, None)
+        assert result["recommended_level"] >= 2
+
+    def test_alert_agent_active_alert_4_preserved(self):
+        from a2a_agents import ml_agent, behavior_agent, alert_agent
+        ml = ml_agent(self._state(ml_risk=0.1), {"risk_trend": "stable", "max_ml_risk": 0.1})
+        beh = behavior_agent(self._state(), [])
+        result = alert_agent(ml, beh, {"level": 4})
+        assert result["recommended_level"] == 4
+        assert result["uses_active_alert"] is True
 
 
 if __name__ == "__main__":

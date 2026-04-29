@@ -4,16 +4,18 @@ services:
     container_name: ehpad_mqtt
     restart: unless-stopped
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - "127.0.0.1:1883:1883"
+      - "127.0.0.1:9001:9001"
     volumes:
       - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config/passwd:/mosquitto/config/passwd:ro
+      - ./mosquitto/config/acl:/mosquitto/config/acl:ro
       - mosquitto_data:/mosquitto/data
       - mosquitto_logs:/mosquitto/log
     networks:
       - ehpad_net
     healthcheck:
-      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-p", "1883", "-t", "health/check", "-m", "ping", "-q", "0"]
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-p", "1883", "-u", "healthcheck", "-P", "mqtt_health_pwd", "-t", "health/check", "-m", "ping", "-q", "0"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -25,7 +27,7 @@ services:
     restart: unless-stopped
     command: sh -c 'redis-server --appendonly yes --appendfsync everysec --requirepass "$${REDIS_PASSWORD:-ehpad_redis_dev_change_me}"'
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -44,7 +46,7 @@ services:
     container_name: ehpad_influx
     restart: unless-stopped
     ports:
-      - "8086:8086"
+      - "127.0.0.1:8086:8086"
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
@@ -73,6 +75,8 @@ services:
     environment:
       - MQTT_HOST=mosquitto
       - MQTT_PORT=1883
+      - MQTT_USERNAME=simulator
+      - MQTT_PASSWORD=${MQTT_SIMULATOR_PASSWORD:-simulator_demo_pwd}
       - NUM_RESIDENTS=25
       - DEMO_RESIDENT=R005
       - PATIENT_DATA_DIR=/app/data/patients
@@ -103,6 +107,8 @@ services:
     environment:
       - MQTT_HOST=mosquitto
       - MQTT_PORT=1883
+      - MQTT_USERNAME=backend
+      - MQTT_PASSWORD=${MQTT_BACKEND_PASSWORD:-backend_demo_pwd}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-ehpad_redis_dev_change_me}
@@ -113,15 +119,19 @@ services:
       - DEMO_RESIDENT=R005
       - OLLAMA_HOST=http://host.docker.internal:11434
       - OLLAMA_MODEL=meditron:7b
+      - LLM_ROUTING_ENABLED=${LLM_ROUTING_ENABLED:-true}
+      - LLM_FAST_MODEL=${LLM_FAST_MODEL:-llama3.2:3b}
+      - LLM_CLINICAL_MODEL=${LLM_CLINICAL_MODEL:-qwen2.5:7b}
+      - LLM_MEDICAL_MODEL=${LLM_MEDICAL_MODEL:-meditron:7b}
       - LLM_DAILY_AUTO_ENABLED=false
       - PATIENT_DATA_DIR=/app/data/patients
-      - SESSION_SECRET=${SESSION_SECRET:-dev-change-me-session-secret}
+      - SESSION_SECRET=${SESSION_SECRET}
       - STAFF_DEMO_PASSWORD=${STAFF_DEMO_PASSWORD:-EHPAD2024!}
       - FAMILLE_ADMIN_TOKEN=${FAMILLE_ADMIN_TOKEN:-ADMIN_EHPAD_2024}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3002,http://127.0.0.1:3002}
       - HTTPS_REQUIRED=${HTTPS_REQUIRED:-false}
-      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-BN24BSDuKbRxhXfoXc3D7L5ciHbQ10h6Yq0f87hSTQFzDTnJdidR9wX-guVp_YAH10Um83gHe9Eyco_QpcRyS6k}
-      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY:-ElrFmPXPbWGvQVsCoNFVJBeC1lNfZDJ5cL7mOuPhLVs}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
       - VAPID_CLAIMS_EMAIL=${VAPID_CLAIMS_EMAIL:-admin@ehpad.local}
     volumes:
       - ./data:/app/data
@@ -149,6 +159,8 @@ services:
     environment:
       - MQTT_HOST=mosquitto
       - MQTT_PORT=1883
+      - MQTT_USERNAME=backend
+      - MQTT_PASSWORD=${MQTT_BACKEND_PASSWORD:-backend_demo_pwd}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-ehpad_redis_dev_change_me}
@@ -159,9 +171,13 @@ services:
       - DEMO_RESIDENT=R005
       - OLLAMA_HOST=http://host.docker.internal:11434
       - OLLAMA_MODEL=meditron:7b
+      - LLM_ROUTING_ENABLED=${LLM_ROUTING_ENABLED:-true}
+      - LLM_FAST_MODEL=${LLM_FAST_MODEL:-llama3.2:3b}
+      - LLM_CLINICAL_MODEL=${LLM_CLINICAL_MODEL:-qwen2.5:7b}
+      - LLM_MEDICAL_MODEL=${LLM_MEDICAL_MODEL:-meditron:7b}
       - LLM_DAILY_AUTO_ENABLED=true
       - PATIENT_DATA_DIR=/app/data/patients
-      - SESSION_SECRET=${SESSION_SECRET:-dev-change-me-session-secret}
+      - SESSION_SECRET=${SESSION_SECRET}
       - STAFF_DEMO_PASSWORD=${STAFF_DEMO_PASSWORD:-EHPAD2024!}
       - FAMILLE_ADMIN_TOKEN=${FAMILLE_ADMIN_TOKEN:-ADMIN_EHPAD_2024}
     volumes:

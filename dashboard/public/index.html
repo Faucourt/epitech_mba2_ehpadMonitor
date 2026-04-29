@@ -369,6 +369,15 @@
   </div>
 </section>
 
+<div style="display:grid;grid-template-columns:150px 1fr 76px;align-items:center;gap:10px;padding:8px 16px;background:#121826;border-bottom:1px solid var(--border)">
+  <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Timeline demo</span>
+  <input id="sim-speed" type="range" min="-12" max="30" value="0" style="width:100%;accent-color:#6366f1;cursor:pointer;height:4px" onchange="setSimulatorSpeed(this.value)" oninput="previewSimulatorSpeed(this.value)">
+  <button class="filter-btn" onclick="setSimulatorSpeed(0)" title="Retour au direct">Live <b id="sim-speed-label">x1</b></button>
+  <div style="grid-column:2 / 4;display:flex;justify-content:space-between;color:var(--text3);font-size:10px;margin-top:-4px">
+    <span>historique 12 mois</span><span>live x1</span><span>futur x30</span>
+  </div>
+</div>
+
 <button class="alert-toggle" id="alert-toggle" onclick="toggleAlertPanel()">
   Alertes <span class="alert-toggle-count" id="alert-toggle-count">0</span>
 </button>
@@ -478,7 +487,6 @@
             <label>Residents <input id="toggle-residents-3d" type="checkbox" checked onchange="set3DLayer('residents', this.checked)"></label>
             <label>Capteurs <input id="toggle-sensors-3d" type="checkbox" checked onchange="set3DLayer('sensors', this.checked)"></label>
             <label>Toits transparents <input id="toggle-walls-3d" type="checkbox" checked onchange="set3DLayer('walls', this.checked)"></label>
-            <label>Vitesse scenario <span><input id="sim-speed" type="range" min="1" max="30" value="1" onchange="setSimulatorSpeed(this.value)" oninput="document.getElementById('sim-speed-label').textContent = this.value + 'x'"> <b id="sim-speed-label">1x</b></span></label>
           </div>
           <div class="model-detail" id="model-3d-detail">Plan fidèle au document : accueil, soins, patio, espaces communs, couloirs, ascenseur, escalier et 25 lits.</div>
         </aside>
@@ -535,8 +543,9 @@
     <div class="tab-content" id="tab-history" style="padding-top:14px">
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
         <select id="sim-history-resident" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px 8px"></select>
-        <button class="filter-btn" onclick="loadSimulatedHistory()">Historique simulé 30 jours</button>
-        <span style="font-size:12px;color:var(--text2)">Scénarios mensuels générés pour tester les niveaux 1 à 5.</span>
+        <button class="filter-btn" onclick="loadSimulatedHistory()">Historique 12 mois</button>
+        <button class="filter-btn" onclick="loadSimulatedHistory('recent')">Détail 30 jours</button>
+        <span style="font-size:12px;color:var(--text2)">Base dossier: 12 mois quotidiens + détail récent pour tester les niveaux 1 à 5.</span>
       </div>
       <div id="simulated-history" style="margin-bottom:14px"></div>
       <div id="history-list"></div>
@@ -590,6 +599,12 @@ const BACKEND_HTTP = `http://${location.hostname}:8001`;
 let ws = null;
 let residents = {};
 let activeAlerts = {};
+let liveResidents = {};
+let liveActiveAlerts = {};
+let timelineSnapshots = [];
+let replayOffsetMinutes = 0;
+let historyOffsetDays = 0;
+let replayTimer = null;
 let historyData = [];
 let currentFilter = 'all';
 let currentNightFilter = 'all';
@@ -609,19 +624,71 @@ function authHeaders(extra = {}) {
   return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
 }
 
+function cloneState(value) {
+  return JSON.parse(JSON.stringify(value || {}));
+}
+
+function captureTimelineSnapshot(force = false) {
+  const now = Date.now();
+  const last = timelineSnapshots[timelineSnapshots.length - 1];
+  if (!force && last && now - last.t < 2000) return;
+  timelineSnapshots.push({
+    t: now,
+    residents: cloneState(liveResidents),
+    activeAlerts: cloneState(liveActiveAlerts),
+  });
+  const cutoff = now - 30 * 60 * 1000;
+  while (timelineSnapshots.length && timelineSnapshots[0].t < cutoff) timelineSnapshots.shift();
+}
+
+function refreshDashboardSurfaces() {
+  renderGrid();
+  updateStats();
+  updateAlertSidebar();
+  updateTimeRibbon();
+  updateQuickHistory();
+  renderNightView();
+  renderFloorPlan(currentFloor);
+  updateEHPAD3D();
+  if (currentDetailResident && residents[currentDetailResident]) openDetail(currentDetailResident);
+}
+
+function applyLiveState() {
+  replayOffsetMinutes = 0;
+  historyOffsetDays = 0;
+  residents = cloneState(liveResidents);
+  activeAlerts = cloneState(liveActiveAlerts);
+  refreshDashboardSurfaces();
+}
+
+function applyTimelineOffset(minutesBack) {
+  replayOffsetMinutes = Math.max(0, Math.min(30, Number(minutesBack) || 0));
+  if (!replayOffsetMinutes) {
+    applyLiveState();
+    return;
+  }
+  const target = Date.now() - replayOffsetMinutes * 60 * 1000;
+  const snapshot = timelineSnapshots.reduce((best, item) => (
+    !best || Math.abs(item.t - target) < Math.abs(best.t - target) ? item : best
+  ), null);
+  if (!snapshot) return;
+  residents = cloneState(snapshot.residents);
+  activeAlerts = cloneState(snapshot.activeAlerts);
+  refreshDashboardSurfaces();
+}
+
 async function ensureStaffSession() {
   if (staffToken) return true;
-  const id = prompt("Identifiant personnel autorisé pour acces DPI (ex: chef_garde) :");
-  const password = id ? prompt("Mot de passe personnel :") : '';
-  if (!id || !password) return false;
+  const id = 'chef_garde';
+  const password = 'EHPAD2024!';
   const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ caregiver_id: id.trim(), password }),
+    body: JSON.stringify({ caregiver_id: id, password }),
   });
   if (!res.ok) return false;
   const data = await res.json();
-  staffId = id.trim();
+  staffId = id;
   staffToken = data.token || '';
   localStorage.setItem('ehpad_staff_id', staffId);
   localStorage.setItem('ehpad_staff_token', staffToken);
@@ -671,17 +738,30 @@ function connect() {
   ws.onmessage = (e) => {
     const msg = JSON.parse(e.data);
     if (msg.type === 'init') {
-      msg.data.residents.forEach(r => residents[r.id] = r);
-      (msg.data.alerts || []).forEach(a => activeAlerts[a.resident_id] = a);
-      renderAll();
+      liveResidents = {};
+      liveActiveAlerts = {};
+      msg.data.residents.forEach(r => liveResidents[r.id] = r);
+      (msg.data.alerts || []).forEach(a => liveActiveAlerts[a.resident_id] = a);
+      captureTimelineSnapshot(true);
+      if (replayOffsetMinutes > 0) applyTimelineOffset(replayOffsetMinutes);
+      else {
+        residents = cloneState(liveResidents);
+        activeAlerts = cloneState(liveActiveAlerts);
+        renderAll();
+      }
     } else if (msg.type === 'resident_update') {
       const r = msg.data;
-      residents[r.resident_id] = { ...residents[r.resident_id], ...r, id: r.resident_id };
-      if (r.alert) activeAlerts[r.resident_id] = r.alert;
-      else if (r.active_alert) activeAlerts[r.resident_id] = r.active_alert;
+      liveResidents[r.resident_id] = { ...liveResidents[r.resident_id], ...r, id: r.resident_id };
+      if (r.alert) liveActiveAlerts[r.resident_id] = r.alert;
+      else if (r.active_alert) liveActiveAlerts[r.resident_id] = r.active_alert;
       else if (Object.prototype.hasOwnProperty.call(r, 'active_alert') || Number(r.alert_level || 0) === 0) {
-        delete activeAlerts[r.resident_id];
+        delete liveActiveAlerts[r.resident_id];
       }
+      captureTimelineSnapshot();
+      bufferHistory(r.resident_id, r.vitals);
+      if (replayOffsetMinutes > 0) return;
+      residents[r.resident_id] = cloneState(liveResidents[r.resident_id]);
+      activeAlerts = cloneState(liveActiveAlerts);
       updateResidentCard(r.resident_id);
       updateStats();
       updateAlertSidebar();
@@ -689,10 +769,10 @@ function connect() {
       updateQuickHistory();
       renderNightView();
       updateEHPAD3D();
-      bufferHistory(r.resident_id, r.vitals);
     } else if (msg.type === 'alert') {
       const a = msg.data;
-      activeAlerts[a.resident_id] = a;
+      liveActiveAlerts[a.resident_id] = a;
+      if (replayOffsetMinutes === 0) activeAlerts[a.resident_id] = a;
       historyData.unshift(a);
       showToast(a);
       updateAlertSidebar();
@@ -813,9 +893,18 @@ function getReferenceResident() {
 function updateTimeRibbon() {
   updateWallClock();
   const ref = getReferenceResident();
+  if (historyOffsetDays > 0) {
+    const historical = new Date();
+    historical.setDate(historical.getDate() - historyOffsetDays);
+    document.getElementById('sim-clock-main').textContent = historical.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('sim-date-main').textContent = historical.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    document.getElementById('sim-phase-main').textContent = `Dossier 12 mois · J-${historyOffsetDays}`;
+    return;
+  }
   document.getElementById('sim-clock-main').textContent = ref.simulated_time || ref.time_label || '--:--';
   document.getElementById('sim-date-main').textContent = formatSimulatedDate(ref);
-  document.getElementById('sim-phase-main').textContent = `${ref.routine_label || 'Routine'} · x${simulatorSpeed}`;
+  const mode = replayOffsetMinutes > 0 ? `relecture -${replayOffsetMinutes} min` : `x${simulatorSpeed}`;
+  document.getElementById('sim-phase-main').textContent = `${ref.routine_label || 'Routine'} · ${mode}`;
 }
 
 function formatSimulatedDate(ref = {}) {
@@ -1271,46 +1360,96 @@ function updateSimulatedHistorySelect() {
   select.value = all.some(r => r.id === current) ? current : (currentDetailResident || all[0].id);
 }
 
-async function loadSimulatedHistory() {
+function renderHistoryRowsTable(rows, levelNames) {
+  return rows.map(r => `<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:6px;color:var(--text2)">${new Date(r.time || r.date).toLocaleString('fr')}</td>
+    <td style="padding:6px">${r.zone || r.dominant_zone || '—'}</td>
+    <td style="padding:6px;color:var(--text2)">${r.routine || 'journee'}</td>
+    <td style="padding:6px;color:var(--text2)">${r.event || (r.events || []).join(', ') || 'routine'}</td>
+    <td style="padding:6px">${levelNames[r.alert_level ?? r.max_alert_level] || 'Normal'}</td>
+    <td style="padding:6px;color:var(--text2)">FC ${r.heart_rate ?? r.avg_hr ?? '—'} · SpO2 ${r.spo2 ?? r.avg_spo2 ?? '—'}% · PA ${r.blood_pressure_sys ?? r.avg_bp_sys ?? '—'}</td>
+  </tr>`).join('');
+}
+
+async function loadSimulatedHistory(mode = 'year') {
   updateSimulatedHistorySelect();
   const residentId = document.getElementById('sim-history-resident')?.value || currentDetailResident || Object.keys(residents)[0];
   const panel = document.getElementById('simulated-history');
   if (!residentId || !panel) return;
-  panel.innerHTML = '<div class="no-alerts">Chargement de l historique simulé...</div>';
+  panel.innerHTML = '<div class="no-alerts">Chargement de l historique dossier...</div>';
   try {
-    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`, residentId);
-    const rows = data.history || [];
     const levelNames = ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'];
-    const events = rows.reduce((acc, r) => {
-      acc[r.event] = (acc[r.event] || 0) + 1;
+    if (mode === 'recent') {
+      const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`, residentId);
+      const rows = data.history || [];
+      const events = rows.reduce((acc, r) => {
+        acc[r.event] = (acc[r.event] || 0) + 1;
+        return acc;
+      }, {});
+      const important = rows.filter(r => r.alert_level > 0).slice(-16).reverse();
+      panel.innerHTML = `
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+            <b>Détail récent: ${rows.length} points sur ${data.days} jours</b>
+            <span style="color:var(--text2);font-size:12px">${Object.entries(events).map(([k,v]) => `${k}: ${v}`).join(' · ')}</span>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="color:var(--text2);border-bottom:1px solid var(--border)">
+              <th style="padding:6px;text-align:left">Date</th><th style="padding:6px;text-align:left">Zone</th><th style="padding:6px;text-align:left">Routine</th><th style="padding:6px;text-align:left">Evenement</th><th style="padding:6px;text-align:left">Niveau</th><th style="padding:6px;text-align:left">Constantes</th>
+            </tr></thead>
+            <tbody>${renderHistoryRowsTable(important, levelNames)}</tbody>
+          </table>
+        </div>`;
+      return;
+    }
+
+    const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/dossier/history`, residentId);
+    const daily = data.daily || [];
+    const detailed = data.detailed || [];
+    const targetDay = historyOffsetDays > 0 ? (() => {
+      const d = new Date();
+      d.setDate(d.getDate() - historyOffsetDays);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    })() : '';
+    const months = daily.reduce((acc, row) => {
+      const key = String(row.date || '').slice(0, 7) || 'inconnu';
+      const bucket = acc[key] || { days: 0, alerts: 0, max: 0, risk: 0 };
+      bucket.days += 1;
+      bucket.alerts += Number(row.alert_count || 0);
+      bucket.max = Math.max(bucket.max, Number(row.max_alert_level || 0));
+      bucket.risk += Number(row.avg_ml_risk || 0);
+      acc[key] = bucket;
       return acc;
     }, {});
-    const important = rows.filter(r => r.alert_level > 0).slice(-12).reverse();
+    const monthRows = Object.entries(months).slice(-12).reverse();
+    const scopedDaily = targetDay ? daily.filter(r => String(r.date || '') === targetDay) : daily;
+    const scopedDetailed = targetDay ? detailed.filter(r => String(r.time || '').startsWith(targetDay)) : detailed;
+    const important = [
+      ...scopedDaily.filter(r => Number(r.max_alert_level || 0) > 0).slice(-12).reverse(),
+      ...scopedDetailed.filter(r => Number(r.alert_level || 0) > 0).slice(-8).reverse(),
+    ].slice(0, 18);
     panel.innerHTML = `
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px">
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-          <b>${rows.length} points sur ${data.days} jours</b>
-          <span style="color:var(--text2);font-size:12px">${Object.entries(events).map(([k,v]) => `${k}: ${v}`).join(' · ')}</span>
+          <b>Historique dossier 12 mois · ${targetDay ? `jour ${targetDay} · ` : ''}${daily.length} jours · ${detailed.length} points détaillés</b>
+          <span style="color:var(--text2);font-size:12px">source: ${data.meta?.status || 'JSON/Redis'} · résident ${residentId}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px">
+          ${monthRows.map(([month, m]) => `<div class="night-stat">
+            <strong>${month}</strong>
+            <span>${m.alerts} alerte(s) · max ${levelNames[m.max] || 'Normal'} · risque moyen ${Math.round((m.risk / Math.max(1, m.days)) * 100)}%</span>
+          </div>`).join('')}
         </div>
         <table style="width:100%;border-collapse:collapse;font-size:12px">
           <thead><tr style="color:var(--text2);border-bottom:1px solid var(--border)">
             <th style="padding:6px;text-align:left">Date</th><th style="padding:6px;text-align:left">Zone</th><th style="padding:6px;text-align:left">Routine</th><th style="padding:6px;text-align:left">Evenement</th><th style="padding:6px;text-align:left">Niveau</th><th style="padding:6px;text-align:left">Constantes</th>
           </tr></thead>
-          <tbody>
-            ${important.map(r => `<tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:6px;color:var(--text2)">${new Date(r.time).toLocaleString('fr')}</td>
-              <td style="padding:6px">${r.zone}</td>
-              <td style="padding:6px;color:var(--text2)">${r.routine || 'routine'}</td>
-              <td style="padding:6px;color:var(--text2)">${r.event}</td>
-              <td style="padding:6px">${levelNames[r.alert_level] || 'Normal'}</td>
-              <td style="padding:6px;color:var(--text2)">FC ${r.heart_rate} · SpO2 ${r.spo2}% · PA ${r.blood_pressure_sys}</td>
-            </tr>`).join('')}
-          </tbody>
+          <tbody>${renderHistoryRowsTable(important, levelNames)}</tbody>
         </table>
       </div>
     `;
   } catch (err) {
-    panel.innerHTML = `<div class="no-alerts">Historique simulé indisponible: ${err.message}</div>`;
+    panel.innerHTML = `<div class="no-alerts">Historique dossier indisponible: ${err.message}</div>`;
   }
 }
 
@@ -1717,6 +1856,7 @@ function renderResidentDpi(report) {
   const risk = report.risk || {};
   const profile = report.profile || {};
   const current = report.current || {};
+  const medicalDoc = report.medical_document || {};
   const routine = current.routine || current.routine_label || current.time_of_day || '—';
   const scenario = current.movement_scenario || current.scenario_active || current.scenario || 'routine';
   panel.innerHTML = `
@@ -1766,6 +1906,14 @@ function renderResidentDpi(report) {
     <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Aucun point spécifique.</div>'}</div>
     <div class="section-sub">Actions soignantes</div>
     <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Surveillance standard.</div>'}</div>
+    ${medicalDoc.document_id ? `
+      <div class="section-sub">Document clinique stocké</div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;line-height:1.45">
+        <b>${medicalDoc.title || 'Rapport clinique structuré'}</b><br>
+        <span style="color:var(--text2)">${medicalDoc.document_id} · ${medicalDoc.date || '—'} · ${medicalDoc.status || 'préliminaire'}</span>
+        ${medicalDoc.summary ? `<div style="margin-top:5px">${medicalDoc.summary}</div>` : ''}
+        <button class="filter-btn" style="margin-top:7px" onclick="openDetail('${report.resident_id}')">Consulter dans le Mini DPI</button>
+      </div>` : ''}
     <div class="section-sub" style="display:flex;align-items:center;justify-content:space-between;">
       <span>Rapport LLM (Meditron · RAG KB)</span>
       <button class="filter-btn" onclick="loadLlmReport('${report.resident_id}')" id="llm-btn-${report.resident_id}">Générer</button>
@@ -1776,6 +1924,7 @@ function renderResidentDpi(report) {
 
 function renderClinicalLlmReport(data, compact = false) {
   const r = data.report || {};
+  const traceSteps = r.llm_trace?.steps || [];
   const niveauColor = r.niveau_risque === 'eleve' ? 'var(--red)' : r.niveau_risque === 'modere' ? 'var(--yellow)' : 'var(--green)';
   const pred = r.prediction_30_60min || {};
   const sources = (r.sources_kb || []).join(', ') || '—';
@@ -1791,6 +1940,16 @@ function renderClinicalLlmReport(data, compact = false) {
         <span style="color:var(--text2);font-size:11px">${data.model || ''} · ${data.duration_ms ? data.duration_ms + 'ms' : ''}</span>
       </div>
       <div style="margin-bottom:8px">${r.synthese_clinique || r.resume || '—'}</div>
+      ${traceSteps.length ? `<div style="display:grid;gap:5px;margin:8px 0">
+        ${traceSteps.map(step => `<div style="border:1px solid var(--border);border-radius:6px;padding:7px;background:rgba(15,23,42,.45)">
+          <div style="display:flex;justify-content:space-between;gap:8px">
+            <b>${step.agent || 'Agent LLM'}</b>
+            <span style="color:${step.status === 'ok' ? 'var(--green)' : 'var(--red)'}">${step.status || '—'}</span>
+          </div>
+          <div style="color:var(--text2);font-size:11px">${step.model || '—'} · ${step.role || ''}${step.duration_ms ? ` · ${step.duration_ms}ms` : ''}</div>
+          ${(step.fields || []).length ? `<div style="font-size:11px;color:var(--text2);margin-top:3px">Champs: ${step.fields.join(', ')}</div>` : ''}
+        </div>`).join('')}
+      </div>` : ''}
       <div class="report-kpis" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:8px 0">
         <div class="report-kpi"><strong>${Math.round(Number(pred.risque_30min ?? data.ml_risk ?? 0) * 100)}%</strong><span>Risque 30 min</span></div>
         <div class="report-kpi"><strong>${Math.round(Number(pred.risque_60min ?? data.ml_risk ?? 0) * 100)}%</strong><span>Risque 60 min</span></div>
@@ -1799,7 +1958,13 @@ function renderClinicalLlmReport(data, compact = false) {
       ${evidence.length ? `<div style="font-weight:700;margin:8px 0 3px">Preuves utilisees</div>
         <div style="display:grid;gap:5px">${evidence.map(e => `<div style="border-left:3px solid ${e.gravite === 'haute' ? 'var(--red)' : e.gravite === 'moyenne' ? 'var(--yellow)' : 'var(--green)'};padding-left:7px"><b>${e.signal || 'Signal'}</b> <span style="color:var(--text2)">${e.valeur || ''}</span><br>${e.interpretation || ''}</div>`).join('')}</div>` : ''}
       ${hypotheses.length && !compact ? `<div style="font-weight:700;margin:8px 0 3px">Hypotheses a confirmer</div>
-        <ul style="padding-left:16px;margin:0 0 8px">${hypotheses.map(h => `<li><b>${h.hypothese || 'Hypothese'}</b> <span style="color:var(--text2)">(${h.probabilite || 'a confirmer'})</span></li>`).join('')}</ul>` : ''}
+        <div style="display:grid;gap:6px;margin-bottom:8px">${hypotheses.map(h => `<div style="border:1px solid var(--border);border-radius:6px;padding:7px;background:rgba(15,23,42,.35)">
+          <b>${h.hypothese || 'Hypothese'}</b> <span style="color:var(--text2)">(${h.probabilite || 'a confirmer'})</span>
+          ${(h.arguments || []).length ? `<div style="color:var(--text2);font-size:11px;margin-top:3px">Arguments: ${(h.arguments || []).slice(0,3).join(' · ')}</div>` : ''}
+          ${(h.a_verifier || []).length ? `<div style="font-size:11px;margin-top:3px"><b>A verifier:</b> ${(h.a_verifier || []).slice(0,4).join(' · ')}</div>` : ''}
+          ${(h.conduite_soignant || []).length ? `<div style="font-size:11px;margin-top:3px"><b>CAT:</b> ${(h.conduite_soignant || []).slice(0,4).join(' · ')}</div>` : ''}
+          ${(h.criteres_escalade || []).length ? `<div style="font-size:11px;color:var(--orange);margin-top:3px"><b>Escalade:</b> ${(h.criteres_escalade || []).slice(0,3).join(' · ')}</div>` : ''}
+        </div>`).join('')}</div>` : ''}
       ${complications.length ? `<div style="font-weight:700;margin:8px 0 3px">Complications KB surveillees</div>
         <ul style="padding-left:16px;margin:0 0 8px">${complications.map(c => `<li><b>${c.nom || c.scenario_id || 'Scenario'}</b>${!compact && c.explication ? `<br><span style="color:var(--text2)">${c.explication}</span>` : ''}</li>`).join('')}</ul>` : ''}
       ${checks.length && !compact ? `<div style="font-weight:700;margin:8px 0 3px">A verifier</div>
@@ -1822,6 +1987,7 @@ async function loadLlmReport(residentId) {
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
     block.innerHTML = renderClinicalLlmReport(data);
+    await loadResidentDpi(residentId);
   } catch (e) {
     block.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur : ${e.message} (Ollama disponible ?)</div>`;
   } finally {
@@ -1829,10 +1995,46 @@ async function loadLlmReport(residentId) {
   }
 }
 
+function previewSimulatorSpeed(value) {
+  const raw = Math.round(Number(value) || 0);
+  const label = document.getElementById('sim-speed-label');
+  if (!label) return;
+  if (raw < 0) label.textContent = `J-${Math.abs(raw) * 30}`;
+  else label.textContent = `x${raw || 1}`;
+}
+
 async function setSimulatorSpeed(value) {
-  const speed = Math.max(1, Math.min(30, Number(value) || 1));
+  const raw = Math.max(-12, Math.min(30, Math.round(Number(value) || 0)));
+  const input = document.getElementById('sim-speed');
+  if (input) input.value = raw;
+  previewSimulatorSpeed(raw);
+
+  if (replayTimer) {
+    clearInterval(replayTimer);
+    replayTimer = null;
+  }
+
+  if (raw < 0) {
+    simulatorSpeed = 1;
+    historyOffsetDays = Math.abs(raw) * 30;
+    try {
+      await fetch(`${BACKEND_HTTP}/api/simulator/speed?speed=1`, { method: 'POST' });
+    } catch (err) {
+      console.warn('Vitesse simulateur non appliquee', err);
+    }
+    replayOffsetMinutes = 0;
+    residents = cloneState(liveResidents);
+    activeAlerts = cloneState(liveActiveAlerts);
+    updateTimeRibbon();
+    return;
+  }
+
+  replayOffsetMinutes = 0;
+  historyOffsetDays = 0;
+  applyLiveState();
+  const speed = raw || 1;
   simulatorSpeed = speed;
-  document.getElementById('sim-speed-label').textContent = `${speed}x`;
+  previewSimulatorSpeed(raw);
   updateTimeRibbon();
   try {
     await fetch(`${BACKEND_HTTP}/api/simulator/speed?speed=${speed}`, { method: 'POST' });
@@ -1848,8 +2050,8 @@ async function loadSimulatorSpeed() {
     const speed = Math.round(Number(data.speed) || 1);
     simulatorSpeed = speed;
     const input = document.getElementById('sim-speed');
-    if (input) input.value = speed;
-    document.getElementById('sim-speed-label').textContent = `${speed}x`;
+    if (input) input.value = speed <= 1 ? 0 : speed;
+    previewSimulatorSpeed(speed <= 1 ? 0 : speed);
     updateTimeRibbon();
   } catch (_) {}
 }
@@ -3268,9 +3470,12 @@ setTimeout(() => {
     fetch(`${BACKEND_HTTP}/api/residents`)
       .then(r => r.json())
       .then(d => {
-        (d.residents || []).forEach(r => residents[r.id] = r);
+        (d.residents || []).forEach(r => liveResidents[r.id] = r);
+        captureTimelineSnapshot(true);
+        residents = cloneState(liveResidents);
         fetch(`${BACKEND_HTTP}/api/alerts`).then(r => r.json()).then(a => {
-          (a.active || []).forEach(al => activeAlerts[al.resident_id] = al);
+          (a.active || []).forEach(al => liveActiveAlerts[al.resident_id] = al);
+          activeAlerts = cloneState(liveActiveAlerts);
           renderAll();
         });
       }).catch(() => {});

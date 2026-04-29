@@ -1,0 +1,191 @@
+{
+  "version": "4.0.0",
+  "score_formula": "risk_score = min(100, sum(active_feature_weights) + profile_boost + medication_boost + synergy_bonus - protective_factors) / 100",
+  "thresholds": [
+    {
+      "risk_score_gte": 0.2,
+      "label": "surveillance",
+      "suggested_alert_level": 1
+    },
+    {
+      "risk_score_gte": 0.4,
+      "label": "attention",
+      "suggested_alert_level": 2
+    },
+    {
+      "risk_score_gte": 0.6,
+      "label": "alerte",
+      "suggested_alert_level": 3
+    },
+    {
+      "risk_score_gte": 0.8,
+      "label": "urgence",
+      "suggested_alert_level": 4
+    },
+    {
+      "risk_score_gte": 0.92,
+      "label": "danger_vital",
+      "suggested_alert_level": 5
+    }
+  ],
+  "feature_weights": {
+    "night_bed_exit": 12,
+    "exit_door_open": 25,
+    "bathroom_visit_night": 10,
+    "gait_instability": 18,
+    "impact_detected": 45,
+    "immobility_after_impact": 35,
+    "immobility_1h_outside_sleep": 18,
+    "room_temp_high": 10,
+    "heatwave_context": 12,
+    "no_drink_trace_4h": 12,
+    "hr_abnormal": 12,
+    "hr_extreme": 28,
+    "spo2_drop": 18,
+    "spo2_critical": 35,
+    "rr_high": 18,
+    "bp_low": 20,
+    "orthostatic_drop": 30,
+    "temperature_abnormal": 16,
+    "glucose_low": 35,
+    "glucose_critical": 55,
+    "meal_absence": 12,
+    "routine_deviation": 20,
+    "activity_drop_50": 16,
+    "new_confusion": 30,
+    "pain_algoplus": 18,
+    "no_urination_8h": 18,
+    "no_stool_72h": 12,
+    "weight_loss": 18,
+    "weight_gain_2kg_3days": 20,
+    "fast_positive": 95,
+    "fall_with_anticoagulant": 25,
+    "recent_medication_change": 16,
+    "polypharmacy": 10,
+    "diuretic": 8,
+    "benzodiazepine_or_psychotrope": 12,
+    "opioid_or_tramadol": 12,
+    "anticoagulant": 10,
+    "antidiabetic_insulin": 12,
+    "anticholinergic": 10
+  },
+  "synergy_bonus": [
+    {
+      "id": "fall_confirmed",
+      "conditions": [
+        "impact_detected",
+        "immobility_after_impact"
+      ],
+      "bonus": 25,
+      "force_alert_level": 4
+    },
+    {
+      "id": "fall_anticoagulant_confusion",
+      "conditions": [
+        "impact_detected",
+        "anticoagulant",
+        "new_confusion"
+      ],
+      "bonus": 30,
+      "force_alert_level": 5
+    },
+    {
+      "id": "dehydration_diuretic_heat",
+      "conditions": [
+        "room_temp_high",
+        "diuretic",
+        "no_drink_trace_4h"
+      ],
+      "bonus": 18,
+      "force_alert_level": 3
+    },
+    {
+      "id": "orthostatic_fall",
+      "conditions": [
+        "orthostatic_drop",
+        "impact_detected"
+      ],
+      "bonus": 25,
+      "force_alert_level": 4
+    },
+    {
+      "id": "sepsis_red_flags",
+      "conditions": [
+        "temperature_abnormal",
+        "new_confusion",
+        "bp_low"
+      ],
+      "bonus": 28,
+      "force_alert_level": 4
+    },
+    {
+      "id": "hypoglycemia_confusion",
+      "conditions": [
+        "glucose_low",
+        "new_confusion"
+      ],
+      "bonus": 25,
+      "force_alert_level": 4
+    },
+    {
+      "id": "heart_failure_decompensation",
+      "conditions": [
+        "spo2_drop",
+        "rr_high",
+        "activity_drop_50"
+      ],
+      "bonus": 22,
+      "force_alert_level": 3
+    },
+    {
+      "id": "fugue_confirmed",
+      "conditions": [
+        "exit_door_open",
+        "routine_deviation"
+      ],
+      "bonus": 20,
+      "force_alert_level": 4
+    },
+    {
+      "id": "pain_retention",
+      "conditions": [
+        "pain_algoplus",
+        "no_urination_8h",
+        "new_confusion"
+      ],
+      "bonus": 20,
+      "force_alert_level": 3
+    },
+    {
+      "id": "fast_emergency",
+      "conditions": [
+        "fast_positive"
+      ],
+      "bonus": 0,
+      "force_alert_level": 5
+    }
+  ],
+  "protective_or_noise_factors": [
+    {
+      "id": "known_sleep_period",
+      "condition": "period == nuit and is_sleeping == true",
+      "subtract": 8
+    },
+    {
+      "id": "poor_spo2_signal",
+      "condition": "spo2_signal_quality == poor",
+      "subtract": 10,
+      "note": "ne pas ignorer, mais baisser confiance"
+    },
+    {
+      "id": "known_low_baseline_spo2_copd",
+      "condition": "copd and spo2 close to personal_baseline",
+      "subtract": 8
+    },
+    {
+      "id": "meal_in_room_planned",
+      "condition": "meal_mode == chambre and meal_absence",
+      "subtract": 10
+    }
+  ]
+}

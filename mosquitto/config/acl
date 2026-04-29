@@ -1,0 +1,26 @@
+# Comptes MQTT de demonstration.
+# Objectif: eviter qu'un client anonyme puisse publier de faux vitaux.
+
+user simulator
+topic read ehpad/control/#
+topic write ehpad/residents/#
+topic write ehpad/zones/#
+topic write ehpad/summary
+topic write ehpad/+/+/vitals
+topic write ehpad/+/+/motion
+topic write ehpad/+/+/bp_temp
+topic write ehpad/+/+/sos
+topic write ehpad/+/ambient/env
+topic write ehpad/+/door/ambient
+
+user backend
+topic read ehpad/#
+topic write ehpad/control/#
+topic write health/check
+
+user dashboard
+topic read ehpad/summary
+topic read ehpad/alerts/#
+
+user healthcheck
+topic write health/check

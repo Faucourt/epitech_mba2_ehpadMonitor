@@ -1,0 +1,79 @@
+{
+  "mini_dpi_sections": [
+    {
+      "id": "identity",
+      "title": "Identité",
+      "fields": [
+        "name",
+        "room",
+        "age",
+        "profile"
+      ]
+    },
+    {
+      "id": "risks_followed",
+      "title": "Risques suivis",
+      "fields": [
+        "problems",
+        "risk_factors",
+        "active_rules"
+      ]
+    },
+    {
+      "id": "clinical_sources",
+      "title": "Sources cliniques utilisées",
+      "fields": [
+        "sources_by_active_problem"
+      ]
+    },
+    {
+      "id": "aggravating_factors",
+      "title": "Facteurs aggravants",
+      "fields": [
+        "medications",
+        "recent_medication_change",
+        "anticoagulant",
+        "diuretic",
+        "cognitive_decline",
+        "fall_history"
+      ]
+    },
+    {
+      "id": "sensor_mapping",
+      "title": "Capteurs utilisés",
+      "fields": [
+        "canonical_signal",
+        "existing_field",
+        "last_value",
+        "quality",
+        "last_seen"
+      ]
+    },
+    {
+      "id": "score",
+      "title": "Score prédictif",
+      "fields": [
+        "risk_score",
+        "top_contributors",
+        "synergy_bonus",
+        "suggested_alert_level"
+      ]
+    },
+    {
+      "id": "explainability",
+      "title": "Pourquoi cette alerte ?",
+      "fields": [
+        "evidence",
+        "missing_data",
+        "rule_trace"
+      ]
+    }
+  ],
+  "example_ui_text": {
+    "risks_followed": "Risques suivis : chute, hypotension orthostatique, iatrogénie, confusion.",
+    "active_rules": "Règles actives : sortie de lit nocturne, marche instable, traitement diurétique.",
+    "sources": "Sources : HAS chutes répétées, Ameli iatrogénie, NEWS2.",
+    "aggravating_factors": "Facteurs aggravants : anticoagulant, antécédent de chute, trouble cognitif.",
+    "score": "Score prédictif : 0.68 — alerte niveau 3."
+  }
+}

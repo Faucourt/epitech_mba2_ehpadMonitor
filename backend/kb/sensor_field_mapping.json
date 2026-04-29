@@ -1,0 +1,315 @@
+[
+  {
+    "canonical": "bed_exit",
+    "existing_fields": [
+      "mattress_exit",
+      "bed_exit",
+      "bed_occupied=false",
+      "pressure_mattress_exit"
+    ],
+    "type": "boolean/event",
+    "used_for": [
+      "P001",
+      "P002",
+      "P007"
+    ],
+    "weight_key": "night_bed_exit"
+  },
+  {
+    "canonical": "door_open",
+    "existing_fields": [
+      "door_open",
+      "room_door_open",
+      "exit_door_open",
+      "door_sensor"
+    ],
+    "type": "boolean/event",
+    "used_for": [
+      "P007"
+    ],
+    "weight_key": "exit_door_open"
+  },
+  {
+    "canonical": "bathroom_visits",
+    "existing_fields": [
+      "bathroom_motion",
+      "bathroom_presence",
+      "zone=bathroom",
+      "current_zone=salle_bain"
+    ],
+    "type": "count/window",
+    "used_for": [
+      "P001",
+      "P002",
+      "P008",
+      "P010"
+    ],
+    "weight_key": "bathroom_visit_night"
+  },
+  {
+    "canonical": "gait_instability",
+    "existing_fields": [
+      "accel_magnitude",
+      "step_variability",
+      "gait_speed",
+      "activity='marche_instable'",
+      "movement_scenario='marche_instable'"
+    ],
+    "type": "score",
+    "used_for": [
+      "P001",
+      "P002",
+      "P011"
+    ],
+    "weight_key": "gait_instability"
+  },
+  {
+    "canonical": "impact_g",
+    "existing_fields": [
+      "impact_g",
+      "accel_magnitude",
+      "fall_impact",
+      "accelerometer_peak"
+    ],
+    "type": "float",
+    "used_for": [
+      "P001"
+    ],
+    "weight_key": "impact_detected"
+  },
+  {
+    "canonical": "immobility_seconds",
+    "existing_fields": [
+      "last_movement_ago_s",
+      "immobility_duration",
+      "no_motion_seconds"
+    ],
+    "type": "seconds",
+    "used_for": [
+      "P001",
+      "P004",
+      "P006"
+    ],
+    "weight_key": "immobility_after_impact"
+  },
+  {
+    "canonical": "room_temperature",
+    "existing_fields": [
+      "ambient_temperature",
+      "room_temp",
+      "zone_temperature"
+    ],
+    "type": "float_celsius",
+    "used_for": [
+      "P004"
+    ],
+    "weight_key": "room_temp_high"
+  },
+  {
+    "canonical": "heart_rate",
+    "existing_fields": [
+      "vitals.heart_rate",
+      "hr",
+      "heart_rate"
+    ],
+    "type": "bpm",
+    "used_for": [
+      "P002",
+      "P003",
+      "P005",
+      "P008",
+      "P009",
+      "P010"
+    ],
+    "weight_key": "hr_abnormal"
+  },
+  {
+    "canonical": "spo2",
+    "existing_fields": [
+      "vitals.spo2",
+      "spo2",
+      "oxygen_saturation"
+    ],
+    "type": "percent",
+    "used_for": [
+      "P005",
+      "P006",
+      "P009"
+    ],
+    "weight_key": "spo2_drop"
+  },
+  {
+    "canonical": "respiratory_rate",
+    "existing_fields": [
+      "vitals.respiratory_rate",
+      "respiratory_rate",
+      "rr"
+    ],
+    "type": "per_min",
+    "used_for": [
+      "P005",
+      "P009"
+    ],
+    "weight_key": "rr_high"
+  },
+  {
+    "canonical": "systolic_bp",
+    "existing_fields": [
+      "vitals.blood_pressure_sys",
+      "bp_sys",
+      "systolic_bp"
+    ],
+    "type": "mmHg",
+    "used_for": [
+      "P002",
+      "P004",
+      "P005"
+    ],
+    "weight_key": "bp_low"
+  },
+  {
+    "canonical": "temperature",
+    "existing_fields": [
+      "vitals.temperature",
+      "body_temperature",
+      "temp"
+    ],
+    "type": "celsius",
+    "used_for": [
+      "P005",
+      "P006"
+    ],
+    "weight_key": "temperature_abnormal"
+  },
+  {
+    "canonical": "glucose",
+    "existing_fields": [
+      "glucose",
+      "blood_glucose",
+      "cgm_glucose",
+      "manual_glucose"
+    ],
+    "type": "mg_dl",
+    "used_for": [
+      "P003",
+      "P006"
+    ],
+    "weight_key": "glucose_low"
+  },
+  {
+    "canonical": "meal_presence",
+    "existing_fields": [
+      "meal_mode",
+      "current_zone=salle_manger",
+      "activity='repas'",
+      "meal_intake"
+    ],
+    "type": "event/percent",
+    "used_for": [
+      "P003",
+      "P004",
+      "P012"
+    ],
+    "weight_key": "meal_absence"
+  },
+  {
+    "canonical": "routine_deviation",
+    "existing_fields": [
+      "routine_analysis.score",
+      "routine_deviation",
+      "activity_vs_baseline",
+      "zone_vs_baseline"
+    ],
+    "type": "score",
+    "used_for": [
+      "P001",
+      "P006",
+      "P007",
+      "P012"
+    ],
+    "weight_key": "routine_deviation"
+  },
+  {
+    "canonical": "new_confusion",
+    "existing_fields": [
+      "manual_input.new_confusion",
+      "consciousness='new_confusion'",
+      "behavior='confusion'"
+    ],
+    "type": "manual_boolean",
+    "used_for": [
+      "P005",
+      "P006",
+      "P011"
+    ],
+    "weight_key": "new_confusion"
+  },
+  {
+    "canonical": "pain_score",
+    "existing_fields": [
+      "pain_algoplus",
+      "manual_input.algoplus",
+      "pain_score"
+    ],
+    "type": "score_0_5",
+    "used_for": [
+      "P008"
+    ],
+    "weight_key": "pain_algoplus"
+  },
+  {
+    "canonical": "urine_output_low",
+    "existing_fields": [
+      "urine_output",
+      "no_urination_hours",
+      "toilet_sensor_no_urine"
+    ],
+    "type": "boolean/hours",
+    "used_for": [
+      "P008",
+      "P005"
+    ],
+    "weight_key": "no_urination_8h"
+  },
+  {
+    "canonical": "stool_absence",
+    "existing_fields": [
+      "stool",
+      "no_stool_hours",
+      "constipation_days"
+    ],
+    "type": "boolean/hours",
+    "used_for": [
+      "P008"
+    ],
+    "weight_key": "no_stool_72h"
+  },
+  {
+    "canonical": "weight_change",
+    "existing_fields": [
+      "weight_delta_kg",
+      "weight",
+      "connected_scale"
+    ],
+    "type": "kg/window",
+    "used_for": [
+      "P009",
+      "P012"
+    ],
+    "weight_key": "weight_change"
+  },
+  {
+    "canonical": "fast_signs",
+    "existing_fields": [
+      "manual_input.face_asymmetry",
+      "manual_input.arm_weakness",
+      "manual_input.speech_disorder",
+      "neurological_signs"
+    ],
+    "type": "manual_boolean",
+    "used_for": [
+      "P011"
+    ],
+    "weight_key": "fast_positive"
+  }
+]

@@ -44,6 +44,8 @@ log = logging.getLogger(__name__)
 # --- Config ---
 MQTT_HOST = os.getenv("MQTT_HOST", "localhost")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
+MQTT_USERNAME = os.getenv("MQTT_USERNAME", "")
+MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
@@ -663,6 +665,8 @@ def _staff_notification_preview(caregiver_id: str, level: int) -> list[dict]:
 
 def publish_mqtt_control(topic: str, payload: dict):
     client = mqtt.Client(client_id=f"ehpad_backend_control_{os.getpid()}_{int(time.time() * 1000)}")
+    if MQTT_USERNAME:
+        client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
     client.connect(MQTT_HOST, MQTT_PORT, keepalive=30)
     client.publish(topic, json.dumps(payload), qos=1, retain=True)
     client.disconnect()
@@ -1394,6 +1398,15 @@ def _write_json_file(path: Path, payload) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def _read_json_file(path: Path, default):
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return default
+
+
 def _patient_file_paths(resident_id: str) -> dict:
     base = _patient_dir(resident_id)
     return {
@@ -1575,13 +1588,16 @@ def get_patient_dossier_history(
         raise HTTPException(404, "Resident inconnu")
     daily = redis_client.get(f"patient:{resident_id}:history:daily")
     detailed = redis_client.get(f"patient:{resident_id}:history:detailed")
+    paths = _patient_file_paths(resident_id)
+    daily_rows = json.loads(daily) if daily else _read_json_file(Path(paths["history_daily"]), [])
+    detailed_rows = json.loads(detailed) if detailed else _read_json_file(Path(paths["history_detailed"]), [])
     return {
         "resident_id": resident_id,
         "profile": _effective_resident_profile(resident_id),
         "meta": _patient_history_meta(resident_id),
-        "json_files": _patient_file_paths(resident_id),
-        "daily": json.loads(daily) if daily else [],
-        "detailed": json.loads(detailed) if detailed else [],
+        "json_files": paths,
+        "daily": daily_rows,
+        "detailed": detailed_rows,
     }
 
 
@@ -2448,11 +2464,46 @@ def get_resident_dpi(
     if resident_id not in RESIDENTS_MAP:
         raise HTTPException(404, "Resident non trouve")
     report_date = _local_report_date(date)
+    medical_document = _get_medical_report_document(resident_id, report_date)
     return {
         "resident_id": resident_id,
         "date": report_date,
         "mini_dpi": _build_resident_daily_report(resident_id, report_date=report_date, force=True),
+        "medical_document": medical_document,
     }
+
+
+@app.get("/api/residents/{resident_id}/medical-reports/latest")
+def get_latest_resident_medical_report(
+    resident_id: str,
+    request: Request,
+    authorization: str = Header(None),
+    x_break_glass_reason: str = Header(None),
+):
+    _require_resident_access(resident_id, authorization, request, "resident_medical_report", x_break_glass_reason)
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident non trouve")
+    document = _get_medical_report_document(resident_id)
+    if not document:
+        raise HTTPException(404, "Rapport medical structure non genere")
+    return document
+
+
+@app.get("/api/residents/{resident_id}/medical-reports/{date}")
+def get_resident_medical_report_by_date(
+    resident_id: str,
+    date: str,
+    request: Request,
+    authorization: str = Header(None),
+    x_break_glass_reason: str = Header(None),
+):
+    _require_resident_access(resident_id, authorization, request, "resident_medical_report", x_break_glass_reason)
+    if resident_id not in RESIDENTS_MAP:
+        raise HTTPException(404, "Resident non trouve")
+    document = _get_medical_report_document(resident_id, date)
+    if not document:
+        raise HTTPException(404, "Rapport medical structure non genere pour cette date")
+    return document
 
 
 @app.get("/api/a2a/agents")
@@ -2734,7 +2785,38 @@ def kb_residents_enriched():
     return {"count": len(result), "residents": result}
 
 
+@app.get("/api/kb/official")
+def kb_official_references():
+    """References officielles par pathologie et complications transversales."""
+    import kb_loader
+    kb = kb_loader.load_official_kb()
+    return {
+        "metadata": kb.get("metadata", {}),
+        "sources": kb.get("sources", []),
+        "profiles": kb.get("profiles", []),
+        "cross_complications": kb.get("cross_complications", []),
+        "first_aid_actions": kb.get("first_aid_actions", []),
+        "llm_rules": kb.get("llm_rules", []),
+    }
+
+
+@app.get("/api/kb/epidor")
+def kb_epidor_mapping():
+    """Mapping EPIDOR V4: residents, capteurs, poids rules/ML et config Mini DPI."""
+    import kb_loader
+    mapping = kb_loader.load_epidor_mapping()
+    return {
+        "metadata": mapping.get("metadata", {}),
+        "resident_problem_count": len(mapping.get("resident_problem_mapping", [])),
+        "sensor_field_count": len(mapping.get("sensor_field_mapping", [])),
+        "ml_rule_weights": mapping.get("ml_rule_weights", {}),
+        "dashboard_mini_dpi": mapping.get("dashboard_mini_dpi", {}),
+        "validation_tests_count": len(mapping.get("validation_tests", [])),
+    }
+
+
 from llm_service import run_report_sync, start_report_job, get_report_result
+from llm_service import _profile_antecedent_kb_links
 
 
 def _llm_daily_key(report_date: str, resident_id: str) -> str:
@@ -2747,6 +2829,201 @@ def _llm_daily_index_key(report_date: str) -> str:
 
 def _get_cached_daily_llm(report_date: str, resident_id: str) -> Optional[dict]:
     raw = redis_client.get(_llm_daily_key(report_date, resident_id))
+    return json.loads(raw) if raw else None
+
+
+def _profile_with_patient_file(resident_id: str, fallback: dict) -> dict:
+    profile = dict(fallback or {})
+    profile_path = PATIENT_DATA_DIR / resident_id / "profile.json"
+    if profile_path.exists():
+        try:
+            with profile_path.open("r", encoding="utf-8") as f:
+                file_profile = json.load(f)
+            if isinstance(file_profile.get("effective"), dict):
+                file_profile = file_profile["effective"]
+            if isinstance(file_profile, dict):
+                profile.update(file_profile)
+        except Exception as exc:
+            log.warning("Profil patient %s non fusionne pour LLM: %s", resident_id, exc)
+    return profile
+
+
+def _medical_report_key(report_date: str, resident_id: str) -> str:
+    return f"medical_report:v1:{report_date}:{resident_id}"
+
+
+def _medical_report_latest_key(resident_id: str) -> str:
+    return f"medical_report:v1:latest:{resident_id}"
+
+
+def _medical_report_index_key(resident_id: str) -> str:
+    return f"medical_report:v1:index:{resident_id}"
+
+
+def _medical_report_summary(document: dict) -> dict:
+    meta = document.get("metadata", {})
+    return {
+        "document_id": document.get("document_id"),
+        "date": document.get("date"),
+        "title": document.get("title"),
+        "status": document.get("status"),
+        "risk_level": document.get("risk_level"),
+        "generated_at": document.get("generated_at"),
+        "model": meta.get("model"),
+        "standard_hint": meta.get("standard_hint"),
+    }
+
+
+def _build_structured_medical_report_document(llm_result: dict, mini_dpi: dict) -> dict:
+    report = llm_result.get("report", {}) or {}
+    resident_id = llm_result.get("resident_id") or mini_dpi.get("resident_id")
+    report_date = llm_result.get("date") or mini_dpi.get("date") or _local_report_date()
+    generated_at = llm_result.get("generated_at") or datetime.utcnow().isoformat() + "Z"
+    profile = llm_result.get("patient_profile") or mini_dpi.get("profile", {}) or {}
+    current = mini_dpi.get("current", {}) or {}
+    vitals = current.get("vitals", {}) or {}
+    risk = mini_dpi.get("risk", {}) or {}
+    document_id = f"MR-{resident_id}-{report_date}"
+    resident_name = llm_result.get("resident_name") or mini_dpi.get("resident_name") or resident_id
+    title = "Rapport clinique structure d'aide a la transmission"
+    summary = report.get("synthese_clinique") or report.get("resume") or mini_dpi.get("transmission_summary") or ""
+    actions = report.get("actions_prioritaires") or [
+        {"delai": "selon surveillance", "action": action, "responsable": "equipe de soins"}
+        for action in mini_dpi.get("next_actions", [])
+    ]
+    sections = [
+        {
+            "id": "identity_context",
+            "title": "Identification et contexte",
+            "entries": [
+                f"Resident: {resident_name} ({resident_id})",
+                f"Chambre: {mini_dpi.get('room', '-')}",
+                f"Age: {profile.get('age', '-')} ans",
+                f"Pathologies connues: {', '.join(profile.get('pathologies', [])) or '-'}",
+                f"Localisation actuelle: {current.get('location', '-')}",
+            ],
+        },
+        {
+            "id": "antecedents_kb_care",
+            "title": "Antecedents relies a la KB et conduite a tenir",
+            "entries": _profile_antecedent_kb_links(profile)[:8],
+        },
+        {
+            "id": "objective_data",
+            "title": "Donnees objectives",
+            "entries": [
+                f"FC: {vitals.get('heart_rate', '-')} bpm",
+                f"SpO2: {vitals.get('spo2', '-')}%",
+                f"PA systolique: {vitals.get('blood_pressure_sys', '-')} mmHg",
+                f"Temperature: {vitals.get('temperature', '-')} C",
+                f"Risque ML: {round(float(llm_result.get('ml_risk', risk.get('ml_risk', 0)) or 0) * 100)}%",
+                f"Alertes du jour: {llm_result.get('alerts_count_today', len(mini_dpi.get('alerts_today', [])))}",
+            ],
+        },
+        {
+            "id": "clinical_synthesis",
+            "title": "Synthese clinique",
+            "entries": [summary],
+        },
+        {
+            "id": "evidence",
+            "title": "Preuves et signaux utilises",
+            "entries": report.get("preuves", [])[:6],
+        },
+        {
+            "id": "differential_hypotheses",
+            "title": "Hypotheses differentielles a confirmer",
+            "entries": report.get("hypotheses", [])[:5],
+        },
+        {
+            "id": "care_plan",
+            "title": "Conduite a tenir soignant",
+            "entries": actions[:8],
+        },
+        {
+            "id": "monitoring_plan",
+            "title": "Plan de surveillance",
+            "entries": report.get("plan_surveillance", [])[:6],
+        },
+        {
+            "id": "escalation_checks",
+            "title": "Elements a verifier et criteres d'escalade",
+            "entries": list(dict.fromkeys((report.get("donnees_a_verifier", []) or []) + (report.get("points_vigilance", []) or [])))[:10],
+        },
+        {
+            "id": "sources_traceability",
+            "title": "Sources KB et tracabilite LLM",
+            "entries": [
+                {"type": "llm_routing", **(report.get("llm_trace", {}) or {})},
+                *report.get("sources_kb", [])[:12],
+            ],
+        },
+        {
+            "id": "limits",
+            "title": "Limites",
+            "entries": [
+                "Support pedagogique d'aide a la transmission, non diagnostic medical autonome.",
+                "A valider par un professionnel habilite selon le protocole de l'etablissement.",
+                "Les capteurs, le ML et le LLM ne remplacent pas l'examen clinique.",
+            ],
+        },
+    ]
+    return {
+        "document_id": document_id,
+        "date": report_date,
+        "generated_at": generated_at,
+        "title": title,
+        "status": "preliminary_ai_assisted",
+        "resident_id": resident_id,
+        "resident_name": resident_name,
+        "risk_level": report.get("niveau_risque", "faible"),
+        "summary": summary,
+        "metadata": {
+            "model": llm_result.get("model"),
+            "duration_ms": llm_result.get("duration_ms"),
+            "standard_hint": "FHIR-like DiagnosticReport + Composition sections; inspiration DMP/CI-SIS pour document de coordination",
+            "stored_in": "Redis medical_report:v1 + Mini DPI",
+            "author": "EHPAD Monitor - LLM router",
+        },
+        "fhir_like": {
+            "resourceType": "DiagnosticReport",
+            "id": document_id,
+            "status": "preliminary",
+            "code": {"text": title},
+            "subject": {"reference": f"Patient/{resident_id}", "display": resident_name},
+            "effectiveDateTime": report_date,
+            "issued": generated_at,
+            "conclusion": summary,
+            "presentedForm": [{"contentType": "application/json", "title": title}],
+        },
+        "composition_like": {
+            "resourceType": "Composition",
+            "status": "preliminary",
+            "type": {"text": title},
+            "subject": {"reference": f"Patient/{resident_id}", "display": resident_name},
+            "date": generated_at,
+            "section": [{"title": section["title"], "code": {"text": section["id"]}} for section in sections],
+        },
+        "sections": sections,
+    }
+
+
+def _store_medical_report_document(llm_result: dict, mini_dpi: dict) -> dict:
+    document = _build_structured_medical_report_document(llm_result, mini_dpi)
+    ttl = LLM_DAILY_TTL_DAYS * 86400
+    report_date = document["date"]
+    resident_id = document["resident_id"]
+    payload = json.dumps(document, ensure_ascii=False)
+    redis_client.setex(_medical_report_key(report_date, resident_id), ttl, payload)
+    redis_client.setex(_medical_report_latest_key(resident_id), ttl, payload)
+    redis_client.hset(_medical_report_index_key(resident_id), report_date, json.dumps(_medical_report_summary(document), ensure_ascii=False))
+    redis_client.expire(_medical_report_index_key(resident_id), ttl)
+    return document
+
+
+def _get_medical_report_document(resident_id: str, report_date: Optional[str] = None) -> Optional[dict]:
+    key = _medical_report_key(_local_report_date(report_date), resident_id) if report_date else _medical_report_latest_key(resident_id)
+    raw = redis_client.get(key)
     return json.loads(raw) if raw else None
 
 
@@ -2772,6 +3049,13 @@ def _llm_alerts_for_resident(resident_id: str) -> list[dict]:
     return alerts[:100]
 
 
+def _run_on_main_loop(coro, timeout: float = 120):
+    if not _loop or _loop.is_closed():
+        raise RuntimeError("Boucle FastAPI indisponible")
+    future = asyncio.run_coroutine_threadsafe(coro, _loop)
+    return future.result(timeout=timeout)
+
+
 @app.get("/api/llm/report/{resident_id}")
 async def get_llm_report(resident_id: str, force: bool = False):
     """
@@ -2782,14 +3066,16 @@ async def get_llm_report(resident_id: str, force: bool = False):
     if not force:
         cached = _get_cached_daily_llm(report_date, resident_id)
         if cached:
+            mini_dpi = _build_resident_daily_report(resident_id, report_date=report_date, force=False)
+            cached.setdefault("patient_profile", _profile_with_patient_file(resident_id, RESIDENTS_MAP.get(resident_id, {})))
+            document = _get_medical_report_document(resident_id, report_date) or _store_medical_report_document(cached, mini_dpi)
+            cached["medical_document"] = _medical_report_summary(document)
             cached["cached"] = True
             return cached
 
     raw = redis_client.get(f"resident:{resident_id}:state")
-    if not raw:
-        raise HTTPException(404, "Résident non trouvé")
-    state = json.loads(raw)
-    profile = RESIDENTS_MAP.get(resident_id, {})
+    state = json.loads(raw) if raw else _safe_state_for_report(resident_id)
+    profile = _profile_with_patient_file(resident_id, RESIDENTS_MAP.get(resident_id, {}))
     alerts_today = _llm_alerts_for_resident(resident_id)
     clinical_history = _build_resident_daily_report(resident_id, report_date=report_date, force=False)
 
@@ -2806,6 +3092,9 @@ async def get_llm_report(resident_id: str, force: bool = False):
     )
     result["date"] = report_date
     result["generated_at"] = datetime.utcnow().isoformat() + "Z"
+    result["patient_profile"] = profile
+    document = _store_medical_report_document(result, clinical_history)
+    result["medical_document"] = _medical_report_summary(document)
     ttl = LLM_DAILY_TTL_DAYS * 86400
     redis_client.setex(_llm_daily_key(report_date, resident_id), ttl, json.dumps(result, ensure_ascii=False))
     redis_client.hset(_llm_daily_index_key(report_date), resident_id, json.dumps(result, ensure_ascii=False))
@@ -2820,9 +3109,7 @@ async def start_llm_report(resident_id: str):
     Utiliser GET /api/llm/result/{job_id} pour récupérer le résultat.
     """
     raw = redis_client.get(f"resident:{resident_id}:state")
-    if not raw:
-        raise HTTPException(404, "Résident non trouvé")
-    state = json.loads(raw)
+    state = json.loads(raw) if raw else _safe_state_for_report(resident_id)
     profile = RESIDENTS_MAP.get(resident_id, {})
     alerts_today = _llm_alerts_for_resident(resident_id)
     clinical_history = _build_resident_daily_report(resident_id, force=False)
@@ -2877,6 +3164,11 @@ def daily_llm_report_loop():
     while True:
         try:
             today = _local_report_date()
+            lock_key = f"llm:daily:lock:{today}"
+            if not redis_client.set(lock_key, "1", nx=True, ex=3600):
+                log.info("Rapport LLM quotidien deja pris en charge par un autre process")
+                time.sleep(300)
+                continue
             index_key = _llm_daily_index_key(today)
             generated = redis_client.hlen(index_key)
             if generated < len(RESIDENTS_MAP) or last_attempt_date != today:
@@ -2885,7 +3177,7 @@ def daily_llm_report_loop():
                     if redis_client.exists(_llm_daily_key(today, resident_id)):
                         continue
                     try:
-                        asyncio.run(get_llm_report(resident_id, force=False))
+                        _run_on_main_loop(get_llm_report(resident_id, force=False), timeout=180)
                         time.sleep(1.0)
                     except Exception as exc:
                         log.warning(f"Rapport LLM quotidien ignore pour {resident_id}: {exc}")
@@ -2978,6 +3270,8 @@ async def startup():
     # Connexion MQTT en thread séparé
     def mqtt_thread():
         client = mqtt.Client(client_id=f"ehpad_backend_{os.getpid()}")
+        if MQTT_USERNAME:
+            client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
         client.on_connect = on_connect
         client.on_message = on_message
         retries = 0

@@ -1,0 +1,124 @@
+[
+  {
+    "test_name": "test_hypoglycemia_level_3",
+    "problem": "P003",
+    "input": {
+      "glucose": 65,
+      "resident_factor": "diabetes"
+    },
+    "expected": {
+      "min_score": 0.4,
+      "alert_level_gte": 3,
+      "active_rule": "glucose_low"
+    }
+  },
+  {
+    "test_name": "test_hypoglycemia_confusion_level_4",
+    "problem": "P003",
+    "input": {
+      "glucose": 52,
+      "new_confusion": true,
+      "resident_factor": "diabetes"
+    },
+    "expected": {
+      "min_score": 0.8,
+      "alert_level_gte": 4,
+      "active_rule": "hypoglycemia_confusion"
+    }
+  },
+  {
+    "test_name": "test_orthostatic_hypotension",
+    "problem": "P002",
+    "input": {
+      "systolic_drop_3min": 22,
+      "bed_exit": true
+    },
+    "expected": {
+      "min_score": 0.5,
+      "alert_level_gte": 3,
+      "active_rule": "orthostatic_drop"
+    }
+  },
+  {
+    "test_name": "test_iatrogenic_confusion_after_med_change",
+    "problem": "P013",
+    "input": {
+      "recent_medication_change": true,
+      "psychotrope": true,
+      "new_confusion": true
+    },
+    "expected": {
+      "min_score": 0.55,
+      "alert_level_gte": 3,
+      "active_rule": "recent_medication_change"
+    }
+  },
+  {
+    "test_name": "test_confusion_infection",
+    "problem": "P006",
+    "input": {
+      "new_confusion": true,
+      "temperature": 38.2,
+      "heart_rate": 112
+    },
+    "expected": {
+      "min_score": 0.6,
+      "alert_level_gte": 3,
+      "active_rule": "new_confusion"
+    }
+  },
+  {
+    "test_name": "test_heatwave_dehydration_diuretic",
+    "problem": "P004",
+    "input": {
+      "room_temperature": 29.5,
+      "diuretic": true,
+      "no_drink_trace_4h": true
+    },
+    "expected": {
+      "min_score": 0.45,
+      "alert_level_gte": 3,
+      "active_rule": "dehydration_diuretic_heat"
+    }
+  },
+  {
+    "test_name": "test_malnutrition_weight_loss",
+    "problem": "P012",
+    "input": {
+      "weight_loss_1_month_percent": 6,
+      "activity_drop_7d": true
+    },
+    "expected": {
+      "min_score": 0.3,
+      "alert_level_gte": 2,
+      "active_rule": "weight_loss"
+    }
+  },
+  {
+    "test_name": "test_fall_impact_immobility",
+    "problem": "P001",
+    "input": {
+      "impact_g": 2.7,
+      "immobility_seconds": 90
+    },
+    "expected": {
+      "min_score": 0.8,
+      "alert_level_gte": 4,
+      "active_rule": "fall_confirmed"
+    }
+  },
+  {
+    "test_name": "test_fugue_exit_zone",
+    "problem": "P007",
+    "input": {
+      "door_open": true,
+      "current_zone": "exterieur",
+      "cognitive_decline": true
+    },
+    "expected": {
+      "min_score": 0.7,
+      "alert_level_gte": 4,
+      "active_rule": "fugue_confirmed"
+    }
+  }
+]

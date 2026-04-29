@@ -8,11 +8,27 @@ import os
 from functools import lru_cache
 
 KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "ehpad_watch_kb.json")
+OFFICIAL_KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "official_elderly_complications_kb.json")
+EPIDOR_KB_PATH = os.path.join(os.path.dirname(__file__), "kb", "epidor_kb_mapping_v4.json")
 
 
 @lru_cache(maxsize=1)
 def load_kb() -> dict:
     with open(KB_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@lru_cache(maxsize=1)
+def load_official_kb() -> dict:
+    with open(OFFICIAL_KB_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@lru_cache(maxsize=1)
+def load_epidor_mapping() -> dict:
+    if not os.path.exists(EPIDOR_KB_PATH):
+        return {}
+    with open(EPIDOR_KB_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -42,6 +58,36 @@ def get_alert_levels() -> dict:
 
 def get_family_policy() -> dict:
     return load_kb().get("family_interface_policy", {})
+
+
+def get_official_sources() -> list:
+    return load_official_kb().get("sources", [])
+
+
+def get_official_profiles_for_pathologies(pathologies: list[str]) -> list[dict]:
+    patho_set = {str(p).lower() for p in pathologies}
+    profiles = []
+    for item in load_official_kb().get("profiles", []):
+        matches = {str(p).lower() for p in item.get("match_pathologies", [])}
+        if matches.intersection(patho_set):
+            profiles.append(item)
+    return profiles
+
+
+def get_official_cross_complications() -> list:
+    return load_official_kb().get("cross_complications", [])
+
+
+def get_first_aid_actions() -> list:
+    return load_official_kb().get("first_aid_actions", [])
+
+
+def get_epidor_ml_rule_weights() -> dict:
+    return load_epidor_mapping().get("ml_rule_weights", {})
+
+
+def get_epidor_dashboard_config() -> dict:
+    return load_epidor_mapping().get("dashboard_mini_dpi", {})
 
 
 # --- Helpers metier ---

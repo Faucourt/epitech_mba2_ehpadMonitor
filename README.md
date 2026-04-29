@@ -75,7 +75,7 @@ Le projet fonctionne sans Ollama: les rapports LLM ont un fallback local.
 
 - Docker Desktop ou Docker Engine avec `docker compose`.
 - Ports disponibles: `3002`, `3443`, `8001`, `1883`, `9001`, `6379`, `8086`.
-- Pour le LLM bonus: Ollama installe et modele `meditron:7b`.
+- Pour le LLM bonus: Ollama installe avec `llama3.2:3b`, `qwen2.5:7b` et `meditron:7b`.
 - Pour tester la mini app sur telephone: PC et telephone sur le meme reseau Wi-Fi.
 - Pour tester les push mobiles reels: HTTPS local avec certificats dans `dashboard/certs/`.
 
@@ -134,17 +134,19 @@ Ces scripts:
 
 | Espace | Identifiant | Mot de passe / token | Role |
 |---|---|---|---|
-| Soignant A | `soignant_A` | `EHPAD2024!` | secteur affecte |
-| Soignant B | `soignant_B` | `EHPAD2024!` | secteur affecte |
-| Soignant C | `soignant_C` | `EHPAD2024!` | secteur affecte |
-| Chef de garde | `chef_garde` | `EHPAD2024!` | acces privilegie |
-| Direction | `direction` | `EHPAD2024!` | supervision |
-| Famille Edith Piaf | `piaf` | `piaf105` | proche R005 |
-| Famille Marie Curie | `curie` | `curie101` | proche R001 |
-| Famille Dalida | `dalida` | `dalida214` | proche R019 |
-| Admin familles | token admin | `ADMIN_EHPAD_2024` | gestion comptes famille |
+| Soignant A | `soignant_A` | voir `.env` (`STAFF_DEMO_PASSWORD`) | secteur affecte |
+| Soignant B | `soignant_B` | voir `.env` (`STAFF_DEMO_PASSWORD`) | secteur affecte |
+| Soignant C | `soignant_C` | voir `.env` (`STAFF_DEMO_PASSWORD`) | secteur affecte |
+| Chef de garde | `chef_garde` | voir `.env` (`STAFF_DEMO_PASSWORD`) | acces privilegie |
+| Direction | `direction` | voir `.env` (`STAFF_DEMO_PASSWORD`) | supervision |
+| Famille Edith Piaf | `piaf` | voir `.env` | proche R005 |
+| Famille Marie Curie | `curie` | voir `.env` | proche R001 |
+| Famille Dalida | `dalida` | voir `.env` | proche R019 |
+| Admin familles | token admin | voir `.env` (`FAMILLE_ADMIN_TOKEN`) | gestion comptes famille |
 
 La liste complete des comptes famille est dans `docs/comptes_famille_demo.md`.
+
+> **Demo locale** : copier `.env.example` en `.env` et renseigner les valeurs avant `docker compose up`.
 
 ## Activation des fonctions
 
@@ -153,13 +155,18 @@ Les variables principales sont documentees dans `.env.example`.
 | Variable | Valeur demo | Role |
 |---|---|---|
 | `NUM_RESIDENTS` | `25` | nombre de residents simules |
-| `STAFF_DEMO_PASSWORD` | `EHPAD2024!` | mot de passe demo personnel |
-| `FAMILLE_ADMIN_TOKEN` | `ADMIN_EHPAD_2024` | token admin familles |
+| `STAFF_DEMO_PASSWORD` | défini dans `.env` | mot de passe demo personnel |
+| `FAMILLE_ADMIN_TOKEN` | défini dans `.env` | token admin familles |
 | `REDIS_PASSWORD` | `change-me-redis-long-random` | protection Redis |
 | `INFLUX_TOKEN` | `change-me-influx-token` | token InfluxDB |
 | `OLLAMA_HOST` | `http://host.docker.internal:11434` | URL Ollama depuis Docker |
 | `OLLAMA_MODEL` | `meditron:7b` | modele LLM local |
+| `LLM_ROUTING_ENABLED` | `true` | active le routage multi-modeles LLM |
+| `LLM_FAST_MODEL` | `llama3.2:3b` | synthese courte soignant/famille |
+| `LLM_CLINICAL_MODEL` | `qwen2.5:7b` | hypotheses, CAT, surveillance et sources KB |
+| `LLM_MEDICAL_MODEL` | `meditron:7b` | fallback rapport medical complet |
 | `LLM_DAILY_AUTO_ENABLED` | `false` backend, `true` worker | generation auto rapports LLM |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | comptes service | authentification MQTT |
 | `HTTPS_REQUIRED` | `false` | force HTTPS hors localhost si active |
 | `ALLOWED_ORIGINS` | localhost dashboard | CORS API |
 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | vide ou demo compose | Web Push navigateur |
@@ -300,7 +307,7 @@ La logique reste volontairement hybride:
 - HTML / CSS / JavaScript statique pour le dashboard.
 - Three.js pour la vue 3D de l'EHPAD.
 - Express pour servir le dashboard et proxyfier `/api`.
-- Ollama + `meditron:7b` pour les rapports LLM optionnels.
+- Ollama + routage `llama3.2:3b` / `qwen2.5:7b` / `meditron:7b` pour les rapports LLM optionnels.
 - Docker Compose pour lancer l'ensemble.
 
 ## Architecture globale
@@ -315,7 +322,7 @@ flowchart LR
     DASH[Dashboard HTML/JS<br/>port 3002]
     TEL[Mini app soignant<br/>telephone / PWA]
     FAM[Espace famille]
-    LLM[Ollama meditron:7b<br/>optionnel]
+    LLM[Ollama<br/>llama3.2 + qwen2.5 + meditron]
 
     SIM -->|vitals QoS1<br/>ambient QoS0<br/>critical QoS2| MQTT
     MQTT --> API
@@ -327,6 +334,47 @@ flowchart LR
     TEL --> DASH
     FAM --> DASH
 ```
+
+## Architecture LLM et Mini DPI
+
+Le LLM est route par tache. Il ne decide pas seul: le backend construit d'abord
+une base deterministe avec regles, ML, alertes, historique et KB. Les modeles
+locaux enrichissent ensuite cette base.
+
+```mermaid
+flowchart TD
+    DPI[Profil resident<br/>pathologies + traitements probables]
+    KB[KB officielle<br/>pathologies, PSC/AFPS, scenarios]
+    LIVE[Constantes + alertes + historique]
+    BASE[Base deterministe<br/>rules + ML + KB]
+    FAST[llama3.2:3b<br/>resume court]
+    CLIN[qwen2.5:7b<br/>hypotheses + CAT + surveillance]
+    MED[meditron:7b<br/>fallback rapport complet]
+    DOC[Document clinique structure<br/>Redis medical_report:v1]
+    MINI[Mini DPI resident]
+
+    DPI --> BASE
+    KB --> BASE
+    LIVE --> BASE
+    BASE --> FAST
+    BASE --> CLIN
+    BASE --> MED
+    FAST --> DOC
+    CLIN --> DOC
+    MED --> DOC
+    DOC --> MINI
+```
+
+Ce qui est affiche dans le rapport:
+
+- `Base deterministe`: garantit un rapport minimal meme sans LLM.
+- `Synthese rapide / llama3.2:3b`: resume soignant, vigilance courte, message famille.
+- `Analyse clinique KB / qwen2.5:7b`: hypotheses differentielles, conduite a tenir, surveillance, sources.
+- `Rapport medical complet / meditron:7b`: secours si les agents specialises echouent.
+
+Le document stocke suit une structure inspiree FHIR `DiagnosticReport` +
+`Composition`: metadata, conclusion, sections, sources et tracabilite. Il est
+conserve dans Redis par resident/date et rattache au Mini DPI.
 
 Lecture rapide:
 
@@ -456,6 +504,8 @@ L'interface distingue plusieurs blocs:
 
 - `Dashboard global`: 25 residents, constantes, alertes et priorisation.
 - `Mini DPI`: profil, pathologies, capteurs, risque, historique et transmission.
+- `Rapport clinique structure`: document stocke dans le Mini DPI avec synthese,
+  preuves, hypotheses, conduite a tenir, surveillance, sources et tracabilite LLM.
 - `Plan / capteurs`: localisation 2D/3D, chambres, zones, capteurs actifs.
 - `Personnel`: soignants, affectations, charge, notifications et audit.
 - `Famille`: carnet de vie sans constantes medicales.
@@ -466,9 +516,11 @@ Important:
 
 - le simulateur ne change pas selon une validation medicale humaine;
 - le LLM n'est pas reentraine localement;
-- les rapports LLM sont une aide de synthese, pas un avis medical officiel;
+- les rapports LLM sont une aide de synthese et de transmission, pas un avis medical officiel;
 - l'entrainement ML reste separe du moteur d'alerte live;
 - le Mini DPI dashboard utilise un rapport frais pour eviter un cache ancien.
+- les antecedents du patient, traitements probables et scenarios preferes sont
+  relies a la KB pour contextualiser la conduite a tenir.
 
 ## Organisation des fonctions
 
@@ -521,11 +573,16 @@ Fichier principal:
 
 - agrege profil, constantes, capteurs, historique 30 jours, risque et actions;
 - fournit une vue resident exploitable par le dashboard.
+- reference le dernier rapport clinique structure genere par le LLM;
+- expose les antecedents relies a la KB: pathologies, traitements probables,
+  scenarios patients, seuils adaptes et conduite a tenir.
 
 Endpoints:
 
 - `/api/reports/daily/{date}/{resident_id}`
 - `/api/residents/{resident_id}/dpi`
+- `/api/residents/{resident_id}/medical-reports/latest`
+- `/api/residents/{resident_id}/medical-reports/{date}`
 
 ### Soignants et notifications
 
@@ -645,10 +702,17 @@ reelles, un split temporel et une validation clinique.
 
 ### LLM
 
-- reformule une synthese clinique;
-- utilise contexte resident, historique, alertes et KB locale;
+- utilise un routage multi-modeles local;
+- reformule une synthese clinique courte avec `llama3.2:3b`;
+- construit hypotheses, CAT, surveillance et sources KB avec `qwen2.5:7b`;
+- garde `meditron:7b` comme fallback de rapport complet;
+- utilise contexte resident, historique, alertes, antecedents, traitements probables et KB locale;
+- stocke un document clinique structure dans le Mini DPI;
 - n'est pas fine-tune par le projet;
 - retombe sur un fallback local si Ollama est indisponible ou trop lent.
+
+La sortie LLM affiche aussi la tracabilite `Qui a fait quoi`: base deterministe,
+modele rapide, modele clinique et eventuel fallback medical.
 
 ## Espace famille
 
@@ -731,12 +795,21 @@ Limites importantes:
 
 ## LLM local
 
-Le projet utilise par defaut `meditron:7b` via Ollama.
+Le projet utilise Ollama en local. Le routage conseille est:
+
+| Tache | Modele | Role |
+|---|---|---|
+| Synthese courte | `llama3.2:3b` | resume soignant, vigilance courte, message famille |
+| Analyse clinique KB | `qwen2.5:7b` | hypotheses differentielles, CAT, surveillance, sources |
+| Rapport complet / fallback | `meditron:7b` | secours si les agents specialises echouent |
 
 Activation simple:
 
 ```powershell
 ollama serve
+ollama pull llama3.2:3b
+ollama pull qwen2.5:7b
+ollama pull meditron:7b
 docker compose up --build -d backend llm_worker
 ```
 
@@ -744,10 +817,16 @@ Variables utiles:
 
 - `OLLAMA_HOST`
 - `OLLAMA_MODEL`
+- `LLM_ROUTING_ENABLED`
+- `LLM_FAST_MODEL`
+- `LLM_CLINICAL_MODEL`
+- `LLM_MEDICAL_MODEL`
 - `LLM_DAILY_AUTO_ENABLED`
 - `LLM_DAILY_TTL_DAYS`
 
 Le backend retombe sur un fallback local si le LLM est indisponible ou trop lent.
+Les rapports forces peuvent prendre 60 a 90 secondes selon la machine; pour une
+demo, il est conseille de les pre-generer avant le passage jury.
 
 ## Services Docker
 
@@ -770,6 +849,8 @@ Le backend retombe sur un fallback local si le LLM est indisponible ou trop lent
 | `GET /api/residents/{id}` | detail resident protege |
 | `GET /api/residents/{id}/dpi` | mini DPI protege |
 | `GET /api/reports/daily/{date}/{id}` | mini DPI frais pour dashboard |
+| `GET /api/residents/{id}/medical-reports/latest` | dernier rapport clinique structure |
+| `GET /api/residents/{id}/medical-reports/{date}` | rapport clinique structure date |
 | `GET /api/alerts` | alertes actives + historique |
 | `GET /api/alerts/config` | configuration 5 niveaux |
 | `POST /api/alerts/{id}/acknowledge` | acquittement |
@@ -873,6 +954,8 @@ Guide detaille:
 | Alertes 5 niveaux | information a danger vital | OK |
 | Docker Compose | stack complete avec healthchecks | OK |
 | Prediction 30-60 min | ML + A2A | Bonus |
+| Securisation MQTT | auth + ACL + ports localhost | Bonus |
+| Rapport clinique structure | LLM route + document Mini DPI | Bonus |
 | Historique / routines | Redis + InfluxDB + routine engine | Bonus |
 | Personnel / escalade | app soignant, affectations, audits | Bonus |
 | Famille | portail famille filtre | Bonus |
@@ -935,7 +1018,10 @@ projet spe Hepad/
 |   |-- package.json
 |   `-- Dockerfile
 |-- mosquitto/
-|   `-- config/mosquitto.conf
+|   `-- config/
+|       |-- mosquitto.conf
+|       |-- acl
+|       `-- passwd
 |-- docs/
 |-- tests/
 |-- data/
@@ -951,7 +1037,7 @@ projet spe Hepad/
 - `docs`: architecture, audits, comptes demo et guide oral.
 - `tests`: tests automatises.
 - `data`: donnees generees localement.
-- `mosquitto`: configuration du broker MQTT.
+- `mosquitto`: configuration du broker MQTT, comptes et ACL.
 
 ## Fichiers importants
 
@@ -963,6 +1049,8 @@ Backend:
 - `backend/a2a_agents.py`: pipeline agentique.
 - `backend/auth.py`: sessions famille et personnel.
 - `backend/llm_service.py`: rapports LLM et fallback.
+- `backend/kb/official_elderly_complications_kb.json`: KB officielle pathologies,
+  complications, premiers secours et conduite a tenir.
 
 Dashboard:
 
@@ -987,8 +1075,19 @@ Simulateur:
 - Vue famille limitee: pas de constantes vitales ni scores cliniques.
 - Logs d'acces, notifications, bris de glace et actions d'alerte.
 - Redis protege par mot de passe via variable d'environnement.
+- Mosquitto refuse les connexions anonymes.
+- MQTT utilise un fichier `passwd` Mosquitto et des ACL:
+  - `simulator`: publication capteurs et lecture commandes;
+  - `backend`: lecture `ehpad/#` et publication `ehpad/control/#`;
+  - `dashboard`: lecture limitee aux topics de synthese/alertes si utilise;
+  - `healthcheck`: publication du topic de sante.
+- Les ports MQTT, Redis et InfluxDB sont exposes en localhost `127.0.0.1`.
 - Certificats locaux exclus du Git via `.gitignore`.
 - Les cles privees locales ne doivent jamais etre commitees.
+
+Limite securite restante: TLS MQTT 8883 n'est pas active dans la demo Docker.
+Pour une mise en production, il faudrait ajouter CA/certificat serveur, rotation
+des secrets et comptes par equipement.
 
 ## Limites actuelles
 
@@ -998,6 +1097,9 @@ Simulateur:
 - Le LLM local n'est pas obligatoire et peut etre lent selon la machine.
 - Les notifications push dependent du navigateur, du HTTPS et du support mobile.
 - Le mode demo reste prioritaire sur une exhaustivite clinique complete.
+- MQTT est authentifie/ACL en demo, mais sans TLS 8883.
+- Les mots de passe MQTT presents dans `mosquitto/config/passwd` sont des secrets
+  de demonstration a remplacer hors soutenance locale.
 
 ## References utiles du projet
 

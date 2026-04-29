@@ -1,0 +1,883 @@
+[
+  {
+    "resident_id": "R101",
+    "login": "dupont",
+    "name": "Marie Dupont",
+    "room": "101",
+    "age": 86,
+    "sex": "F",
+    "profile": "Alzheimer + risque chute",
+    "problems": [
+      "P001",
+      "P006",
+      "P007",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "cognitive_decline",
+      "alzheimer_or_related_disorder",
+      "wandering_history",
+      "night_wandering",
+      "fall_history",
+      "polypharmacy"
+    ],
+    "probable_medications": [
+      "donepezil_or_memantine",
+      "antihypertensive",
+      "vitamin_d",
+      "occasional_benzodiazepine"
+    ],
+    "active_rules": [
+      "night_bed_exit",
+      "wandering_internal",
+      "routine_change",
+      "fall_after_impact",
+      "confusion_with_vital_change"
+    ]
+  },
+  {
+    "resident_id": "R102",
+    "login": "moreau",
+    "name": "Henri Moreau",
+    "room": "102",
+    "age": 89,
+    "sex": "M",
+    "profile": "Insuffisance cardiaque + diurétiques",
+    "problems": [
+      "P001",
+      "P002",
+      "P004",
+      "P009",
+      "P010",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "heart_failure",
+      "diuretic",
+      "hypertension",
+      "orthostatic_risk",
+      "renal_impairment",
+      "fall_history"
+    ],
+    "probable_medications": [
+      "furosemide",
+      "ace_inhibitor_or_arb",
+      "beta_blocker",
+      "anticoagulant_or_antiplatelet"
+    ],
+    "active_rules": [
+      "heart_failure_epof",
+      "weight_gain_2kg_3days",
+      "spo2_drop",
+      "orthostatic_drop",
+      "dehydration_diuretic_heat"
+    ]
+  },
+  {
+    "resident_id": "R103",
+    "login": "bernard",
+    "name": "Simone Bernard",
+    "room": "103",
+    "age": 82,
+    "sex": "F",
+    "profile": "Diabète insulinotraité",
+    "problems": [
+      "P001",
+      "P003",
+      "P006",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "diabetes",
+      "insulin",
+      "hypoglycemia_history",
+      "meal_skip_risk",
+      "fall_history"
+    ],
+    "probable_medications": [
+      "insulin",
+      "metformin_if_tolerated",
+      "antihypertensive",
+      "statin"
+    ],
+    "active_rules": [
+      "hypoglycemia_low",
+      "skipped_meal_diabetes",
+      "confusion_plus_glucose_low",
+      "fall_after_malaise"
+    ]
+  },
+  {
+    "resident_id": "R104",
+    "login": "leroy",
+    "name": "Pierre Leroy",
+    "room": "104",
+    "age": 91,
+    "sex": "M",
+    "profile": "Anticoagulant + chutes répétées",
+    "problems": [
+      "P001",
+      "P002",
+      "P010",
+      "P011",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "fall_history",
+      "anticoagulant_treatment",
+      "gait_disorder",
+      "balance_disorder",
+      "hypertension"
+    ],
+    "probable_medications": [
+      "direct_oral_anticoagulant",
+      "beta_blocker",
+      "antihypertensive",
+      "analgesic_paracetamol"
+    ],
+    "active_rules": [
+      "fall_after_impact",
+      "fall_with_anticoagulant",
+      "syncope_suspected",
+      "FAST_positive_manual",
+      "orthostatic_drop"
+    ]
+  },
+  {
+    "resident_id": "R105",
+    "login": "martin",
+    "name": "Yvette Martin",
+    "room": "105",
+    "age": 84,
+    "sex": "F",
+    "profile": "Douleur chronique + opioïdes faibles",
+    "problems": [
+      "P001",
+      "P006",
+      "P008",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "osteoarthritis",
+      "pain_history",
+      "opioid_or_tramadol",
+      "constipation_history",
+      "communication_fatigue"
+    ],
+    "probable_medications": [
+      "tramadol_or_codeine",
+      "paracetamol",
+      "laxative",
+      "ppi"
+    ],
+    "active_rules": [
+      "pain_algoplus",
+      "constipation_72h",
+      "opioid_confusion_fall",
+      "activity_drop_pain"
+    ]
+  },
+  {
+    "resident_id": "R106",
+    "login": "petit",
+    "name": "Andre Petit",
+    "room": "106",
+    "age": 78,
+    "sex": "M",
+    "profile": "BPCO / hypoxie",
+    "problems": [
+      "P001",
+      "P005",
+      "P006",
+      "P009",
+      "P013"
+    ],
+    "risk_factors": [
+      "copd",
+      "recent_respiratory_infection",
+      "oxygen_therapy_optional",
+      "smoking_history",
+      "fall_history"
+    ],
+    "probable_medications": [
+      "bronchodilator",
+      "inhaled_corticosteroid",
+      "oxygen_if_prescribed",
+      "short_course_antibiotic_if_infection"
+    ],
+    "active_rules": [
+      "spo2_slow_drop",
+      "respiratory_rate_high",
+      "NEWS2_resp",
+      "infection_respiratory",
+      "hypoxemia_emergency"
+    ]
+  },
+  {
+    "resident_id": "R107",
+    "login": "durand",
+    "name": "Louise Durand",
+    "room": "107",
+    "age": 88,
+    "sex": "F",
+    "profile": "Fragilité + dénutrition",
+    "problems": [
+      "P001",
+      "P004",
+      "P006",
+      "P012"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "malnutrition_risk",
+      "low_bmi",
+      "poor_appetite",
+      "depression",
+      "dependency",
+      "dehydration_risk"
+    ],
+    "probable_medications": [
+      "vitamin_d",
+      "oral_nutritional_supplement",
+      "antidepressant_possible",
+      "laxative_possible"
+    ],
+    "active_rules": [
+      "meal_intake_drop",
+      "weight_loss",
+      "activity_drop_7d",
+      "dehydration_low_intake",
+      "routine_meal_absence"
+    ]
+  },
+  {
+    "resident_id": "R108",
+    "login": "thomas",
+    "name": "Marcel Thomas",
+    "room": "108",
+    "age": 83,
+    "sex": "M",
+    "profile": "Trouble du rythme / syncope",
+    "problems": [
+      "P001",
+      "P002",
+      "P010",
+      "P011",
+      "P013"
+    ],
+    "risk_factors": [
+      "arrhythmia",
+      "beta_blocker",
+      "anticoagulant_treatment",
+      "syncope_history",
+      "hypertension"
+    ],
+    "probable_medications": [
+      "beta_blocker",
+      "direct_oral_anticoagulant",
+      "antiarrhythmic_possible",
+      "antihypertensive"
+    ],
+    "active_rules": [
+      "hr_extreme_low_high",
+      "syncope_after_hr_extreme",
+      "fall_without_mechanical_cause",
+      "orthostatic_drop"
+    ]
+  },
+  {
+    "resident_id": "R201",
+    "login": "robert",
+    "name": "Jeanne Robert",
+    "room": "201",
+    "age": 90,
+    "sex": "F",
+    "profile": "Alzheimer + fugue",
+    "problems": [
+      "P001",
+      "P006",
+      "P007",
+      "P008",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "alzheimer_or_related_disorder",
+      "wandering_history",
+      "sleep_wake_disorder",
+      "communication_limited",
+      "fall_history"
+    ],
+    "probable_medications": [
+      "donepezil_or_memantine",
+      "melatonin_possible",
+      "occasional_anxiolytic",
+      "paracetamol"
+    ],
+    "active_rules": [
+      "door_open_exit_zone",
+      "night_wandering",
+      "elopement_confirmed",
+      "pain_behavioral_alert",
+      "confusion_routine_change"
+    ]
+  },
+  {
+    "resident_id": "R202",
+    "login": "richard",
+    "name": "Gaston Richard",
+    "room": "202",
+    "age": 87,
+    "sex": "M",
+    "profile": "Parkinson + hypotension",
+    "problems": [
+      "P001",
+      "P002",
+      "P006",
+      "P013"
+    ],
+    "risk_factors": [
+      "parkinson",
+      "orthostatic_risk",
+      "gait_disorder",
+      "balance_disorder",
+      "fall_history",
+      "polypharmacy"
+    ],
+    "probable_medications": [
+      "levodopa",
+      "antihypertensive_possible",
+      "laxative_possible",
+      "vitamin_d"
+    ],
+    "active_rules": [
+      "orthostatic_drop",
+      "gait_instability",
+      "slow_walk_baseline_drop",
+      "fall_after_standing"
+    ]
+  },
+  {
+    "resident_id": "R203",
+    "login": "simon",
+    "name": "Odette Simon",
+    "room": "203",
+    "age": 81,
+    "sex": "F",
+    "profile": "Risque infection urinaire/confusion",
+    "problems": [
+      "P001",
+      "P005",
+      "P006",
+      "P008"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "recurrent_uti",
+      "cognitive_decline",
+      "dehydration_risk",
+      "urinary_retention_risk"
+    ],
+    "probable_medications": [
+      "antibiotic_if_episode",
+      "antihypertensive",
+      "cranberry_or_prevention_optional",
+      "paracetamol"
+    ],
+    "active_rules": [
+      "temperature_delta",
+      "new_confusion",
+      "urine_output_low",
+      "infection_suspicion",
+      "sepsis_red_flags"
+    ]
+  },
+  {
+    "resident_id": "R204",
+    "login": "michel",
+    "name": "Fernand Michel",
+    "room": "204",
+    "age": 79,
+    "sex": "M",
+    "profile": "AVC ancien + AIT possible",
+    "problems": [
+      "P001",
+      "P010",
+      "P011",
+      "P013"
+    ],
+    "risk_factors": [
+      "previous_stroke_TIA",
+      "hypertension",
+      "diabetes_possible",
+      "antiplatelet_or_anticoagulant",
+      "gait_disorder"
+    ],
+    "probable_medications": [
+      "antiplatelet_or_anticoagulant",
+      "statin",
+      "antihypertensive",
+      "diabetes_med_if_needed"
+    ],
+    "active_rules": [
+      "FAST_positive_manual",
+      "sudden_balance_disorder",
+      "fall_with_neuro_sign",
+      "confusion_after_fall"
+    ]
+  },
+  {
+    "resident_id": "R208",
+    "login": "lefebvre",
+    "name": "Helene Lefebvre",
+    "room": "208",
+    "age": 85,
+    "sex": "F",
+    "profile": "Canicule + diurétiques",
+    "problems": [
+      "P001",
+      "P002",
+      "P004",
+      "P006",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "diuretic",
+      "dehydration_risk",
+      "heatwave_context_sensitive",
+      "orthostatic_risk"
+    ],
+    "probable_medications": [
+      "thiazide_or_loop_diuretic",
+      "antihypertensive",
+      "vitamin_d"
+    ],
+    "active_rules": [
+      "room_temp_high",
+      "no_drink_trace",
+      "dehydration_diuretic_heat",
+      "orthostatic_drop",
+      "confusion_dehydration"
+    ]
+  },
+  {
+    "resident_id": "R209",
+    "login": "leblanc",
+    "name": "Roger Leblanc",
+    "room": "209",
+    "age": 92,
+    "sex": "M",
+    "profile": "Polymédication + iatrogénie",
+    "problems": [
+      "P001",
+      "P002",
+      "P006",
+      "P008",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "polypharmacy",
+      "recent_medication_change_lt_7d",
+      "renal_impairment",
+      "fall_history",
+      "confusion_history"
+    ],
+    "probable_medications": [
+      "benzodiazepine_possible",
+      "opioid_possible",
+      "diuretic_possible",
+      "antihypertensive",
+      "anticoagulant_possible"
+    ],
+    "active_rules": [
+      "recent_medication_change",
+      "iatrogenic_attention",
+      "somnolence_activity_drop",
+      "fall_with_anticoagulant",
+      "urinary_retention"
+    ]
+  },
+  {
+    "resident_id": "R210",
+    "login": "fontaine",
+    "name": "Germaine Fontaine",
+    "room": "210",
+    "age": 86,
+    "sex": "F",
+    "profile": "Isolement / apathie / dépression",
+    "problems": [
+      "P001",
+      "P006",
+      "P012"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "depression",
+      "social_isolation",
+      "malnutrition_risk",
+      "low_activity_baseline"
+    ],
+    "probable_medications": [
+      "antidepressant_possible",
+      "vitamin_d",
+      "oral_nutritional_supplement_possible"
+    ],
+    "active_rules": [
+      "routine_breakdown",
+      "activity_drop_7d",
+      "meal_absence",
+      "sleep_daytime_increase",
+      "malnutrition_attention"
+    ]
+  },
+  {
+    "resident_id": "R211",
+    "login": "rousseau",
+    "name": "Edouard Rousseau",
+    "room": "211",
+    "age": 80,
+    "sex": "M",
+    "profile": "HTA + malaise cardiaque",
+    "problems": [
+      "P001",
+      "P009",
+      "P010",
+      "P011",
+      "P013"
+    ],
+    "risk_factors": [
+      "hypertension",
+      "coronary_disease_possible",
+      "arrhythmia_possible",
+      "age_80_plus"
+    ],
+    "probable_medications": [
+      "antihypertensive",
+      "beta_blocker_possible",
+      "statin",
+      "antiplatelet_possible"
+    ],
+    "active_rules": [
+      "chest_pain_manual",
+      "hr_extreme",
+      "spo2_drop",
+      "cardiac_malaise_alert",
+      "FAST_if_neuro_sign"
+    ]
+  },
+  {
+    "resident_id": "R212",
+    "login": "morel",
+    "name": "Blanche Morel",
+    "room": "212",
+    "age": 93,
+    "sex": "F",
+    "profile": "Grande fragilité / dépendance",
+    "problems": [
+      "P001",
+      "P004",
+      "P006",
+      "P012"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "dependency",
+      "frailty",
+      "malnutrition_risk",
+      "dehydration_risk",
+      "low_mobility"
+    ],
+    "probable_medications": [
+      "vitamin_d",
+      "oral_nutritional_supplement",
+      "laxative_possible",
+      "analgesic_paracetamol"
+    ],
+    "active_rules": [
+      "immobility_1h_outside_sleep",
+      "meal_intake_drop",
+      "dehydration_low_intake",
+      "weight_loss",
+      "confusion_with_decline"
+    ]
+  },
+  {
+    "resident_id": "R213",
+    "login": "garnier",
+    "name": "Lucien Garnier",
+    "room": "213",
+    "age": 77,
+    "sex": "M",
+    "profile": "Diabète + insuffisance cardiaque",
+    "problems": [
+      "P001",
+      "P003",
+      "P009",
+      "P010",
+      "P013"
+    ],
+    "risk_factors": [
+      "diabetes",
+      "heart_failure",
+      "diuretic",
+      "hypoglycemia_risk",
+      "arrhythmia_possible"
+    ],
+    "probable_medications": [
+      "insulin_or_sulfonylurea_possible",
+      "metformin",
+      "diuretic",
+      "beta_blocker",
+      "ace_inhibitor_or_arb"
+    ],
+    "active_rules": [
+      "hypoglycemia_low",
+      "heart_failure_epof",
+      "spo2_drop",
+      "diuretic_dehydration",
+      "syncope_after_hr_extreme"
+    ]
+  },
+  {
+    "resident_id": "R214",
+    "login": "chevalier",
+    "name": "Paulette Chevalier",
+    "room": "214",
+    "age": 84,
+    "sex": "F",
+    "profile": "Douleur + troubles comportement",
+    "problems": [
+      "P001",
+      "P006",
+      "P008",
+      "P013"
+    ],
+    "risk_factors": [
+      "pain_history",
+      "osteoarthritis",
+      "cognitive_decline",
+      "opioid_or_tramadol",
+      "constipation_history"
+    ],
+    "probable_medications": [
+      "tramadol_or_codeine",
+      "paracetamol",
+      "laxative",
+      "ppi"
+    ],
+    "active_rules": [
+      "pain_algoplus",
+      "agitation_new",
+      "constipation_72h",
+      "opioid_confusion_fall"
+    ]
+  },
+  {
+    "resident_id": "R215",
+    "login": "mercier",
+    "name": "Auguste Mercier",
+    "room": "215",
+    "age": 88,
+    "sex": "M",
+    "profile": "BPCO + infection respiratoire",
+    "problems": [
+      "P001",
+      "P005",
+      "P006",
+      "P009"
+    ],
+    "risk_factors": [
+      "copd",
+      "recent_respiratory_infection",
+      "age_80_plus",
+      "frailty"
+    ],
+    "probable_medications": [
+      "bronchodilator",
+      "inhaled_corticosteroid",
+      "oxygen_if_prescribed",
+      "antibiotic_if_episode"
+    ],
+    "active_rules": [
+      "spo2_alert",
+      "respiratory_rate_high",
+      "infection_respiratory",
+      "NEWS2_high",
+      "hypoxemia_emergency"
+    ]
+  },
+  {
+    "resident_id": "R216",
+    "login": "blanc",
+    "name": "Therese Blanc",
+    "room": "216",
+    "age": 82,
+    "sex": "F",
+    "profile": "Troubles sensoriels + chute",
+    "problems": [
+      "P001",
+      "P006",
+      "P012"
+    ],
+    "risk_factors": [
+      "visual_impairment",
+      "hearing_impairment",
+      "balance_disorder",
+      "fall_history",
+      "malnutrition_risk"
+    ],
+    "probable_medications": [
+      "vitamin_d",
+      "analgesic_paracetamol",
+      "antihypertensive_possible"
+    ],
+    "active_rules": [
+      "gait_instability",
+      "zone_unusual",
+      "fall_after_impact",
+      "activity_drop_7d"
+    ]
+  },
+  {
+    "resident_id": "R217",
+    "login": "caron",
+    "name": "Gaetan Caron",
+    "room": "217",
+    "age": 76,
+    "sex": "M",
+    "profile": "Sorties jardin / fugue légère",
+    "problems": [
+      "P001",
+      "P007"
+    ],
+    "risk_factors": [
+      "cognitive_decline_mild",
+      "wandering_history",
+      "exit_zone_interest",
+      "fall_history"
+    ],
+    "probable_medications": [
+      "none_or_low",
+      "vitamin_d",
+      "antihypertensive_possible"
+    ],
+    "active_rules": [
+      "exit_zone",
+      "door_open",
+      "garden_unaccompanied",
+      "absence_return"
+    ]
+  },
+  {
+    "resident_id": "R218",
+    "login": "fournier",
+    "name": "Renee Fournier",
+    "room": "218",
+    "age": 89,
+    "sex": "F",
+    "profile": "Rétention urinaire / infection",
+    "problems": [
+      "P005",
+      "P006",
+      "P008",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "recurrent_uti",
+      "urinary_retention_risk",
+      "anticholinergic_possible",
+      "cognitive_decline"
+    ],
+    "probable_medications": [
+      "anticholinergic_possible",
+      "antibiotic_if_episode",
+      "antihypertensive",
+      "paracetamol"
+    ],
+    "active_rules": [
+      "no_urination_8h",
+      "new_confusion",
+      "temperature_delta",
+      "retention_or_fecaloma_suspicion",
+      "infection_suspicion"
+    ]
+  },
+  {
+    "resident_id": "R219",
+    "login": "girard",
+    "name": "Leon Girard",
+    "room": "219",
+    "age": 83,
+    "sex": "M",
+    "profile": "Chute aux toilettes / hypotension",
+    "problems": [
+      "P001",
+      "P002",
+      "P010",
+      "P013"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "orthostatic_risk",
+      "bathroom_fall_history",
+      "antihypertensive",
+      "gait_disorder"
+    ],
+    "probable_medications": [
+      "antihypertensive",
+      "alpha_blocker_possible",
+      "diuretic_possible",
+      "vitamin_d"
+    ],
+    "active_rules": [
+      "bathroom_visits_night",
+      "orthostatic_drop",
+      "fall_bathroom",
+      "syncope_suspected"
+    ]
+  },
+  {
+    "resident_id": "R220",
+    "login": "perrin",
+    "name": "Clothilde Perrin",
+    "room": "220",
+    "age": 87,
+    "sex": "F",
+    "profile": "Dénutrition + Alzheimer débutant",
+    "problems": [
+      "P001",
+      "P006",
+      "P007",
+      "P012"
+    ],
+    "risk_factors": [
+      "age_80_plus",
+      "cognitive_decline",
+      "malnutrition_risk",
+      "meal_refusal",
+      "low_activity",
+      "fall_history"
+    ],
+    "probable_medications": [
+      "donepezil_or_memantine_possible",
+      "oral_nutritional_supplement",
+      "vitamin_d",
+      "antidepressant_possible"
+    ],
+    "active_rules": [
+      "meal_intake_drop",
+      "routine_meal_absence",
+      "wandering_internal",
+      "weight_loss",
+      "confusion_with_decline"
+    ]
+  }
+]

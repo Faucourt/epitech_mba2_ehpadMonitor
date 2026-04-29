@@ -21,6 +21,8 @@ log = logging.getLogger(__name__)
 
 MQTT_HOST = os.getenv("MQTT_HOST", "localhost")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
+MQTT_USERNAME = os.getenv("MQTT_USERNAME", "")
+MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
 NUM_RESIDENTS = int(os.getenv("NUM_RESIDENTS", 25))
 DEMO_RESIDENT = os.getenv("DEMO_RESIDENT")
 FACILITY_ROOM_COUNT = len(ROOM_ASSIGNMENTS)
@@ -881,6 +883,8 @@ class EHPADSimulator:
 
     def __init__(self):
         self.client = mqtt.Client(client_id="ehpad_simulator", clean_session=True)
+        if MQTT_USERNAME:
+            self.client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
         self.client.on_connect = self._on_connect
         self.client.on_disconnect = self._on_disconnect
         self.client.on_message = self._on_message

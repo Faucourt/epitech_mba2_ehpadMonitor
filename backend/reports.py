@@ -1,4 +1,6 @@
 import json
+import math
+import random
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Optional
 
@@ -70,58 +72,91 @@ class DailyReportService:
         }
         fallback_zones = [f"ch{profile.get('room', '')}", "couloir_principal", "salle_manger", "salle_commune", "salle_repos", "patio", "jardin"]
         rows = []
+        rng = random.Random(sum(ord(c) for c in f"{resident_id}:{days}:{step_hours}:clinical-history"))
+        pathologies = set(profile.get("pathologies", []))
+        has_resp = bool(pathologies.intersection({"bpco", "asthme", "insuffisance_respiratoire"}))
+        has_cardio = bool(pathologies.intersection({"insuffisance_cardiaque", "hypertension", "arythmie"}))
+        cognitive = bool(pathologies.intersection({"alzheimer", "demence", "dementia"}))
+        deterioration_span = max(1, points - 1)
+        resp_drift_target = risk * (2.8 if has_resp else 1.2)
+        cardio_drift_target = risk * (18 if has_cardio else 7)
+        fatigue_drift_target = risk * (700 if mobility in {"faible", "tres_faible"} else 260)
+        prev_hr = float(base_hr + rng.uniform(-3, 3))
+        prev_spo2 = float(base_spo2 + rng.uniform(-0.8, 0.8))
+        prev_bp = float(base_bp + rng.uniform(-5, 5))
+        prev_temp = float(base_temp + rng.uniform(-0.15, 0.15))
+        acute_state = {"remaining": 0, "kind": None, "level": 0}
 
         for i in range(points):
             ts = now - timedelta(hours=(points - 1 - i) * step_hours)
-            seed = sum(ord(c) for c in f"{resident_id}-{ts.date()}-{ts.hour}")
-            phase = (seed % 17) - 8
             night = ts.hour < 6 or ts.hour >= 22
             meal = ts.hour in {7, 8, 12, 16, 18}
+            day_ratio = i / deterioration_span
+            circadian = math.sin((ts.hour - 6) / 24 * 2 * math.pi)
+            weekly_fatigue = 1.0 if ts.weekday() in {1, 3} and ts.hour >= 14 else 0.0
             scheduled = zones_by_hour.get(ts.hour)
             movement_base = 2400 if night else (300 if meal else 900)
             if mobility in {"faible", "tres_faible"}:
                 movement_base += 600
-            last_movement = max(30, movement_base + phase * 55)
             event = "routine"
             level = 0
 
-            heart_rate = base_hr + phase
-            spo2 = base_spo2 - (2 if night and risk > 0.5 else 0)
-            blood_pressure = base_bp + phase * 2
-            temperature = base_temp + (phase / 80)
-            respiratory_rate = 15 + int(risk * 6) + (1 if spo2 < 93 else 0)
-            zone = scheduled[0] if scheduled else fallback_zones[seed % len(fallback_zones)]
+            target_hr = base_hr + 4 * circadian + cardio_drift_target * day_ratio + weekly_fatigue * 5
+            target_spo2 = base_spo2 - resp_drift_target * day_ratio - (1.4 if night and risk > 0.45 else 0) - weekly_fatigue * 0.6
+            target_bp = base_bp + cardio_drift_target * day_ratio + 5 * circadian
+            target_temp = base_temp + 0.12 * circadian + (0.25 * day_ratio if risk > 0.55 else 0)
+
+            if acute_state["remaining"] <= 0:
+                event_roll = rng.random()
+                if risk > 0.35 and meal and event_roll < 0.08:
+                    acute_state = {"remaining": max(1, int(2 / step_hours) + 1), "kind": "risque_trajet_repas", "level": 2}
+                elif risk > 0.45 and event_roll < 0.035:
+                    acute_state = {"remaining": max(1, int(3 / step_hours) + 1), "kind": "constantes_hors_norme", "level": 2}
+                elif risk > 0.55 and mobility in {"faible", "tres_faible"} and event_roll < 0.055:
+                    acute_state = {"remaining": max(1, int(4 / step_hours) + 1), "kind": "risque_chute", "level": 3}
+                elif risk > 0.68 and event_roll < 0.018:
+                    acute_state = {"remaining": max(1, int(6 / step_hours) + 1), "kind": "chute_detectee", "level": 4}
+                elif risk > 0.78 and event_roll < 0.01:
+                    acute_state = {"remaining": max(1, int(6 / step_hours) + 1), "kind": "danger_vital", "level": 5}
+
+            if acute_state["remaining"] > 0:
+                event = acute_state["kind"] or event
+                level = int(acute_state["level"] or 0)
+                intensity = acute_state["remaining"] / max(1, int(6 / step_hours) + 1)
+                if event in {"risque_trajet_repas", "risque_chute", "chute_detectee"}:
+                    target_hr += 10 + 18 * intensity
+                    target_bp -= 8 * intensity
+                if event in {"constantes_hors_norme", "danger_vital"}:
+                    target_hr += 14 + 20 * intensity
+                    target_spo2 -= 2.0 + 5.0 * intensity
+                    target_temp += 0.25 * intensity
+                acute_state["remaining"] -= 1
+
+            prev_hr = prev_hr * 0.72 + target_hr * 0.28 + rng.gauss(0, 1.6)
+            prev_spo2 = prev_spo2 * 0.76 + target_spo2 * 0.24 + rng.gauss(0, 0.35)
+            prev_bp = prev_bp * 0.72 + target_bp * 0.28 + rng.gauss(0, 2.5)
+            prev_temp = prev_temp * 0.82 + target_temp * 0.18 + rng.gauss(0, 0.04)
+
+            heart_rate = prev_hr
+            spo2 = prev_spo2
+            blood_pressure = prev_bp
+            temperature = prev_temp
+            respiratory_rate = 14 + int(risk * 5) + (2 if spo2 < 93 else 0) + (1 if night and has_resp else 0)
+            last_movement = movement_base + rng.gauss(0, 180) + fatigue_drift_target * day_ratio + weekly_fatigue * 420
+            if event in {"risque_chute", "chute_detectee", "danger_vital"}:
+                last_movement += 1600
+            zone = scheduled[0] if scheduled else fallback_zones[int(rng.random() * len(fallback_zones))]
             routine = scheduled[1] if scheduled else ("nuit" if night else "routine")
 
-            if ts.hour in {11, 18} and seed % 7 == 0 and risk > 0.35:
-                event = "risque_trajet_repas"
-                level = 2
-                last_movement = 1200
-                heart_rate += 10
-            elif seed % 41 == 0 and risk > 0.45:
-                event = "risque_chute"
-                level = 3
-                last_movement = 3800
-            elif seed % 29 == 0 and risk > 0.35:
-                event = "constantes_hors_norme"
-                level = 2
-                spo2 -= 2
-                heart_rate += 18
-            elif last_movement > 1800:
+            if cognitive and night and rng.random() < 0.035:
+                zone = "couloir_principal"
+                event = "errance_nuit"
+                level = max(level, 2)
+            elif level == 0 and not night and last_movement > 1800:
                 event = "inactivite"
                 level = 1
 
-            if seed % 97 == 0 and risk > 0.65:
-                event = "chute_detectee"
-                level = 4
-                last_movement = 4500
-                heart_rate += 25
-            if seed % 131 == 0 and risk > 0.75:
-                event = "danger_vital"
-                level = 5
-                spo2 = min(spo2, 86)
-                heart_rate = max(heart_rate, 142)
-
+            clinical_risk = min(0.98, risk + day_ratio * risk * 0.18 + max(0, level - 1) * 0.12)
             rows.append({
                 "time": ts.isoformat().replace("+00:00", "Z"),
                 "resident_id": resident_id,
@@ -135,8 +170,8 @@ class DailyReportService:
                 "blood_pressure_sys": round(blood_pressure),
                 "temperature": round(temperature, 1),
                 "respiratory_rate": respiratory_rate,
-                "last_movement_ago_s": int(last_movement),
-                "ml_risk": round(min(0.98, risk + max(0, level - 1) * 0.12), 2),
+                "last_movement_ago_s": int(max(30, last_movement)),
+                "ml_risk": round(clinical_risk, 2),
             })
         return rows
 
@@ -484,6 +519,23 @@ class DailyReportService:
                 "care_profile": state.get("life_profile", {}).get("archetype_label"),
             },
         }
+        medical_raw = self.redis_client.get(f"medical_report:v1:{report_date}:{resident_id}")
+        if not medical_raw:
+            medical_raw = self.redis_client.get(f"medical_report:v1:latest:{resident_id}")
+        if medical_raw:
+            try:
+                medical_doc = json.loads(medical_raw)
+                report["medical_document"] = {
+                    "document_id": medical_doc.get("document_id"),
+                    "date": medical_doc.get("date"),
+                    "title": medical_doc.get("title"),
+                    "status": medical_doc.get("status"),
+                    "risk_level": medical_doc.get("risk_level"),
+                    "generated_at": medical_doc.get("generated_at"),
+                    "summary": medical_doc.get("summary"),
+                }
+            except Exception:
+                pass
         self.redis_client.setex(redis_key, 45 * 86400, json.dumps(report))
         self.redis_client.hset(f"daily_reports:{report_date}", resident_id, json.dumps(report))
         self.redis_client.expire(f"daily_reports:{report_date}", 45 * 86400)
