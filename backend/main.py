@@ -69,6 +69,24 @@ RETENTION_ACCESS_LOG_DAYS = int(os.getenv("RETENTION_ACCESS_LOG_DAYS", "365"))
 RETENTION_AUDIT_DAYS = int(os.getenv("RETENTION_AUDIT_DAYS", "365"))
 PATIENT_DATA_DIR = Path(os.getenv("PATIENT_DATA_DIR", "/app/data/patients"))
 
+
+def _fmt_bp(vitals: dict) -> str:
+    sys = vitals.get("blood_pressure_sys")
+    dia = vitals.get("blood_pressure_dia")
+    if sys is None:
+        return "-"
+    try:
+        sys_txt = f"{float(sys):.0f}"
+    except (TypeError, ValueError):
+        sys_txt = str(sys)
+    if dia is None:
+        return f"{sys_txt} mmHg"
+    try:
+        dia_txt = f"{float(dia):.0f}"
+    except (TypeError, ValueError):
+        dia_txt = str(dia)
+    return f"{sys_txt}/{dia_txt} mmHg"
+
 # --- Web Push VAPID ---
 VAPID_PUBLIC_KEY = os.getenv("VAPID_PUBLIC_KEY", "")
 VAPID_PRIVATE_KEY = os.getenv("VAPID_PRIVATE_KEY", "")
@@ -2914,7 +2932,7 @@ def _build_structured_medical_report_document(llm_result: dict, mini_dpi: dict) 
             "entries": [
                 f"FC: {vitals.get('heart_rate', '-')} bpm",
                 f"SpO2: {vitals.get('spo2', '-')}%",
-                f"PA systolique: {vitals.get('blood_pressure_sys', '-')} mmHg",
+                f"PA: {_fmt_bp(vitals)}",
                 f"Temperature: {vitals.get('temperature', '-')} C",
                 f"Risque ML: {round(float(llm_result.get('ml_risk', risk.get('ml_risk', 0)) or 0) * 100)}%",
                 f"Alertes du jour: {llm_result.get('alerts_count_today', len(mini_dpi.get('alerts_today', [])))}",

@@ -75,6 +75,24 @@ def compute_news_score(vitals: dict, movement: dict) -> dict:
     }
 
 
+def format_bp(vitals: dict) -> str:
+    sys = vitals.get("blood_pressure_sys")
+    dia = vitals.get("blood_pressure_dia")
+    if sys is None:
+        return "?"
+    try:
+        sys_txt = f"{float(sys):.0f}"
+    except (TypeError, ValueError):
+        sys_txt = str(sys)
+    if dia is None:
+        return sys_txt
+    try:
+        dia_txt = f"{float(dia):.0f}"
+    except (TypeError, ValueError):
+        dia_txt = str(dia)
+    return f"{sys_txt}/{dia_txt}"
+
+
 class AlertLevel(IntEnum):
     INFO = 1
     ATTENTION = 2
@@ -289,6 +307,7 @@ class AlertEngine:
         hr = v["heart_rate"]
         spo2 = v["spo2"]
         bp = v["blood_pressure_sys"]
+        bp_label = format_bp(v)
         temp = v["temperature"]
         rr = v.get("respiratory_rate", 0)
         last_mv = m.get("last_movement_ago_s", 0)
@@ -374,7 +393,7 @@ class AlertEngine:
         # --- NIVEAU 5 : Danger vital ---
         if (last_mv > immobility_thr_3 and ((spo2 < spo2_thr_4) or (hr > 140) or (bp < 70))) or (spo2 < spo2_thr_5 and hr > 130) or (hr > 150) or (bp < 60) or (bp > 240) or news_score >= 10:
             level = AlertLevel.DANGER_VITAL
-            reason = f"Constantes critiques — SpO2={spo2}%, FC={hr}, PA={bp} [NEWS={news_score}]"
+            reason = f"Constantes critiques — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 4 : Urgence ---
         elif current_zone == "hors_ehpad" or state.get("movement_scenario") == "fugue_hors_ehpad" or sos_pressed or is_fall or ambient_fall or (spo2 < spo2_thr_4) or (hr > 140) or (bp < 70) or (bp > 220) or (temp > 40.0) or (rr and rr > 30) or news_score >= 8:
@@ -388,7 +407,7 @@ class AlertEngine:
             elif is_fall:
                 reason = f"Chute detectee — accel={m.get('accel_magnitude', 0):.1f}g"
             else:
-                reason = f"Constantes dangereuses — SpO2={spo2}%, FC={hr}, PA={bp}, T={temp}C [NEWS={news_score}]"
+                reason = f"Constantes dangereuses — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 3 : Alerte ---
         elif (spo2 < spo2_thr_3) or (hr > 125) or (hr < 45) or (bp > 200) or (bp < 80) or (temp > 39.3) or (rr and rr > 24) or (last_mv > immobility_thr_3) or (routine_score >= 0.70 and (news_score >= 2 or ml_risk > 0.55 or frail_risk)) or (ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2)) or news_score >= 6:
@@ -400,7 +419,7 @@ class AlertEngine:
             elif last_mv > immobility_thr_3:
                 reason = f"Absence de mouvement depuis {last_mv//60} min"
             else:
-                reason = f"Constantes anormales — SpO2={spo2}%, FC={hr}, PA={bp}, T={temp}C [NEWS={news_score}]"
+                reason = f"Constantes anormales — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 2 : Attention ---
         elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or routine_score >= 0.40 or (routine_change and frail_risk) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
@@ -412,7 +431,7 @@ class AlertEngine:
             elif routine_change:
                 reason = f"Changement de routine detecte: {state.get('movement_scenario')}"
             else:
-                reason = f"Constante hors norme — SpO2={spo2}%, FC={hr}, PA={bp} [NEWS={news_score}]"
+                reason = f"Constante hors norme — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 1 : Information ---
         elif last_mv > immobility_thr_1:

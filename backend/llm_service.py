@@ -153,6 +153,11 @@ def _clinical_focus_from_profile(profile: dict, state: dict, alert_level: int) -
     rr = vitals.get("respiratory_rate")
     hr = vitals.get("heart_rate")
     sys = vitals.get("blood_pressure_sys")
+    dia = vitals.get("blood_pressure_dia")
+    temp = vitals.get("temperature")
+    hr = vitals.get("heart_rate")
+    sys = vitals.get("blood_pressure_sys")
+    dia = vitals.get("blood_pressure_dia")
     temp = vitals.get("temperature")
 
     if spo2 is not None and float(spo2) < 93:
@@ -186,12 +191,48 @@ def _clinical_focus_from_profile(profile: dict, state: dict, alert_level: int) -
     if rr is not None and float(rr) >= 22:
         focus.append("Tachypnee: signe precoce de deterioration respiratoire/infectieuse a rapprocher de la SpO2.")
         escalade.append("FR >= 25/min ou epuisement respiratoire")
+    if hr is not None and (float(hr) >= 120 or float(hr) <= 50):
+        focus.append("Frequence cardiaque atypique: rapprocher du malaise, douleur, infection, trouble du rythme ou effet medicamenteux.")
+        conduct.extend([
+            "recontroler FC manuellement si possible et verifier pouls regulier/irregulier",
+            "rechercher douleur thoracique, malaise, sueurs, dyspnee, fievre, deshydratation ou hypoglycemie si diabete",
+            "alerter IDE rapidement si FC >= 120, FC <= 50 symptomatique, douleur thoracique, malaise ou dyspnee",
+        ])
+        escalade.extend([
+            "FC >= 130 persistante ou FC <= 40",
+            "douleur thoracique, malaise, syncope, dyspnee ou trouble conscience",
+        ])
     if temp is not None and float(temp) >= 38:
         differential.append("infection respiratoire, urinaire ou sepsis debutant chez sujet age")
-        conduct.append("rechercher foyer infectieux: toux, douleur urinaire, plaie, frissons, confusion")
+        conduct.extend([
+            "recontroler temperature et constantes completes, dont FR, FC, PA et SpO2",
+            "rechercher foyer infectieux: toux, douleur urinaire, plaie, frissons, confusion",
+            "alerter IDE/medecin selon protocole si confusion, hypotension, tachypnee, SpO2 basse ou degradation rapide",
+        ])
+        escalade.extend([
+            "confusion aigue, hypotension, respiration rapide, SpO2 basse ou marbrures",
+            "temperature tres elevee ou hypothermie chez personne agee",
+        ])
     if sys is not None and float(sys) >= 180:
         differential.append("poussee hypertensive avec risque neuro-cardio")
+        conduct.extend([
+            "reprendre PA apres 5 minutes de repos avec systolique et diastolique, verifier brassard et bras adapte",
+            "rechercher signes FAST/VITE, cephalee brutale, douleur thoracique, dyspnee, malaise ou trouble conscience",
+            "alerter IDE rapidement si PA tres elevee persistante ou symptomes neuro-cardio",
+        ])
         escalade.append("deficit FAST, douleur thoracique, dyspnee severe ou trouble conscience")
+    if sys is not None and float(sys) < 95:
+        differential.append("hypotension, deshydratation, malaise postural ou effet antihypertenseur/diuretique")
+        conduct.extend([
+            "installer au repos assis ou couche, securiser le resident et eviter lever seul",
+            "reprendre PA avec systolique/diastolique apres repos; si possible comparer assis/debout selon protocole",
+            "rechercher vertiges, malaise, chute, apports diminues, diarrhee/vomissements, chaleur ou changement de traitement",
+            "alerter IDE si PA basse persistante, malaise, chute, confusion ou tachycardie associee",
+        ])
+        escalade.extend([
+            "PAS < 90 persistante, syncope, chute, confusion ou signes de choc",
+            "hypotension avec fievre, SpO2 basse ou degradation rapide",
+        ])
     if "parkinson" in pathologies:
         focus.append("Parkinson: risque majore de chute, fausse route, freezing et hypotension orthostatique.")
         conduct.extend([
@@ -402,6 +443,10 @@ def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -
     vitals = state.get("vitals", {})
     spo2 = vitals.get("spo2")
     rr = vitals.get("respiratory_rate")
+    hr = vitals.get("heart_rate")
+    sys = vitals.get("blood_pressure_sys")
+    dia = vitals.get("blood_pressure_dia")
+    temp = vitals.get("temperature")
     if spo2 is not None and float(spo2) < 93:
         severe_spo2 = float(spo2) <= 90
         first = [
@@ -428,6 +473,49 @@ def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -
         ])
     if rr is not None and float(rr) >= 21:
         checks.append("Tachypnee: verifier FR, SpO2, temperature, douleur, anxiete et foyer infectieux")
+    if sys is not None and float(sys) < 95:
+        first_aid_conduct.extend([
+            _conduct_item("hypotension_malaise", "maintenant", f"Installer au repos assis ou couche, securiser le resident et ne pas le faire lever seul; PA actuelle {_fmt_bp(sys, dia)}.", "kb_bp_alert"),
+            _conduct_item("hypotension_malaise", "maintenant", "Reprendre PA systolique/diastolique apres repos, controler FC, SpO2, temperature et etat de conscience.", "kb_bp_alert"),
+            _conduct_item("hypotension_malaise", "maintenant", "Rechercher vertiges, malaise, chute, apports diminues, diarrhee/vomissements, chaleur ou changement de traitement.", "kb_bp_alert"),
+            _conduct_item("hypotension_malaise", "urgence", "Alerter IDE si PA basse persistante, PAS < 90, syncope, confusion, chute, tachycardie ou signes de choc.", "kb_bp_alert"),
+        ])
+        checks.extend([
+            "PA systolique et diastolique controlee apres repos",
+            "Symptomes hypotension: vertiges, malaise, syncope, chute, confusion",
+            "Facteurs favorisants: deshydratation, chaleur, diarrhee/vomissements, diuretique ou antihypertenseur recent",
+        ])
+    if sys is not None and float(sys) >= 180:
+        first_aid_conduct.extend([
+            _conduct_item("hypertension_neuro_cardio", "maintenant", f"Installer au repos et reprendre PA systolique/diastolique apres 5 minutes; PA actuelle {_fmt_bp(sys, dia)}.", "kb_bp_alert"),
+            _conduct_item("hypertension_neuro_cardio", "maintenant", "Rechercher signes FAST/VITE, cephalee brutale, douleur thoracique, dyspnee, malaise ou trouble conscience.", "kb_bp_alert"),
+            _conduct_item("hypertension_neuro_cardio", "urgence", "Alerter IDE/medecin selon protocole si PA tres elevee persistante ou symptome neurologique/cardio-respiratoire.", "kb_bp_alert"),
+        ])
+        checks.extend([
+            "PA systolique et diastolique apres repos avec brassard adapte",
+            "Signes FAST/VITE: visage, bras, parole, temps",
+            "Douleur thoracique, dyspnee severe, cephalee brutale ou trouble conscience",
+        ])
+    if hr is not None and (float(hr) >= 120 or float(hr) <= 50):
+        first_aid_conduct.extend([
+            _conduct_item("heart_rate_abnormal", "maintenant", "Recontroler FC et pouls, verifier regularite, douleur, malaise, sueurs, dyspnee et temperature.", "kb_vitals_alert"),
+            _conduct_item("heart_rate_abnormal", "15 min", "Comparer FC a la baseline et rechercher cause: douleur, infection, deshydratation, hypoglycemie si diabete ou medicament recent.", "kb_vitals_alert"),
+            _conduct_item("heart_rate_abnormal", "urgence", "Alerter IDE si FC >= 120 persistante, FC <= 50 symptomatique, douleur thoracique, syncope, dyspnee ou trouble conscience.", "kb_vitals_alert"),
+        ])
+        checks.extend([
+            "Pouls regulier ou irregulier",
+            "Douleur thoracique, malaise, dyspnee, sueurs, fievre ou hypoglycemie si diabete",
+        ])
+    if temp is not None and float(temp) >= 38:
+        first_aid_conduct.extend([
+            _conduct_item("infection_sepsis_watch", "maintenant", "Recontroler temperature et constantes completes: FR, FC, PA systolique/diastolique, SpO2 et conscience.", "kb_infection_alert"),
+            _conduct_item("infection_sepsis_watch", "maintenant", "Rechercher foyer infectieux: toux/encombrement, douleur urinaire, plaie, frissons, douleurs, confusion ou baisse d'etat general.", "kb_infection_alert"),
+            _conduct_item("infection_sepsis_watch", "urgence", "Alerter IDE/medecin rapidement si confusion, hypotension, tachypnee, SpO2 basse, marbrures ou degradation rapide.", "kb_infection_alert"),
+        ])
+        checks.extend([
+            "Foyer infectieux: respiratoire, urinaire, cutane ou douleur inexpliquee",
+            "Signes sepsis: confusion, hypotension, respiration rapide, SpO2 basse, marbrures, degradation rapide",
+        ])
     for item in get_official_profiles_for_pathologies(pathologies)[:4]:
         sources.extend(item.get("source_ids", []))
         sources.append(item.get("id"))
@@ -687,6 +775,22 @@ def _fmt(value: Any, suffix: str = "") -> str:
     return f"{value}{suffix}"
 
 
+def _fmt_bp(sys: Any, dia: Any = None) -> str:
+    if sys is None:
+        return "PA non renseignee"
+    try:
+        sys_txt = f"{float(sys):.0f}"
+    except (TypeError, ValueError):
+        sys_txt = str(sys)
+    if dia is None:
+        return f"{sys_txt} mmHg"
+    try:
+        dia_txt = f"{float(dia):.0f}"
+    except (TypeError, ValueError):
+        dia_txt = str(dia)
+    return f"{sys_txt}/{dia_txt} mmHg"
+
+
 def _alert_label(alert: dict) -> str:
     return alert.get("reason") or alert.get("message") or alert.get("title") or "alerte non qualifiee"
 
@@ -741,7 +845,7 @@ def _structured_fallback_report(
         reassuring.append(f"FC dans une zone habituelle ({hr:.0f} bpm)")
 
     if sys is not None and (sys < 95 or sys > 180):
-        evidence.append({"signal": "Pression arterielle critique", "valeur": f"{sys:.0f}/{dia or 0:.0f} mmHg", "interpretation": "surveiller hypotension, poussee hypertensive ou deshydratation", "gravite": "haute"})
+        evidence.append({"signal": "Pression arterielle critique", "valeur": _fmt_bp(sys, dia), "interpretation": "surveiller hypotension, poussee hypertensive ou deshydratation", "gravite": "haute"})
 
     if temp is not None and temp >= 38:
         evidence.append({"signal": "Temperature elevee", "valeur": _fmt(temp, " C"), "interpretation": "signal infectieux possible", "gravite": "moyenne"})
@@ -808,11 +912,21 @@ def _structured_fallback_report(
         hypotheses.append({
             "hypothese": "hypotension ou deshydratation",
             "probabilite": "moderee",
-            "arguments": ["PA systolique basse", "risque de malaise/chute"],
-            "a_verifier": ["PA controlee au repos", "pouls", "apports hydriques", "diuretiques ou traitement recent", "vertiges au lever", "temperature/chaleur"],
-            "conduite_soignant": ["mettre au repos", "eviter lever seul", "recontroler PA/FC", "rechercher malaise, chute ou confusion", "alerter si hypotension persistante"],
+            "arguments": [f"PA basse ({_fmt_bp(sys, dia)})", "risque de malaise/chute"],
+            "a_verifier": ["PA systolique et diastolique controlee au repos", "pouls", "apports hydriques", "diuretiques ou traitement recent", "vertiges au lever", "temperature/chaleur"],
+            "conduite_soignant": ["mettre au repos assis/couche", "eviter lever seul", "recontroler PA systolique/diastolique et FC", "rechercher malaise, chute ou confusion", "alerter si hypotension persistante"],
             "criteres_escalade": ["PAS < 90 persistante", "syncope", "confusion", "chute", "tachycardie associee", "signes de deshydratation severe"],
             "sources_kb": ["SANTE_GOUV_CHALEUR_2026", "HAS_CHUTES_REPETEES_2009", "SCN005_DEHYDRATION_HEATWAVE_DIURETICS"],
+        })
+    if sys is not None and sys > 180:
+        hypotheses.append({
+            "hypothese": "poussee hypertensive / risque neuro-cardio a evaluer",
+            "probabilite": "moderee",
+            "arguments": [f"PA elevee ({_fmt_bp(sys, dia)})", "terrain hypertension ou sujet age fragile"],
+            "a_verifier": ["PA systolique et diastolique apres repos", "brassard adapte", "douleur thoracique", "dyspnee", "cephalee brutale", "signes FAST/VITE"],
+            "conduite_soignant": ["installer au repos", "reprendre PA systolique/diastolique apres 5 min", "rechercher FAST: visage, bras, parole, temps", "alerter IDE si PA persistante ou symptomes"],
+            "criteres_escalade": ["deficit FAST/VITE", "douleur thoracique", "dyspnee severe", "trouble conscience", "PA tres elevee persistante"],
+            "sources_kb": ["AMELI_AVC_2024", "HAS_AVC_SIGNES_ALERTE_2025", "hypertension"],
         })
     if temp is not None and temp >= 38:
         hypotheses.append({
@@ -976,7 +1090,7 @@ Localisation actuelle: {location}
 === SIGNAUX ACTUELS ===
 FC: {v.get('heart_rate', 0):.0f} bpm
 SpO2: {v.get('spo2', 0):.1f} %
-PA: {v.get('blood_pressure_sys', 0):.0f}/{v.get('blood_pressure_dia', 0):.0f} mmHg
+PA: {_fmt_bp(v.get('blood_pressure_sys'), v.get('blood_pressure_dia'))}
 Temperature: {v.get('temperature', 0):.1f} C
 Frequence respiratoire: {v.get('respiratory_rate', 16):.0f}/min
 Risque ML malaise 30-60 min: {ml_risk:.0%}
@@ -1189,6 +1303,7 @@ def _compact_prompt_context(profile: dict, state: dict, alerts_today: list[dict]
             "spo2": vitals.get("spo2"),
             "blood_pressure_sys": vitals.get("blood_pressure_sys"),
             "blood_pressure_dia": vitals.get("blood_pressure_dia"),
+            "blood_pressure": _fmt_bp(vitals.get("blood_pressure_sys"), vitals.get("blood_pressure_dia")),
             "temperature": vitals.get("temperature"),
             "respiratory_rate": vitals.get("respiratory_rate"),
         },

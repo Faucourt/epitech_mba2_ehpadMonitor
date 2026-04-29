@@ -209,6 +209,13 @@
       return value === undefined || value === null || value === '' ? fallback : value;
     }
 
+    function formatBp(v = {}) {
+      const sys = v.blood_pressure_sys ?? v.bp_sys ?? v.avg_bp_sys;
+      const dia = v.blood_pressure_dia ?? v.bp_dia ?? v.avg_bp_dia;
+      if (sys === undefined || sys === null || sys === '') return '-';
+      return (dia === undefined || dia === null || dia === '') ? `${sys}` : `${sys}/${dia}`;
+    }
+
     function levelName(level) {
       return ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][Number(level) || 0] || 'Stable';
     }
@@ -371,7 +378,7 @@
       document.getElementById('vitals').innerHTML = [
         ['FC', fmt(vitals.heart_rate), 'bpm'],
         ['SpO2', fmt(vitals.spo2), '%'],
-        ['PA syst.', fmt(vitals.blood_pressure_sys), 'mmHg'],
+        ['PA', formatBp(vitals), 'mmHg'],
         ['Temp.', fmt(vitals.temperature), 'C'],
         ['Resp.', fmt(vitals.respiratory_rate), '/min'],
         ['Dernier mvt', Math.round((movement.last_movement_ago_s || 0) / 60), 'min'],
@@ -863,7 +870,7 @@
         ['Scenario', scenario],
         ['Risque ML', `${Math.round((risk.ml_risk || 0) * 100)}% · ${risk.alert_level_name || 'Stable'}`],
         ['Prediction 30/60 min', `${Math.round((risk.a2a_risk_30min || 0) * 100)}% / ${Math.round((risk.a2a_risk_60min || 0) * 100)}%`],
-        ['Moyennes 30j', `FC ${avg.heart_rate ?? '-'} · SpO2 ${avg.spo2 ?? '-'} · PA ${avg.blood_pressure_sys ?? '-'}`],
+        ['Moyennes 30j', `FC ${avg.heart_rate ?? '-'} · SpO2 ${avg.spo2 ?? '-'} · PA ${formatBp(avg)}`],
         ['Evenements 30j', history.alerts_count ?? historyRows.filter(r => r.alert_level > 0).length],
         ['Tendance 30j', risk.trend_30d || '-'],
         ['Document clinique', medicalDoc.document_id ? `${medicalDoc.document_id} - ${medicalDoc.status || 'preliminaire'}` : 'Non genere'],
@@ -903,7 +910,7 @@
         return `<div class="event">
           <strong>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - N${r.alert_level} ${levelName(r.alert_level)}</strong><br>
           ${r.event} - ${r.routine} - ${r.zone}<br>
-          <span class="muted">FC ${r.heart_rate} - SpO2 ${r.spo2}% - PA ${r.blood_pressure_sys} - risque ${Math.round((r.ml_risk || 0) * 100)}%</span>
+          <span class="muted">FC ${r.heart_rate} - SpO2 ${r.spo2}% - PA ${formatBp(r)} - risque ${Math.round((r.ml_risk || 0) * 100)}%</span>
         </div>`;
       }).join('') || '<div class="event">Aucun evenement d alerte simule sur 30 jours.</div>';
     }
@@ -1027,7 +1034,7 @@
               <td>${r.zone || '-'}</td>
               <td>${r.heart_rate ?? '-'}</td>
               <td>${r.spo2 ?? '-'}%</td>
-              <td>${r.blood_pressure_sys ?? '-'}</td>
+              <td>${formatBp(r)}</td>
               <td>${Math.round((r.ml_risk || 0) * 100)}%</td>
               <td>${r.event || '-'}</td>
             </tr>`;

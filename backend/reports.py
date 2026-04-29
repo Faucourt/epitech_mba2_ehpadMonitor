@@ -140,6 +140,7 @@ class DailyReportService:
             heart_rate = prev_hr
             spo2 = prev_spo2
             blood_pressure = prev_bp
+            blood_pressure_dia = blood_pressure * 0.56 + 8 + rng.gauss(0, 1.5)
             temperature = prev_temp
             respiratory_rate = 14 + int(risk * 5) + (2 if spo2 < 93 else 0) + (1 if night and has_resp else 0)
             last_movement = movement_base + rng.gauss(0, 180) + fatigue_drift_target * day_ratio + weekly_fatigue * 420
@@ -168,6 +169,7 @@ class DailyReportService:
                 "heart_rate": round(heart_rate),
                 "spo2": round(max(80, min(100, spo2)), 1),
                 "blood_pressure_sys": round(blood_pressure),
+                "blood_pressure_dia": round(blood_pressure_dia),
                 "temperature": round(temperature, 1),
                 "respiratory_rate": respiratory_rate,
                 "last_movement_ago_s": int(max(30, last_movement)),
@@ -211,6 +213,7 @@ class DailyReportService:
                     "heart_rate": latest.get("heart_rate"),
                     "spo2": latest.get("spo2"),
                     "blood_pressure_sys": latest.get("blood_pressure_sys"),
+                    "blood_pressure_dia": latest.get("blood_pressure_dia"),
                     "temperature": latest.get("temperature"),
                     "respiratory_rate": latest.get("respiratory_rate"),
                 },
@@ -279,6 +282,7 @@ class DailyReportService:
                 "heart_rate": avg("heart_rate"),
                 "spo2": avg("spo2"),
                 "blood_pressure_sys": avg("blood_pressure_sys"),
+                "blood_pressure_dia": avg("blood_pressure_dia"),
                 "temperature": avg("temperature"),
                 "respiratory_rate": avg("respiratory_rate"),
             },

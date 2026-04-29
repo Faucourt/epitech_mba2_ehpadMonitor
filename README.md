@@ -63,19 +63,23 @@ Cette commande:
 - fonctionne directement dans PowerShell sur Windows;
 - ne demande pas de build React/Vite: le dashboard actuel est en HTML/JS statique.
 
-LLM optionnel:
+LLM local pour la demo IA:
 
 ```bash
 ollama serve
 ```
 
-Le projet fonctionne sans Ollama: les rapports LLM ont un fallback local.
+En demonstration, Ollama tourne sur Windows en local et le backend Docker s'y
+connecte via `http://host.docker.internal:11434`. C'est le mode utilise pour les
+rapports IA complets. Si Ollama est eteint ou trop lent, le backend ne plante pas:
+il retombe sur un rapport local base sur les regles et la KB, mais la sortie est
+moins riche qu'avec le routage LLM.
 
 ## Prerequis
 
 - Docker Desktop ou Docker Engine avec `docker compose`.
 - Ports disponibles: `3002`, `3443`, `8001`, `1883`, `9001`, `6379`, `8086`.
-- Pour le LLM bonus: Ollama installe avec `llama3.2:3b`, `qwen2.5:7b` et `meditron:7b`.
+- Pour la demo LLM: Ollama installe et lance localement sur Windows avec `llama3.2:3b`, `qwen2.5:7b` et `meditron:7b`.
 - Pour tester la mini app sur telephone: PC et telephone sur le meme reseau Wi-Fi.
 - Pour tester les push mobiles reels: HTTPS local avec certificats dans `dashboard/certs/`.
 
@@ -795,23 +799,91 @@ Limites importantes:
 
 ## LLM local
 
-Le projet utilise Ollama en local. Le routage conseille est:
+Le projet utilise Ollama localement sur Windows, pas comme service Docker. Le
+backend tourne dans Docker et appelle Ollama avec:
+
+```text
+OLLAMA_HOST=http://host.docker.internal:11434
+```
+
+C'est le mode recommande pour la soutenance: les modeles sont deja installes sur
+la machine, le demarrage est plus stable, et il n'y a pas de retelechargement de
+modeles dans un volume Docker.
+
+Routage utilise en pratique:
 
 | Tache | Modele | Role |
 |---|---|---|
 | Synthese courte | `llama3.2:3b` | resume soignant, vigilance courte, message famille |
 | Analyse clinique KB | `qwen2.5:7b` | hypotheses differentielles, CAT, surveillance, sources |
-| Rapport complet / fallback | `meditron:7b` | secours si les agents specialises echouent |
+| Rapport complet / fallback medical | `meditron:7b` | secours si les agents specialises echouent |
 
-Activation simple:
+Activation avant la demo:
 
 ```powershell
 ollama serve
+ollama list
+```
+
+Les modeles attendus sont:
+
+```text
+llama3.2:3b
+qwen2.5:7b
+meditron:7b
+```
+
+Installation des modeles si besoin:
+
+```powershell
 ollama pull llama3.2:3b
 ollama pull qwen2.5:7b
 ollama pull meditron:7b
-docker compose up --build -d backend llm_worker
 ```
+
+Puis lancer ou relancer la stack:
+
+```powershell
+docker compose up --build -d
+```
+
+Important: il n'y a pas de service `ollama` dans le `docker-compose.yml` actuel.
+La commande `docker compose up -d ollama` n'est donc pas celle a utiliser ici.
+En production, Ollama pourrait etre conteneurise dans un service separe avec un
+volume de modeles dedie, mais ce n'est pas le choix retenu pour la demo locale.
+
+### Option Docker pour mise en production
+
+Pour une mise en production ou une livraison 100% conteneurisee, Ollama peut
+etre ajoute comme service Docker separe. Cette option n'est pas active dans la
+demo actuelle, mais l'architecture backend est deja compatible: il suffit de
+changer `OLLAMA_HOST`.
+
+Exemple de principe:
+
+```yaml
+ollama:
+  image: ollama/ollama:latest
+  container_name: ehpad_ollama
+  ports:
+    - "11434:11434"
+  volumes:
+    - ollama_models:/root/.ollama
+  restart: unless-stopped
+```
+
+Dans ce cas, le backend utiliserait:
+
+```env
+OLLAMA_HOST=http://ollama:11434
+```
+
+Points d'attention avant de choisir cette option:
+
+- precharger les modeles dans le volume Docker (`llama3.2:3b`, `qwen2.5:7b`, `meditron:7b`);
+- verifier les ressources CPU/RAM/GPU de la machine;
+- eviter de telecharger les modeles pendant la soutenance ou au premier demarrage;
+- surveiller la latence, car Docker ne rend pas les reponses plus rapides par lui-meme.
 
 Variables utiles:
 
@@ -824,9 +896,11 @@ Variables utiles:
 - `LLM_DAILY_AUTO_ENABLED`
 - `LLM_DAILY_TTL_DAYS`
 
-Le backend retombe sur un fallback local si le LLM est indisponible ou trop lent.
-Les rapports forces peuvent prendre 60 a 90 secondes selon la machine; pour une
-demo, il est conseille de les pre-generer avant le passage jury.
+Le backend retombe sur un fallback local si Ollama est indisponible ou trop lent.
+Ce fallback garantit que le projet reste fonctionnel, mais il ne remplace pas la
+qualite d'analyse du routage LLM. Les rapports forces peuvent prendre 60 a 90
+secondes selon la machine; pour une demo, il est conseille de les pre-generer
+avant le passage jury.
 
 ## Services Docker
 

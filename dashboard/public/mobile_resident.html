@@ -270,11 +270,18 @@
       return labels.length ? labels.join(', ') : 'aucun capteur actif';
     }
 
+    function formatBp(v = {}) {
+      const sys = v.blood_pressure_sys ?? v.bp_sys ?? v.avg_bp_sys;
+      const dia = v.blood_pressure_dia ?? v.bp_dia ?? v.avg_bp_dia;
+      if (sys === undefined || sys === null || sys === '') return '-';
+      return (dia === undefined || dia === null || dia === '') ? `${sys}` : `${sys}/${dia}`;
+    }
+
     function renderVitals(v) {
       document.getElementById('vitals').innerHTML = [
         ['FC', v.heart_rate ?? '-', 'bpm'],
         ['SpO2', v.spo2 ?? '-', '%'],
-        ['PA', v.blood_pressure_sys ?? '-', 'mmHg'],
+        ['PA', formatBp(v), 'mmHg'],
         ['Temp.', v.temperature ?? '-', 'C'],
       ].map(([k, val, unit]) => `<div class="vital"><span>${k}</span><b>${val}</b><span>${unit}</span></div>`).join('');
     }

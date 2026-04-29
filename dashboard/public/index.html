@@ -863,6 +863,13 @@ function vitalColor(type, val) {
   return 'warn';
 }
 
+function formatBp(v = {}) {
+  const sys = v.blood_pressure_sys ?? v.bp_sys ?? v.avg_bp_sys;
+  const dia = v.blood_pressure_dia ?? v.bp_dia ?? v.avg_bp_dia;
+  if (sys === undefined || sys === null || sys === '') return '—';
+  return (dia === undefined || dia === null || dia === '') ? `${sys}` : `${sys}/${dia}`;
+}
+
 function renderAll() {
   renderGrid();
   updateStats();
@@ -1038,7 +1045,7 @@ function renderCard(card, r) {
         <span class="vital-label">SpO2</span>
       </div>
       <div class="vital">
-        <span class="vital-val ${vitalColor('blood_pressure_sys', v.blood_pressure_sys || 0)}">${v.blood_pressure_sys || '—'}</span>
+        <span class="vital-val ${vitalColor('blood_pressure_sys', v.blood_pressure_sys || 0)}">${formatBp(v)}</span>
         <span class="vital-label">PA mmHg</span>
       </div>
       <div class="vital">
@@ -1367,7 +1374,7 @@ function renderHistoryRowsTable(rows, levelNames) {
     <td style="padding:6px;color:var(--text2)">${r.routine || 'journee'}</td>
     <td style="padding:6px;color:var(--text2)">${r.event || (r.events || []).join(', ') || 'routine'}</td>
     <td style="padding:6px">${levelNames[r.alert_level ?? r.max_alert_level] || 'Normal'}</td>
-    <td style="padding:6px;color:var(--text2)">FC ${r.heart_rate ?? r.avg_hr ?? '—'} · SpO2 ${r.spo2 ?? r.avg_spo2 ?? '—'}% · PA ${r.blood_pressure_sys ?? r.avg_bp_sys ?? '—'}</td>
+    <td style="padding:6px;color:var(--text2)">FC ${r.heart_rate ?? r.avg_hr ?? '—'} · SpO2 ${r.spo2 ?? r.avg_spo2 ?? '—'}% · PA ${formatBp(r)}</td>
   </tr>`).join('');
 }
 
@@ -1880,8 +1887,8 @@ function renderResidentDpi(report) {
       <div class="dpi-row"><span>Tendance prédictive</span><b>${a2a.prediction_trend || risk.prediction_trend || 'indisponible'} ${Number.isFinite(a2a.risk_delta_15min) ? `(${Math.round(a2a.risk_delta_15min * 100)} pts/15min)` : ''}</b></div>
       <div class="dpi-row"><span>Tendance 30 jours</span><b>${risk.trend_30d || 'stable'}</b></div>
       <div class="dpi-row"><span>FC / SpO2</span><b>${v.heart_rate ?? '—'} bpm · ${v.spo2 ?? '—'}%</b></div>
-      <div class="dpi-row"><span>PA / Temp.</span><b>${v.blood_pressure_sys ?? '—'} mmHg · ${v.temperature ?? '—'}°C</b></div>
-      <div class="dpi-row"><span>Moyennes 30j</span><b>FC ${avg.heart_rate ?? '—'} · SpO2 ${avg.spo2 ?? '—'} · PA ${avg.blood_pressure_sys ?? '—'}</b></div>
+      <div class="dpi-row"><span>PA / Temp.</span><b>${formatBp(v)} mmHg · ${v.temperature ?? '—'}°C</b></div>
+      <div class="dpi-row"><span>Moyennes 30j</span><b>FC ${avg.heart_rate ?? '—'} · SpO2 ${avg.spo2 ?? '—'} · PA ${formatBp(avg)}</b></div>
       <div class="dpi-row"><span>Alertes du jour</span><b>${alerts.length}</b></div>
       <div class="dpi-row"><span>Evénements 30j</span><b>${hist.alerts_count ?? 0}</b></div>
       <div class="dpi-row"><span>Généré le</span><b>${report.generated_at ? new Date(report.generated_at).toLocaleString('fr-FR') : '—'}</b></div>
@@ -2430,10 +2437,10 @@ function openDetail(rid) {
   [
     ['Fréquence cardiaque', v.heart_rate, 'bpm', 'heart_rate'],
     ['SpO2', v.spo2, '%', 'spo2'],
-    ['Pression artérielle', v.blood_pressure_sys, 'mmHg', 'blood_pressure_sys'],
+    ['Pression artérielle', formatBp(v), 'mmHg', 'blood_pressure_sys', v.blood_pressure_sys],
     ['Température', v.temperature, '°C', 'temperature'],
-  ].forEach(([label, val, unit, type]) => {
-    const cls = vitalColor(type, val);
+  ].forEach(([label, val, unit, type, colorVal]) => {
+    const cls = vitalColor(type, colorVal ?? val);
     const colors = { ok: '#10b981', warn: '#f59e0b', danger: '#ef4444' };
     html += `
       <div class="vital-row">
@@ -2548,7 +2555,7 @@ function renderMonitorScope(rid, r) {
   const v = r.vitals || {};
   const hr = Math.round(v.heart_rate ?? 0);
   const spo2 = Math.round(v.spo2 ?? 0);
-  const bp = Math.round(v.blood_pressure_sys ?? 0);
+  const bp = formatBp(v);
   const temp = Number.isFinite(v.temperature) ? Number(v.temperature).toFixed(1) : '—';
   return `
     <div class="section-sub">Scope clinique live</div>
@@ -2773,7 +2780,7 @@ async function loadAlertExplanation(rid) {
         ${data.professional_summary || ''}<br>
         <span style="color:var(--text2)">Position:</span> ${data.location?.label || data.location?.zone || 'non precisee'}<br>
         <span style="color:var(--text2)">Capteurs:</span> ${formatSensorEvents(events)}<br>
-        <span style="color:var(--text2)">Constantes:</span> FC ${vitals.heart_rate ?? '-'} · SpO2 ${vitals.spo2 ?? '-'} · PA ${vitals.blood_pressure_sys ?? '-'} · T ${vitals.temperature ?? '-'}<br>
+        <span style="color:var(--text2)">Constantes:</span> FC ${vitals.heart_rate ?? '-'} · SpO2 ${vitals.spo2 ?? '-'} · PA ${formatBp(vitals)} · T ${vitals.temperature ?? '-'}<br>
         ${evidence.length ? `<span style="color:var(--text2)">Preuves:</span> ${evidence.join(' · ')}` : ''}
       </div>
     `;
