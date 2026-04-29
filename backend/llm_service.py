@@ -155,8 +155,13 @@ def _clinical_focus_from_profile(profile: dict, state: dict, alert_level: int) -
     sys = vitals.get("blood_pressure_sys")
     temp = vitals.get("temperature")
 
-    if spo2 is not None and float(spo2) <= 90:
-        focus.append("Hypoxemie aigue probable: SpO2 <= 90%, confirmer mesure et tolerance clinique.")
+    if spo2 is not None and float(spo2) < 93:
+        severe_spo2 = float(spo2) <= 90
+        focus.append(
+            "Hypoxemie aigue probable: SpO2 <= 90%, confirmer mesure et tolerance clinique."
+            if severe_spo2
+            else "Desaturation respiratoire a surveiller: SpO2 < 93%, comparer a la baseline et verifier la tolerance."
+        )
         differential.extend([
             "exacerbation respiratoire ou pneumopathie",
             "fausse route/aspiration si contexte repas ou trouble neurologique",
@@ -164,10 +169,13 @@ def _clinical_focus_from_profile(profile: dict, state: dict, alert_level: int) -
             "artefact capteur a exclure mais ne pas retarder l'evaluation si signes cliniques",
         ])
         conduct.extend([
+            "se rendre au lit ou sur zone, ne pas laisser le resident seul pendant l'evaluation",
             "installer au repos, position demi-assise si dyspnee et selon tolerance",
-            "recontroler SpO2 au doigt, FR, FC, PA, temperature et etat de conscience immediatement",
-            "evaluer dyspnee, cyanose, tirage, parole, douleur thoracique, toux/fievre et encombrement",
-            "alerter IDE/medecin sans attendre si SpO2 persiste <= 90% ou signes de mauvaise tolerance",
+            "recontroler SpO2 au doigt sur autre doigt si besoin, FR sur 1 minute, FC, PA, temperature et conscience",
+            "evaluer dyspnee, cyanose, tirage, parole, douleur thoracique, toux/fievre, encombrement et fausse route recente",
+            "alerter IDE immediatement, puis medecin/15 selon protocole si SpO2 persiste <= 90% ou signe de mauvaise tolerance"
+            if severe_spo2
+            else "informer l'IDE et recontroler rapidement; escalader si SpO2 descend <= 90% ou signe de mauvaise tolerance",
         ])
         escalade.extend([
             "SpO2 <= 88% persistante ou baisse rapide sous baseline",
@@ -272,6 +280,47 @@ def _scenario_signal_names(scenario: dict) -> list[str]:
     return signals
 
 
+_SIGNAL_LABELS = {
+    "spo2_drop": "baisse de SpO2 par rapport a la baseline",
+    "spo2_drop_3_points_vs_baseline": "SpO2 baisse d'au moins 3 points sous la valeur habituelle",
+    "dyspnea_or_spo2_drop": "dyspnee ou baisse de SpO2",
+    "respiratory_rate_21_24": "frequence respiratoire entre 21 et 24/min",
+    "heart_rate_91_110_or_more": "frequence cardiaque > 90/min ou tachycardie",
+    "activity_drop": "baisse d'activite inhabituelle",
+    "activité_moins_50_percent_vs_baseline": "activite inferieure de 50% a l'habitude",
+    "absence_repas_if_available": "repas non pris ou apports diminues",
+    "new_confusion": "confusion nouvelle ou fluctuation inhabituelle",
+    "sleep_wake_disruption": "trouble veille-sommeil nouveau",
+    "agitation_or_apathy": "agitation ou apathie inhabituelle",
+    "agitation or apathy": "agitation ou apathie inhabituelle",
+    "temperature_abnormal": "temperature anormale",
+    "temperature abnormal": "temperature anormale",
+}
+
+
+def _human_signal(value: str) -> str:
+    cleaned = str(value or "").strip()
+    if not cleaned:
+        return ""
+    return _SIGNAL_LABELS.get(cleaned, cleaned.replace("_", " "))
+
+
+def _conduct_item(
+    scenario_id: str,
+    delai: str,
+    action: str,
+    niveau: str = "clinical_guidance",
+    responsable: str = "soignant / IDE selon protocole",
+) -> dict[str, Any]:
+    return {
+        "scenario_id": scenario_id,
+        "delai": delai,
+        "action": action,
+        "niveau": niveau,
+        "responsable": responsable,
+    }
+
+
 def _select_kb_scenarios(profile: dict, state: dict, ml_risk: float, alert_level: int) -> list[dict]:
     pathologies = [str(p).lower() for p in profile.get("pathologies", [])]
     archetype_id = profile.get("archetype_id", "ARCH_NUTRITION")
@@ -337,7 +386,8 @@ def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -
     for scenario in scenarios:
         sid = scenario.get("id")
         sources.append(sid)
-        signals = _scenario_signal_names(scenario)[:4]
+        raw_signals = _scenario_signal_names(scenario)[:4]
+        signals = [_human_signal(signal) for signal in raw_signals if _human_signal(signal)]
         scenario_complications.append({
             "scenario_id": sid,
             "nom": scenario.get("name", sid),
@@ -346,9 +396,38 @@ def _kb_guidance(profile: dict, state: dict, ml_risk: float, alert_level: int) -
         })
         scenario_conduct.extend(_scenario_actions_as_guidance(scenario))
         for signal in signals:
-            checks.append(f"Rechercher/valider: {signal}")
+            checks.append(f"Verifier cliniquement: {signal}")
 
     pathologies = profile.get("pathologies", [])
+    vitals = state.get("vitals", {})
+    spo2 = vitals.get("spo2")
+    rr = vitals.get("respiratory_rate")
+    if spo2 is not None and float(spo2) < 93:
+        severe_spo2 = float(spo2) <= 90
+        first = [
+            _conduct_item("hypoxemia_emergency", "maintenant", "Se rendre immediatement aupres du resident et verifier s'il est conscient, s'il parle et s'il respire sans effort majeur.", "kb_resp_alert"),
+            _conduct_item("hypoxemia_emergency", "maintenant", "Installer au repos, en position assise ou demi-assise si dyspnee; ne pas faire marcher le resident.", "kb_resp_alert"),
+            _conduct_item("hypoxemia_emergency", "maintenant", "Reprendre SpO2 au doigt, frequence respiratoire sur 1 minute, FC, PA, temperature et etat de conscience; changer de doigt/capteur si signal douteux.", "kb_resp_alert"),
+            _conduct_item("hypoxemia_emergency", "maintenant", "Rechercher signes de mauvaise tolerance: dyspnee au repos, cyanose, tirage, parole impossible, douleur thoracique, confusion, somnolence, chute ou fausse route.", "kb_resp_alert"),
+            _conduct_item(
+                "hypoxemia_emergency",
+                "urgence" if severe_spo2 else "15 min",
+                "Alerter l'IDE sans delai; si SpO2 reste <= 90%, SpO2 <= 88%, detresse respiratoire, douleur thoracique, trouble neurologique ou conscience alteree: declencher medecin/15/112 selon protocole."
+                if severe_spo2
+                else "Informer l'IDE et reevaluer rapidement; escalader si baisse progressive, dyspnee, confusion, douleur thoracique ou SpO2 <= 90%.",
+                "kb_resp_alert",
+            ),
+        ]
+        first_aid_conduct.extend(first)
+        checks.extend([
+            "SpO2 actuelle comparee a la baseline du resident",
+            "Frequence respiratoire comptee sur 1 minute",
+            "Tolerance respiratoire: dyspnee, cyanose, tirage, parole, douleur thoracique",
+            "Contexte de fausse route: repas recent, toux, voix mouillee, encombrement",
+            "Etat neurologique: confusion brutale, somnolence, deficit FAST",
+        ])
+    if rr is not None and float(rr) >= 21:
+        checks.append("Tachypnee: verifier FR, SpO2, temperature, douleur, anxiete et foyer infectieux")
     for item in get_official_profiles_for_pathologies(pathologies)[:4]:
         sources.extend(item.get("source_ids", []))
         sources.append(item.get("id"))
@@ -471,7 +550,7 @@ def build_kb_context(
                 lines.append(f"    Raisonnement: {rationale}")
             early = scenario.get("early_signals_30_60min", [])[:4]
             if early:
-                signals = ", ".join(e.get("signal", "?") for e in early)
+                signals = ", ".join(_human_signal(e.get("signal", "?")) for e in early)
                 lines.append(f"    Signaux precoces: {signals}")
             actions = scenario.get("actions", {})
             if isinstance(actions, dict) and actions:
@@ -778,15 +857,15 @@ def _structured_fallback_report(
 
     action_now = "Passer voir le resident, confirmer la localisation et refaire les constantes."
     if niveau == "eleve":
-        action_now = "Controle immediat au lit ou sur zone, constantes completes, recherche douleur/dyspnee/chute."
+        action_now = "Controle immediat au lit ou sur zone: conscience, respiration, SpO2 au doigt, FR sur 1 minute, FC, PA, temperature, douleur, dyspnee et chute."
     actions = [
         {"delai": "maintenant", "action": action_now, "responsable": "soignant assigne"},
-        {"delai": "15 min", "action": "Recontrole FC, SpO2, PA, temperature et verification coherence capteurs.", "responsable": "soignant assigne"},
+        {"delai": "15 min", "action": "Recontrole SpO2/FR/FC/PA/temperature, noter l'evolution et verifier si les signes respiratoires ou neurologiques persistent.", "responsable": "soignant assigne / IDE"},
         {"delai": "30-60 min", "action": "Comparer au comportement habituel et reevaluer le score predictif.", "responsable": "IDE / referent"},
     ]
-    for action in clinical_focus["conduct"][:5]:
+    for action in reversed(clinical_focus["conduct"][:5]):
         if action and all(action != existing["action"] for existing in actions):
-            actions.insert(min(len(actions), 3), {
+            actions.insert(1, {
                 "delai": "maintenant" if niveau == "eleve" else "surveillance",
                 "action": action,
                 "responsable": "soignant / IDE selon gravite",
@@ -1008,9 +1087,61 @@ def _normalize_risk_label(value: Any) -> Any:
     return aliases.get(cleaned, cleaned)
 
 
+def _normalize_check_text(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    prefixes = ("Rechercher/valider:", "Verifier cliniquement:", "A verifier:")
+    for prefix in prefixes:
+        if text.startswith(prefix):
+            raw = text[len(prefix):].strip()
+            return f"Verifier cliniquement: {_human_signal(raw)}"
+    if "_" in text and len(text.split()) <= 4:
+        return f"Verifier cliniquement: {_human_signal(text)}"
+    return text
+
+
+def _normalize_action_text(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    return _human_action(text)
+
+
 def _normalize_report_partial(partial: dict[str, Any]) -> dict[str, Any]:
     if "niveau_risque" in partial:
         partial["niveau_risque"] = _normalize_risk_label(partial.get("niveau_risque"))
+    if isinstance(partial.get("donnees_a_verifier"), list):
+        partial["donnees_a_verifier"] = [
+            item for item in (_normalize_check_text(v) for v in partial["donnees_a_verifier"]) if item
+        ]
+    for field in ("actions_prioritaires", "conduite_a_tenir_kb"):
+        if isinstance(partial.get(field), list):
+            normalized = []
+            for item in partial[field]:
+                if isinstance(item, dict):
+                    item = dict(item)
+                    if "action" in item:
+                        item["action"] = _normalize_action_text(item.get("action"))
+                    normalized.append(item)
+                else:
+                    normalized.append(_normalize_action_text(item))
+            partial[field] = normalized
+    if isinstance(partial.get("hypotheses"), list):
+        normalized_hypotheses = []
+        for item in partial["hypotheses"]:
+            if isinstance(item, dict):
+                item = dict(item)
+                if isinstance(item.get("a_verifier"), list):
+                    item["a_verifier"] = [
+                        check for check in (_normalize_check_text(v) for v in item["a_verifier"]) if check
+                    ]
+                if isinstance(item.get("conduite_soignant"), list):
+                    item["conduite_soignant"] = [
+                        action for action in (_normalize_action_text(v) for v in item["conduite_soignant"]) if action
+                    ]
+            normalized_hypotheses.append(item)
+        partial["hypotheses"] = normalized_hypotheses
     return partial
 
 
@@ -1182,7 +1313,19 @@ def _merge_report_from_partial(base: LLMReport, partial: dict[str, Any]) -> LLMR
         if key in merge_list_fields and isinstance(merged.get(key), list) and isinstance(value, list):
             combined: list[Any] = []
             seen: set[str] = set()
-            for item in [*value, *merged.get(key, [])]:
+            deterministic_first = {
+                "hypotheses",
+                "actions_prioritaires",
+                "plan_surveillance",
+                "donnees_a_verifier",
+                "conduite_a_tenir_kb",
+            }
+            ordered_items = (
+                [*merged.get(key, []), *value]
+                if key in deterministic_first
+                else [*value, *merged.get(key, [])]
+            )
+            for item in ordered_items:
                 marker = json.dumps(item, ensure_ascii=False, sort_keys=True) if isinstance(item, (dict, list)) else str(item)
                 if marker in seen:
                     continue
