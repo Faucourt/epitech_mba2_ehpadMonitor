@@ -148,6 +148,12 @@
   .scenario-chip { display: inline-block; margin-top: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(59,130,246,0.12); color: #93c5fd; font-size: 10px; font-weight: 700; text-transform: uppercase; }
   .scenario-chip.live { background: rgba(249,115,22,0.18); color: var(--orange); }
   .scenario-chip.danger { background: rgba(239,68,68,0.18); color: #fecaca; }
+  .scenario-peek { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; padding: 2px 7px; border-radius: 5px; border: 1px solid rgba(148,163,184,0.22); background: rgba(15,23,42,0.55); color: var(--text3); font-size: 10px; font-weight: 800; cursor: pointer; user-select: none; }
+  .scenario-secret { display: none; margin-top: 5px; padding: 4px 7px; border-radius: 5px; background: rgba(59,130,246,0.12); color: #93c5fd; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+  .scenario-secret.danger { background: rgba(239,68,68,0.18); color: #fecaca; }
+  .scenario-secret.live { background: rgba(249,115,22,0.18); color: var(--orange); }
+  .scenario-peek:active + .scenario-secret { display: inline-block; }
+  .scenario-peek-row { display: inline-flex; flex-direction: column; align-items: flex-start; }
 
   .resident-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
   .resident-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
@@ -281,6 +287,16 @@
   .alert-source-card .source-pill { border-radius: 999px; background: rgba(248,113,113,0.20); color: #fecaca; padding: 3px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; }
   .risk-separation-note { margin-top: 6px; color: #bfdbfe; font-size: 11px; }
   .agent-strip.forecast-only .agent-risk { background: rgba(14,165,233,0.08); border-color: rgba(14,165,233,0.30); }
+  .elopement-card { border: 1px solid rgba(248,113,113,0.42); background: rgba(127,29,29,0.13); border-radius: 8px; padding: 10px; margin: 10px 0; }
+  .elopement-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .elopement-title { font-weight: 900; color: #fee2e2; }
+  .elopement-score { font-size: 20px; font-weight: 900; color: #fecaca; }
+  .elopement-bars { display: grid; gap: 6px; }
+  .elopement-row { display: grid; grid-template-columns: minmax(90px, 1fr) 2fr 38px; gap: 7px; align-items: center; font-size: 11px; color: var(--text2); }
+  .elopement-bar { height: 7px; border-radius: 999px; background: rgba(15,23,42,0.78); overflow: hidden; }
+  .elopement-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f97316, #ef4444); }
+  .llm-action-card { border: 1px dashed rgba(96,165,250,0.45); background: rgba(59,130,246,0.07); border-radius: 8px; padding: 10px; margin: 10px 0 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  .llm-action-card b { display: block; color: #dbeafe; }
   .validation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
   .validation-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 0; }
   .validation-card.done { border-color: rgba(16,185,129,0.45); }
@@ -550,7 +566,6 @@
         <select id="report-resident-select" onchange="loadResidentDpi(this.value)"></select>
         <button class="filter-btn" onclick="loadDailyReport()">Charger fiche</button>
         <button class="filter-btn" onclick="generateDailyReport()">Regénérer aujourd'hui</button>
-        <button class="filter-btn" onclick="printSelectedMedicalReport()">Imprimer rapport médical</button>
         <span style="font-size:12px;color:var(--text2)">Fiche globale soignants + mini DPI résident.</span>
       </div>
       <div class="report-layout">
@@ -559,7 +574,11 @@
           <div id="global-report"></div>
         </section>
         <aside class="report-panel">
-          <h3>Mini DPI résident</h3>
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px">
+            <h3 style="margin:0">Mini DPI résident</h3>
+            <button class="filter-btn" id="mini-dpi-llm-btn" onclick="loadSelectedMiniDpiLlmReport()">Générer rapport LLM</button>
+          </div>
+          <div id="mini-dpi-llm-block" style="margin-bottom:10px"></div>
           <div id="resident-dpi"></div>
         </aside>
       </div>
@@ -608,6 +627,7 @@
       <div style="font-size:13px;color:var(--text2)" id="dp-info">—</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
+      <button class="filter-btn" id="dp-llm-btn" onclick="loadDetailLlmReport(currentDetailResident)">Générer rapport</button>
       <button id="dp-fullscreen-btn" onclick="openResidentDossier(currentDetailResident)" title="Ouvrir en plein écran" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:13px">⤢</button>
       <div class="detail-close" onclick="closeDetail()">×</div>
     </div>
@@ -644,6 +664,8 @@ let currentDailyReport = null;
 let alertPanelOpen = false;
 let _llmReportCache = {};  // resident_id → rendered HTML
 let _alertExplanationCache = {};  // resident_id → rendered HTML
+let _alertExplanationOpen = {};  // resident_id → boolean
+let _miniDpiCache = {};  // resident_id → mini DPI payload
 let lastToastByAlert = {};
 let demoModeActive = false;
 let staffId = localStorage.getItem('ehpad_staff_id') || '';
@@ -896,6 +918,12 @@ function getMLRiskLabel(risk) {
   return 'bas';
 }
 
+function renderScenarioPeek(label, kind = '') {
+  if (!label) return '';
+  const cls = kind ? ` ${kind}` : '';
+  return `<span class="scenario-peek-row"><button type="button" class="scenario-peek">Voir scénario</button><span class="scenario-secret${cls}">${label}</span></span>`;
+}
+
 function vitalColor(type, val) {
   const ranges = {
     heart_rate: { ok: [50,100], warn: [40,130], danger: [0,200] },
@@ -1004,8 +1032,6 @@ function renderGrid() {
 function openResidentDossier(rid) {
   if (!rid) return;
   const params = new URLSearchParams({ from: 'dashboard', return: '/' });
-  if (staffId) params.set('staff', staffId);
-  if (staffToken) params.set('token', staffToken);
   const suffix = params.toString() ? `?${params.toString()}` : '';
   window.open(`/resident/${rid}${suffix}`, '_blank');
 }
@@ -1060,11 +1086,11 @@ function renderCard(card, r) {
   const life = r.life_profile || r.routine_context || {};
   const routine = r.routine_analysis || {};
   const scenarioChip = activeScenario
-    ? `<span class="scenario-chip ${fugue ? 'danger' : 'live'}">${fugue ? 'FUGUE HORS EHPAD' : activeScenario}</span>`
+    ? renderScenarioPeek(fugue ? 'FUGUE HORS EHPAD' : activeScenario, fugue ? 'danger' : 'live')
     : clinicalScenario
-      ? `<span class="scenario-chip">suivi ${clinicalScenario}</span>`
+      ? renderScenarioPeek(`suivi ${clinicalScenario}`)
       : plannedScenario
-        ? `<span class="scenario-chip">profil ${plannedScenario}</span>`
+        ? renderScenarioPeek(`profil ${plannedScenario}`)
         : '';
 
   const statusColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
@@ -1147,9 +1173,8 @@ function updateDemoBanner() {
   const v = r.vitals || {};
   const mlRisk = ((r.ml_risk || 0) * 100).toFixed(0);
   const level = getAlertLevel('R005');
-  const scenario = r.movement_scenario || r.scenario_active || r.scenario || 'démo';
   banner.classList.add('active');
-  meta.textContent = `SpO2 ${v.spo2 ?? '—'}% · FC ${v.heart_rate ?? '—'} bpm · risque malaise ML ${mlRisk}% · alerte sécurité ${level ? `N${level}` : 'aucune'} · ${scenario}`;
+  meta.textContent = `SpO2 ${v.spo2 ?? '—'}% · FC ${v.heart_rate ?? '—'} bpm · risque malaise ML ${mlRisk}% · alerte sécurité ${level ? `N${level}` : 'aucune'}`;
 }
 
 function updateAlertSidebar() {
@@ -1287,6 +1312,99 @@ function alertSourceLabel(reason = '') {
 
 function renderRiskSeparationNote(mlRisk = 0) {
   return `Le niveau N3-N5 décrit l'urgence de l'alerte sécurité. Le ${Math.round((mlRisk || 0) * 100)}% est seulement le risque ML de malaise dans les 30-60 min.`;
+}
+
+function renderElopementPrediction(pred = null) {
+  if (!pred || !Array.isArray(pred.candidates)) return '';
+  const score = clampNumber(Number(pred.top_probability || 0), 0, 1);
+  const dominant = pred.label || pred.candidates[0]?.label || 'Hypothese fugue';
+  const rows = pred.candidates.slice(0, 4).map(item => `
+    <div class="elopement-row">
+      <span>${escapeHtml(item.label || item.id || 'Hypothese')}</span>
+      <span class="elopement-bar"><span class="elopement-fill" style="width:${Math.round((item.probability || 0) * 100)}%"></span></span>
+      <b>${Math.round((item.probability || 0) * 100)}%</b>
+    </div>
+  `).join('');
+  return `
+    <div class="elopement-card">
+      <div class="elopement-head">
+        <div>
+          <div class="elopement-title">Prédiction IA fugue</div>
+          <div style="font-size:11px;color:var(--text2)">${escapeHtml(pred.summary || 'Classement des hypotheses de securite.')}</div>
+        </div>
+        <div class="elopement-score">${Math.round(score * 100)}%</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="flex:1;background:var(--bg3);height:8px;border-radius:4px;overflow:hidden">
+          <div style="width:${Math.round(score * 100)}%;height:100%;background:${getElopementRiskColor(score)};border-radius:4px;transition:width 0.5s"></div>
+        </div>
+        <span style="font-weight:800;color:${getElopementRiskColor(score)}">${escapeHtml(dominant)}</span>
+      </div>
+      <div class="elopement-bars">${rows}</div>
+      ${(pred.signals || []).length ? `<div style="font-size:11px;color:var(--text2);margin-top:8px">Signaux: ${escapeHtml((pred.signals || []).slice(0, 5).join(' · '))}</div>` : ''}
+    </div>`;
+}
+
+function getElopementRiskColor(risk) {
+  if (risk >= 0.75) return '#ef4444';
+  if (risk >= 0.45) return '#f97316';
+  if (risk >= 0.25) return '#f59e0b';
+  return '#10b981';
+}
+
+function inferElopementPrediction(rid, resident = {}, alert = null) {
+  const cached = _miniDpiCache[rid]?.elopement_prediction || resident.elopement_prediction;
+  if (cached) return cached;
+  const scenario = String(resident.movement_scenario || resident.scenario_active || resident.scenario || '').toLowerCase();
+  const zone = String(resident.current_zone || resident.zone || '').toLowerCase();
+  const reason = String(alert?.reason_label || alert?.reason || '').toLowerCase();
+  const events = resident.sensor_events || resident.movement?.sensor_events || {};
+  const life = resident.life_profile || resident.routine_context || {};
+  const risks = [
+    ...(life.main_risks || []),
+    ...(resident.pathologies || []),
+    life.archetype_label || '',
+    life.label || '',
+  ].join(' ').toLowerCase();
+  const outside = zone === 'hors_ehpad' || scenario.includes('fugue_hors_ehpad');
+  const alertFugue = reason.includes('fugue') || reason.includes('hors ehpad') || reason.includes('sortie');
+  const cognitiveRisk = risks.includes('fugue') || risks.includes('errance') || risks.includes('cognitif') || risks.includes('alzheimer');
+  let score = 0.10;
+  if (outside) score += 0.55;
+  if (alertFugue) score += 0.30;
+  if (events.door_open || events.exit_door_open || events.mattress_exit) score += 0.10;
+  if (cognitiveRisk) score += 0.08;
+  score = clampNumber(score, 0, 0.96);
+  const label = score >= 0.65 ? 'Fugue confirmee' : score >= 0.35 ? 'Sortie non autorisee probable' : 'Surveillance fugue';
+  const signals = [];
+  if (outside) signals.push('zone hors EHPAD / scenario fugue');
+  if (alertFugue) signals.push('alerte active fugue');
+  if (events.door_open || events.exit_door_open) signals.push('porte sortie ouverte');
+  if (cognitiveRisk) signals.push('profil cognitif / errance');
+  return {
+    label,
+    top_probability: score,
+    candidates: [{ label, probability: score }],
+    signals: signals.length ? signals : ['pas de signal fugue fort'],
+    summary: `Hypothese dominante: ${label}`,
+  };
+}
+
+function renderElopementGauge(pred = null) {
+  if (!pred) return '';
+  const score = clampNumber(Number(pred.top_probability || 0), 0, 1);
+  const label = pred.label || pred.candidates?.[0]?.label || 'Surveillance fugue';
+  const signals = (pred.signals || []).slice(0, 3).join(' · ');
+  return `
+    <div class="section-sub">Prédiction IA · fugue</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="flex:1;background:var(--bg3);height:8px;border-radius:4px;overflow:hidden">
+        <div style="width:${Math.round(score * 100)}%;height:100%;background:${getElopementRiskColor(score)};border-radius:4px;transition:width 0.5s"></div>
+      </div>
+      <span style="font-weight:700;color:${getElopementRiskColor(score)}">${(score * 100).toFixed(1)}%</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2)">${escapeHtml(label)}${signals ? ` · ${escapeHtml(signals)}` : ''}</div>
+  `;
 }
 
 function renderEvidenceList(evidence = []) {
@@ -1772,6 +1890,7 @@ async function loadResidentDpi(rid) {
     const data = await secureResidentJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${date}`, residentId);
     const report = data.mini_dpi || {};
     report.medical_document = data.medical_document || report.medical_document || null;
+    _miniDpiCache[residentId] = report;
     renderResidentDpi(report);
   } catch (err) {
     panel.innerHTML = `<div class="no-alerts">Mini DPI indisponible: ${err.message}</div>`;
@@ -2402,7 +2521,6 @@ function renderNursingTransmissionCard(transmission = {}, fallbackSummary = '') 
         <b>Références officielles</b>
         <ul style="margin:6px 0 0;padding-left:18px">${references.map(ref => `<li><a href="${escapeHtml(ref.url || '#')}" target="_blank" rel="noopener" style="color:var(--accent)">${escapeHtml(ref.title || ref.id)}</a><br><span style="color:var(--text2);font-size:11px">${escapeHtml(ref.organization || '')}</span></li>`).join('')}</ul>
       </div>` : ''}
-      <div style="color:var(--text2);font-size:11px">${escapeHtml(transmission.llm_report_policy || 'Compte rendu clinique IA séparé.')}</div>
     </div>
   `;
 }
@@ -2419,12 +2537,27 @@ function renderResidentDpi(report) {
   const risk = report.risk || {};
   const profile = report.profile || {};
   const current = report.current || {};
-  const medicalDoc = report.medical_document || {};
+  const elopementPrediction = report.elopement_prediction || null;
   const routine = current.routine || current.routine_label || current.time_of_day || '—';
   const scenario = current.movement_scenario || current.scenario_active || current.scenario || 'routine';
   const activeAlert = report.active_alert || null;
   const alertReason = risk.alert_source || activeAlert?.reason_label || activeAlert?.reason || '';
   const alertSource = activeAlert ? alertSourceLabel(alertReason) : 'Aucune alerte sécurité active';
+  const a2aForecast = `
+    <div class="section-sub">Agents prédictifs A2A · malaise</div>
+    <div class="agent-strip forecast-only">
+      <div class="agent-risk">
+        <span>Risque 30 min</span>
+        <strong style="color:${getMLRiskColor(a2a.risk_30min || 0)}">${Math.round((a2a.risk_30min || 0) * 100)}%</strong>
+        <span>${a2a.label_30min || '—'}</span>
+      </div>
+      <div class="agent-risk">
+        <span>Risque 60 min</span>
+        <strong style="color:${getMLRiskColor(a2a.risk_60min || 0)}">${Math.round((a2a.risk_60min || 0) * 100)}%</strong>
+        <span>${a2a.label_60min || '—'}</span>
+      </div>
+    </div>
+  `;
   const alertLevelText = activeAlert
     ? `N${activeAlert.level || risk.alert_level || 0} · ${activeAlert.level_name || risk.alert_level_name || 'Alerte'}`
     : (risk.alert_level ? `N${risk.alert_level} · ${risk.alert_level_name || 'Alerte'}` : 'Aucune');
@@ -2444,12 +2577,14 @@ function renderResidentDpi(report) {
       <div><b>${alertSource}</b>${alertReason ? ` · ${displayAlertReason(alertReason)}` : ''}</div>
       <div class="risk-separation-note">${renderRiskSeparationNote(risk.ml_risk || 0)}</div>
     </div>
+    ${renderElopementPrediction(elopementPrediction)}
+    ${a2aForecast}
     <div class="dpi-grid">
       <div class="dpi-row"><span>Soignant référent</span><b>${report.caregiver || profile.caregiver || '—'}</b></div>
       <div class="dpi-row"><span>Pathologies</span><b>${(profile.pathologies || []).join(', ') || '—'}</b></div>
       <div class="dpi-row"><span>Position</span><b>${current.location || '—'}</b></div>
       <div class="dpi-row"><span>Routine actuelle</span><b>${routine}</b></div>
-      <div class="dpi-row"><span>Scénario</span><b>${scenario}</b></div>
+      <div class="dpi-row"><span>Scénario</span><b>${renderScenarioPeek(scenario === 'routine' ? '' : scenario)}</b></div>
       <div class="dpi-row"><span>Profil de vie</span><b>${life.archetype_label || life.label || 'standard'}</b></div>
       <div class="dpi-row"><span>Surveillance</span><b>${life.supervision || 'standard'}</b></div>
       <div class="dpi-row"><span>Risque malaise ML actuel</span><b style="color:${getMLRiskColor(risk.ml_risk || 0)}">${Math.round((risk.ml_risk || 0) * 100)}% · ${getMLRiskLabel(risk.ml_risk || 0)}</b></div>
@@ -2465,27 +2600,6 @@ function renderResidentDpi(report) {
       <div class="dpi-row"><span>Evénements 30j</span><b>${hist.alerts_count ?? 0}</b></div>
       <div class="dpi-row"><span>Généré le</span><b>${report.generated_at ? new Date(report.generated_at).toLocaleString('fr-FR') : '—'}</b></div>
     </div>
-    <div class="section-sub">Agents prédictifs A2A · malaise</div>
-    <div class="agent-strip forecast-only">
-      <div class="agent-risk">
-        <span>Risque 30 min</span>
-        <strong style="color:${getMLRiskColor(a2a.risk_30min || 0)}">${Math.round((a2a.risk_30min || 0) * 100)}%</strong>
-        <span>${a2a.label_30min || '—'}</span>
-      </div>
-      <div class="agent-risk">
-        <span>Risque 60 min</span>
-        <strong style="color:${getMLRiskColor(a2a.risk_60min || 0)}">${Math.round((a2a.risk_60min || 0) * 100)}%</strong>
-        <span>${a2a.label_60min || '—'}</span>
-      </div>
-    </div>
-    <div class="agent-summary">${a2a.summary || 'Analyse agentique non disponible.'}</div>
-    ${renderNursingTransmissionCard(report.nursing_transmission, report.transmission_summary)}
-    ${medicalDoc ? renderMedicalReportCard(medicalDoc) : ''}
-    <div class="section-sub" style="display:flex;align-items:center;justify-content:space-between;">
-      <span>Compte rendu clinique IA séparé (Meditron · RAG KB)</span>
-      <button class="filter-btn" onclick="loadLlmReport('${report.resident_id}')" id="llm-btn-${report.resident_id}">Générer</button>
-    </div>
-    <div id="llm-report-block" style="margin-top:6px"></div>
   `;
 }
 
@@ -2579,22 +2693,25 @@ async function startAndPollLlmReport(residentId, onProgress) {
   throw new Error('timeout génération LLM');
 }
 
-async function loadLlmReport(residentId) {
-  const block = document.getElementById('llm-report-block');
-  const btn = document.getElementById(`llm-btn-${residentId}`);
-  if (!block) return;
+async function loadSelectedMiniDpiLlmReport() {
+  const residentId = document.getElementById('report-resident-select')?.value || currentDetailResident;
+  const block = document.getElementById('mini-dpi-llm-block');
+  const btn = document.getElementById('mini-dpi-llm-btn');
+  if (!residentId || !block) return;
   block.innerHTML = renderLlmAsyncStatus(null, 0, 45);
   if (btn) { btn.disabled = true; btn.textContent = 'En cours'; }
   try {
     const data = await startAndPollLlmReport(residentId, (jobId, attempt, maxAttempts) => {
-      block.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
+      const target = document.getElementById('mini-dpi-llm-block');
+      if (target) target.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
     });
-    block.innerHTML = renderClinicalLlmReport(data);
-    await loadResidentDpi(residentId);
+    const target = document.getElementById('mini-dpi-llm-block');
+    if (target) target.innerHTML = renderClinicalLlmReport(data);
   } catch (e) {
-    block.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur : ${e.message} (Ollama disponible ?)</div>`;
+    const target = document.getElementById('mini-dpi-llm-block');
+    if (target) target.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur : ${e.message} (Ollama disponible ?)</div>`;
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Régénérer'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Régénérer rapport LLM'; }
   }
 }
 
@@ -2807,11 +2924,48 @@ function planCoordsForZone(zone, floor, layout) {
   return coords ? { x: coords[0], y: coords[1] } : null;
 }
 
+const SIM_ZONE_POSITIONS_2D = {
+  entree: [-18, 8, 0], hors_ehpad: [-27, 12, 0], infirmerie_rdc: [-11, 8, 0], pharmacie_admin: [-4.5, 8, 0],
+  couloir_principal: [0, -2.5, 0], salle_commune: [8, 8, 0], patio: [0, 0, 0], jardin: [0, 15, 0],
+  salle_activites: [17, 8, 0], salle_manger: [10, 1, 0], office_cuisine: [18.5, 1, 0], couloir_aile_rdc: [0, -8, 0],
+  escalier: [-21, 0, 0], ascenseur: [-18, 0, 0], poste_infirmier_etage: [-18, 8, 1], kinesitherapie: [-7, 8, 1],
+  salle_repos: [7, 8, 1], couloir_aile_a_etage: [-7, -2.5, 1], couloir_aile_b_etage: [8, -2.5, 1], palier_etage: [-18, 0, 1],
+};
+['101','102','103','104','105','106','107','108'].forEach((room, i) => { SIM_ZONE_POSITIONS_2D[`ch${room}`] = [-18 + i * 4.5, -8, 0]; });
+['201','202','203','204','208','209','210','211'].forEach((room, i) => { SIM_ZONE_POSITIONS_2D[`ch${room}`] = [-18 + i * 4.5, -8, 1]; });
+[['217', -18], ['212', -13.5], ['213', -9], ['218', -4.5], ['220', 0], ['219', 4.5], ['214', 9], ['215', 13.5], ['216', 18]]
+  .forEach(([room, x]) => { SIM_ZONE_POSITIONS_2D[`ch${room}`] = [x, 8, 1]; });
+
+function zoneFloorForPlan(zone, fallbackFloor) {
+  if (zone?.startsWith('ch')) return zone.slice(2).startsWith('1') ? 0 : 1;
+  return Number.isFinite(SIM_ZONE_POSITIONS_2D[zone]?.[2]) ? SIM_ZONE_POSITIONS_2D[zone][2] : fallbackFloor;
+}
+
+function planCoordsFromLivePosition(r, floor, layout) {
+  const pos = r?.position || {};
+  if (!Number.isFinite(pos.x) || !Number.isFinite(pos.z)) return null;
+  const candidates = Object.entries(SIM_ZONE_POSITIONS_2D)
+    .filter(([, p]) => p[2] === floor)
+    .map(([zone, p]) => ({
+      coords: planCoordsForZone(zone, floor, layout),
+      weight: 1 / Math.max(0.35, Math.hypot(pos.x - p[0], pos.z - p[1])),
+    }))
+    .filter(item => item.coords)
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 3);
+  const total = candidates.reduce((sum, item) => sum + item.weight, 0);
+  if (!total) return null;
+  return {
+    x: candidates.reduce((sum, item) => sum + item.coords.x * item.weight, 0) / total,
+    y: candidates.reduce((sum, item) => sum + item.coords.y * item.weight, 0) / total,
+  };
+}
+
 function renderPlanLiveDots(floor, layout) {
-  const people = Object.values(residents).filter(r => Number(r.position?.floor ?? r.floor) === floor);
+  const people = Object.values(residents).filter(r => Number(r.position?.floor ?? zoneFloorForPlan(r.current_zone, r.floor)) === floor);
   const grouped = new Map();
   people.forEach((r) => {
-    const coords = planCoordsForZone(r.current_zone, floor, layout);
+    const coords = planCoordsFromLivePosition(r, floor, layout) || planCoordsForZone(r.current_zone, floor, layout);
     if (!coords) return;
     const key = `${Math.round(coords.x)}:${Math.round(coords.y)}`;
     const group = grouped.get(key) || { ...coords, residents: [] };
@@ -2954,8 +3108,9 @@ function openDetail(rid) {
   const life = r.life_profile || r.routine_context || {};
   const routine = r.routine_analysis || {};
   const routineFlags = routine.flags || [];
+  const elopementPrediction = inferElopementPrediction(rid, r, activeAlerts[rid]);
 
-  let html = '';
+  let html = '<div id="dp-llm-block" style="margin-bottom:10px"></div>';
 
   // Alerte active
   if (alert && !alert.resolved) {
@@ -2982,21 +3137,13 @@ function openDetail(rid) {
           <span class="alert-badge badge-${alert.level}">${levelLabel}</span>
         </div>
         <div class="alert-detail-body">${diagnosisText}</div>
-        <div class="alert-source-card" style="margin-bottom:8px">
-          <div class="source-title">
-            <span>Pourquoi N${alert.level} ?</span>
-            <span class="source-pill">${sourceText}</span>
-          </div>
-          <div>Le niveau vient de l'événement sécurité détecté, pas du pourcentage ML.</div>
-          <div class="risk-separation-note">${renderRiskSeparationNote(mlRisk)}</div>
-        </div>
         <div class="alert-meta-grid">
           <div class="alert-meta"><span class="alert-meta-label">Position</span><span class="alert-meta-value">${formatAlertLocation(alert)}</span></div>
           <div class="alert-meta"><span class="alert-meta-label">Capteurs</span><span class="alert-meta-value">${formatSensorEvents(alert.sensor_events)}</span></div>
           <div class="alert-meta"><span class="alert-meta-label">Equipe</span><span class="alert-meta-value">${formatNotifiedStaff(alert.notified_staff)}</span></div>
           <div class="alert-meta"><span class="alert-meta-label">Push</span><span class="alert-meta-value">${formatPushDelivery(alert.push_delivery).replace(/<[^>]*>/g, '') || 'non mesure'}</span></div>
         </div>
-        <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="loadAlertExplanation('${rid}')">Voir explication</button>
+        <button class="filter-btn" id="alert-explain-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="toggleAlertExplanation('${rid}')">Voir explication</button>
         <div id="alert-explain-block" style="margin-top:8px"></div>
       </div>
       ${alert.acknowledged
@@ -3013,26 +3160,18 @@ function openDetail(rid) {
   if (activeScenario) {
     html += `
       <div style="background:rgba(249,115,22,0.10);border:1px solid rgba(249,115,22,0.45);border-radius:8px;padding:10px;margin-bottom:12px">
-        <div style="font-weight:700;color:var(--orange)">Scénario actif · ${activeScenario}</div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Scénario réellement en cours dans le simulateur.</div>
+        <div style="font-weight:700;color:var(--orange)">Scénario masqué · ${renderScenarioPeek(activeScenario, 'live')}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Visible seulement pendant l'appui pour garder une lecture objective.</div>
       </div>
     `;
   } else if (clinicalScenario || plannedScenario) {
     html += `
       <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.28);border-radius:8px;padding:10px;margin-bottom:12px">
-        <div style="font-weight:700;color:#93c5fd">${clinicalScenario ? 'Suivi clinique' : 'Scénario profil prévu'} · ${clinicalScenario || plannedScenario}</div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Information de profil, non comptée comme alerte active.</div>
+        <div style="font-weight:700;color:#93c5fd">${clinicalScenario ? 'Suivi clinique' : 'Scénario profil prévu'} · ${renderScenarioPeek(clinicalScenario || plannedScenario)}</div>
+        <div style="font-size:12px;margin-top:4px;color:var(--text2)">Information masquée par défaut, non comptée comme alerte active.</div>
       </div>
     `;
   }
-
-  html += `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <span style="font-size:12px;color:var(--text2)">Rapport LLM · Meditron (RAG KB)</span>
-      <button class="filter-btn" id="dp-llm-btn" onclick="loadDetailLlmReport('${rid}')">Générer</button>
-    </div>
-    <div id="dp-llm-block" style="margin-bottom:10px"></div>
-  `;
 
   html += renderMonitorScope(rid, r);
 
@@ -3078,6 +3217,7 @@ function openDetail(rid) {
       <span style="font-weight:700;color:${getMLRiskColor(mlRisk)}">${(mlRisk*100).toFixed(1)}%</span>
     </div>
     <div style="font-size:11px;color:var(--text2)">Risque de malaise dans les 30-60 min, indépendant des alertes sécurité type fugue/chute.</div>
+    ${renderElopementGauge(elopementPrediction)}
   `;
 
   // Mouvement
@@ -3135,10 +3275,18 @@ function openDetail(rid) {
     const btn   = document.getElementById('dp-llm-btn');
     if (block) block.innerHTML = _llmReportCache[rid];
     if (btn)   btn.textContent = 'Régénérer';
+  } else {
+    const btn = document.getElementById('dp-llm-btn');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Générer rapport';
+    }
   }
-  if (_alertExplanationCache[rid]) {
+  if (_alertExplanationOpen[rid] && _alertExplanationCache[rid]) {
     const block = document.getElementById('alert-explain-block');
+    const btn = document.getElementById('alert-explain-btn');
     if (block) block.innerHTML = _alertExplanationCache[rid];
+    if (btn) btn.textContent = 'Masquer explication';
   }
 
   // Dessiner les sparklines après rendu
@@ -3151,23 +3299,31 @@ function openDetail(rid) {
 }
 
 async function loadDetailLlmReport(residentId) {
-  const block = document.getElementById('dp-llm-block');
-  const btn   = document.getElementById('dp-llm-btn');
+  if (!residentId) return;
+  const getEls = () => ({
+    block: document.getElementById('dp-llm-block'),
+    btn: document.getElementById('dp-llm-btn'),
+  });
+  let { block, btn } = getEls();
   if (!block) return;
   block.innerHTML = renderLlmAsyncStatus(null, 0, 45);
   if (btn) { btn.disabled = true; btn.textContent = 'En cours'; }
   block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
     const data = await startAndPollLlmReport(residentId, (jobId, attempt, maxAttempts) => {
-      block.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
+      const els = getEls();
+      if (els.block) els.block.innerHTML = renderLlmAsyncStatus(jobId, attempt, maxAttempts);
     });
     const rendered = renderClinicalLlmReport(data, true);
-    block.innerHTML = rendered;
+    ({ block, btn } = getEls());
+    if (block) block.innerHTML = rendered;
     _llmReportCache[residentId] = rendered;
-    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (block) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (e) {
-    block.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur (Ollama disponible ?)</div>`;
+    ({ block, btn } = getEls());
+    if (block) block.innerHTML = `<div style="color:var(--red);font-size:12px">Erreur (Ollama disponible ?)</div>`;
   } finally {
+    ({ btn } = getEls());
     if (btn) { btn.disabled = false; btn.textContent = 'Régénérer'; }
   }
 }
@@ -3450,10 +3606,29 @@ async function validateAlert(rid) {
   }
 }
 
+function closeAlertExplanation(rid) {
+  _alertExplanationOpen[rid] = false;
+  const block = document.getElementById('alert-explain-block');
+  const btn = document.getElementById('alert-explain-btn');
+  if (block) block.innerHTML = '';
+  if (btn) btn.textContent = 'Voir explication';
+}
+
+async function toggleAlertExplanation(rid) {
+  if (_alertExplanationOpen[rid]) {
+    closeAlertExplanation(rid);
+    return;
+  }
+  await loadAlertExplanation(rid);
+}
+
 async function loadAlertExplanation(rid) {
   openDetail(rid);
   await new Promise(resolve => requestAnimationFrame(resolve));
   const block = document.getElementById('alert-explain-block');
+  const btn = document.getElementById('alert-explain-btn');
+  _alertExplanationOpen[rid] = true;
+  if (btn) btn.textContent = 'Masquer explication';
   if (block) block.innerHTML = '<div class="watch-item">Chargement de l explication...</div>';
   try {
     const res = await fetch(`${BACKEND_HTTP}/api/alerts/explain/${rid}`);
@@ -3465,11 +3640,13 @@ async function loadAlertExplanation(rid) {
       const rendered = `<div class="watch-item">${data.professional_summary || 'Aucune alerte active ou recente.'}</div>`;
       target.innerHTML = rendered;
       _alertExplanationCache[rid] = rendered;
+      _alertExplanationOpen[rid] = true;
       return;
     }
     const rendered = renderAlertExplanation(data);
     target.innerHTML = rendered;
     _alertExplanationCache[rid] = rendered;
+    _alertExplanationOpen[rid] = true;
   } catch (err) {
     const block = document.getElementById('alert-explain-block');
     if (block) block.innerHTML = `<div class="watch-item" style="color:var(--red)">${err.message}</div>`;

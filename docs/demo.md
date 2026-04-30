@@ -99,7 +99,8 @@ Montrer:
 - escalier;
 - jardin;
 - sortie hors EHPAD;
-- residents localises;
+- residents localises avec la meme source de position sur dashboard, Mini DPI,
+  app mobile et vue 3D;
 - capteurs visibles;
 - nom au survol en 3D.
 
@@ -123,6 +124,13 @@ Phrase possible:
 
 > La prediction est relancee toutes les 5 minutes. La nouvelle evaluation tient compte de la tendance precedente.
 
+Point actuel:
+
+- si le risque dominant est une fugue/errance, l'interface affiche la prediction
+  fugue plutot qu'un risque malaise hors contexte;
+- si le risque dominant est une chute, le bandeau et le Mini DPI affichent ce
+  risque comme priorite.
+
 ## 6. Alertes
 
 Ouvrir le panneau `Alertes`.
@@ -135,6 +143,8 @@ Montrer:
 - capteurs actifs;
 - explication structuree via `/api/alerts/explain/{resident_id}`;
 - acquittement.
+- dans l'app soignant, le bouton `Retour liste soignant` permet de revenir a la
+  page principale meme quand beaucoup d'alertes critiques sont actives.
 
 Phrase possible:
 

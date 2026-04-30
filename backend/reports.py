@@ -8,6 +8,7 @@ import numpy as np
 from fastapi import HTTPException
 
 from a2a_agents import run_a2a_pipeline
+from app.services.elopement_prediction_service import predict_elopement
 from kb_loader import (
     get_first_aid_actions,
     get_official_cross_complications,
@@ -705,6 +706,7 @@ class DailyReportService:
         location = state.get("location_label") or state.get("current_zone") or state.get("zone") or f"chambre {state.get('room', profile.get('room'))}"
         forecast = self.forecast_points(state, hist, alerts_today)
         a2a_prediction = self.a2a_prediction_for_resident(state, hist, active_alert=active_alert)
+        elopement_prediction = predict_elopement(state, profile, active_alert)
         pathologies = profile.get("pathologies", [])
         next_actions = [
             *a2a_prediction["prediction"].get("actions", [])[:2],
@@ -779,6 +781,7 @@ class DailyReportService:
                 "trend_30d": hist.get("risk_trend", "stable"),
             },
             "a2a_prediction": a2a_prediction,
+            "elopement_prediction": elopement_prediction,
             "active_alert": active_alert,
             "history_30d": hist,
             "alerts_today": alerts_today[-10:],

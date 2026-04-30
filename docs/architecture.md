@@ -87,6 +87,7 @@ backend/
 |   |-- domain/                     # readiness, residents, scenarios, mapping KB
 |   `-- services/
 |       |-- llm/                    # LLM decoupe par responsabilite
+|       |-- elopement_prediction_service.py
 |       |-- llm_report_service.py
 |       |-- patient_files_service.py
 |       |-- push_service.py
@@ -144,6 +145,21 @@ Principes:
 | `data/patients/` | profils modifiables, historiques generes et fichiers demo |
 | `backend/kb/` | base de connaissances clinique et validations KB |
 
+## Localisation Et Prediction Fugue
+
+La localisation affichée par le dashboard, le Mini DPI et l'app mobile s'appuie
+d'abord sur la position temps reel `position.x`, `position.z`, `position.floor`
+publiee par le simulateur. Si cette position manque, l'interface retombe sur
+`current_zone` / `zone` afin de garder une localisation fonctionnelle lisible.
+
+La prediction fugue est separee de la prediction malaise:
+
+- `backend/app/services/elopement_prediction_service.py` calcule un score fugue
+  a partir de la zone, du scenario, du profil cognitif et des signaux capteurs;
+- `backend/reports.py` expose ce score dans le Mini DPI;
+- le dashboard affiche le risque dominant adapte au probleme observe: malaise,
+  fugue ou chute.
+
 ## Securite Demo
 
 - `.env` n'est pas versionne.
@@ -167,11 +183,13 @@ Limites pre-production:
 
 ## Tests Et Validation
 
-Etat pre-rendu valide:
+Etat valide courant:
 
 - plus de 120 fonctions de test Python;
-- 148 cas Pytest collectes et executes;
-- `148 passed`;
+- 163 cas Pytest collectes et executes;
+- `163 passed`;
+- syntaxe JS dashboard/soignant/resident/mobile validee;
+- `npm audit --audit-level=moderate --prefix dashboard`: 0 vulnerabilite;
 - backend Docker reconstruit et `healthy`;
 - `/health` retourne `ok` avec 25 residents;
 - `/api/ml/metrics` retourne les metriques ML, dont `sensitivity`;

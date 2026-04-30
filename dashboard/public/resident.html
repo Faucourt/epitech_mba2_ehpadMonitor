@@ -57,8 +57,58 @@
     .scope-row { background: #050812; border: 1px solid #26334c; border-radius: 8px; padding: 8px; }
     .scope-row label { display: flex; justify-content: space-between; color: #9fb0c7; font-size: 11px; margin-bottom: 5px; }
     canvas { width: 100%; height: 54px; display: block; }
+    #transmission + div:has(#llm-btn) { display: none !important; }
+    html.phone-dpi { min-height: 100%; background: #101522; }
+    html.phone-dpi body {
+      width: min(410px, calc(100vw - 20px));
+      height: min(860px, calc(100vh - 20px));
+      min-height: 0;
+      margin: 10px auto;
+      border: 10px solid #05070c;
+      border-radius: 34px;
+      overflow: auto;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+      background: #111827;
+    }
+    html.phone-dpi body::before {
+      content: "";
+      position: sticky;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: block;
+      width: 112px;
+      height: 24px;
+      margin: 0 auto -24px;
+      background: #05070c;
+      border-radius: 0 0 16px 16px;
+      z-index: 5;
+    }
+    html.phone-dpi header {
+      padding: 38px 12px 10px;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    html.phone-dpi header > div:last-child { justify-content: flex-end; }
+    html.phone-dpi .page { padding: 12px; gap: 10px; }
+    html.phone-dpi .top-grid,
+    html.phone-dpi .lower-grid,
+    html.phone-dpi .schedule-grid { grid-template-columns: 1fr; gap: 10px; }
+    html.phone-dpi .panel { padding: 11px; border-radius: 9px; }
+    html.phone-dpi .identity { grid-template-columns: auto 1fr; gap: 10px; }
+    html.phone-dpi .avatar { width: 58px; height: 58px; border-radius: 14px; font-size: 20px; }
+    html.phone-dpi .vitals { grid-template-columns: repeat(2, 1fr); }
+    html.phone-dpi .vital { min-height: 62px; padding: 8px; }
+    html.phone-dpi .vital b { font-size: 18px; }
+    html.phone-dpi .patient-3d-wrap { height: 330px; }
+    html.phone-dpi .plan-svg { min-height: 250px; }
     @media (max-width: 980px) { .top-grid, .lower-grid, .schedule-grid { grid-template-columns: 1fr; } .vitals { grid-template-columns: repeat(2, 1fr); } }
   </style>
+  <script>
+    if (new URLSearchParams(location.search).get('mobile') === '1') {
+      document.documentElement.classList.add('phone-dpi');
+    }
+  </script>
   <script type="importmap">
     {
       "imports": {
@@ -169,6 +219,8 @@
     let dpi = null;
     let alertExplain = null;
     let historyRows = [];
+    let latestMedicalReport = null;
+    let llmReportLoading = false;
     let latestVitals = {};
     let patient3D = {
       ready: false, loading: false, THREE: null, scene: null, camera: null, renderer: null, controls: null,
@@ -239,16 +291,114 @@
       return 'bas';
     }
 
+    function clamp(value, min = 0, max = 1) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return min;
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function riskBadgeClass(score) {
+      if (score >= .75) return 'red';
+      if (score >= .4) return 'orange';
+      return 'green';
+    }
+
+    function alertLevelText(alert, report = {}) {
+      const level = Number(alert?.level ?? report.risk?.alert_level ?? 0);
+      if (!level) return 'Alerte aucune';
+      return `Alerte N${level} ${alert?.level_name || report.risk?.alert_level_name || levelName(level)}`;
+    }
+
+    function inferFugueRisk(current = {}, report = {}, alert = null) {
+      const pred = report.elopement_prediction || current.elopement_prediction || {};
+      if (Number.isFinite(Number(pred.top_probability))) return clamp(pred.top_probability);
+      const scenario = String(current.movement_scenario || current.scenario_active || current.scenario || report.current?.movement_scenario || '').toLowerCase();
+      const zone = String(current.current_zone || current.zone || report.current?.location || '').toLowerCase();
+      const reason = String(alert?.reason_label || alert?.reason || '').toLowerCase();
+      const life = current.life_profile || current.routine_context || report.profile?.life_profile || {};
+      const risks = [
+        ...(life.main_risks || []),
+        ...(current.profile?.pathologies || report.profile?.pathologies || []),
+        life.archetype_label || '',
+        life.label || '',
+      ].join(' ').toLowerCase();
+      let score = 0.08;
+      if (zone.includes('hors') || scenario.includes('fugue')) score += 0.60;
+      if (reason.includes('fugue') || reason.includes('hors ehpad') || reason.includes('sortie')) score += 0.30;
+      if (risks.includes('fugue') || risks.includes('errance') || risks.includes('alzheimer') || risks.includes('cognitif')) score += 0.08;
+      return clamp(score, 0, .96);
+    }
+
+    function inferFallRisk(current = {}, report = {}, alert = null) {
+      const movement = current.movement || report.current?.movement || {};
+      const events = current.sensor_events || movement.sensor_events || {};
+      const scenario = String(current.movement_scenario || current.scenario_active || current.scenario || report.current?.movement_scenario || '').toLowerCase();
+      const reason = String(alert?.reason_label || alert?.reason || '').toLowerCase();
+      const recentFall = historyRows.slice(-40).some(r => String(r.event || '').includes('chute'));
+      let score = 0.10;
+      if (movement.is_fall_detected || movement.ambient_fall_confirmed || events.fall_confirmed_by_room_sensor || events.floor_pressure_event) score += 0.75;
+      if (scenario.includes('chute') || reason.includes('chute') || reason.includes('fall')) score += 0.35;
+      if (recentFall) score += 0.10;
+      return clamp(score, 0, .97);
+    }
+
+    function dominantRisk(current = {}, report = {}, alert = null, mlRisk = 0) {
+      const candidates = [
+        { id: 'malaise', label: 'Malaise', score: clamp(mlRisk), kind: 'clinique' },
+        { id: 'fugue', label: 'Fugue', score: inferFugueRisk(current, report, alert), kind: 'securite' },
+        { id: 'chute', label: 'Chute', score: inferFallRisk(current, report, alert), kind: 'securite' },
+      ];
+      return candidates.sort((a, b) => b.score - a.score)[0];
+    }
+
+    function dominantRiskForecast(mainRisk, a2a = {}, current = {}, report = {}, alert = null) {
+      if (mainRisk.id === 'malaise') {
+        const r30 = clamp(a2a.risk_30min ?? mainRisk.score);
+        const r60 = clamp(a2a.risk_60min ?? r30);
+        return {
+          title: 'Risque malaise',
+          risk30: r30,
+          risk60: r60,
+          trend: a2a.prediction_trend || (r60 > r30 + .05 ? 'hausse' : r60 < r30 - .05 ? 'baisse' : 'stable'),
+        };
+      }
+      if (mainRisk.id === 'fugue') {
+        const scenario = String(current.movement_scenario || current.scenario_active || current.scenario || report.current?.movement_scenario || '').toLowerCase();
+        const reason = String(alert?.reason_label || alert?.reason || '').toLowerCase();
+        const active = scenario.includes('fugue') || reason.includes('fugue') || reason.includes('hors ehpad');
+        return {
+          title: 'Risque fugue',
+          risk30: mainRisk.score,
+          risk60: clamp(mainRisk.score + (active ? .04 : -.06)),
+          trend: active ? 'maintien critique' : (mainRisk.score >= .45 ? 'surveillance rapprochee' : 'stable'),
+        };
+      }
+      const movement = current.movement || report.current?.movement || {};
+      const confirmed = movement.is_fall_detected || movement.ambient_fall_confirmed || String(alert?.reason || '').toLowerCase().includes('chute');
+      return {
+        title: 'Risque chute',
+        risk30: mainRisk.score,
+        risk60: clamp(mainRisk.score + (confirmed ? -.08 : .03)),
+        trend: confirmed ? 'a reevaluer apres prise en charge' : (mainRisk.score >= .45 ? 'hausse possible' : 'stable'),
+      };
+    }
+
     const accessParams = new URLSearchParams(location.search);
     let staffId = accessParams.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
     let staffToken = accessParams.get('token') || localStorage.getItem('ehpad_staff_token') || '';
-    const returnPath = accessParams.get('return') || '';
-    const fromDashboard = accessParams.get('from') === 'dashboard' || accessParams.get('dashboard') === '1' || returnPath === '/';
+    const rawReturnPath = accessParams.get('return') || '';
+    const fromDashboard = accessParams.get('from') === 'dashboard' || accessParams.get('dashboard') === '1' || rawReturnPath === '/';
+    const fromStaff = accessParams.get('from') === 'soignant' || rawReturnPath.startsWith('/soignant');
+    const returnPath = fromDashboard
+      ? '/'
+      : (staffId && (fromStaff || !rawReturnPath)
+        ? `/soignant/${encodeURIComponent(staffId)}`
+        : rawReturnPath);
 
     if (returnPath) {
       const backLink = document.getElementById('back-link');
       backLink.href = returnPath;
-      backLink.textContent = returnPath.startsWith('/soignant') ? 'Retour app soignant' : 'Retour';
+      backLink.textContent = fromDashboard ? 'Retour dashboard' : (returnPath.startsWith('/soignant') ? 'Retour app soignant' : 'Retour');
     }
 
     if (accessParams.get('staff') && accessParams.get('token')) {
@@ -310,12 +460,15 @@
           publicJson(`${BACKEND_HTTP}/api/residents`),
           publicJson(`${BACKEND_HTTP}/api/reports/daily/${today}/${residentId}`),
           fetch(`${BACKEND_HTTP}/api/alerts/explain/${residentId}`).then(r => r.ok ? r.json() : null),
+          secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`),
+          secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/medical-reports/latest`),
         ]);
         const allResidents = calls[0].status === 'fulfilled' ? (calls[0].value?.residents || []) : [];
         state = allResidents.find(r => r.id === residentId || r.resident_id === residentId) || null;
         dpi = calls[1].status === 'fulfilled' ? calls[1].value : null;
         alertExplain = calls[2].status === 'fulfilled' ? calls[2].value : null;
-        historyRows = [];
+        historyRows = calls[3].status === 'fulfilled' ? (calls[3].value?.history || []) : [];
+        latestMedicalReport = calls[4].status === 'fulfilled' ? calls[4].value : null;
         if (!state && !dpi) {
           const reason = calls.find(c => c.status === 'rejected')?.reason?.message || 'donnees indisponibles';
           document.getElementById('dpi-rows').innerHTML = `<div class="event">Mini DPI indisponible : ${reason}</div>`;
@@ -334,6 +487,7 @@
         secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/dpi?date=${today}`),
         fetch(`${BACKEND_HTTP}/api/alerts/explain/${residentId}`).then(r => r.ok ? r.json() : null),
         secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/history/simulated?days=30&step_hours=6`),
+        secureJson(`${BACKEND_HTTP}/api/residents/${residentId}/medical-reports/latest`),
       ]);
       state = calls[0].status === 'fulfilled' ? calls[0].value : null;
       if (calls[1].status === 'fulfilled') {
@@ -345,6 +499,7 @@
       }
       alertExplain = calls[2].status === 'fulfilled' ? calls[2].value : null;
       historyRows = calls[3].status === 'fulfilled' ? (calls[3].value?.history || []) : [];
+      latestMedicalReport = calls[4].status === 'fulfilled' ? calls[4].value : (dpi?.medical_document || null);
       if (!state && !dpi) {
         const reason = calls.find(c => c.status === 'rejected')?.reason?.message || 'acces refuse ou donnees indisponibles';
         document.getElementById('dpi-rows').innerHTML = `<div class="event">Mini DPI indisponible : ${reason}</div>`;
@@ -367,6 +522,7 @@
       const mlRisk = Number(current.ml_risk ?? report.risk?.ml_risk ?? historyRows.at(-1)?.ml_risk ?? 0);
       const alert = alertExplain?.alert || current.active_alert || null;
       const a2a = report.a2a_prediction?.prediction || {};
+      const mainRisk = dominantRisk(current, report, alert, mlRisk);
 
       document.title = `${name} - Mini DPI`;
       document.getElementById('title').textContent = name;
@@ -383,8 +539,8 @@
       document.getElementById('scene-label').textContent = `${name} - ${location}`;
       document.getElementById('badges').innerHTML = `
         <span class="badge green">${profile.mobility || current.care_level || 'profil'}</span>
-        <span class="badge" style="color:${riskColor(mlRisk)}">Risque ${Math.round(mlRisk * 100)}%</span>
-        <span class="badge ${alert ? 'red' : 'green'}">${alert ? 'Alerte active' : 'Stable'}</span>
+        <span class="badge ${riskBadgeClass(mainRisk.score)}">Risque dominant: ${mainRisk.label} ${Math.round(mainRisk.score * 100)}%</span>
+        <span class="badge ${alert ? 'red' : 'green'}">${alertLevelText(alert, report)}</span>
       `;
 
       document.getElementById('vitals').innerHTML = [
@@ -396,10 +552,12 @@
         ['Dernier mvt', Math.round((movement.last_movement_ago_s || 0) / 60), 'min'],
       ].map(([label, value, unit]) => `<div class="vital"><span>${label}</span><b>${value}</b><span>${unit}</span></div>`).join('');
 
-      renderAlert(alert, a2a, location);
+      renderAlert(alert, a2a, location, mainRisk, current, report);
       renderDpi(report, profile, current);
+      prepareLlmReportLayout();
       renderTransmission(report);
       renderHistory();
+      renderLatestMedicalReport(report);
       renderLifeMovement(current, profile);
       renderSensors(current);
       renderLifeWeek(report);
@@ -675,6 +833,35 @@
       return spec ? { x: spec[1], z: spec[2] + 0.2, floor: spec[5] } : { x: 0, z: -2.5, floor };
     }
 
+    const SIM_ZONE_POSITIONS_2D = {
+      entree: [-18, 8, 0], hors_ehpad: [-27, 12, 0], infirmerie_rdc: [-11, 8, 0], pharmacie_admin: [-4.5, 8, 0],
+      couloir_principal: [0, -2.5, 0], salle_commune: [8, 8, 0], patio: [0, 0, 0], jardin: [0, 15, 0],
+      salle_activites: [17, 8, 0], salle_manger: [10, 1, 0], office_cuisine: [18.5, 1, 0], couloir_aile_rdc: [0, -8, 0],
+      escalier: [-21, 0, 0], ascenseur: [-18, 0, 0], poste_infirmier_etage: [-18, 8, 1], kinesitherapie: [-7, 8, 1],
+      salle_repos: [7, 8, 1], couloir_aile_a_etage: [-7, -2.5, 1], couloir_aile_b_etage: [8, -2.5, 1], palier_etage: [-18, 0, 1],
+    };
+    FACILITY_3D.rooms.forEach(([room, x, z, , , floor]) => { SIM_ZONE_POSITIONS_2D[`ch${room}`] = [x, z, floor]; });
+
+    function planCoordsFromLivePosition(current, floor, layout, room) {
+      const pos = current?.position || {};
+      if (!Number.isFinite(pos.x) || !Number.isFinite(pos.z)) return null;
+      const candidates = Object.entries(SIM_ZONE_POSITIONS_2D)
+        .filter(([, p]) => p[2] === floor)
+        .map(([zone, p]) => ({
+          coords: planCoordsForZone(zone, floor, layout, room),
+          weight: 1 / Math.max(0.35, Math.hypot(pos.x - p[0], pos.z - p[1])),
+        }))
+        .filter(item => item.coords)
+        .sort((a, b) => b.weight - a.weight)
+        .slice(0, 3);
+      const total = candidates.reduce((sum, item) => sum + item.weight, 0);
+      if (!total) return null;
+      return {
+        x: candidates.reduce((sum, item) => sum + item.coords.x * item.weight, 0) / total,
+        y: candidates.reduce((sum, item) => sum + item.coords.y * item.weight, 0) / total,
+      };
+    }
+
     function makePatientAvatar3D() {
       const THREE = patient3D.THREE;
       const group = new THREE.Group();
@@ -793,7 +980,7 @@
       const layout = getPlanRoomLayout(floor);
       const svgH = floor === 0 ? 560 : 620;
       const zone = current.current_zone || current.zone || (room ? `ch${room}` : '');
-      const coords = planCoordsForZone(zone, floor, layout, room);
+      const coords = planCoordsFromLivePosition(current, floor, layout, room) || planCoordsForZone(zone, floor, layout, room);
       const level = resolveResidentAlertLevel(current, alert);
       const levelColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
       const color = levelColors[level] || '#10b981';
@@ -852,13 +1039,15 @@
       `;
     }
 
-    function renderAlert(alert, a2a, location) {
+    function renderAlert(alert, a2a, location, mainRisk, current = {}, report = {}) {
       const panel = document.getElementById('alert-panel');
+      const forecast = dominantRiskForecast(mainRisk, a2a, current, report, alert);
       const predictive = `
         <div class="rows" style="margin-top:10px">
-          <div class="row"><span>Risque 30 min</span><b style="color:${riskColor(a2a.risk_30min || 0)}">${Math.round((a2a.risk_30min || 0) * 100)}%</b></div>
-          <div class="row"><span>Risque 60 min</span><b style="color:${riskColor(a2a.risk_60min || 0)}">${Math.round((a2a.risk_60min || 0) * 100)}%</b></div>
-          <div class="row"><span>Tendance</span><b>${a2a.prediction_trend || 'indisponible'}</b></div>
+          <div class="row"><span>Type dominant</span><b>${forecast.title}</b></div>
+          <div class="row"><span>${forecast.title} 30 min</span><b style="color:${riskColor(forecast.risk30)}">${Math.round(forecast.risk30 * 100)}%</b></div>
+          <div class="row"><span>${forecast.title} 60 min</span><b style="color:${riskColor(forecast.risk60)}">${Math.round(forecast.risk60 * 100)}%</b></div>
+          <div class="row"><span>Tendance</span><b>${forecast.trend}</b></div>
         </div>`;
       if (!alert) {
         panel.innerHTML = `<div class="alert-box"><b>Aucune alerte active</b><p class="muted small">Localisation actuelle : ${location}</p>${predictive}</div>`;
@@ -887,6 +1076,9 @@
       const routine = safeCurrent.routine || safeCurrent.routine_label || safeCurrent.time_of_day || reportCurrent.routine || '-';
       const scenario = safeCurrent.movement_scenario || safeCurrent.scenario_active || safeCurrent.scenario || 'routine';
       const caregiver = safeCurrent.caregiver_name || report.caregiver || safeProfile.caregiver || '-';
+      const alert = alertExplain?.alert || safeCurrent.active_alert || null;
+      const mlRisk = Number(safeCurrent.ml_risk ?? risk.ml_risk ?? historyRows.at(-1)?.ml_risk ?? 0);
+      const mainRisk = dominantRisk(safeCurrent, report, alert, mlRisk);
       document.getElementById('dpi-rows').innerHTML = [
         ['Soignant referent', caregiver],
         ['Pathologies', (safeProfile.pathologies || reportProfile.pathologies || []).join(', ') || '-'],
@@ -895,13 +1087,16 @@
         ['Surveillance', life.supervision || '-'],
         ['Routine actuelle', routine],
         ['Scenario', scenario],
+        ['Risque dominant', `${mainRisk.label} ${Math.round(mainRisk.score * 100)}% - ${riskLabel(mainRisk.score)}`],
+        ['Niveau alerte', alertLevelText(alert, report)],
         ['Risque ML', `${Math.round((risk.ml_risk || 0) * 100)}% · ${risk.alert_level_name || 'Stable'}`],
         ['Prediction 30/60 min', `${Math.round((risk.a2a_risk_30min || 0) * 100)}% / ${Math.round((risk.a2a_risk_60min || 0) * 100)}%`],
         ['Moyennes 30j', `FC ${avg.heart_rate ?? '-'} · SpO2 ${avg.spo2 ?? '-'} · PA ${formatBp(avg)}`],
         ['Evenements 30j', history.alerts_count ?? historyRows.filter(r => r.alert_level > 0).length],
         ['Tendance 30j', risk.trend_30d || '-'],
         ['Document clinique', medicalDoc.document_id ? `${medicalDoc.document_id} - ${medicalDoc.status || 'preliminaire'}` : 'Non genere'],
-      ].map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
+      ].filter(([k]) => k !== 'Risque ML')
+        .map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
     }
 
     function escapeHtml(value) {
@@ -944,16 +1139,73 @@
       `;
     }
 
+    function prepareLlmReportLayout() {
+      const reportBlock = document.getElementById('llm-report');
+      const history = document.getElementById('history');
+      if (reportBlock && history && reportBlock.previousElementSibling !== history) {
+        history.insertAdjacentElement('afterend', reportBlock);
+        reportBlock.style.marginTop = '12px';
+      }
+      const oldBtn = document.getElementById('llm-btn');
+      const oldWrapper = oldBtn?.parentElement;
+      if (oldWrapper && oldWrapper.parentElement && oldWrapper.parentElement.id !== 'transmission') {
+        oldWrapper.remove();
+      }
+    }
+
+    function renderMedicalReportAction(medicalDoc = {}) {
+      const hasReport = Boolean((latestMedicalReport || medicalDoc || {}).document_id);
+      const label = hasReport ? 'Demander actualisation' : 'Generer rapport LLM';
+      const note = hasReport
+        ? 'Dernier rapport deja disponible. Actualiser uniquement si la situation a change.'
+        : 'Aucun rapport LLM retrouve pour ce resident.';
+      return `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;border:1px solid #26334c;border-radius:8px;padding:10px;background:#101827">
+          <span style="font-size:12px;color:#9fb0c7">${note}</span>
+          <button onclick="loadLlmReport()" id="llm-btn" style="padding:6px 12px;font-size:12px;white-space:nowrap">${label}</button>
+        </div>
+      `;
+    }
+
+    function renderLatestMedicalReport(report = {}) {
+      if (llmReportLoading) return;
+      const block = document.getElementById('llm-report');
+      if (!block) return;
+      const doc = latestMedicalReport || report.medical_document || {};
+      if (!doc.document_id) {
+        block.innerHTML = `
+          <h3 style="margin:0 0 8px">Dernier rapport LLM</h3>
+          <div class="event">Aucun rapport LLM encore disponible.</div>
+        `;
+        return;
+      }
+      const sections = Array.isArray(doc.sections) ? doc.sections : [];
+      const clinical = sections.find(s => s.id === 'clinical_synthesis') || {};
+      const actions = sections.find(s => s.id === 'care_plan') || {};
+      const entries = (clinical.entries || []).slice(0, 2).map(x => typeof x === 'string' ? x : JSON.stringify(x));
+      const actionEntries = (actions.entries || []).slice(0, 3).map(x => typeof x === 'string' ? x : (x.action || JSON.stringify(x)));
+      block.innerHTML = `
+        <h3 style="margin:0 0 8px">Dernier rapport LLM</h3>
+        <div class="event">
+          <strong>${escapeHtml(doc.title || 'Rapport clinique structure')}</strong><br>
+          <span class="muted">${escapeHtml(doc.document_id)} - ${escapeHtml(doc.date || '')} - ${escapeHtml(doc.status || 'preliminaire')}</span><br>
+          <span>${escapeHtml(doc.summary || entries.join(' ') || 'Synthese non disponible.')}</span>
+          ${actionEntries.length ? `<ul style="margin:8px 0 0;padding-left:18px">${actionEntries.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>` : ''}
+        </div>
+      `;
+    }
+
     function renderTransmission(report) {
       const alerts = report.alerts_today || [];
-      const medicalDoc = report.medical_document || {};
+      const medicalDoc = latestMedicalReport || report.medical_document || {};
       document.getElementById('transmission').innerHTML = `
         ${renderNursingTransmission(report.nursing_transmission, report.transmission_summary)}
-        ${medicalDoc.document_id ? `<h3 style="margin-top:12px">Compte rendu clinique IA separe</h3>
-        <div class="event"><strong>${medicalDoc.title || 'Rapport clinique structure'}</strong><br>
+        <h3 style="margin-top:12px">Compte rendu clinique IA separe</h3>
+        ${medicalDoc.document_id ? `<div class="event"><strong>${medicalDoc.title || 'Rapport clinique structure'}</strong><br>
           ${medicalDoc.document_id} - ${medicalDoc.date || ''} - ${medicalDoc.status || 'preliminaire'}<br>
           <span class="muted">${medicalDoc.summary || ''}</span>
-        </div>` : ''}
+        </div>` : '<div class="event">Aucun compte rendu clinique IA deja genere.</div>'}
+        ${renderMedicalReportAction(medicalDoc)}
         <h3 style="margin-top:12px">Alertes du jour</h3>
         <div class="timeline">
           ${alerts.map(a => `<div class="event"><strong>N${a.level} ${levelName(a.level)}</strong><br>${displayAlertReason(a.reason_label || a.reason || '')}<br><span class="muted">${a.location_label || a.current_zone || 'position non precisee'}</span></div>`).join('') || '<div class="event">Aucune alerte du jour.</div>'}
@@ -962,14 +1214,23 @@
 
     function renderHistory() {
       const important = historyRows.filter(r => r.alert_level > 0).slice(-16).reverse();
-      document.getElementById('history').innerHTML = important.map(r => {
+      const rows = important.length ? important : historyRows.slice(-16).reverse();
+      if (!rows.length) {
+        document.getElementById('history').innerHTML = '<div class="event">Historique indisponible pour ce resident.</div>';
+        return;
+      }
+      document.getElementById('history').innerHTML = rows.map(r => {
         const d = new Date(r.time);
+        const level = Number(r.alert_level || 0);
+        const title = level > 0
+          ? `N${level} ${levelName(level)}`
+          : `Comportement ${r.event && r.event !== 'routine' ? r.event : 'routine'}`;
         return `<div class="event">
-          <strong>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - N${r.alert_level} ${levelName(r.alert_level)}</strong><br>
-          ${r.event} - ${r.routine} - ${r.zone}<br>
+          <strong>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - ${title}</strong><br>
+          ${(r.event || 'routine')} - ${(r.routine || 'routine')} - ${(r.zone || 'zone inconnue')}<br>
           <span class="muted">FC ${r.heart_rate} - SpO2 ${r.spo2}% - PA ${formatBp(r)} - risque ${Math.round((r.ml_risk || 0) * 100)}%</span>
         </div>`;
-      }).join('') || '<div class="event">Aucun evenement d alerte simule sur 30 jours.</div>';
+      }).join('');
     }
 
     function yesNo(value, yes = 'Oui', no = 'Non') {
@@ -1281,16 +1542,20 @@
     loadLlmReport = async function() {
       const block = document.getElementById('llm-report');
       const btn = document.getElementById('llm-btn');
+      llmReportLoading = true;
       block.innerHTML = renderLlmAsyncStatus(null, 0, 45);
       if (btn) { btn.disabled = true; btn.textContent = 'En cours'; }
       try {
         const data = await startAndPollLlmReport();
         block.innerHTML = renderClinicalLlmReport(data);
+        latestMedicalReport = data.medical_document || latestMedicalReport;
         await loadAll();
       } catch (e) {
         block.innerHTML = `<p style="color:#ef4444;font-size:12px;margin-top:8px">Erreur : ${e.message} - Ollama disponible ?</p>`;
       } finally {
-        if (btn) { btn.disabled = false; btn.textContent = 'Regenerer'; }
+        llmReportLoading = false;
+        const currentBtn = document.getElementById('llm-btn');
+        if (currentBtn) { currentBtn.disabled = false; currentBtn.textContent = latestMedicalReport?.document_id ? 'Demander actualisation' : 'Generer rapport LLM'; }
       }
     }
 

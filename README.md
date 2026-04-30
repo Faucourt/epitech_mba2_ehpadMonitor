@@ -314,6 +314,8 @@ La logique reste volontairement hybride:
 - `Contexte comportemental`: routine, zone, repas, sommeil, inactivite.
 - `Capteurs ambiants`: porte, lit, sol, radar, PIR, salle de bain.
 - `ML`: score predictif 30-60 minutes.
+- `Prediction fugue`: score specifique fugue/errance quand le risque dominant
+  n'est pas le malaise.
 - `A2A`: orchestration realtime + ML + comportement + alertes + transmission.
 - `LLM`: synthese optionnelle via Ollama, avec fallback local.
 
@@ -557,6 +559,8 @@ L'interface distingue plusieurs blocs:
 - `Personnel`: soignants, affectations, charge, notifications et audit.
 - `Famille`: carnet de vie sans constantes medicales.
 - `ML/A2A`: prediction 30/60 minutes et synthese explicable.
+- `Prediction fugue`: affichage dedie quand la situation dominante est fugue,
+  errance ou sortie, afin de ne pas afficher un risque malaise hors contexte.
 - `Scalabilite`: MQTT, Redis, InfluxDB, WebSocket et objectifs de charge.
 
 Important:
@@ -662,7 +666,8 @@ Fichiers principaux:
 
 - affiche les chambres et zones sur un plan 2D;
 - affiche une vue 3D Three.js de l'etablissement;
-- relie chaque resident a une position;
+- relie chaque resident a une position temps reel `position x/z/floor`, avec
+  repli sur la zone fonctionnelle si la position precise manque;
 - affiche capteurs actifs, qualite, batterie et dernier signal.
 
 Fichiers principaux:
@@ -1123,6 +1128,7 @@ avant le passage jury.
 | `GET /api/a2a/predictions` | predictions 25 residents |
 | `GET /api/a2a/predict/{id}` | prediction protegee resident |
 | `GET /api/ml/metrics` | metriques ML |
+| `GET /api/alerts/elopement` | evenement fugue/sortie detecte |
 | `GET /api/staff` | personnel et affectations |
 | `POST /api/staff/login` | login soignant |
 | `GET /api/famille/{id}` | vue famille protegee |
@@ -1207,6 +1213,8 @@ py -m pip install -r backend/requirements-dev.txt
 py -m pytest tests -q
 py -m py_compile .\backend\main.py
 py -m py_compile .\simulator\main.py
+node -e "const fs=require('fs'),vm=require('vm'); for (const f of ['dashboard/public/index.html','dashboard/public/soignant.html','dashboard/public/resident.html','dashboard/public/mobile_resident.html','dashboard/server.js']) { const src=fs.readFileSync(f,'utf8'); if (f.endsWith('.html')) [...src.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)].filter(m=>!m[1].includes('importmap')&&!m[1].includes('module')).forEach(m=>new vm.Script(m[2])); else new vm.Script(src); console.log(f,'ok'); }"
+npm audit --audit-level=moderate --prefix dashboard
 ```
 
 Verification API:
@@ -1266,12 +1274,15 @@ Guide detaille:
 
 ## Tests et verification
 
-Le projet contient plus de 120 fonctions de test Python. Le test des 25 comptes
-famille est parametre, donc Pytest collecte actuellement 148 cas.
+Le projet contient plus de 120 fonctions de test Python. Les tests parametrent
+notamment les comptes famille et les matrices de scenarios, donc Pytest collecte
+actuellement 163 cas.
 
-Derniere validation pre-rendu:
+Derniere validation locale:
 
-- `148 passed`;
+- `163 passed`;
+- syntaxe JS dashboard/soignant/resident/mobile validee avec `node vm.Script`;
+- `npm audit --audit-level=moderate --prefix dashboard`: 0 vulnerabilite;
 - backend Docker reconstruit et `healthy`;
 - `GET /health` retourne `ok` avec 25 residents;
 - `GET /api/ml/metrics` retourne les metriques ML, dont `sensitivity`;

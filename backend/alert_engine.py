@@ -459,6 +459,13 @@ class AlertEngine:
             and (current_zone in {"ascenseur", "escalier", "palier_etage", "patio", "jardin"} or movement_scenario in {"desorientation_ascenseur", "desorientation_patio"})
         )
         night_toilet_frail = movement_scenario == "aller_toilettes_nuit" and frail_risk
+        risky_day_zones = {"ascenseur", "escalier", "palier_etage", "jardin"}
+        dangerous_behavior_scenarios = (
+            fall_scenarios
+            | malaise_scenarios
+            | disorientation_scenarios
+            | {"fugue_hors_ehpad", "sortie_jardin_non_accompagnee", "errance_nuit", "aller_toilettes_nuit"}
+        )
 
         # Mode nuit : seuils adaptés (désaturation nocturne = normale, inactivité = sommeil)
         is_night = state.get("time_of_day") in {"nuit", "coucher", "sieste"}
@@ -487,6 +494,19 @@ class AlertEngine:
         # Calcul NEWS2
         news = compute_news_score(v, m)
         news_score = news["score"]
+        benign_internal_daytime_change = (
+            not night_sleep
+            and current_zone not in {"hors_ehpad", *risky_day_zones}
+            and movement_scenario not in dangerous_behavior_scenarios
+            and news_score < 2
+            and ml_risk <= 0.55
+            and not frail_risk
+        )
+        routine_attention_condition = (
+            routine_score >= 0.55
+            and not benign_internal_daytime_change
+            and (news_score >= 2 or ml_risk > 0.55 or frail_risk or current_zone in risky_day_zones)
+        )
         if baseline_spo2 < 95 and spo2 >= baseline_spo2 - 2.5:
             news_score = max(0, news_score - news["breakdown"].get("spo2", 0))
         fatigue_clinical_risk = movement_scenario in fatigue_scenarios and (frail_risk or news_score >= 2 or ml_risk > 0.55)
@@ -538,7 +558,7 @@ class AlertEngine:
         if fall_with_clinical_deterioration or (last_mv > immobility_thr_3 and ((spo2 < spo2_thr_4) or (hr > 140) or (bp < 70))) or (spo2 < spo2_thr_5 and hr > 130) or (hr > 150) or (bp < 60) or (bp > 240) or news_score >= 10:
             level = AlertLevel.DANGER_VITAL
             if fall_with_clinical_deterioration:
-                reason = f"[KB:fall_confirmed] Chute avec immobilite et degradation clinique - FC={hr}, SpO2={spo2}%, PA={bp_label}, immobile={last_mv//60} min [NEWS={news_score}]"
+                reason = f"[KB:fall_confirmed] Chute confirmee avec immobilite et degradation clinique - FC={hr}, SpO2={spo2}%, PA={bp_label}, immobile={last_mv//60} min [NEWS={news_score}]"
             else:
                 reason = f"[KB:danger_vital] Danger vital sur constantes critiques - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
@@ -546,15 +566,15 @@ class AlertEngine:
         elif current_zone == "hors_ehpad" or movement_scenario == "fugue_hors_ehpad" or movement_scenario in malaise_scenarios or movement_scenario in fall_scenarios or high_risk_disorientation or (movement_scenario == "sortie_jardin_non_accompagnee" and cognitive_risk) or sos_pressed or is_fall or ambient_fall or (spo2 < spo2_thr_4) or (hr > 140) or (bp < 70) or (bp > 220) or (temp > 40.0) or (rr and rr > 30) or news_score >= 8:
             level = AlertLevel.URGENCE
             if current_zone == "hors_ehpad" or movement_scenario == "fugue_hors_ehpad":
-                reason = "[KB:fugue_confirmed] Fugue / sortie hors EHPAD confirmee"
+                reason = "[KB:fugue_confirmed] Fugue detectee / sortie hors EHPAD confirmee"
             elif movement_scenario in malaise_scenarios:
-                reason = f"[KB:malaise] Malaise suspecte avec risque de chute - risque IA {ml_risk:.0%} [NEWS={news_score}]"
+                reason = f"[KB:malaise] Malaise suspecte avec risque de chute ou immobilite - risque IA {ml_risk:.0%} [NEWS={news_score}]"
             elif movement_scenario in fall_scenarios:
-                reason = "[KB:fall_confirmed] Chute suspectee / traumatisme possible"
+                reason = "[KB:fall_confirmed] Scenario de chute suspectee / traumatisme possible"
             elif high_risk_disorientation:
-                reason = "[KB:wandering_internal] Desorientation en zone a risque"
+                reason = "[KB:wandering_internal] Desorientation a haut risque en zone sensible"
             elif movement_scenario == "sortie_jardin_non_accompagnee" and cognitive_risk:
-                reason = "[KB:wandering_internal] Sortie exterieure non accompagnee"
+                reason = "[KB:wandering_internal] Sortie non accompagnee en zone exterieure"
             elif sos_pressed:
                 reason = "[KB:sos] Appel SOS resident"
             elif ambient_fall:
@@ -570,7 +590,7 @@ class AlertEngine:
             if movement_scenario in disorientation_scenarios:
                 reason = "[KB:wandering_internal] Desorientation en zone a risque"
             elif night_toilet_frail:
-                reason = "[KB:night_bed_exit] Lever nocturne avec risque de chute"
+                reason = "[KB:night_bed_exit] Lever toilettes nuit avec risque de chute"
             elif fatigue_clinical_risk:
                 reason = "[KB:fatigue] Fatigue inhabituelle apres activite"
             elif movement_scenario == "sortie_jardin_non_accompagnee":
@@ -585,13 +605,13 @@ class AlertEngine:
                 reason = f"[KB:vitals_alert] Degradation des constantes vitales - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 2 : Attention ---
-        elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or routine_score >= 0.40 or (routine_change and frail_risk) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
+        elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or routine_attention_condition or (routine_change and frail_risk and not benign_internal_daytime_change) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
             level = AlertLevel.ATTENTION
             if movement_scenario and "malaise" in movement_scenario:
                 reason = f"[KB:malaise] Malaise suspecte apres repas - risque IA {ml_risk:.0%} [NEWS={news_score}]"
             elif ml_risk > 0.65 and (news_score >= 2 or routine_change):
                 reason = f"[KB:predictive_risk] Risque predictif modere ({ml_risk:.0%}) [NEWS={news_score}]"
-            elif routine_score >= 0.40:
+            elif routine_attention_condition:
                 reason = f"[KB:routine_change] Rupture de routine a surveiller: {'; '.join(routine_analysis.get('flags', [])[:2])}"
             elif routine_change:
                 reason = "[KB:routine_change] Rupture de routine a surveiller"
@@ -599,6 +619,9 @@ class AlertEngine:
                 reason = f"[KB:vitals_watch] Constantes a surveiller - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 1 : Information ---
+        elif routine_score >= 0.40 and benign_internal_daytime_change:
+            level = AlertLevel.INFO
+            reason = f"[KB:routine_change_info] Mouvement inhabituel interne en journee, sans signe clinique: {'; '.join(routine_analysis.get('flags', [])[:2])}"
         elif last_mv > immobility_thr_1:
             level = AlertLevel.INFO
             reason = f"[KB:immobility] Inactivite prolongee a surveiller depuis {last_mv//60} min"

@@ -17,6 +17,11 @@ servent a prioriser l'intervention humaine, pas a poser un diagnostic medical.
 Les niveaux 2 et 3 passent par un filtre anti-bruit: le signal doit persister
 avant creation de l'alerte. Les niveaux 4 et 5 sont immediats.
 
+Les mouvements inhabituels internes en journee ne declenchent pas seuls une
+alerte sonore si le resident reste dans l'EHPAD et qu'aucun autre signal grave
+n'est associe. Ils restent traces en information ou en vigilance faible selon
+le contexte.
+
 ## Regles principales
 
 | Evenement | Niveau minimal | Justification |
@@ -24,6 +29,7 @@ avant creation de l'alerte. Les niveaux 4 et 5 sont immediats.
 | Inactivite simple hors sommeil | 1 | Surveillance, pas urgence seule |
 | Constante legerement hors norme | 2 | Attention clinique |
 | Routine suspecte moderee | 2 | Signal comportemental a suivre |
+| Mouvement inhabituel interne en journee sans signe clinique | 1 | Trace sans alarme sonore |
 | Errance nuit fragile | 2 a 3 | Risque accru selon fragilite |
 | Lever toilettes nuit fragile | 3 | Risque de chute nocturne |
 | Desorientation | 3 | Risque de perte de repere et chute |

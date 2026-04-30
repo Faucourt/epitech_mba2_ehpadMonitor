@@ -186,6 +186,7 @@
         <button class="danger" onclick="criticalResolve()">Cloturer l'alerte</button>
         <button id="critical-samu-btn" class="danger" onclick="criticalSamu()">SAMU 15</button>
         <button class="secondary wide" onclick="replayCriticalVoice()">Repeter voix</button>
+        <button class="secondary wide" onclick="returnToStaffHome()">Retour liste soignant</button>
         <a id="critical-file-link" class="link-button wide" href="#" target="_blank">Ouvrir fiche patient</a>
       </div>
     </div>
@@ -206,6 +207,7 @@
     let lastCriticalKey = '';
     let currentCriticalNotification = null;
     let audioCtx = null;
+    let criticalOverlaySnoozedUntil = Date.now() + 5000;
     const autoSeenKeys = new Set(JSON.parse(localStorage.getItem('ehpad_staff_auto_seen') || '[]'));
 
     ['pointerdown', 'keydown', 'touchstart'].forEach(evt => {
@@ -234,8 +236,30 @@
       localStorage.removeItem('ehpad_staff_id');
     }
 
+    async function refreshStaffSession(preferredId = '') {
+      const id = preferredId || tokenStaffId || staffId || 'chef_garde';
+      if (!id) return false;
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ caregiver_id: id, password: 'EHPAD2024!' }),
+        });
+        if (!res.ok) throw new Error('refresh failed');
+        const data = await res.json();
+        staffToken = data.token || '';
+        tokenStaffId = id;
+        staffId = staffId || id;
+        localStorage.setItem('ehpad_staff_token', staffToken);
+        localStorage.setItem('ehpad_staff_id', id);
+        return Boolean(staffToken);
+      } catch (_) {
+        return false;
+      }
+    }
+
     async function validateStaffSession() {
-      if (!staffToken || !tokenStaffId) return false;
+      if (!staffToken || !tokenStaffId) return refreshStaffSession(staffId || tokenStaffId);
       try {
         const res = await fetch(`${BACKEND_HTTP}/api/staff/session`, { headers: authHeaders() });
         if (!res.ok) throw new Error('expired');
@@ -243,6 +267,8 @@
         if (data.staff?.id !== tokenStaffId) throw new Error('mismatch');
         return true;
       } catch (_) {
+        const refreshed = await refreshStaffSession(staffId || tokenStaffId);
+        if (refreshed) return true;
         clearStaffSession();
         return false;
       }
@@ -343,6 +369,14 @@
       currentCriticalNotification = null;
     }
 
+    function returnToStaffHome() {
+      criticalOverlaySnoozedUntil = Date.now() + 30000;
+      hideCriticalOverlay();
+      document.getElementById('login-gate').style.display = 'none';
+      if (staffId) history.replaceState(null, '', `/soignant/${staffId}`);
+      document.querySelector('.phone')?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function showCriticalOverlay(n, key) {
       if (!n) return;
       currentCriticalNotification = n;
@@ -364,6 +398,10 @@
     }
 
     function monitorCriticalNotifications(notifications) {
+      if (Date.now() < criticalOverlaySnoozedUntil) {
+        hideCriticalOverlay();
+        return;
+      }
       const critical = (notifications || [])
         .filter(n => n.alert_id && Number(n.level || 0) >= 4)
         .filter(n => {
@@ -498,6 +536,7 @@
 
     function switchStaff(id) {
       staffId = id;
+      criticalOverlaySnoozedUntil = Date.now() + 5000;
       history.replaceState(null, '', `/soignant/${id}`);
       document.getElementById('login-gate').style.display = 'none';
       render();
@@ -528,6 +567,7 @@
         tokenStaffId = id;
         localStorage.setItem('ehpad_staff_token', staffToken);
         localStorage.setItem('ehpad_staff_id', id);
+        criticalOverlaySnoozedUntil = Date.now() + 5000;
         document.getElementById('login-error').style.display = 'none';
         switchStaff(id);
       } catch (_) {
@@ -562,6 +602,7 @@
         const sessionOk = await validateStaffSession();
         if (sessionOk && tokenStaffId && (!staffId || staffId === tokenStaffId) && staffData.some(s => s.id === tokenStaffId)) {
           staffId = tokenStaffId;
+          criticalOverlaySnoozedUntil = Date.now() + 5000;
           document.getElementById('login-gate').style.display = 'none';
         }
         if (!staffId || !staffToken || !staffData.some(s => s.id === staffId)) {

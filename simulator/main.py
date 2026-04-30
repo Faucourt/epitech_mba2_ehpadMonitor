@@ -771,12 +771,19 @@ class ResidentSimulator:
         room_sensors = self.p.get("room_sensors", [])
         is_in_room = self.current_zone == self.home_zone
         in_bathroom_risk_period = self._time_of_day_factor() in {"lever_toilette", "coucher", "nuit"}
-        bathroom_motion = bool("sdb_pir" in room_sensors and is_in_room and (
-            self.current_activity == "deplacement"
-            or self.current_activity == "toilette"
+        active_fall_context = bool(
+            is_fall
+            or self.fall_started_tick is not None
+            or (self.malaise_scenario and self.malaise_scenario.get("type") == "chute")
+            or self.movement_scenario in {"chute_chambre", "chute_couloir", "chute_trajet_repas", "chute_jardin"}
+        )
+        bathroom_context = (
+            self.current_activity == "toilette"
             or self.movement_scenario in {"aller_toilettes_nuit", "chute_salle_bain", "toilette_matinale_fatigue"}
-            or (in_bathroom_risk_period and random.random() < 0.08)
-        ))
+            or (not active_fall_context and self.current_activity == "deplacement")
+            or (not active_fall_context and in_bathroom_risk_period and random.random() < 0.08)
+        )
+        bathroom_motion = bool("sdb_pir" in room_sensors and is_in_room and bathroom_context)
         sensor_events = {
             "room_pir_motion": bool("pir" in room_sensors and is_in_room and (self.current_activity == "deplacement" or self.accel_magnitude > 0.35)),
             "room_radar_presence": bool("radar" in room_sensors and is_in_room),
