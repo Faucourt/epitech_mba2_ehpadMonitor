@@ -227,6 +227,13 @@
       return '#10b981';
     }
 
+    function riskLabel(score) {
+      if (score >= .75) return 'eleve';
+      if (score >= .5) return 'modere';
+      if (score >= .25) return 'faible';
+      return 'bas';
+    }
+
     const accessParams = new URLSearchParams(location.search);
     let staffId = accessParams.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
     let staffToken = accessParams.get('token') || localStorage.getItem('ehpad_staff_token') || '';
@@ -392,7 +399,7 @@
       renderSensors(current);
       renderLifeWeek(report);
       renderTrends();
-      updatePatient3D(current, profile, alert, name, room, location);
+      updatePatient3D(current, profile, alert, name, room, location, report);
       updateScopeLabels(vitals);
     }
 
@@ -674,16 +681,31 @@
       const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), skin);
       head.position.y = 0.83;
       const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.48, 0.09), dark);
-      leftArm.position.set(-0.32, 0.20, 0); leftArm.rotation.z = -0.28; leftArm.userData.arm = 'left';
+      leftArm.position.set(-0.32, 0.20, 0); leftArm.rotation.z = -0.28; leftArm.userData = { arm: 'left', avatarColor: true };
       const rightArm = leftArm.clone();
-      rightArm.position.x = 0.32; rightArm.rotation.z = 0.28; rightArm.userData.arm = 'right';
+      rightArm.position.x = 0.32; rightArm.rotation.z = 0.28; rightArm.userData = { arm: 'right', avatarColor: true };
       const badge = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 8), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x10b981, emissiveIntensity: 0.55 }));
       badge.position.set(0.13, 0.32, 0.25); badge.userData.avatarColor = true;
       group.add(body, head, leftArm, rightArm, badge);
       return group;
     }
 
-    function updatePatient3D(current, profile, alert, name, room, location) {
+    function resolveResidentAlertLevel(current, alert, report) {
+      const candidates = [
+        alert?.level,
+        alert?.alert?.level,
+        current?.active_alert?.level,
+        current?.alert_level,
+        current?.risk?.alert_level,
+        report?.risk?.alert_level,
+      ];
+      const numeric = candidates
+        .map((value) => Number(value))
+        .filter((value) => Number.isFinite(value) && value >= 0);
+      return Math.max(0, ...numeric);
+    }
+
+    function updatePatient3D(current, profile, alert, name, room, location, report) {
       if (!patient3D.ready) return;
       const THREE = patient3D.THREE;
       const live = current.position || {};
@@ -692,8 +714,8 @@
       const x = Number.isFinite(live.x) ? live.x : base.x;
       const z = Number.isFinite(live.z) ? live.z + 0.2 : base.z;
       const floor = Number.isFinite(live.floor) ? live.floor : base.floor;
-      const level = Number(alert?.level || current.active_alert?.level || current.alert_level || 0);
-      const color = [0x10b981, 0x3b82f6, 0xf59e0b, 0xf97316, 0xef4444, 0x000000][level] || 0x10b981;
+      const level = resolveResidentAlertLevel(current, alert, report);
+      const color = [0x10b981, 0x3b82f6, 0xf59e0b, 0xf97316, 0xef4444, 0xff0000][level] || 0x10b981;
       if (!patient3D.avatar) {
         patient3D.avatar = makePatientAvatar3D();
         patient3D.scene.add(patient3D.avatar);
@@ -767,8 +789,8 @@
       const svgH = floor === 0 ? 560 : 620;
       const zone = current.current_zone || current.zone || (room ? `ch${room}` : '');
       const coords = planCoordsForZone(zone, floor, layout, room);
-      const level = Number(alert?.level || current.active_alert?.level || current.alert_level || 0);
-      const levelColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#111827'];
+      const level = resolveResidentAlertLevel(current, alert);
+      const levelColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
       const color = levelColors[level] || '#10b981';
       svg.setAttribute('viewBox', `0 0 760 ${svgH}`);
 
@@ -877,26 +899,56 @@
       ].map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function renderNursingTransmission(transmission = {}, fallbackSummary = '') {
+      const saed = transmission.saed || {};
+      const cdar = transmission.cdar || {};
+      const references = transmission.references_officielles || [];
+      if (!Object.keys(saed).length && !Object.keys(cdar).length) {
+        return `<p>${escapeHtml(fallbackSummary || 'Transmission non disponible pour ce resident.')}</p>`;
+      }
+      const row = (label, value) => `<div class="row"><span>${escapeHtml(label)}</span><b>${escapeHtml(value || '-')}</b></div>`;
+      const list = (items = []) => items.length
+        ? `<ul style="margin:6px 0 0;padding-left:18px">${items.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`
+        : '<span class="muted small">-</span>';
+      return `
+        <div class="event">
+          <strong>Transmission soignants</strong><br>
+          <span class="muted small">${escapeHtml(transmission.source || 'rules+KB+ML')} - disponible immediatement</span>
+        </div>
+        <h3 style="margin-top:12px">SAED - action rapide</h3>
+        ${row('S - Situation', saed.situation)}
+        ${row('A - Antecedents', saed.antecedents)}
+        ${row('E - Evaluation', saed.evaluation)}
+        ${row('D - Demande', saed.demande)}
+        <h3 style="margin-top:12px">CDAR - trace ecrite</h3>
+        ${row('Cible', cdar.cible)}
+        <div class="event"><strong>Donnees</strong>${list(cdar.donnees || [])}</div>
+        <div class="event"><strong>Actions</strong>${list(cdar.actions || [])}</div>
+        <div class="event"><strong>Resultats</strong>${list(cdar.resultats || [])}</div>
+        ${references.length ? `<div class="event"><strong>References officielles</strong><ul style="margin:6px 0 0;padding-left:18px">${references.map(ref => `<li><a href="${escapeHtml(ref.url || '#')}" target="_blank" rel="noopener" style="color:#93c5fd">${escapeHtml(ref.title || ref.id)}</a><br><span class="muted small">${escapeHtml(ref.organization || '')}</span></li>`).join('')}</ul></div>` : ''}
+        <p class="muted small">${escapeHtml(transmission.llm_report_policy || 'Compte rendu clinique IA separe.')}</p>
+      `;
+    }
+
     function renderTransmission(report) {
       const alerts = report.alerts_today || [];
-      const watchPoints = report.watch_points || report.forecast || [];
-      const actions = report.next_actions || [];
       const medicalDoc = report.medical_document || {};
       document.getElementById('transmission').innerHTML = `
-        <p>${report.transmission_summary || 'Transmission non disponible pour ce resident.'}</p>
-        ${medicalDoc.document_id ? `<h3 style="margin-top:12px">Rapport clinique stocke</h3>
+        ${renderNursingTransmission(report.nursing_transmission, report.transmission_summary)}
+        ${medicalDoc.document_id ? `<h3 style="margin-top:12px">Compte rendu clinique IA separe</h3>
         <div class="event"><strong>${medicalDoc.title || 'Rapport clinique structure'}</strong><br>
           ${medicalDoc.document_id} - ${medicalDoc.date || ''} - ${medicalDoc.status || 'preliminaire'}<br>
           <span class="muted">${medicalDoc.summary || ''}</span>
         </div>` : ''}
-        <h3 style="margin-top:12px">Points a surveiller</h3>
-        <div class="timeline">
-          ${watchPoints.map(x => `<div class="event">${x}</div>`).join('') || '<div class="event">Aucun point specifique.</div>'}
-        </div>
-        <h3 style="margin-top:12px">Actions soignantes</h3>
-        <div class="timeline">
-          ${actions.map(x => `<div class="event">${x}</div>`).join('') || '<div class="event">Surveillance standard.</div>'}
-        </div>
         <h3 style="margin-top:12px">Alertes du jour</h3>
         <div class="timeline">
           ${alerts.map(a => `<div class="event"><strong>N${a.level} ${levelName(a.level)}</strong><br>${a.reason || ''}<br><span class="muted">${a.location_label || a.current_zone || 'position non precisee'}</span></div>`).join('') || '<div class="event">Aucune alerte du jour.</div>'}

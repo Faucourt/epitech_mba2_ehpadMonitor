@@ -561,6 +561,19 @@ class ResidentSimulator:
                 self.freeze_zone = self.current_zone
                 self.freeze_release_tick = s["start_tick"] + s["duration"] + 300
 
+        if (
+            not self.alert_freeze
+            and self.movement_scenario in _FREEZE_MOVEMENT
+            and not self.route
+            and not self.malaise_scenario
+        ):
+            destination = self._choose_destination()
+            if destination != self.current_zone:
+                self._set_route_to(destination)
+                return
+            self._on_arrival()
+            return
+
         if not self.alert_freeze and self.movement_scenario in _FREEZE_MOVEMENT and not self.route and not self.malaise_scenario:
             self.alert_freeze = True
             self.freeze_zone = self.current_zone
@@ -761,7 +774,7 @@ class ResidentSimulator:
         bathroom_motion = bool("sdb_pir" in room_sensors and is_in_room and (
             self.current_activity == "deplacement"
             or self.current_activity == "toilette"
-            or self.movement_scenario in {"aller_toilettes_nuit", "chute_chambre", "chute_salle_bain", "toilette_matinale_fatigue"}
+            or self.movement_scenario in {"aller_toilettes_nuit", "chute_salle_bain", "toilette_matinale_fatigue"}
             or (in_bathroom_risk_period and random.random() < 0.08)
         ))
         sensor_events = {

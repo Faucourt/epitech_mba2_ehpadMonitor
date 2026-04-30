@@ -169,11 +169,12 @@ Limites pre-production:
 
 Etat pre-rendu valide:
 
-- 120 fonctions de test Python;
-- 144 cas Pytest collectes et executes;
-- `144 passed, 2 warnings`;
+- plus de 120 fonctions de test Python;
+- 148 cas Pytest collectes et executes;
+- `148 passed`;
 - backend Docker reconstruit et `healthy`;
 - `/health` retourne `ok` avec 25 residents;
+- `/api/ml/metrics` retourne les metriques ML, dont `sensitivity`;
 - `pip-audit -r requirements.txt`: aucune vulnerabilite connue;
 - Trivy cible `backend/requirements.txt`: 0 HIGH / CRITICAL;
 - Bandit: 0 High / 0 Medium, seulement des Low;

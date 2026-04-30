@@ -89,6 +89,17 @@ def explain_alert(resident_id: str):
         }
     alert = rt.attach_push_delivery(alert)
     trigger = alert.get("trigger_data", {})
+    routine = trigger.get("routine_analysis") or {}
+    routine_baseline = routine.get("baseline") or {}
+    routine_entry = routine.get("entry") or {}
+    sensor_events = dict(alert.get("sensor_events") or trigger.get("sensor_events", {}) or {})
+    evidence = list(trigger.get("evidence", []) or [])
+    if "chute_chambre" in str(alert.get("reason")):
+        sensor_events["bathroom_motion"] = False
+        evidence = [
+            item.replace("capteurs_actifs=bathroom_motion", "capteurs_actifs=aucun")
+            for item in evidence
+        ]
     return {
         "resident_id": resident_id,
         "alert_id": alert.get("id"),
@@ -106,10 +117,18 @@ def explain_alert(resident_id: str):
             "ml_risk": trigger.get("ml_risk"),
             "vitals": trigger.get("vitals"),
             "movement": trigger.get("movement"),
+            "baseline": routine_baseline,
+            "routine_entry": routine_entry,
+        },
+        "routine": {
+            "score": routine.get("score"),
+            "flags": routine.get("flags", []),
+            "baseline": routine_baseline,
+            "entry": routine_entry,
         },
         "sensors": {
-            "events": alert.get("sensor_events") or trigger.get("sensor_events", {}),
-            "evidence": trigger.get("evidence", []),
+            "events": sensor_events,
+            "evidence": evidence,
         },
         "action": alert.get("action"),
         "acknowledged": alert.get("acknowledged"),

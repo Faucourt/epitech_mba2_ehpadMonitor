@@ -125,6 +125,17 @@
       return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : { ...extra };
     }
 
+    async function apiFetch(path, options = {}) {
+      try {
+        return await fetch(`${BACKEND_HTTP}${path}`, options);
+      } catch (err) {
+        if (location.protocol === 'http:') {
+          return fetch(`http://${location.hostname}:8001${path}`, options);
+        }
+        throw err;
+      }
+    }
+
     function clearStaffSession() {
       staffId = '';
       staffToken = '';
@@ -383,7 +394,7 @@
       }
       const alert = currentAlert() || {};
       if (!silent) document.getElementById('action-status').textContent = 'Enregistrement en cours...';
-      const res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+      const res = await apiFetch('/api/notifications/action', {
         method: 'POST',
         headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
@@ -399,7 +410,7 @@
         }),
       }).catch(() => null);
       if (!res || !res.ok) {
-        if (!silent) document.getElementById('action-status').textContent = `Action non enregistree${res ? `: HTTP ${res.status}` : ''}.`;
+        if (!silent) document.getElementById('action-status').textContent = `Action non enregistree${res ? `: HTTP ${res.status}` : ': API inaccessible'}.`;
         return;
       }
       const data = await res.json().catch(() => ({}));

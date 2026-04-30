@@ -1,6 +1,6 @@
 # Audit point 4 - Scenarios de vie et mouvements
 
-Date audit: 2026-04-28
+Date audit: 2026-04-30
 
 ## Deja present
 
@@ -23,12 +23,20 @@ Date audit: 2026-04-28
 - Les residents fragiles peuvent maintenant avoir des episodes de fatigue au patio/jardin.
 - Le patio devient une vraie destination d'animation de groupe.
 - Les scenarios sont exposes dans `/api/simulator/config`.
+- Les scenarios critiques alimentent maintenant directement le niveau minimal d'alerte:
+  - malaise repas / retour repas: niveau 4;
+  - chute couloir/chambre/jardin/trajet repas/salle de bain: niveau 4;
+  - lever toilettes nuit fragile: niveau 3;
+  - desorientation: niveau 3, ou niveau 4 si trouble cognitif en zone sensible;
+  - sortie jardin non accompagnee: niveau 3, ou niveau 4 si trouble cognitif;
+  - fatigue clinique post-kine/toilette/jardin: niveau 3 si fragilite, NEWS ou IA.
 
 ## Verification
 
 - `/api/simulator/config` contient les nouveaux scenarios.
 - `/api/residents` montre des residents en salle a manger pendant le petit dejeuner et des residents dependants en chambre.
 - `/api/sensors/health` remonte les capteurs `sdb_pir` et les capteurs patio.
+- Matrice scenarios d'alerte: 20/20 OK.
 
 ## A renforcer plus tard
 

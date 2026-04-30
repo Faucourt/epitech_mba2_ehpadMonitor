@@ -1,6 +1,6 @@
 # Point 5 - Alertes, escalade et tracabilite
 
-Date: 2026-04-28
+Date: 2026-04-30
 
 ## Ce qui est valide
 
@@ -24,6 +24,15 @@ Date: 2026-04-28
 - Les alertes cliniques fortes, fugue, SOS, chute, NEWS eleve ou constantes critiques peuvent toujours escalader jusqu'au niveau 5.
 - Workflow soignant renforce: `prise_en_charge` pose `taken_by`, `taken_at`, `escalation_paused_until`; `resolue` ferme l'alerte.
 - Workflow SAMU simule: une N5 cree `samu:call:{alert_id}`, puis le personnel peut confirmer `appel_samu_simule_confirme`.
+- Affinage scenarios critiques:
+  - malaise repas / retour repas force niveau 4;
+  - scenarios de chute forcent niveau 4 meme avant confirmation capteur;
+  - lever toilettes nuit fragile force niveau 3;
+  - desorientation simple force niveau 3;
+  - desorientation avec trouble cognitif en zone sensible force niveau 4;
+  - sortie jardin non accompagnee force niveau 3, niveau 4 si trouble cognitif;
+  - fatigue clinique post-kine/toilette/jardin force niveau 3 si fragilite, NEWS ou risque IA.
+- Ajout de la note `docs/alert_levels_escalation.md`.
 
 ## Verification
 
@@ -38,6 +47,10 @@ Date: 2026-04-28
 - Test `resolved`: OK, alerte retiree des alertes actives et audit `resolue`.
 - `GET /api/alerts/{resident_id}/samu-call`: garde-fou OK, refuse les alertes hors niveau 5.
 - `POST /api/alerts/{resident_id}/samu-call/simulate`: pret pour confirmation humaine tracee des N5.
+- Tests dedies niveaux d'alerte: `6 passed`.
+- Tests cibles alertes/scenarios/routine/A2A: `57 passed`.
+- Matrice large scenarios: `20/20 OK`.
+- Suite complete Pytest: `148 passed`.
 
 ## Reste a ameliorer plus tard
 

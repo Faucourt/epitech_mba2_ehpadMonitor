@@ -79,6 +79,7 @@ class MalaisePredictor:
         if os.path.exists(MODEL_PATH):
             try:
                 self.model = joblib.load(MODEL_PATH)
+                self._compute_metrics()
                 log.info("Modèle ML chargé depuis le disque")
                 return
             except Exception as e:
@@ -98,6 +99,15 @@ class MalaisePredictor:
         ])
         self.model.fit(X_train, y_train)
         joblib.dump(self.model, MODEL_PATH)
+
+        self._compute_metrics(X, y)
+
+    def _compute_metrics(self, X=None, y=None):
+        if self.model is None:
+            return
+        if X is None or y is None:
+            X, y = generate_training_data()
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
         y_pred = self.model.predict(X_test)
         y_proba = self.model.predict_proba(X_test)[:, 1]

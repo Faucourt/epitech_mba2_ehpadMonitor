@@ -41,7 +41,8 @@
   .logo-name { letter-spacing: .01em; }
   .logo-sub { font-size: 10px; font-weight: 500; color: var(--text2); margin-top: -2px; letter-spacing: .04em; }
   .header-stats { display: flex; gap: 20px; }
-  .stat { text-align: center; }
+  .stat { text-align: center; cursor: pointer; border-radius: 8px; padding: 4px 10px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+  .stat:hover { background: rgba(255,255,255,0.06); border-color: var(--border); }
   .stat-val { font-size: 22px; font-weight: 700; }
   .stat-label { font-size: 11px; color: var(--text2); }
   .conn-indicator { width: 10px; height: 10px; border-radius: 50%; background: var(--red); display: inline-block; margin-right: 6px; }
@@ -208,8 +209,10 @@
   .monitor-wave-label { font-size: 10px; color: #9fb9d7; font-weight: 800; }
   .monitor-wave { width: 100%; height: 38px; display: block; background-image: linear-gradient(rgba(35,73,115,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(35,73,115,0.18) 1px, transparent 1px); background-size: 24px 19px; border-radius: 4px; }
   .section-sub { font-size: 12px; font-weight: 600; color: var(--text2); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .ack-btn { width: 100%; padding: 10px; background: var(--green); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 12px; }
+  .ack-btn { width: 100%; padding: 10px; background: #f97316; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 12px; }
   .ack-btn:hover { opacity: 0.9; }
+  .resolve-btn { width: 100%; padding: 10px; background: #16a34a; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 8px; }
+  .resolve-btn:hover { opacity: 0.9; }
   .pathology-tag { display: inline-block; padding: 2px 8px; background: var(--bg3); border-radius: 4px; font-size: 11px; margin: 2px; color: var(--text2); }
 
   /* Toast */
@@ -319,10 +322,10 @@
     </div>
   </div>
   <div class="header-stats">
-    <div class="stat"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Résidents</div></div>
-    <div class="stat"><div class="stat-val" id="stat-alerts" style="color:var(--red)">—</div><div class="stat-label">Alertes actives</div></div>
-    <div class="stat"><div class="stat-val" id="stat-ml" style="color:var(--purple)">—</div><div class="stat-label">Risque ML élevé</div></div>
-    <div class="stat"><div class="stat-val" id="stat-ok" style="color:var(--green)">—</div><div class="stat-label">Status OK</div></div>
+    <div class="stat" title="Voir tous les résidents" onclick="const btn=[...document.querySelectorAll('.filter-btn')].find(b=>b.getAttribute('onclick')?.includes(&quot;'all'&quot;)); setFilter('all',btn); document.getElementById('resident-grid')?.scrollIntoView({behavior:'smooth'});"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Résidents</div></div>
+    <div class="stat" title="Résidents avec une alerte active — cliquer pour filtrer" onclick="const btn=[...document.querySelectorAll('.filter-btn')].find(b=>b.getAttribute('onclick')?.includes('alert')); setFilter('alert',btn); document.getElementById('resident-grid')?.scrollIntoView({behavior:'smooth'});"><div class="stat-val" id="stat-alerts" style="color:var(--red)">—</div><div class="stat-label">Alertes actives</div></div>
+    <div class="stat" title="Résidents avec probabilité de complication &gt; 50% dans les 60 prochaines minutes — cliquer pour filtrer" onclick="const btn=[...document.querySelectorAll('.filter-btn')].find(b=>b.getAttribute('onclick')?.includes('risk')); setFilter('risk',btn); document.getElementById('resident-grid')?.scrollIntoView({behavior:'smooth'});"><div class="stat-val" id="stat-ml" style="color:var(--purple)">—</div><div class="stat-label">Risque complication &gt;50%</div></div>
+    <div class="stat" title="Résidents sans alerte ni risque élevé — cliquer pour voir tous" onclick="const btn=[...document.querySelectorAll('.filter-btn')].find(b=>b.getAttribute('onclick')?.includes(&quot;'all'&quot;)); setFilter('all',btn); document.getElementById('resident-grid')?.scrollIntoView({behavior:'smooth'});"><div class="stat-val" id="stat-ok" style="color:var(--green)">—</div><div class="stat-label">Status OK</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <a href="/simulateur/config" target="_blank"
@@ -613,6 +616,7 @@ let simulatorSpeed = 1;
 let currentDailyReport = null;
 let alertPanelOpen = false;
 let _llmReportCache = {};  // resident_id → rendered HTML
+let _alertExplanationCache = {};  // resident_id → rendered HTML
 let lastToastByAlert = {};
 let demoModeActive = false;
 let staffId = localStorage.getItem('ehpad_staff_id') || '';
@@ -851,6 +855,13 @@ function getMLRiskColor(risk) {
   if (risk > 0.5) return '#f97316';
   if (risk > 0.25) return '#f59e0b';
   return '#10b981';
+}
+
+function getMLRiskLabel(risk) {
+  if (risk > 0.75) return 'eleve';
+  if (risk > 0.5) return 'modere';
+  if (risk > 0.25) return 'faible';
+  return 'bas';
 }
 
 function vitalColor(type, val) {
@@ -1156,7 +1167,7 @@ function updateAlertSidebar() {
         ${a.acknowledged
           ? `<button class="filter-btn" style="flex:1;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); takeAlertInCharge('${a.resident_id}')">Prendre en charge</button>`
           : `<button class="filter-btn" style="flex:1;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); acknowledgeAlert('${a.resident_id}')">Acquitter</button>`}
-        <button class="ack-btn" style="flex:1;margin-top:0;padding:5px 8px;font-size:11px;background:#16a34a" onclick="event.stopPropagation(); validateAlert('${a.resident_id}')">Valider / clôturer</button>
+        <button class="resolve-btn" style="flex:1;margin-top:0;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); validateAlert('${a.resident_id}')">✓ Clôturer</button>
       </div>
       ${escaladeBar}
     </div>`;
@@ -1179,11 +1190,163 @@ function formatAlertLocation(a) {
 function formatSensorEvents(events = {}) {
   const labels = [];
   if (events.door_open) labels.push('porte');
-  if (events.floor_pressure_event) labels.push('sol/matelas');
+  if (events.floor_pressure_event) labels.push('sol pression');
+  if (events.mattress_exit) labels.push('sortie lit');
+  if (events.fall_confirmed_by_room_sensor) labels.push('chute confirmee capteur chambre');
+  if (events.bathroom_motion) labels.push('salle de bain');
   if (events.room_radar_presence || events.radar_immobile_low) labels.push('radar');
   if (events.room_pir_motion) labels.push('PIR');
   if (events.bed_occupied) labels.push('lit');
   return labels.length ? labels.join(', ') : 'capteurs';
+}
+
+function mergeAlertSensorEvents(data = {}) {
+  const merged = {
+    ...(data.clinical?.movement?.sensor_events || {}),
+    ...(data.sensors?.events || {}),
+  };
+  const evidenceText = (data.sensors?.evidence || []).join(' ');
+  if (evidenceText.includes('fall_confirmed_by_room_sensor')) merged.fall_confirmed_by_room_sensor = true;
+  if (evidenceText.includes('room_radar_presence')) merged.room_radar_presence = true;
+  if (evidenceText.includes('floor_pressure_event')) merged.floor_pressure_event = true;
+  if (evidenceText.includes('mattress_exit')) merged.mattress_exit = true;
+  return merged;
+}
+
+function formatAlertReason(reason = '') {
+  if (!reason) return { escalation: '', event: 'Alerte active' };
+  const marker = '→';
+  if (!reason.includes(marker)) return { escalation: '', event: reason };
+  const [left, right] = reason.split(marker);
+  return {
+    escalation: left.trim(),
+    event: (right || '').trim(),
+  };
+}
+
+function renderEvidenceList(evidence = []) {
+  if (!evidence.length) return '<div class="watch-item">Aucune preuve technique detaillee.</div>';
+  return evidence.map(item => {
+    const [key, ...rest] = String(item).split('=');
+    const rawValue = rest.join('=') || item;
+    const value = key === 'capteurs_actifs'
+      ? formatSensorEvents(Object.fromEntries(String(rawValue).split(',').filter(Boolean).map(name => [name, true])))
+      : rawValue;
+    const label = key
+      .replace('capteurs_actifs', 'Capteurs actifs')
+      .replace('qualite_capteurs', 'Qualite capteurs')
+      .replace('routine_score', 'Score routine')
+      .replace('routine_flags', 'Routine')
+      .replace('zone', 'Zone')
+      .replace('NEWS', 'NEWS')
+      .replace('ML', 'Risque ML');
+    return `<div class="vital-row"><span style="color:var(--text2)">${label}</span><span>${value}</span></div>`;
+  }).join('');
+}
+
+function baselineAvg(stat) {
+  if (!stat || typeof stat !== 'object' || stat.avg == null) return null;
+  const value = Number(stat.avg);
+  return Number.isFinite(value) ? value : null;
+}
+
+function signedDelta(current, usual, decimals = 0) {
+  if (!Number.isFinite(current) || !Number.isFinite(usual)) return '';
+  const delta = current - usual;
+  const sign = delta > 0 ? '+' : '';
+  return ` (${sign}${delta.toFixed(decimals)})`;
+}
+
+function formatCurrentVsUsual(current, stat, unit = '', decimals = 0) {
+  const currentNum = Number(current);
+  const usual = baselineAvg(stat);
+  const currentText = Number.isFinite(currentNum) ? currentNum.toFixed(decimals) : '—';
+  if (!Number.isFinite(usual)) return `${currentText}${unit}`;
+  return `${currentText}${unit} <span style="color:var(--text2)">habituel ${usual.toFixed(decimals)}${unit}${signedDelta(currentNum, usual, decimals)}</span>`;
+}
+
+function formatSecondsAsMinutes(value) {
+  const seconds = Number(value);
+  if (!Number.isFinite(seconds)) return '—';
+  if (seconds < 90) return `${Math.round(seconds)} s`;
+  return `${Math.round(seconds / 60)} min`;
+}
+
+function formatDurationDelta(currentSeconds, usualSeconds) {
+  const current = Number(currentSeconds);
+  const usual = Number(usualSeconds);
+  if (!Number.isFinite(current) || !Number.isFinite(usual)) return '';
+  const delta = current - usual;
+  const sign = delta > 0 ? '+' : '';
+  return `ecart ${sign}${formatSecondsAsMinutes(Math.abs(delta))}`;
+}
+
+function formatMovementComparison(movement = {}, baseline = {}, entry = {}, location = {}) {
+  const currentLast = movement.last_movement_ago_s ?? entry.last_movement_ago_s;
+  const usualLast = baselineAvg(baseline.last_movement_ago_s);
+  const lastText = Number.isFinite(Number(currentLast)) && Number.isFinite(usualLast)
+    ? `${formatSecondsAsMinutes(currentLast)} <span style="color:var(--text2)">habituel ${formatSecondsAsMinutes(usualLast)} · ${formatDurationDelta(currentLast, usualLast)}</span>`
+    : `${formatSecondsAsMinutes(currentLast)} <span style="color:var(--text2)">habituel non appris</span>`;
+  const zone = entry.zone || location.zone || location.label || '—';
+  const usualZone = baseline.dominant_zone || '—';
+  const activity = entry.activity || movement.activity || '—';
+  const usualActivity = baseline.dominant_activity || '—';
+  return `
+    <div class="vital-row"><span style="color:var(--text2)">Dernier mouvement</span><span>${lastText}</span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Activite</span><span>${activity} <span style="color:var(--text2)">habituel ${usualActivity}</span></span></div>
+    <div class="vital-row"><span style="color:var(--text2)">Zone</span><span>${zone} <span style="color:var(--text2)">habituel ${usualZone}</span></span></div>
+  `;
+}
+
+function formatFallConfirmation(data = {}, events = {}) {
+  const scenario = String(data.reason || data.clinical?.routine_entry?.movement_scenario || '').toLowerCase();
+  const movement = data.clinical?.movement || {};
+  const isFallContext = scenario.includes('chute') || movement.is_fall_detected || movement.ambient_fall_confirmed;
+  if (!isFallContext) return '';
+  if (movement.is_fall_detected && events.fall_confirmed_by_room_sensor) return 'Chute confirmee par wearable + capteur de chambre';
+  if (movement.is_fall_detected) return 'Chute detectee par wearable, capteur ambiant non confirmant';
+  if (events.fall_confirmed_by_room_sensor || events.floor_pressure_event) return 'Chute confirmee par capteur ambiant';
+  return 'Scenario de chute declare, confirmation capteur en attente';
+}
+
+function renderAlertExplanation(data) {
+  const events = mergeAlertSensorEvents(data);
+  const evidence = data.sensors?.evidence || [];
+  const vitals = data.clinical?.vitals || {};
+  const movement = data.clinical?.movement || {};
+  const baseline = data.clinical?.baseline || data.routine?.baseline || {};
+  const routineEntry = data.clinical?.routine_entry || data.routine?.entry || {};
+  const newsScore = data.clinical?.news?.score ?? '—';
+  const mlRisk = Number(data.clinical?.ml_risk || 0);
+  const reason = formatAlertReason(data.reason || '');
+  return `
+    <div class="watch-item" style="border-color:rgba(59,130,246,.35);display:grid;gap:8px">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <b>Explication structuree</b>
+        <span class="alert-badge badge-${data.level || 1}">N${data.level || '-'} ${data.level_name || ''}</span>
+      </div>
+      ${reason.escalation ? `<div style="border-left:3px solid var(--red);padding-left:8px"><b>Pourquoi ce niveau ?</b><br><span style="color:var(--text2)">${reason.escalation}</span></div>` : ''}
+      <div style="border-left:3px solid var(--orange);padding-left:8px"><b>Evenement initial</b><br>${reason.event}</div>
+      <div class="dpi-grid" style="grid-template-columns:1fr;gap:0">
+        <div class="vital-row"><span style="color:var(--text2)">Position</span><span>${data.location?.label || data.location?.zone || 'non precisee'}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">Capteurs actifs</span><span>${formatSensorEvents(events)}</span></div>
+        ${formatFallConfirmation(data, events) ? `<div class="vital-row"><span style="color:var(--text2)">Confirmation chute</span><span>${formatFallConfirmation(data, events)}</span></div>` : ''}
+        <div class="vital-row"><span style="color:var(--text2)">FC vs habituel</span><span>${formatCurrentVsUsual(vitals.heart_rate, baseline.hr, ' bpm')}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">SpO2 vs habituel</span><span>${formatCurrentVsUsual(vitals.spo2, baseline.spo2, '%')}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">PA systolique vs habituel</span><span>${formatCurrentVsUsual(vitals.blood_pressure_sys, baseline.bp_sys, ' mmHg')}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">Temperature vs habituel</span><span>${formatCurrentVsUsual(vitals.temperature, baseline.temp, '°C', 1)}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">Respiration vs habituel</span><span>${formatCurrentVsUsual(vitals.respiratory_rate, baseline.respiratory_rate, '/min')}</span></div>
+        ${formatMovementComparison(movement, baseline, routineEntry, data.location || {})}
+        <div class="vital-row"><span style="color:var(--text2)">NEWS</span><span>${newsScore}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">Risque ML</span><span style="color:${getMLRiskColor(mlRisk)}">${Math.round(mlRisk * 100)}% · ${getMLRiskLabel(mlRisk)}</span></div>
+      </div>
+      <div>
+        <b>Preuves techniques</b>
+        <div style="margin-top:4px">${renderEvidenceList(evidence)}</div>
+      </div>
+      <div style="border-left:3px solid var(--green);padding-left:8px"><b>Action attendue</b><br>Verifier le resident, confirmer les capteurs et tracer la prise en charge.</div>
+    </div>
+  `;
 }
 
 function formatNotifiedStaff(staff = []) {
@@ -1880,7 +2043,7 @@ function renderGlobalReport(report) {
     </div>
     <div id="daily-llm-status" class="watch-item" style="margin-bottom:10px">Rapports LLM quotidiens: vérification...</div>
     <table class="handover-table">
-      <thead><tr><th>Ch.</th><th>Résident</th><th>Niveau</th><th>30/60 min</th><th>Transmission</th><th>À surveiller</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Ch.</th><th>Résident</th><th>Niveau</th><th>30/60 min</th><th>Transmission</th><th>Données CDAR</th><th>Actions CDAR</th></tr></thead>
       <tbody>
         ${rows.map(r => `
           <tr class="handover-row" onclick="selectReportResident('${r.resident_id}')">
@@ -2118,6 +2281,54 @@ async function printSelectedMedicalReport() {
   printMedicalReportFromCurrent();
 }
 
+function renderNursingTransmissionCard(transmission = {}, fallbackSummary = '') {
+  const saed = transmission.saed || {};
+  const cdar = transmission.cdar || {};
+  const references = transmission.references_officielles || [];
+  if (!Object.keys(saed).length && !Object.keys(cdar).length) {
+    return `<div style="font-size:13px;line-height:1.45;color:var(--text2)">${escapeHtml(fallbackSummary || 'Transmission non disponible.')}</div>`;
+  }
+  const row = (label, value) => `
+    <div class="vital-row">
+      <span style="color:var(--text2);font-weight:800">${escapeHtml(label)}</span>
+      <span>${escapeHtml(value || '—')}</span>
+    </div>`;
+  const list = (items = []) => items.length
+    ? `<ul style="margin:6px 0 0;padding-left:18px">${items.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`
+    : '<div style="color:var(--text2);font-size:12px">—</div>';
+  return `
+    <div class="watch-item" style="border-color:rgba(34,197,94,.35);display:grid;gap:10px">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <b>Transmission soignants</b>
+        <span style="color:var(--text2);font-size:11px">${escapeHtml(transmission.source || 'rules+KB+ML')} · immédiate</span>
+      </div>
+      <div>
+        <b>SAED - action rapide</b>
+        <div class="dpi-grid" style="grid-template-columns:1fr;gap:0;margin-top:6px">
+          ${row('S - Situation', saed.situation)}
+          ${row('A - Antécédents', saed.antecedents)}
+          ${row('E - Évaluation', saed.evaluation)}
+          ${row('D - Demande', saed.demande)}
+        </div>
+      </div>
+      <div>
+        <b>CDAR - trace écrite</b>
+        <div class="dpi-grid" style="grid-template-columns:1fr;gap:0;margin-top:6px">
+          ${row('Cible', cdar.cible)}
+          <div class="vital-row"><span style="color:var(--text2);font-weight:800">Données</span><span>${list(cdar.donnees || [])}</span></div>
+          <div class="vital-row"><span style="color:var(--text2);font-weight:800">Actions</span><span>${list(cdar.actions || [])}</span></div>
+          <div class="vital-row"><span style="color:var(--text2);font-weight:800">Résultats</span><span>${list(cdar.resultats || [])}</span></div>
+        </div>
+      </div>
+      ${references.length ? `<div>
+        <b>Références officielles</b>
+        <ul style="margin:6px 0 0;padding-left:18px">${references.map(ref => `<li><a href="${escapeHtml(ref.url || '#')}" target="_blank" rel="noopener" style="color:var(--accent)">${escapeHtml(ref.title || ref.id)}</a><br><span style="color:var(--text2);font-size:11px">${escapeHtml(ref.organization || '')}</span></li>`).join('')}</ul>
+      </div>` : ''}
+      <div style="color:var(--text2);font-size:11px">${escapeHtml(transmission.llm_report_policy || 'Compte rendu clinique IA séparé.')}</div>
+    </div>
+  `;
+}
+
 function renderResidentDpi(report) {
   const panel = document.getElementById('resident-dpi');
   if (!panel || !report) return;
@@ -2149,7 +2360,8 @@ function renderResidentDpi(report) {
       <div class="dpi-row"><span>Scénario</span><b>${scenario}</b></div>
       <div class="dpi-row"><span>Profil de vie</span><b>${life.archetype_label || life.label || 'standard'}</b></div>
       <div class="dpi-row"><span>Surveillance</span><b>${life.supervision || 'standard'}</b></div>
-      <div class="dpi-row"><span>Risque actuel</span><b style="color:${getMLRiskColor(risk.ml_risk || 0)}">${Math.round((risk.ml_risk || 0) * 100)}% · ${risk.alert_level_name || 'Stable'}</b></div>
+      <div class="dpi-row"><span>Risque ML actuel</span><b style="color:${getMLRiskColor(risk.ml_risk || 0)}">${Math.round((risk.ml_risk || 0) * 100)}% · ${getMLRiskLabel(risk.ml_risk || 0)}</b></div>
+      <div class="dpi-row"><span>Niveau alerte clinique</span><b>${risk.alert_level_name || 'Stable'}</b></div>
       <div class="dpi-row"><span>Niveau agents</span><b>${a2a.recommended_level_name || 'Stable'}</b></div>
       <div class="dpi-row"><span>Tendance prédictive</span><b>${a2a.prediction_trend || risk.prediction_trend || 'indisponible'} ${Number.isFinite(a2a.risk_delta_15min) ? `(${Math.round(a2a.risk_delta_15min * 100)} pts/15min)` : ''}</b></div>
       <div class="dpi-row"><span>Tendance 30 jours</span><b>${risk.trend_30d || 'stable'}</b></div>
@@ -2174,15 +2386,10 @@ function renderResidentDpi(report) {
       </div>
     </div>
     <div class="agent-summary">${a2a.summary || 'Analyse agentique non disponible.'}</div>
-    <div class="section-sub">Transmission</div>
-    <div style="font-size:13px;line-height:1.45;color:var(--text2)">${report.transmission_summary || ''}</div>
-    <div class="section-sub">Risque à venir</div>
-    <div class="watch-list">${(report.watch_points || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Aucun point spécifique.</div>'}</div>
-    <div class="section-sub">Actions soignantes</div>
-    <div class="watch-list">${(report.next_actions || []).map(p => `<div class="watch-item">${p}</div>`).join('') || '<div class="watch-item">Surveillance standard.</div>'}</div>
+    ${renderNursingTransmissionCard(report.nursing_transmission, report.transmission_summary)}
     ${medicalDoc ? renderMedicalReportCard(medicalDoc) : ''}
     <div class="section-sub" style="display:flex;align-items:center;justify-content:space-between;">
-      <span>Rapport LLM (Meditron · RAG KB)</span>
+      <span>Compte rendu clinique IA séparé (Meditron · RAG KB)</span>
       <button class="filter-btn" onclick="loadLlmReport('${report.resident_id}')" id="llm-btn-${report.resident_id}">Générer</button>
     </div>
     <div id="llm-report-block" style="margin-top:6px"></div>
@@ -2203,7 +2410,7 @@ function renderClinicalLlmReport(data, compact = false) {
   return `
     <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px;line-height:1.55;border:1px solid var(--border)">
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px">
-        <span style="font-weight:800;color:${niveauColor};text-transform:uppercase">${r.niveau_risque || '—'}</span>
+        <span style="font-weight:800;color:${niveauColor};text-transform:uppercase">Niveau clinique ${r.niveau_risque || '—'}</span>
         <span style="color:var(--text2);font-size:11px">${data.model || ''} · ${data.duration_ms ? data.duration_ms + 'ms' : ''}</span>
       </div>
       <div style="margin-bottom:8px">${r.synthese_clinique || r.resume || '—'}</div>
@@ -2685,7 +2892,7 @@ function openDetail(rid) {
         ? `<div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:10px">Alerte acquittee par ${alert.acknowledged_by || 'soignant'}</div>
            <button class="filter-btn" style="width:100%;margin-top:8px;padding:9px 10px;font-size:13px" onclick="takeAlertInCharge('${rid}')">Prendre en charge</button>`
         : `<button class="ack-btn" onclick="acknowledgeAlert('${rid}')">✓ Acquitter l'alerte</button>`}
-      <button class="ack-btn" style="background:#16a34a" onclick="validateAlert('${rid}')">✓ Valider / clôturer l'alerte</button>
+      <button class="resolve-btn" onclick="validateAlert('${rid}')">✓ Valider / clôturer l'alerte</button>
     `;
   }
 
@@ -2818,6 +3025,10 @@ function openDetail(rid) {
     const btn   = document.getElementById('dp-llm-btn');
     if (block) block.innerHTML = _llmReportCache[rid];
     if (btn)   btn.textContent = 'Régénérer';
+  }
+  if (_alertExplanationCache[rid]) {
+    const block = document.getElementById('alert-explain-block');
+    if (block) block.innerHTML = _alertExplanationCache[rid];
   }
 
   // Dessiner les sparklines après rendu
@@ -3070,11 +3281,20 @@ async function recordAlertWorkflowAction(rid, action) {
     reason: a.reason || null,
     location: formatAlertLocation(a),
   };
-  const res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+  let res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
     method: 'POST',
     headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(payload),
   });
+  if (res.status === 401 || res.status === 403) {
+    clearStaffSession();
+    await ensureStaffSession();
+    res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(payload),
+    });
+  }
   if (!res.ok) {
     const detail = await res.json().catch(() => ({}));
     throw new Error(detail.detail || `Action impossible (${res.status})`);
@@ -3125,22 +3345,14 @@ async function loadAlertExplanation(rid) {
     const target = document.getElementById('alert-explain-block');
     if (!target) return;
     if (!data.alert_id && !data.alert) {
-      target.innerHTML = `<div class="watch-item">${data.professional_summary || 'Aucune alerte active ou recente.'}</div>`;
+      const rendered = `<div class="watch-item">${data.professional_summary || 'Aucune alerte active ou recente.'}</div>`;
+      target.innerHTML = rendered;
+      _alertExplanationCache[rid] = rendered;
       return;
     }
-    const events = data.sensors?.events || {};
-    const evidence = data.sensors?.evidence || [];
-    const vitals = data.clinical?.vitals || {};
-    target.innerHTML = `
-      <div class="watch-item" style="border-color:rgba(59,130,246,.35)">
-        <b>Explication structurée</b><br>
-        ${data.professional_summary || ''}<br>
-        <span style="color:var(--text2)">Position:</span> ${data.location?.label || data.location?.zone || 'non precisee'}<br>
-        <span style="color:var(--text2)">Capteurs:</span> ${formatSensorEvents(events)}<br>
-        <span style="color:var(--text2)">Constantes:</span> FC ${vitals.heart_rate ?? '-'} · SpO2 ${vitals.spo2 ?? '-'} · PA ${formatBp(vitals)} · T ${vitals.temperature ?? '-'}<br>
-        ${evidence.length ? `<span style="color:var(--text2)">Preuves:</span> ${evidence.join(' · ')}` : ''}
-      </div>
-    `;
+    const rendered = renderAlertExplanation(data);
+    target.innerHTML = rendered;
+    _alertExplanationCache[rid] = rendered;
   } catch (err) {
     const block = document.getElementById('alert-explain-block');
     if (block) block.innerHTML = `<div class="watch-item" style="color:var(--red)">${err.message}</div>`;

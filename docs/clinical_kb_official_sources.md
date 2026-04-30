@@ -41,6 +41,7 @@ a tenir ne remplacent pas un protocole medical valide par l'etablissement.
 | Sepsis | OMS | infection grave, confusion, respiration rapide, hypotension |
 | NEWS2 | Royal College of Physicians | SpO2, frequence respiratoire, PA, pouls, temperature, conscience |
 | Premiers secours PSC/AFPS | Ministere de l'Interieur / DGSCGC | malaise, perte de connaissance, arret cardiaque, hemorragie, obstruction, brulure, traumatisme |
+| AFGSU N1/N2 | ANCESU / CESU | urgence vitale, alerte SAMU, inconscience, obstruction, hemorragie, arret cardiaque |
 
 ## Pathologies couvertes
 
@@ -76,6 +77,11 @@ Ces fiches sont injectees dans le contexte LLM quand le niveau d'alerte, les
 constantes ou les capteurs indiquent un risque immediat. Le LLM doit rester
 prudent: il propose une conduite de premiers secours compatible avec PSC/AFPS,
 mais l'appel soignant/15/112 suit toujours le protocole de l'etablissement.
+
+Les transmissions soignantes SAED/CDAR reprennent aussi ces references:
+quand une alerte N4/N5 ou un scenario de malaise/chute est detecte, les actions
+CDAR sont completees par des gestes simples issus des fiches premiers secours
+et les liens officiels utilises sont affiches dans la transmission.
 
 ## Utilisation par le LLM
 

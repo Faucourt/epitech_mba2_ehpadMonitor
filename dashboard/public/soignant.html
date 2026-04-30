@@ -215,6 +215,17 @@
       return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : extra;
     }
 
+    async function apiFetch(path, options = {}) {
+      try {
+        return await fetch(`${BACKEND_HTTP}${path}`, options);
+      } catch (err) {
+        if (location.protocol === 'http:') {
+          return fetch(`http://${location.hostname}:8001${path}`, options);
+        }
+        throw err;
+      }
+    }
+
     function clearStaffSession() {
       staffToken = '';
       tokenStaffId = '';
@@ -383,28 +394,43 @@
     }
 
     async function traceAction(key, action, notification = {}) {
-      localStatus[key] = { status: action, at: new Date().toISOString(), by: staffId };
-      saveLocalStatus();
+      const previousStatus = localStatus[key];
       try {
-        const res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
+        const payload = {
+          caregiver_id: staffId,
+          action,
+          notification_key: key,
+          alert_id: notification.alert_id || notification.id || null,
+          resident_id: notification.resident_id || null,
+          resident_name: notification.resident_name || null,
+          level: notification.level || null,
+          reason: notification.reason || notification.event || null,
+          location: notification.location || notification.location_label || notification.zone || null,
+        };
+        let res = await apiFetch('/api/notifications/action', {
           method: 'POST',
           headers: authHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({
-            caregiver_id: staffId,
-            action,
-            notification_key: key,
-            alert_id: notification.alert_id || null,
-            resident_id: notification.resident_id || null,
-            resident_name: notification.resident_name || null,
-            level: notification.level || null,
-            reason: notification.reason || notification.event || null,
-            location: notification.location || notification.zone || null,
-          }),
+          body: JSON.stringify(payload),
         });
+        if (res.status === 401 || res.status === 403) {
+          clearStaffSession();
+          document.getElementById('login-gate').style.display = 'grid';
+          throw new Error('Session soignant expiree, reconnecte-toi.');
+        }
+        if (!res.ok) {
+          const detail = await res.json().catch(() => ({}));
+          throw new Error(detail.detail || `Action impossible (${res.status})`);
+        }
         const data = await res.json();
         if (data.trace) localStatus[key] = { status: data.trace.action, at: data.trace.at, by: data.trace.caregiver_id };
+        else localStatus[key] = { status: action, at: new Date().toISOString(), by: staffId };
         saveLocalStatus();
-      } catch (_) {}
+      } catch (err) {
+        if (previousStatus) localStatus[key] = previousStatus;
+        else delete localStatus[key];
+        saveLocalStatus();
+        alert(err.message || 'Action impossible: API backend inaccessible.');
+      }
       await loadStaff();
     }
 

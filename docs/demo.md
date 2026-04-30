@@ -139,6 +139,7 @@ Montrer:
 Phrase possible:
 
 > Les alertes sont graduees de 1 a 5, filtrees pour limiter les fausses alertes et escaladees si elles ne sont pas acquittees.
+> Les malaises et les chutes simples sont traites en urgence niveau 4, car ils peuvent provoquer une chute secondaire, une immobilite ou une aggravation rapide. Une chute confirmee avec immobilite et constante aggravee passe en niveau 5. Le niveau 5 reste reserve au danger vital objectivable.
 
 ## 7. Mini DPI et transmission
 
@@ -146,15 +147,17 @@ Dans `Transmissions`, montrer:
 
 - fiche globale soignants;
 - mini DPI par resident;
+- transmission soignants SAED/CDAR automatique;
 - constantes actuelles;
 - historique 30 jours;
 - alertes du jour;
 - points de vigilance;
 - actions a faire.
+- compte rendu clinique IA separe, genere ensuite avec Meditron si besoin.
 
 Phrase possible:
 
-> Le LLM ou la synthese agentique ne decide pas l'alerte. Il transforme les donnees en transmission lisible pour les soignants.
+> La transmission soignants est immediate et deterministe: rules + KB + ML, structuree en SAED/CDAR. Le compte rendu Meditron est separe et genere ensuite pour analyser une complication.
 
 ## 8. Scalabilite
 

@@ -107,6 +107,19 @@ class TestAlertEngine:
         assert alert is not None
         assert alert.level == 4, "Chute doit déclencher niveau 4"
 
+    def test_fall_with_tachycardia_and_immobility_is_level_5(self):
+        engine = make_alert_engine()
+        state = make_state(hr=124, last_mv=180, is_fall=True)
+        state["sensor_events"] = {
+            "fall_confirmed_by_room_sensor": True,
+            "floor_pressure_event": True,
+        }
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 5
+        assert "Chute confirmee avec immobilite" in alert.reason
+        assert "combinaison=chute_confirmee+immobilite+constantes_aggravees" in alert.trigger_data["evidence"]
+
     def test_level_5_danger_vital(self):
         engine = make_alert_engine()
         state = make_state(spo2=84, hr=135)  # SpO2 < 85 ET FC > 130 → niveau 5
@@ -127,6 +140,105 @@ class TestAlertEngine:
         alert = evaluate_until_alert(engine, state)
         assert alert is not None
         assert alert.level >= 3
+
+    def test_meal_return_malaise_reason_is_explicit(self):
+        engine = make_alert_engine()
+        state = make_state(ml_risk=0.70)
+        state["movement_scenario"] = "malaise_retour_repas"
+        state["routine_analysis"] = {
+            "score": 0.45,
+            "alert_level": 2,
+            "flags": ["malaise retour repas"],
+        }
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 4
+        assert "Malaise suspecte" in alert.reason
+        assert "risque de chute ou immobilite" in alert.reason
+        assert "risque IA 70%" in alert.reason
+
+    def test_meal_room_malaise_is_level_4(self):
+        engine = make_alert_engine()
+        state = make_state()
+        state["movement_scenario"] = "malaise_salle_manger"
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 4
+        assert "Malaise suspecte" in alert.reason
+
+    def test_fall_scenario_is_level_4_even_before_sensor_confirmation(self):
+        engine = make_alert_engine()
+        state = make_state()
+        state["movement_scenario"] = "chute_couloir"
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 4
+        assert "Scenario de chute" in alert.reason
+
+    def test_night_toilet_frail_is_level_3(self):
+        engine = make_alert_engine()
+        state = make_state(time_of_day="nuit")
+        state["movement_scenario"] = "aller_toilettes_nuit"
+        state["mobility"] = "tres_faible"
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 3
+        assert "toilettes nuit" in alert.reason
+
+    def test_high_risk_disorientation_is_level_4(self):
+        engine = make_alert_engine()
+        state = make_state()
+        state["movement_scenario"] = "desorientation_ascenseur"
+        state["pathologies"] = ["alzheimer"]
+        state["current_zone"] = "ascenseur"
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 4
+        assert "Desorientation a haut risque" in alert.reason
+
+    def test_unaccompanied_garden_exit_cognitive_is_level_4(self):
+        engine = make_alert_engine()
+        state = make_state()
+        state["movement_scenario"] = "sortie_jardin_non_accompagnee"
+        state["pathologies"] = ["demence"]
+        alert = evaluate_until_alert(engine, state)
+        assert alert is not None
+        assert alert.level == 4
+        assert "Sortie non accompagnee" in alert.reason
+
+    @pytest.mark.parametrize("scenario,zone,expected_level,reason_part,extra", [
+        ("chute_chambre", "ch103", 4, "Scenario de chute", {}),
+        ("chute_salle_bain", "ch103", 4, "Scenario de chute", {}),
+        ("chute_couloir", "couloir_principal", 4, "Scenario de chute", {}),
+        ("chute_trajet_repas", "couloir_principal", 4, "Scenario de chute", {}),
+        ("chute_jardin", "jardin", 4, "Scenario de chute", {}),
+        ("malaise_salle_manger", "salle_manger", 4, "Malaise suspecte", {"ml_risk": 0.65}),
+        ("malaise_retour_repas", "couloir_principal", 4, "Malaise suspecte", {"ml_risk": 0.65}),
+        ("desorientation_ascenseur", "ascenseur", 4, "Desorientation a haut risque", {"pathologies": ["alzheimer"]}),
+        ("aller_toilettes_nuit", "couloir_principal", 3, "toilettes nuit", {"mobility": "tres_faible", "time_of_day": "nuit"}),
+        ("sortie_jardin_non_accompagnee", "jardin", 4, "Sortie non accompagnee", {"pathologies": ["demence"]}),
+        ("fugue_hors_ehpad", "hors_ehpad", 4, "Fugue detectee", {}),
+    ])
+    def test_scenario_alert_matrix_is_coherent(self, scenario, zone, expected_level, reason_part, extra):
+        engine = make_alert_engine()
+        state = make_state(
+            ml_risk=extra.get("ml_risk", 0.1),
+            time_of_day=extra.get("time_of_day", "animation_matin"),
+        )
+        state["movement_scenario"] = scenario
+        state["current_zone"] = zone
+        state["sensor_events"] = extra.get("sensor_events", {})
+        if "pathologies" in extra:
+            state["pathologies"] = extra["pathologies"]
+        if "mobility" in extra:
+            state["mobility"] = extra["mobility"]
+
+        alert = evaluate_until_alert(engine, state)
+
+        assert alert is not None
+        assert int(alert.level) == expected_level
+        assert reason_part in alert.reason
+        assert alert.current_zone == zone
 
     def test_acknowledge_alert(self):
         engine = make_alert_engine()
@@ -325,6 +437,61 @@ class TestSimulator:
             if state["movement"]["is_fall_detected"]:
                 break
         assert state["movement"]["is_fall_detected"] is True
+
+    def test_chute_chambre_does_not_activate_bathroom_sensor(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'simulator'))
+        from main import ResidentSimulator
+        profile = {
+            "id": "T103", "name": "Test chambre", "age": 86, "room": "103",
+            "zone": "ch103", "floor": 0,
+            "room_sensors": ["pir", "radar", "porte", "sdb_pir", "matelas", "sol"],
+            "pathologies": ["parkinson"], "mobility": "tres_faible",
+            "base_hr": 72, "base_spo2": 96, "base_bp_sys": 130, "base_temp": 36.7,
+            "risk_factor": 0.9, "caregiver": "soignant_A"
+        }
+        sim = ResidentSimulator(profile)
+        sim.movement_scenario = "chute_chambre"
+        state = sim.tick()
+
+        assert state["current_zone"] == "ch103"
+        assert state["sensor_events"]["bathroom_motion"] is False
+
+    def test_chute_salle_bain_activates_bathroom_sensor(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'simulator'))
+        from main import ResidentSimulator
+        profile = {
+            "id": "T104", "name": "Test salle bain", "age": 86, "room": "104",
+            "zone": "ch104", "floor": 0,
+            "room_sensors": ["pir", "radar", "porte", "sdb_pir", "matelas", "sol"],
+            "pathologies": ["parkinson"], "mobility": "tres_faible",
+            "base_hr": 72, "base_spo2": 96, "base_bp_sys": 130, "base_temp": 36.7,
+            "risk_factor": 0.9, "caregiver": "soignant_A"
+        }
+        sim = ResidentSimulator(profile)
+        sim.movement_scenario = "chute_salle_bain"
+        state = sim.tick()
+
+        assert state["current_zone"] == "ch104"
+        assert state["sensor_events"]["bathroom_motion"] is True
+
+    def test_chute_couloir_routes_before_freezing_alert(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'simulator'))
+        from main import ResidentSimulator
+        profile = {
+            "id": "T105", "name": "Test couloir", "age": 82, "room": "105",
+            "zone": "ch105", "floor": 0,
+            "room_sensors": ["pir", "radar", "porte", "matelas", "sol"],
+            "pathologies": [], "mobility": "faible",
+            "base_hr": 72, "base_spo2": 96, "base_bp_sys": 130, "base_temp": 36.7,
+            "risk_factor": 0.5, "caregiver": "soignant_A"
+        }
+        sim = ResidentSimulator(profile)
+        sim.movement_scenario = "chute_couloir"
+        state = sim.tick()
+
+        assert state["current_zone"] == "ch105"
+        assert sim.route, "Le scenario couloir doit router avant de figer l'alerte en chambre"
+        assert sim.target_zone != "ch105"
 
 
 # ============================================================

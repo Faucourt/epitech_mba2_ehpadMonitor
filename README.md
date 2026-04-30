@@ -549,8 +549,10 @@ L'interface distingue plusieurs blocs:
 
 - `Dashboard global`: 25 residents, constantes, alertes et priorisation.
 - `Mini DPI`: profil, pathologies, capteurs, risque, historique et transmission.
-- `Rapport clinique structure`: document stocke dans le Mini DPI avec synthese,
-  preuves, hypotheses, conduite a tenir, surveillance, sources et tracabilite LLM.
+- `Transmission soignants`: SAED/CDAR immediat, genere par regles + KB + ML,
+  separe du compte rendu IA.
+- `Compte rendu clinique IA`: document Meditron/RAG genere ensuite a la demande,
+  avec preuves, hypotheses, conduite a tenir, surveillance, sources et tracabilite LLM.
 - `Plan / capteurs`: localisation 2D/3D, chambres, zones, capteurs actifs.
 - `Personnel`: soignants, affectations, charge, notifications et audit.
 - `Famille`: carnet de vie sans constantes medicales.
@@ -561,7 +563,7 @@ Important:
 
 - le simulateur ne change pas selon une validation medicale humaine;
 - le LLM n'est pas reentraine localement;
-- les rapports LLM sont une aide de synthese et de transmission, pas un avis medical officiel;
+- les rapports LLM sont un compte rendu clinique enrichi apres transmission, pas un avis medical officiel;
 - l'entrainement ML reste separe du moteur d'alerte live;
 - le Mini DPI dashboard utilise un rapport frais pour eviter un cache ancien.
 - les antecedents du patient, traitements probables et scenarios preferes sont
@@ -618,7 +620,9 @@ Fichier principal:
 
 - agrege profil, constantes, capteurs, historique 30 jours, risque et actions;
 - fournit une vue resident exploitable par le dashboard.
+- genere une transmission soignante structuree en SAED/CDAR, disponible sans LLM;
 - reference le dernier rapport clinique structure genere par le LLM;
+- separe la transmission operationnelle du compte rendu clinique IA Meditron;
 - expose les antecedents relies a la KB: pathologies, traitements probables,
   scenarios patients, seuils adaptes et conduite a tenir.
 
@@ -757,8 +761,22 @@ Points importants:
 
 - les niveaux 1-3 sont limites par une politique anti-bruit;
 - les alertes de routine seules ne montent pas artificiellement en danger vital;
-- le niveau 5 est reserve aux signaux critiques ou escalades graves;
+- le niveau 5 est reserve aux signaux critiques, escalades graves ou combinaisons objectivables;
 - le dashboard possede un rendu visuel specifique pour chaque niveau.
+
+Programmation des scenarios critiques:
+
+- malaise repas / retour repas: niveau 4, car risque de chute ou immobilite;
+- chute capteur ou scenario de chute: niveau 4;
+- chute confirmee + immobilite + constante aggravee: niveau 5;
+- SOS et fugue hors EHPAD: niveau 4;
+- lever toilettes nuit chez resident fragile: niveau 3;
+- desorientation simple: niveau 3;
+- desorientation avec trouble cognitif en zone sensible: niveau 4;
+- sortie jardin non accompagnee: niveau 3, ou niveau 4 si trouble cognitif;
+- fatigue clinique apres kine, toilette ou jardin: niveau 3 si fragilite, NEWS ou risque IA associe.
+
+La note complete est disponible dans `docs/alert_levels_escalation.md`.
 
 ## ML et prediction
 
@@ -907,6 +925,39 @@ En environnement Docker local, `WEBPUSH_ENABLED=false` par defaut si les cles
 VAPID ne sont pas renseignees. Les routes backend, le ciblage soignant et
 l'audit sont testables, mais l'envoi reel d'une notification systeme depend de
 la configuration HTTPS/VAPID du poste ou du serveur.
+
+Point important pour la demo:
+
+- le cadre rouge plein ecran est une alerte visuelle dans la page soignant
+  ouverte;
+- il disparait si l'onglet ou le navigateur est ferme, car c'est un element
+  HTML/CSS;
+- les Web Push sont le mecanisme prevu pour afficher une notification systeme
+  sur le PC ou le telephone quand la page n'est pas au premier plan.
+
+Validation locale Web Push:
+
+```env
+VAPID_PUBLIC_KEY=<cle_publique_vapid>
+VAPID_PRIVATE_KEY=<cle_privee_vapid>
+VAPID_CLAIMS_EMAIL=admin@ehpad.local
+```
+
+Ces valeurs doivent etre mises dans `.env`, jamais dans Git. Apres modification:
+
+```bash
+docker compose up -d backend dashboard
+curl http://localhost:8001/api/push/config
+```
+
+Resultat attendu:
+
+```json
+{"enabled": true, "public_key": "<cle_publique_vapid>"}
+```
+
+Dans l'interface soignant: se connecter, cliquer sur `Activer les alertes push`,
+accepter l'autorisation navigateur, puis utiliser `Envoyer un test push`.
 
 Le projet supporte techniquement:
 
@@ -1215,14 +1266,15 @@ Guide detaille:
 
 ## Tests et verification
 
-Le projet contient 120 fonctions de test Python. Le test des 25 comptes famille
-est parametre, donc Pytest collecte actuellement 144 cas.
+Le projet contient plus de 120 fonctions de test Python. Le test des 25 comptes
+famille est parametre, donc Pytest collecte actuellement 148 cas.
 
 Derniere validation pre-rendu:
 
-- `144 passed, 2 warnings`;
+- `148 passed`;
 - backend Docker reconstruit et `healthy`;
 - `GET /health` retourne `ok` avec 25 residents;
+- `GET /api/ml/metrics` retourne les metriques ML, dont `sensitivity`;
 - `pip-audit -r requirements.txt` ne trouve plus de vulnerabilite connue;
 - Trivy cible sur `backend/requirements.txt`: 0 HIGH / CRITICAL;
 - Bandit: 0 High / 0 Medium, uniquement des Low a traiter hors blocage;
@@ -1388,7 +1440,7 @@ projet spe Hepad/
 - `simulator`: generation des constantes et capteurs.
 - `simulator/scenario_scheduler.py`: ponderation temporelle et clinique des 31 scenarios.
 - `dashboard`: interface HTML, mini app soignant, portail famille.
-- `docs`: architecture, audits, comptes demo et guide oral.
+- `docs`: architecture, audits, comptes demo, guide oral et note `alert_levels_escalation.md`.
 - `tests`: tests automatises.
 - `data`: donnees generees localement.
 - `mosquitto`: configuration du broker MQTT, comptes et ACL.

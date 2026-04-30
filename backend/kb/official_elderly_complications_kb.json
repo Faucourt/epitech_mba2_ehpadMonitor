@@ -83,6 +83,27 @@
       "title": "Recommandations premiers secours citoyen PSC",
       "url": "https://mobile.interieur.gouv.fr/Le-ministere/Securite-civile/Documentation-technique/Secourisme-et-associations/Les-recommandations-et-les-referentiels",
       "used_for": ["malaise", "perte de connaissance", "arret cardiaque", "hemorragie", "obstruction voies aeriennes", "brulure", "traumatisme", "alerte"]
+    },
+    {
+      "id": "SECURITE_CIVILE_GESTES_QUI_SAUVENT",
+      "organization": "Securite civile / Ministere de l'Interieur",
+      "title": "Se former aux gestes qui sauvent",
+      "url": "https://www.securite-civile.interieur.gouv.fr/sengager/engagement-citoyen/se-former-aux-gestes-qui-sauvent",
+      "used_for": ["malaise", "saignement abondant", "inconscience", "arret cardiaque", "etouffement", "plaie", "brulure", "fracture"]
+    },
+    {
+      "id": "ANCESU_AFGSU_N1",
+      "organization": "ANCESU / CESU",
+      "title": "AFGSU niveau 1",
+      "url": "https://ancesu.fr/session_formation/afgsu-niveau-1-cesu-80/",
+      "used_for": ["urgence vitale", "malaise", "traumatisme", "hemorragie", "obstruction", "arret cardiaque"]
+    },
+    {
+      "id": "ANCESU_AFGSU_N2",
+      "organization": "ANCESU / CESU",
+      "title": "AFGSU niveau 2",
+      "url": "https://ancesu.fr/afgsu-niveau-2/",
+      "used_for": ["soignant", "urgence vitale", "alerte SAMU", "inconscience", "detresse vitale"]
     }
   ],
   "profiles": [
@@ -96,6 +117,7 @@
         "spo2_alert": "SpO2 < 88% ou baisse > 4 points sous baseline",
         "urgent": "SpO2 < 85%, dyspnee importante, cyanose, confusion ou NEWS2 eleve"
       },
+      "source_ids": ["AMELI_BPCO", "RCP_NEWS2"],
       "conduct": ["installer au repos", "verifier capteur et mesure SpO2", "rechercher dyspnee, toux, fievre", "prevenir infirmier/medecin selon protocole si aggravation"]
     },
     {
@@ -108,6 +130,7 @@
         "alert": "dyspnee au repos, SpO2 basse persistante, hypotension ou tachycardie importante",
         "urgent": "detresse respiratoire, malaise, douleur thoracique, hypotension severe"
       },
+      "source_ids": ["AMELI_INSUFFISANCE_CARDIAQUE", "RCP_NEWS2"],
       "conduct": ["mettre au repos", "controler SpO2/FC/PA", "rechercher oedemes et prise de poids recente", "prevenir soignant referent si signes persistants"]
     },
     {
@@ -120,6 +143,7 @@
         "alert": "trouble vigilance, chute ou constantes anormales avec suspicion hypoglycemie",
         "urgent": "perte de connaissance, convulsions ou impossibilite de resucrage oral"
       },
+      "source_ids": ["AMELI_HYPOGLYCEMIE_DIABETE"],
       "conduct": ["verifier glycemie si disponible", "ne pas faire marcher seul", "resucrage selon protocole si conscient", "alerter selon protocole si trouble de conscience"]
     },
     {
@@ -132,6 +156,7 @@
         "alert": "resident introuvable, zone inhabituelle, agitation avec constantes anormales",
         "urgent": "sortie hors EHPAD, chute, traumatisme ou danger immediat"
       },
+      "source_ids": ["HAS_ALZHEIMER_TROUBLES_COMPORTEMENT"],
       "conduct": ["approche calme", "rechercher douleur, fievre, retention, constipation, medicament recent", "securiser la zone", "prevenir equipe si fugue ou chute"]
     },
     {
@@ -144,6 +169,7 @@
         "alert": "chute, malaise au lever ou immobilite anormale",
         "urgent": "chute avec douleur, traumatisme ou trouble conscience"
       },
+      "source_ids": ["HAS_CHUTES_REPETEES"],
       "conduct": ["assister les transferts", "controler PA debout/assis si possible", "verifier prise de traitement", "surveiller douleur et traumatisme apres chute"]
     },
     {
@@ -156,6 +182,7 @@
         "alert": "hypotension, confusion, malaise ou chute",
         "urgent": "trouble conscience, hypotension severe ou suspicion sepsis"
       },
+      "source_ids": ["SANTE_GOUV_CHALEUR", "WHO_SEPSIS", "RCP_NEWS2"],
       "conduct": ["surveiller hydratation et diurese si protocole", "controler PA/FC/temp", "rechercher medicament recent", "alerter si degradation rapide"]
     },
     {
@@ -168,6 +195,7 @@
         "alert": "PAS > 200 persistante ou signes neurologiques/cardiaques",
         "urgent": "deficit FAST, douleur thoracique, dyspnee severe ou trouble conscience"
       },
+      "source_ids": ["AMELI_AVC", "RCP_NEWS2"],
       "conduct": ["reprendre PA apres repos", "rechercher signes FAST", "ne pas banaliser malaise ou douleur thoracique", "alerter si signe neurologique"]
     }
   ],
@@ -176,38 +204,51 @@
       "id": "chute",
       "watch": ["impact", "immobilite au sol", "douleur", "traumatisme cranien", "anticoagulant", "hypotension", "hypoglycemie"],
       "red_flags": ["perte de connaissance", "douleur intense", "deformation", "deficit neurologique", "anticoagulant + chute tete", "constantes critiques"],
+      "source_ids": ["HAS_CHUTES_REPETEES", "DGSCGC_PSC_RECOMMANDATIONS"],
       "conduct": ["ne pas relever sans evaluation si douleur/traumatisme", "controler constantes", "rechercher cause precipitant", "tracer heure et circonstances"]
     },
     {
       "id": "confusion_aigue",
       "watch": ["debut brutal", "fluctuation", "infection", "hypoxie", "hypoglycemie", "deshydratation", "douleur", "retention urinaire", "medicament recent"],
       "red_flags": ["trouble conscience", "deficit neurologique", "fievre ou hypothermie", "hypotension", "SpO2 basse"],
+      "source_ids": ["HAS_ALZHEIMER_TROUBLES_COMPORTEMENT", "WHO_SEPSIS", "RCP_NEWS2"],
       "conduct": ["rechercher cause somatique", "controler constantes completes", "securiser resident", "alerter si debut brutal ou signes vitaux anormaux"]
     },
     {
       "id": "deshydratation_canicule",
       "watch": ["baisse apports", "chaleur", "diuretiques", "confusion", "faiblesse", "hypotension", "tachycardie"],
       "red_flags": ["syncope", "confusion marquee", "hypotension", "fievre/hyperthermie", "absence d'apports"],
+      "source_ids": ["SANTE_GOUV_CHALEUR", "RCP_NEWS2"],
       "conduct": ["proposer hydratation selon protocole", "surveiller temperature/PA/FC", "rafraichir environnement", "alerter si signes graves"]
     },
     {
       "id": "avc_suspect",
       "watch": ["visage asymetrique", "faiblesse bras", "trouble parole", "trouble vision", "deficit brutal", "chute inexpliquee"],
       "red_flags": ["FAST positif", "deficit neurologique brutal", "trouble conscience"],
+      "source_ids": ["AMELI_AVC", "DGSCGC_PSC_RECOMMANDATIONS"],
       "conduct": ["appeler le 15 selon protocole", "noter heure de debut", "ne pas faire boire/manger si trouble deglutition", "surveiller constantes"]
     },
     {
       "id": "sepsis_infection",
       "watch": ["fievre ou hypothermie", "tachycardie", "tachypnee", "hypotension", "confusion", "marbrures", "degradation rapide"],
       "red_flags": ["hypotension", "confusion aigue", "respiration rapide", "SpO2 basse", "temperature tres anormale"],
+      "source_ids": ["WHO_SEPSIS", "RCP_NEWS2"],
       "conduct": ["controler constantes completes", "rechercher foyer infectieux", "alerter rapidement si signes de gravite", "surveiller evolution rapprochee"]
     }
   ],
   "first_aid_actions": [
     {
+      "id": "afgsu_urgence_vitale",
+      "label": "Urgence vitale / alerte soignant",
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1", "ANCESU_AFGSU_N2"],
+      "when": ["urgence vitale", "danger vital", "n5", "n4", "alerte"],
+      "conduct": ["se rendre immediatement aupres du resident", "evaluer conscience, respiration, douleur et constantes", "faire alerter l'IDE/medecin selon protocole et le 15/112 si detresse vitale", "ne pas laisser le resident seul avant relais"],
+      "do_not": ["ne pas clore l'alerte sans evaluation humaine", "ne pas mobiliser si chute, douleur ou traumatisme suspect"]
+    },
+    {
       "id": "psc_malaise",
       "label": "Malaise",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1"],
       "when": ["malaise", "paleur", "sueurs", "vertiges", "douleur thoracique", "dyspnee", "faiblesse brutale"],
       "conduct": ["mettre au repos dans la position ou la personne se sent le mieux", "rassurer et surveiller", "questionner sur douleur, duree, traitement, antecedents", "alerter le 15/112 si malaise intense, signes neurologiques, douleur thoracique, dyspnee, recidive ou doute"],
       "do_not": ["ne pas faire marcher seul", "ne pas donner a boire ou manger si trouble de conscience ou fausse route possible"]
@@ -215,7 +256,7 @@
     {
       "id": "psc_perte_connaissance_respire",
       "label": "Perte de connaissance avec respiration",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1", "ANCESU_AFGSU_N2"],
       "when": ["inconscient", "ne repond pas", "respire"],
       "conduct": ["liberer les voies aeriennes", "mettre en position laterale de securite si absence de traumatisme majeur evident", "alerter les secours", "surveiller la respiration jusqu'au relais"],
       "do_not": ["ne pas laisser seul", "ne pas donner a boire ou manger"]
@@ -223,7 +264,7 @@
     {
       "id": "psc_arret_cardiaque",
       "label": "Arret cardiaque",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1", "ANCESU_AFGSU_N2"],
       "when": ["inconscient", "ne respire pas", "respiration anormale", "absence signe de vie"],
       "conduct": ["alerter ou faire alerter le 15/112", "demander un DAE", "commencer les compressions thoraciques", "utiliser le DAE des qu'il est disponible", "continuer jusqu'au relais des secours"],
       "do_not": ["ne pas retarder les compressions pour chercher longtemps un pouls"]
@@ -231,7 +272,7 @@
     {
       "id": "psc_hemorragie",
       "label": "Hemorragie externe",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1", "ANCESU_AFGSU_N2"],
       "when": ["saignement abondant", "plaie qui saigne fortement"],
       "conduct": ["proteger si possible", "comprimer directement la plaie", "allonger la victime", "faire alerter les secours", "maintenir la compression jusqu'au relais"],
       "do_not": ["ne pas retirer un corps etranger profond", "ne pas relacher la compression sans relais"]
@@ -239,7 +280,7 @@
     {
       "id": "psc_obstruction_voies_aeriennes",
       "label": "Obstruction grave des voies aeriennes",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1", "ANCESU_AFGSU_N2"],
       "when": ["etouffement", "ne parle pas", "ne tousse pas", "ne respire pas correctement"],
       "conduct": ["alterner claques dans le dos et compressions abdominales ou thoraciques selon le cas", "alerter si obstruction persiste ou perte de connaissance", "surveiller apres desobstruction"],
       "do_not": ["ne pas mettre les doigts a l'aveugle dans la bouche"]
@@ -247,7 +288,7 @@
     {
       "id": "psc_traumatisme_chute",
       "label": "Traumatisme apres chute",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "HAS_CHUTES_REPETEES"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1", "ANCESU_AFGSU_N2", "HAS_CHUTES_REPETEES"],
       "when": ["chute", "douleur", "deformation", "traumatisme cranien", "anticoagulant", "immobilite au sol"],
       "conduct": ["ne pas mobiliser si douleur importante ou suspicion traumatisme", "controler conscience et respiration", "couvrir et rassurer", "alerter selon gravite", "surveiller constantes et douleur"],
       "do_not": ["ne pas relever rapidement une personne agee tombee avec douleur, malaise, confusion ou traumatisme"]
@@ -255,7 +296,7 @@
     {
       "id": "psc_brulure",
       "label": "Brulure",
-      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS"],
+      "source_ids": ["DGSCGC_PSC_RECOMMANDATIONS", "SECURITE_CIVILE_GESTES_QUI_SAUVENT", "ANCESU_AFGSU_N1"],
       "when": ["brulure thermique", "brulure chimique", "douleur cutanee apres chaleur"],
       "conduct": ["refroidir la zone selon protocole", "retirer vetements non adherents et bijoux proches si possible", "proteger par pansement propre", "alerter si brulure etendue, profonde, visage, mains, organes genitaux ou personne fragile"],
       "do_not": ["ne pas arracher un vetement colle", "ne pas appliquer de corps gras"]

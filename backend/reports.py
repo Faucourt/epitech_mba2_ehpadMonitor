@@ -8,6 +8,12 @@ import numpy as np
 from fastapi import HTTPException
 
 from a2a_agents import run_a2a_pipeline
+from kb_loader import (
+    get_first_aid_actions,
+    get_official_cross_complications,
+    get_official_profiles_for_pathologies,
+    get_official_sources,
+)
 
 
 WEEKLY_LIFE_PLAN = [
@@ -449,6 +455,235 @@ class DailyReportService:
         memory = self.prediction_memory_for_resident(resident_id) if resident_id else {}
         return run_a2a_pipeline(state, hist, history_rows, active_alert=active_alert, prediction_memory=memory)
 
+    def sensor_labels(self, events: dict) -> list[str]:
+        labels = []
+        mapping = {
+            "door_open": "porte ouverte",
+            "room_radar_presence": "radar presence",
+            "room_pir_motion": "PIR mouvement",
+            "bed_occupied": "lit occupe",
+            "mattress_exit": "sortie lit",
+            "floor_pressure_event": "sol pression",
+            "fall_confirmed_by_room_sensor": "chute confirmee capteur chambre",
+            "bathroom_motion": "mouvement salle de bain",
+        }
+        for key, label in mapping.items():
+            if events.get(key):
+                labels.append(label)
+        return labels or ["aucun capteur actif significatif"]
+
+    def official_source_details(self, source_ids: list[str]) -> list[dict]:
+        source_map = {src.get("id"): src for src in get_official_sources()}
+        details = []
+        for sid in dict.fromkeys(source_ids):
+            src = source_map.get(sid)
+            if src:
+                details.append({
+                    "id": src.get("id"),
+                    "organization": src.get("organization"),
+                    "title": src.get("title"),
+                    "url": src.get("url"),
+                    "used_for": src.get("used_for", [])[:6],
+                })
+        return details
+
+    def official_first_aid_for_alert(self, reason: str, scenario: str, state: dict, active_alert: Optional[dict], level: int) -> list[dict]:
+        movement = state.get("movement", {}) or {}
+        events = state.get("sensor_events", {}) or movement.get("sensor_events", {}) or {}
+        alert_text = " ".join([
+            str(reason or ""),
+            str(scenario or ""),
+            str((active_alert or {}).get("level_name") or ""),
+            str((active_alert or {}).get("reason") or ""),
+            f"n{level}" if level else "",
+            "danger vital urgence vitale alerte" if level >= 4 else "",
+        ]).lower()
+
+        forced_terms = []
+        if movement.get("is_fall_detected") or movement.get("ambient_fall_confirmed") or events.get("fall_confirmed_by_room_sensor"):
+            forced_terms.extend(["chute", "traumatisme"])
+        if "malaise" in alert_text or "syncope" in alert_text:
+            forced_terms.append("malaise")
+        if "dyspnee" in alert_text or "spo2" in alert_text:
+            forced_terms.append("dyspnee")
+        haystack = f"{alert_text} {' '.join(forced_terms)}"
+
+        matches = []
+        for item in get_first_aid_actions():
+            keywords = [str(x).lower() for x in item.get("when", [])]
+            if any(keyword and keyword in haystack for keyword in keywords):
+                matches.append({
+                    "id": item.get("id"),
+                    "label": item.get("label"),
+                    "source_ids": item.get("source_ids", []),
+                    "conduct": item.get("conduct", [])[:4],
+                    "do_not": item.get("do_not", [])[:3],
+                })
+        return matches[:3]
+
+    def official_clinical_guidance_for_transmission(self, profile: dict, state: dict, vitals: dict, reason: str, scenario: str) -> list[dict]:
+        movement = state.get("movement", {}) or {}
+        events = state.get("sensor_events", {}) or movement.get("sensor_events", {}) or {}
+        text = " ".join([
+            str(reason or ""),
+            str(scenario or ""),
+            str(state.get("activity") or ""),
+            " ".join(str(p) for p in profile.get("pathologies", []) or []),
+        ]).lower()
+        guidance = []
+
+        for item in get_official_profiles_for_pathologies(profile.get("pathologies", []) or []):
+            guidance.append({
+                "id": item.get("id"),
+                "label": item.get("label"),
+                "type": "terrain",
+                "source_ids": item.get("source_ids", []),
+                "conduct": item.get("conduct", [])[:3],
+            })
+
+        spo2 = vitals.get("spo2")
+        sys = vitals.get("blood_pressure_sys")
+        temp = vitals.get("temperature")
+        hr = vitals.get("heart_rate")
+        rr = vitals.get("respiratory_rate")
+
+        forced = set()
+        if movement.get("is_fall_detected") or movement.get("ambient_fall_confirmed") or events.get("fall_confirmed_by_room_sensor") or "chute" in text:
+            forced.add("chute")
+        if "confusion" in text or "desorientation" in text or "errance" in text:
+            forced.add("confusion_aigue")
+        if "avc" in text or "fast" in text or "deficit" in text:
+            forced.add("avc_suspect")
+        if "deshydratation" in text or "canicule" in text or (isinstance(sys, (int, float)) and sys < 95):
+            forced.add("deshydratation_canicule")
+        if "infection" in text or "sepsis" in text or (isinstance(temp, (int, float)) and temp >= 38) or (isinstance(rr, (int, float)) and rr >= 22):
+            forced.add("sepsis_infection")
+        if isinstance(spo2, (int, float)) and spo2 < 93:
+            forced.add("sepsis_infection")
+        if isinstance(hr, (int, float)) and hr >= 120:
+            forced.add("sepsis_infection")
+
+        for item in get_official_cross_complications():
+            tokens = {str(item.get("id", "")).lower()}
+            tokens.update(str(x).lower() for x in item.get("watch", []))
+            tokens.update(str(x).lower() for x in item.get("red_flags", []))
+            if item.get("id") in forced or any(token and token in text for token in tokens):
+                guidance.append({
+                    "id": item.get("id"),
+                    "label": item.get("id"),
+                    "type": "complication",
+                    "source_ids": item.get("source_ids", []),
+                    "conduct": item.get("conduct", [])[:3],
+                })
+        return guidance[:8]
+
+    def build_nursing_transmission(
+        self,
+        *,
+        resident_id: str,
+        profile: dict,
+        state: dict,
+        vitals: dict,
+        hist: dict,
+        alerts_today: list[dict],
+        active_alert: Optional[dict],
+        location: str,
+        risk: float,
+        level: int,
+        forecast: list[str],
+        actions: list[str],
+    ) -> dict:
+        name = profile.get("name", state.get("resident_name", resident_id))
+        room = state.get("room", profile.get("room"))
+        movement = state.get("movement", {}) or {}
+        sensor_events = state.get("sensor_events", {}) or {}
+        routine = state.get("routine_label") or state.get("time_of_day") or "routine non renseignee"
+        scenario = state.get("movement_scenario") or state.get("scenario_active") or state.get("scenario") or "routine"
+        latest_alert = alerts_today[-1] if alerts_today else {}
+        reason = (active_alert or {}).get("reason") or latest_alert.get("reason") or "surveillance quotidienne"
+        alert_level_name = self.alert_level_name(level)
+        pathologies = profile.get("pathologies", []) or []
+        mobility = profile.get("mobility") or state.get("mobility") or "non renseignee"
+        last_mv = movement.get("last_movement_ago_s")
+        last_mv_text = f"{round(last_mv / 60)} min" if isinstance(last_mv, (int, float)) and last_mv >= 90 else f"{round(last_mv)} s" if isinstance(last_mv, (int, float)) else "non renseigne"
+        sensor_text = ", ".join(self.sensor_labels(sensor_events))
+        vitals_text = (
+            f"FC {vitals.get('heart_rate', '-')}, SpO2 {vitals.get('spo2', '-')}%, "
+            f"PA {vitals.get('blood_pressure_sys', '-')}/{vitals.get('blood_pressure_dia', '-')}, "
+            f"T {vitals.get('temperature', '-')}C, FR {vitals.get('respiratory_rate', '-')}/min"
+        )
+        target = reason.split(":", 1)[0].replace("[KB:fugue_confirmed]", "Sortie/fugue confirmee").strip()
+        if not target or target == "surveillance quotidienne":
+            target = "Surveillance clinique"
+        official_refs = self.official_first_aid_for_alert(reason, scenario, state, active_alert, level)
+        clinical_refs = self.official_clinical_guidance_for_transmission(profile, state, vitals, reason, scenario)
+        official_actions = [
+            action
+            for ref in official_refs + clinical_refs
+            for action in ref.get("conduct", [])[:3]
+        ]
+        official_source_ids = [
+            source_id
+            for ref in official_refs + clinical_refs
+            for source_id in ref.get("source_ids", [])
+        ]
+
+        saed = {
+            "situation": (
+                f"{name}, chambre {room}, localise(e) {location}. "
+                f"N{level} {alert_level_name}. Motif principal: {reason}."
+            ),
+            "antecedents": (
+                f"Pathologies: {', '.join(pathologies) if pathologies else 'non renseignees'}. "
+                f"Mobilite: {mobility}. Historique: {len(alerts_today)} alerte(s) ce jour, "
+                f"{hist.get('alerts_count', 0)} evenement(s) sur 30 jours."
+            ),
+            "evaluation": (
+                f"Constantes: {vitals_text}. Risque ML 30-60 min: {risk:.0%}. "
+                f"Routine: {routine}. Scenario: {scenario}. Mouvement: dernier mouvement {last_mv_text}. "
+                f"Capteurs: {sensor_text}."
+            ),
+            "demande": (
+                "Localiser le resident, verifier conscience/douleur/respiration/constantes, "
+                "securiser la situation, tracer l'action et acquitter ou cloturer apres prise en charge."
+            ),
+        }
+        cdar = {
+            "cible": target,
+            "donnees": [
+                f"Lieu: {location}",
+                f"Niveau: N{level} {alert_level_name}",
+                f"Motif: {reason}",
+                f"Constantes: {vitals_text}",
+                f"Capteurs: {sensor_text}",
+                f"Risque ML: {risk:.0%}",
+                f"Historique: {len(alerts_today)} alerte(s) ce jour / {hist.get('alerts_count', 0)} sur 30 jours",
+            ],
+            "actions": list(dict.fromkeys(actions[:4] + [
+                *official_actions[:6],
+                "Controler les constantes selon le niveau de risque.",
+                "Verifier la concordance localisation/capteurs avant cloture.",
+                "Tracer l'observation et l'identite du soignant intervenant.",
+            ])),
+            "resultats": [
+                "A completer par le soignant: resident retrouve / etat clinique / constantes reprises.",
+                "A completer: action realisee, heure, soignant, alerte acquittee ou cloturee.",
+            ],
+        }
+        return {
+            "type": "SAED_CDAR",
+            "source": "rules+KB+ML",
+            "status": "immediate_automatic",
+            "generated_at": datetime.utcnow().isoformat() + "Z",
+            "saed": saed,
+            "cdar": cdar,
+            "first_aid_refs": official_refs,
+            "clinical_guidance_refs": clinical_refs,
+            "references_officielles": self.official_source_details(official_source_ids),
+            "llm_report_policy": "Le compte rendu clinique IA Meditron est separe et genere ensuite a la demande.",
+            "watch_points": forecast[:6],
+        }
+
     def build_resident_daily_report(self, resident_id: str, report_date: Optional[str] = None, force: bool = False) -> dict:
         report_date = self.local_report_date(report_date)
         redis_key = f"daily_report:v8:{report_date}:{resident_id}"
@@ -469,6 +704,25 @@ class DailyReportService:
         forecast = self.forecast_points(state, hist, alerts_today)
         a2a_prediction = self.a2a_prediction_for_resident(state, hist, active_alert=active_alert)
         pathologies = profile.get("pathologies", [])
+        next_actions = [
+            *a2a_prediction["prediction"].get("actions", [])[:2],
+            "Controler les constantes selon le niveau de risque.",
+            "Verifier la concordance capteurs chambre/sol/porte si anomalie.",
+        ]
+        nursing_transmission = self.build_nursing_transmission(
+            resident_id=resident_id,
+            profile=profile,
+            state=state,
+            vitals=v,
+            hist=hist,
+            alerts_today=alerts_today,
+            active_alert=active_alert,
+            location=location,
+            risk=risk,
+            level=level,
+            forecast=forecast,
+            actions=next_actions,
+        )
 
         report = {
             "date": report_date,
@@ -520,6 +774,7 @@ class DailyReportService:
             "a2a_prediction": a2a_prediction,
             "history_30d": hist,
             "alerts_today": alerts_today[-10:],
+            "nursing_transmission": nursing_transmission,
             "transmission_summary": (
                 f"{profile.get('name', resident_id)} - chambre {state.get('room', profile.get('room'))}: "
                 f"risque {self.risk_label(risk)} ({risk:.0%}), niveau {self.alert_level_name(level)}. "
@@ -527,11 +782,7 @@ class DailyReportService:
                 f"{len(alerts_today)} alerte(s) ce jour, {hist.get('alerts_count', 0)} evenement(s) sur 30 jours."
             ),
             "watch_points": list(dict.fromkeys(a2a_prediction["prediction"].get("watch_points", []) + forecast)),
-            "next_actions": [
-                *a2a_prediction["prediction"].get("actions", [])[:2],
-                "Controler les constantes selon le niveau de risque.",
-                "Verifier la concordance capteurs chambre/sol/porte si anomalie.",
-            ],
+            "next_actions": next_actions,
             "professional_checks": {
                 "location_precise": bool(location and location != f"chambre {state.get('room', profile.get('room'))}"),
                 "uses_sensor_context": bool(state.get("sensor_events")),
