@@ -128,10 +128,14 @@ Ces scripts:
 
 ## URLs utiles
 
-- Dashboard principal: `http://localhost:3002`
-- Espace soignant: `http://localhost:3002/soignant`
-- Mini DPI resident: `http://localhost:3002/resident/R005?from=dashboard&return=/`
-- Mini app intervention: `http://localhost:3002/mobile/resident/R005`
+- Dashboard principal HTTP: `http://localhost:3002`
+- Dashboard principal HTTPS: `https://localhost:3443`
+- Espace soignant HTTP: `http://localhost:3002/soignant`
+- Espace soignant HTTPS: `https://localhost:3443/soignant`
+- Mini DPI resident HTTP: `http://localhost:3002/resident/R005?from=dashboard&return=/`
+- Mini DPI resident HTTPS: `https://localhost:3443/resident/R005?from=dashboard&return=/`
+- Mini app intervention HTTP: `http://localhost:3002/mobile/resident/R005`
+- Mini app intervention HTTPS: `https://localhost:3443/mobile/resident/R005`
 - Espace famille: `http://localhost:3002/famille.html`
 - Admin familles: `http://localhost:3002/admin_famille.html`
 - Backend API: `http://localhost:8001`
@@ -139,6 +143,10 @@ Ces scripts:
 - InfluxDB: `http://localhost:8086`
 - MQTT: `localhost:1883`
 - MQTT WebSocket: `localhost:9001`
+
+Pour une demo simple sur le PC, `http://localhost:3002` suffit. Pour les tests
+mobile/PWA/push ou les contextes navigateur qui exigent HTTPS, utiliser
+`https://localhost:3443` avec les certificats locaux de `dashboard/certs/`.
 
 ## Acces de demonstration
 
