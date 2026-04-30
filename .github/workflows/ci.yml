@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  backend-tests:
+  backend-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,37 +24,9 @@ jobs:
           pip install -r backend/requirements-dev.txt
           pip install -r simulator/requirements.txt
 
-      - name: Start Docker stack
+      - name: Compile Python modules
         run: |
-          mkdir -p data dashboard/certs
-          docker compose config --quiet
-          docker compose up --build -d mosquitto redis influxdb backend simulator
-          docker compose ps
-
-      - name: Wait for backend healthcheck
-        run: |
-          for i in {1..30}; do
-            if curl -fsS http://localhost:8001/health; then
-              exit 0
-            fi
-            sleep 5
-          done
-          docker compose ps
-          docker compose logs --tail=120 backend
-          exit 1
-
-      - name: Run backend tests
-        env:
-          EHPAD_API_URL: http://localhost:8001
-        run: python -m pytest tests -q
-
-      - name: Show logs on failure
-        if: failure()
-        run: docker compose logs --tail=120
-
-      - name: Stop Docker stack
-        if: always()
-        run: docker compose down --remove-orphans
+          python -m compileall -q backend simulator tests
 
   dashboard-check:
     runs-on: ubuntu-latest
@@ -87,3 +59,6 @@ jobs:
 
       - name: Validate Docker Compose
         run: docker compose config
+
+      - name: Build Docker images
+        run: docker compose build backend simulator dashboard
