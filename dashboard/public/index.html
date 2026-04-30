@@ -102,9 +102,13 @@
   .alert-item.level-1 { --alert-color: var(--blue); --alert-bg: rgba(59,130,246,0.10); }
   .alert-item.level-2 { --alert-color: var(--yellow); --alert-bg: rgba(245,158,11,0.12); }
   .alert-item.level-3 { --alert-color: var(--orange); --alert-bg: rgba(249,115,22,0.14); }
-  .alert-item.level-4 { --alert-color: var(--red); --alert-bg: rgba(239,68,68,0.16); }
-  .alert-item.level-5 { --alert-color: #f87171; --alert-bg: rgba(127,29,29,0.36); box-shadow: 0 0 0 1px rgba(248,113,113,0.18), 0 16px 36px rgba(127,29,29,0.34); }
+  .alert-item.level-4 { --alert-color: var(--red); --alert-bg: rgba(239,68,68,0.16); animation: alertFramePulse 1s infinite; }
+  .alert-item.level-5 { --alert-color: #f87171; --alert-bg: rgba(127,29,29,0.36); box-shadow: 0 0 0 1px rgba(248,113,113,0.18), 0 16px 36px rgba(127,29,29,0.34); animation: alertFramePulse 0.75s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.7} }
+  @keyframes alertFramePulse {
+    0%, 100% { border-color: var(--alert-color); box-shadow: 0 0 0 1px rgba(248,113,113,0.22), 0 14px 34px rgba(127,29,29,0.24); }
+    50% { border-color: #fff; box-shadow: 0 0 0 3px rgba(248,113,113,0.62), 0 0 28px rgba(239,68,68,0.65); }
+  }
   .alert-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
   .alert-name { font-weight: 800; font-size: 14px; line-height: 1.25; color: #f8fafc; }
   .alert-reason { font-size: 12px; color: #cbd5e1; margin-top: 5px; line-height: 1.35; }
@@ -122,11 +126,13 @@
   .badge-4 { background: rgba(239,68,68,0.16); color: #fecaca; border-color: rgba(248,113,113,0.34); }
   .badge-5 { background: rgba(127,29,29,0.82); color: #fee2e2; border-color: rgba(248,113,113,0.65); }
   .alert-detail { border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--alert-color); background: linear-gradient(135deg, var(--alert-bg), rgba(15,23,42,0.82)); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
+  .alert-detail.critical-level { animation: alertFramePulse 0.8s infinite; }
   .alert-detail-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
   .alert-detail-title strong { color: #f8fafc; font-size: 14px; }
   .alert-detail-body { color: #dbeafe; font-size: 12px; line-height: 1.45; }
-  .alert-critical-strip { border: 1px solid rgba(248,113,113,0.72); background: rgba(127,29,29,0.42); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-  .alert-critical-strip strong { display: block; color: #fee2e2; font-size: 15px; letter-spacing: .03em; text-align: center; }
+  .alert-critical-strip { border: 2px solid rgba(248,113,113,0.82); background: rgba(127,29,29,0.52); border-radius: 8px; padding: 14px 12px; margin-bottom: 10px; text-align: center; animation: alertFramePulse 0.75s infinite; }
+  .alert-critical-strip strong { display: block; color: #fff; font-size: 21px; line-height: 1.05; letter-spacing: .04em; text-align: center; text-transform: uppercase; }
+  .alert-critical-strip .critical-sub { margin-top: 7px; color: #fecaca; font-size: 12px; font-weight: 800; }
   .alert-critical-strip a { display: block; margin: 8px auto 0; width: fit-content; background: #dc2626; color: #fff; font-weight: 900; font-size: 15px; padding: 8px 22px; border-radius: 8px; text-decoration: none; }
 
   /* Resident grid */
@@ -1185,7 +1191,7 @@ function updateAlertSidebar() {
         </div>
         <span class="alert-badge badge-${a.level}">N${a.level} ${levelNames[a.level]}</span>
       </div>
-      <div class="alert-reason">${displayAlertReason(a.reason_label || a.reason)}</div>
+      <div class="alert-reason" style="${a.level >= 4 ? 'font-size:15px;font-weight:900;text-align:center;color:#fee2e2;text-transform:uppercase;' : ''}">${a.level >= 4 ? alertDiagnosisLabel(a.reason_label || a.reason) : displayAlertReason(a.reason_label || a.reason)}</div>
       <div class="alert-meta-grid">
         <div class="alert-meta"><span class="alert-meta-label">Position</span><span class="alert-meta-value">${formatAlertLocation(a)}</span></div>
         <div class="alert-meta"><span class="alert-meta-label">Capteurs</span><span class="alert-meta-value">${formatSensorEvents(a.sensor_events)}</span></div>
@@ -1259,12 +1265,23 @@ function displayAlertReason(reason = '') {
   return formatAlertReason(reason).event || 'Alerte active';
 }
 
+function alertDiagnosisLabel(reason = '') {
+  const raw = String(reason || '').toLowerCase();
+  if (raw.includes('fugue') || raw.includes('hors ehpad') || raw.includes('sortie hors')) return 'FUGUE CONFIRMEE';
+  if (raw.includes('chute')) return 'CHUTE SUSPECTEE';
+  if (raw.includes('sos')) return 'APPEL SOS RESIDENT';
+  if (raw.includes('errance') || raw.includes('desorientation')) return 'DESORIENTATION';
+  if (raw.includes('vital') || raw.includes('danger')) return 'DANGER VITAL';
+  if (raw.includes('predictif') || raw.includes('malaise')) return 'RISQUE DE MALAISE';
+  return displayAlertReason(reason).replace(/_/g, ' ').toUpperCase();
+}
+
 function alertSourceLabel(reason = '') {
   const raw = String(reason || '');
-  if (raw.includes('[KB:fugue') || raw.toLowerCase().includes('fugue') || raw.toLowerCase().includes('hors ehpad')) return 'Règle sécurité fugue';
-  if (raw.includes('[KB:fall') || raw.toLowerCase().includes('chute')) return 'Règle sécurité chute';
-  if (raw.includes('[KB:predictive') || raw.toLowerCase().includes('predictif')) return 'Règle risque prédictif';
-  if (raw.includes('[KB:')) return 'Règle KB sécurité';
+  if (raw.includes('[KB:fugue') || raw.toLowerCase().includes('fugue') || raw.toLowerCase().includes('hors ehpad')) return 'Sécurité fugue';
+  if (raw.includes('[KB:fall') || raw.toLowerCase().includes('chute')) return 'Sécurité chute';
+  if (raw.includes('[KB:predictive') || raw.toLowerCase().includes('predictif')) return 'Risque prédictif';
+  if (raw.includes('[KB:')) return 'Sécurité';
   return 'Alerte active';
 }
 
@@ -1368,7 +1385,7 @@ function renderAlertExplanation(data) {
   const newsScore = data.clinical?.news?.score ?? '—';
   const mlRisk = Number(data.clinical?.ml_risk || 0);
   const reason = formatAlertReason(data.reason || '');
-  const kbTags = Array.isArray(kb.kb_tags) ? kb.kb_tags : [];
+  const diagnosis = alertDiagnosisLabel(data.reason || kb.label || '');
   const watch = Array.isArray(kb.watch) ? kb.watch : [];
   const doNot = Array.isArray(kb.do_not) ? kb.do_not : [];
   return `
@@ -1378,12 +1395,11 @@ function renderAlertExplanation(data) {
         <span class="alert-badge badge-${data.level || 1}">N${data.level || '-'} ${data.level_name || ''}</span>
       </div>
       ${kb.label ? `<div style="border-left:3px solid var(--blue);padding-left:8px">
-        <b>${kb.label}</b><br>
+        <b>${diagnosis}</b><br>
         <span style="color:var(--text2)">Priorite: ${kb.priority || data.level_name || 'surveillance'}</span>
-        ${kbTags.length ? `<div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap">${kbTags.map(t => `<span class="scenario-chip">${t}</span>`).join('')}</div>` : ''}
       </div>` : ''}
       ${reason.escalation ? `<div style="border-left:3px solid var(--red);padding-left:8px"><b>Pourquoi ce niveau ?</b><br><span style="color:var(--text2)">${reason.escalation}</span></div>` : ''}
-      <div style="border-left:3px solid var(--orange);padding-left:8px"><b>Evenement initial</b><br>${reason.event}</div>
+      <div style="border-left:3px solid var(--orange);padding-left:8px"><b>Diagnostic</b><br>${diagnosis}</div>
       <div class="dpi-grid" style="grid-template-columns:1fr;gap:0">
         <div class="vital-row"><span style="color:var(--text2)">Position</span><span>${data.location?.label || data.location?.zone || 'non precisee'}</span></div>
         <div class="vital-row"><span style="color:var(--text2)">Capteurs actifs</span><span>${formatSensorEvents(events)}</span></div>
@@ -2950,19 +2966,22 @@ function openDetail(rid) {
     const levelLabel = alert.level_name || ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][alert.level] || 'Alerte';
     const reasonText = alert.reason_label || alert.reason || '';
     const sourceText = alertSourceLabel(reasonText);
+    const diagnosisText = alertDiagnosisLabel(reasonText);
+    const isCriticalLevel = alert.level >= 4;
     html += `
-      ${isVital ? `
+      ${isCriticalLevel ? `
       <div class="alert-critical-strip">
-        <strong>DANGER VITAL N5 - APPELER LE 15</strong>
-        <a href="tel:15">SAMU 15</a>
+        <strong>${diagnosisText}</strong>
+        <div class="critical-sub">Niveau ${alert.level} - ${levelLabel}</div>
+        ${isVital ? `<a href="tel:15">SAMU 15</a>` : ''}
         <div style="font-size:11px;color:#fecaca;text-align:center;margin-top:6px">Direction + tous soignants notifies</div>
       </div>` : ''}
-      <div class="alert-detail" style="--alert-color:${border};--alert-bg:${alertBg}">
+      <div class="alert-detail ${isCriticalLevel ? 'critical-level' : ''}" style="--alert-color:${border};--alert-bg:${alertBg}">
         <div class="alert-detail-title">
           <strong>Niveau ${alert.level} - ${levelLabel}</strong>
           <span class="alert-badge badge-${alert.level}">${levelLabel}</span>
         </div>
-        <div class="alert-detail-body">${displayAlertReason(reasonText)}</div>
+        <div class="alert-detail-body">${diagnosisText}</div>
         <div class="alert-source-card" style="margin-bottom:8px">
           <div class="source-title">
             <span>Pourquoi N${alert.level} ?</span>
