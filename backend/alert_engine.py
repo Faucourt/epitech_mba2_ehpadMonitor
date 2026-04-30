@@ -173,6 +173,92 @@ def location_label(zone_id: str, room: str = "") -> str:
     return f"Chambre {room}" if room else "Position inconnue"
 
 
+def alert_reason_label(reason: str) -> str:
+    text = str(reason or "").strip()
+    if text.startswith("[KB:") and "]" in text:
+        text = text.split("]", 1)[1].strip()
+    if "→" in text:
+        text = text.split("→", 1)[1].strip()
+    return text or "Alerte active"
+
+
+def alert_kb_context(state: dict, level: AlertLevel, reason: str) -> dict:
+    """Contexte metier court pour rendre l'alerte comprehensible cote soignant."""
+    scenario = str(state.get("movement_scenario") or "")
+    zone = state.get("current_zone") or state.get("zone") or ""
+    movement = state.get("movement") or {}
+    pathologies = {str(p).lower() for p in (state.get("pathologies") or state.get("profile", {}).get("pathologies") or [])}
+    cognitive = bool(pathologies.intersection({"alzheimer", "demence", "dementia"}))
+    text = " ".join([scenario, zone, str(reason or "")]).lower()
+
+    if zone == "hors_ehpad" or scenario == "fugue_hors_ehpad" or "fugue" in text:
+        return {
+            "category": "fugue_confirmed",
+            "label": "Fugue / sortie hors EHPAD",
+            "priority": "recherche immediate",
+            "kb_tags": ["KB:fugue_confirmed", "trouble_cognitif" if cognitive else "sortie_non_autorisee", "porte_sortie"],
+            "watch": [
+                "confirmer derniere position connue",
+                "verifier porte / entree / jardin / parking",
+                "prevenir tous soignants et chef de garde",
+                "surveiller risque chute, hypothermie ou malaise",
+            ],
+            "action_hint": "Declencher la recherche terrain, garder un soignant au poste, appeler renfort selon protocole si resident non retrouve rapidement.",
+            "do_not": ["ne pas clore avant localisation physique", "ne pas attendre une deuxieme alerte capteur"],
+        }
+
+    if scenario in {"errance_nuit", "desorientation_ascenseur", "desorientation_avant_repas", "desorientation_patio"} or "errance" in text or "desorientation" in text:
+        return {
+            "category": "errance_desorientation",
+            "label": "Errance / desorientation",
+            "priority": "securisation et reorientation",
+            "kb_tags": ["KB:wandering_internal", "HAS_ALZHEIMER_TROUBLES_COMPORTEMENT"],
+            "watch": [
+                "approcher calmement et reorienter",
+                "chercher douleur, fievre, besoin toilettes, anxiete ou effet medicament",
+                "verifier zone a risque: escalier, ascenseur, jardin, sortie",
+            ],
+            "action_hint": "Se rendre aupres du resident, securiser la zone et tracer le facteur declenchant observe.",
+            "do_not": ["ne pas contraindre brutalement", "ne pas banaliser si debut brutal ou constantes anormales"],
+        }
+
+    if movement.get("is_fall_detected") or movement.get("ambient_fall_confirmed") or scenario.startswith("chute") or "chute" in text:
+        return {
+            "category": "fall",
+            "label": "Chute / traumatisme possible",
+            "priority": "evaluation sur place",
+            "kb_tags": ["KB:fall_confirmed", "HAS_CHUTES_REPETEES", "PSC_TRAUMATISME"],
+            "watch": [
+                "conscience, respiration, douleur et saignement",
+                "traumatisme cranien ou anticoagulant",
+                "immobilite au sol et constantes",
+            ],
+            "action_hint": "Evaluer avant mobilisation, controler constantes, couvrir/rassurer et alerter selon gravite.",
+            "do_not": ["ne pas relever rapidement si douleur ou traumatisme suspect", "ne pas clore sans evaluation humaine"],
+        }
+
+    if scenario in {"malaise_salle_manger", "malaise_retour_repas", "malaise_repas"} or "malaise" in text:
+        return {
+            "category": "malaise",
+            "label": "Malaise / deterioration clinique",
+            "priority": "evaluation clinique rapide",
+            "kb_tags": ["PSC_MALAISE", "NEWS2", "risque_chute"],
+            "watch": ["douleur thoracique", "dyspnee", "signes neurologiques", "hypoglycemie possible", "constantes NEWS"],
+            "action_hint": "Mettre au repos, verifier constantes completes et appeler IDE/medecin selon protocole.",
+            "do_not": ["ne pas faire marcher seul", "ne pas donner a boire si trouble de conscience"],
+        }
+
+    return {
+        "category": "clinical_monitoring",
+        "label": "Surveillance clinique",
+        "priority": LEVEL_CONFIG[level]["name"],
+        "kb_tags": ["NEWS2", "routine", "capteurs"],
+        "watch": ["constantes", "evolution du risque ML", "coherence capteurs", "routine resident"],
+        "action_hint": "Verifier le resident, confirmer les mesures et tracer l'action realisee.",
+        "do_not": ["ne pas clore sans verification si le niveau augmente"],
+    }
+
+
 @dataclass
 class Alert:
     id: str
@@ -232,6 +318,7 @@ class Alert:
             "color": cfg["color"],
             "action": cfg["action"],
             "reason": self.reason,
+            "reason_label": alert_reason_label(self.reason),
             "trigger_data": self.trigger_data,
             "notified_staff": self.notified_staff,
             "created_at": datetime.fromtimestamp(self.created_at, timezone.utc).isoformat().replace("+00:00", "Z"),
@@ -451,70 +538,70 @@ class AlertEngine:
         if fall_with_clinical_deterioration or (last_mv > immobility_thr_3 and ((spo2 < spo2_thr_4) or (hr > 140) or (bp < 70))) or (spo2 < spo2_thr_5 and hr > 130) or (hr > 150) or (bp < 60) or (bp > 240) or news_score >= 10:
             level = AlertLevel.DANGER_VITAL
             if fall_with_clinical_deterioration:
-                reason = f"Chute confirmee avec immobilite et constantes aggravees — FC={hr}, SpO2={spo2}%, PA={bp_label}, immobile={last_mv//60} min [NEWS={news_score}]"
+                reason = f"[KB:fall_confirmed] Chute avec immobilite et degradation clinique - FC={hr}, SpO2={spo2}%, PA={bp_label}, immobile={last_mv//60} min [NEWS={news_score}]"
             else:
-                reason = f"Constantes critiques — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
+                reason = f"[KB:danger_vital] Danger vital sur constantes critiques - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 4 : Urgence ---
         elif current_zone == "hors_ehpad" or movement_scenario == "fugue_hors_ehpad" or movement_scenario in malaise_scenarios or movement_scenario in fall_scenarios or high_risk_disorientation or (movement_scenario == "sortie_jardin_non_accompagnee" and cognitive_risk) or sos_pressed or is_fall or ambient_fall or (spo2 < spo2_thr_4) or (hr > 140) or (bp < 70) or (bp > 220) or (temp > 40.0) or (rr and rr > 30) or news_score >= 8:
             level = AlertLevel.URGENCE
             if current_zone == "hors_ehpad" or movement_scenario == "fugue_hors_ehpad":
-                reason = "Fugue detectee: resident en sortie hors EHPAD"
+                reason = "[KB:fugue_confirmed] Fugue / sortie hors EHPAD confirmee"
             elif movement_scenario in malaise_scenarios:
-                reason = f"Malaise suspecte avec risque de chute ou immobilite - risque IA {ml_risk:.0%} [NEWS={news_score}]"
+                reason = f"[KB:malaise] Malaise suspecte avec risque de chute - risque IA {ml_risk:.0%} [NEWS={news_score}]"
             elif movement_scenario in fall_scenarios:
-                reason = f"Scenario de chute detecte: {movement_scenario}"
+                reason = "[KB:fall_confirmed] Chute suspectee / traumatisme possible"
             elif high_risk_disorientation:
-                reason = f"Desorientation a haut risque: {movement_scenario}"
+                reason = "[KB:wandering_internal] Desorientation en zone a risque"
             elif movement_scenario == "sortie_jardin_non_accompagnee" and cognitive_risk:
-                reason = "Sortie non accompagnee a risque cognitif"
+                reason = "[KB:wandering_internal] Sortie exterieure non accompagnee"
             elif sos_pressed:
-                reason = "Bouton SOS resident active"
+                reason = "[KB:sos] Appel SOS resident"
             elif ambient_fall:
-                reason = f"Chute confirmee par capteurs ambiants — accel={m.get('accel_magnitude', 0):.1f}g"
+                reason = f"[KB:fall_confirmed] Chute confirmee par capteurs - accel={m.get('accel_magnitude', 0):.1f}g"
             elif is_fall:
-                reason = f"Chute detectee — accel={m.get('accel_magnitude', 0):.1f}g"
+                reason = f"[KB:fall_confirmed] Chute suspectee par bracelet - accel={m.get('accel_magnitude', 0):.1f}g"
             else:
-                reason = f"Constantes dangereuses — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
+                reason = f"[KB:vitals_danger] Constantes vitales dangereuses - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 3 : Alerte ---
         elif movement_scenario in disorientation_scenarios or night_toilet_frail or fatigue_clinical_risk or movement_scenario == "sortie_jardin_non_accompagnee" or (spo2 < spo2_thr_3) or (hr > 125) or (hr < 45) or (bp > 200) or (bp < 80) or (temp > 39.3) or (rr and rr > 24) or (last_mv > immobility_thr_3) or (routine_score >= 0.70 and (news_score >= 2 or ml_risk > 0.55 or frail_risk)) or (ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2)) or news_score >= 6:
             level = AlertLevel.ALERT
             if movement_scenario in disorientation_scenarios:
-                reason = f"Desorientation detectee: {movement_scenario}"
+                reason = "[KB:wandering_internal] Desorientation en zone a risque"
             elif night_toilet_frail:
-                reason = "Lever toilettes nuit a risque de chute"
+                reason = "[KB:night_bed_exit] Lever nocturne avec risque de chute"
             elif fatigue_clinical_risk:
-                reason = f"Fatigue clinique a surveiller: {movement_scenario}"
+                reason = "[KB:fatigue] Fatigue inhabituelle apres activite"
             elif movement_scenario == "sortie_jardin_non_accompagnee":
-                reason = "Sortie jardin non accompagnee"
+                reason = "[KB:exit_zone] Sortie non accompagnee en zone exterieure"
             elif routine_score >= 0.70 and (news_score >= 2 or ml_risk > 0.55 or frail_risk):
-                reason = f"Rupture de routine importante: {'; '.join(routine_analysis.get('flags', [])[:2])}"
+                reason = f"[KB:routine_change] Rupture importante de routine: {'; '.join(routine_analysis.get('flags', [])[:2])}"
             elif ml_risk > 0.82 and (news_score >= 3 or routine_change or spo2 < spo2_thr_2):
-                reason = f"IA predit risque de malaise eleve ({ml_risk:.0%}) [NEWS={news_score}]"
+                reason = f"[KB:predictive_risk] Risque predictif eleve de malaise ({ml_risk:.0%}) [NEWS={news_score}]"
             elif last_mv > immobility_thr_3:
-                reason = f"Absence de mouvement depuis {last_mv//60} min"
+                reason = f"[KB:immobility] Immobilite prolongee inhabituelle depuis {last_mv//60} min"
             else:
-                reason = f"Constantes anormales — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
+                reason = f"[KB:vitals_alert] Degradation des constantes vitales - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 2 : Attention ---
         elif (spo2 < spo2_thr_2) or (hr > 110) or (hr < 48) or (bp > 180) or (bp < 90) or (temp > 38.3) or routine_score >= 0.40 or (routine_change and frail_risk) or (ml_risk > 0.65 and (news_score >= 2 or routine_change)) or news_score >= 4:
             level = AlertLevel.ATTENTION
             if movement_scenario and "malaise" in movement_scenario:
-                reason = f"Malaise suspecte apres retour de repas - risque IA {ml_risk:.0%} [NEWS={news_score}]"
+                reason = f"[KB:malaise] Malaise suspecte apres repas - risque IA {ml_risk:.0%} [NEWS={news_score}]"
             elif ml_risk > 0.65 and (news_score >= 2 or routine_change):
-                reason = f"IA detecte un risque modere ({ml_risk:.0%}) [NEWS={news_score}]"
+                reason = f"[KB:predictive_risk] Risque predictif modere ({ml_risk:.0%}) [NEWS={news_score}]"
             elif routine_score >= 0.40:
-                reason = f"Changement de routine notable: {'; '.join(routine_analysis.get('flags', [])[:2])}"
+                reason = f"[KB:routine_change] Rupture de routine a surveiller: {'; '.join(routine_analysis.get('flags', [])[:2])}"
             elif routine_change:
-                reason = f"Changement de routine detecte: {movement_scenario}"
+                reason = "[KB:routine_change] Rupture de routine a surveiller"
             else:
-                reason = f"Constante hors norme — SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
+                reason = f"[KB:vitals_watch] Constantes a surveiller - SpO2={spo2}%, FC={hr}, PA={bp_label}, T={temp}C [NEWS={news_score}]"
 
         # --- NIVEAU 1 : Information ---
         elif last_mv > immobility_thr_1:
             level = AlertLevel.INFO
-            reason = f"Resident inactif depuis {last_mv//60} min"
+            reason = f"[KB:immobility] Inactivite prolongee a surveiller depuis {last_mv//60} min"
 
         # --- SYNERGIES CLINIQUES (base de connaissance JSON) ---
         medications = set(state.get("medications") or state.get("profile", {}).get("medications") or [])
@@ -537,7 +624,12 @@ class AlertEngine:
                 forced = rule.get("force_alert_level")
                 if forced and (level is None or forced > int(level)):
                     level = AlertLevel(forced)
-                    reason = f"[KB:{rule['id']}] {rule.get('description', 'Synergie clinique detectee')}"
+                    if rule.get("id") == "fugue_confirmed":
+                        reason = "[KB:fugue_confirmed] Porte de sortie ouverte + routine inhabituelle"
+                    elif rule.get("id") == "fall_confirmed":
+                        reason = "[KB:fall_confirmed] Chute confirmee par impact + immobilite"
+                    else:
+                        reason = f"[KB:{rule['id']}] {rule.get('description', 'Synergie clinique detectee')}"
 
         if level is None:
             # Résoudre l'alerte existante si les constantes sont revenues à la normale
@@ -571,7 +663,15 @@ class AlertEngine:
             sensor_events=sensor_events,
             level=level,
             reason=reason,
-            trigger_data={"vitals": v, "movement": m, "ml_risk": ml_risk, "sensor_events": sensor_events, "news": news, "routine_analysis": routine_analysis},
+            trigger_data={
+                "vitals": v,
+                "movement": m,
+                "ml_risk": ml_risk,
+                "sensor_events": sensor_events,
+                "news": news,
+                "routine_analysis": routine_analysis,
+                "kb_context": alert_kb_context(state, level, reason),
+            },
             notified_staff=self._notification_targets(state, level),
         )
         alert.trigger_data["evidence"] = evidence

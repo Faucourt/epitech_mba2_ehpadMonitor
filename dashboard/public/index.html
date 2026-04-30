@@ -89,31 +89,45 @@
   .tab-content.active { display: block; }
 
   /* Alert sidebar */
-  .sidebar { position: fixed; left: 12px; top: 138px; z-index: 90; width: 320px; max-height: calc(100vh - 156px); background: rgba(26,29,46,0.97); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 18px 45px rgba(0,0,0,0.34); transform: translateX(-348px); transition: transform 0.2s ease; }
+  .sidebar { position: fixed; left: 12px; top: 138px; z-index: 90; width: min(380px, calc(100vw - 24px)); max-height: calc(100vh - 156px); background: rgba(17,24,39,0.98); border: 1px solid rgba(148,163,184,0.22); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.42); transform: translateX(-408px); transition: transform 0.2s ease; backdrop-filter: blur(12px); }
   .sidebar.open { transform: translateX(0); }
-  .alert-toggle { position: fixed; left: 12px; top: 138px; z-index: 95; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(239,68,68,0.5); background: rgba(26,29,46,0.96); color: var(--text); border-radius: 8px; padding: 8px 10px; cursor: pointer; box-shadow: 0 10px 26px rgba(0,0,0,0.28); font-size: 12px; font-weight: 800; }
-  .alert-toggle.has-alerts { color: #fecaca; border-color: var(--red); }
+  .alert-toggle { position: fixed; left: 12px; top: 138px; z-index: 95; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(148,163,184,0.28); background: rgba(17,24,39,0.96); color: var(--text); border-radius: 8px; padding: 8px 11px; cursor: pointer; box-shadow: 0 10px 26px rgba(0,0,0,0.28); font-size: 12px; font-weight: 850; }
+  .alert-toggle.has-alerts { color: #fee2e2; border-color: rgba(248,113,113,0.75); background: rgba(127,29,29,0.82); }
   .alert-toggle-count { min-width: 18px; height: 18px; border-radius: 999px; background: var(--red); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
-  .alert-head { padding: 10px 12px; font-size: 12px; font-weight: 700; color: var(--text2); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .alert-head { padding: 12px 14px; font-size: 12px; font-weight: 850; color: #dbeafe; border-bottom: 1px solid rgba(148,163,184,0.18); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(15,23,42,0.72); }
   .alert-close { border: 1px solid var(--border); background: var(--bg3); color: var(--text2); border-radius: 6px; cursor: pointer; width: 26px; height: 24px; font-size: 16px; line-height: 1; }
-  .alert-list { overflow-y: auto; flex: 1; }
-  .alert-item { padding: 10px 14px; border-left: 4px solid; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
-  .alert-item:hover { background: var(--bg3); }
-  .alert-item.level-1 { border-color: var(--blue); }
-  .alert-item.level-2 { border-color: var(--yellow); }
-  .alert-item.level-3 { border-color: var(--orange); }
-  .alert-item.level-4 { border-color: var(--red); }
-  .alert-item.level-5 { border-color: #ff0000; background: #000000; color: #ff3333; animation: blink 1s infinite; }
+  .alert-list { overflow-y: auto; flex: 1; padding: 10px; display: grid; gap: 10px; }
+  .alert-item { --alert-color: var(--blue); --alert-bg: rgba(59,130,246,0.10); padding: 12px; border: 1px solid rgba(148,163,184,0.18); border-left: 5px solid var(--alert-color); border-radius: 8px; cursor: pointer; transition: transform 0.16s, border-color 0.16s, background 0.16s; background: linear-gradient(135deg, var(--alert-bg), rgba(15,23,42,0.78)); box-shadow: 0 12px 28px rgba(0,0,0,0.22); }
+  .alert-item:hover { transform: translateY(-1px); border-color: rgba(226,232,240,0.28); background: linear-gradient(135deg, var(--alert-bg), rgba(30,41,59,0.92)); }
+  .alert-item.level-1 { --alert-color: var(--blue); --alert-bg: rgba(59,130,246,0.10); }
+  .alert-item.level-2 { --alert-color: var(--yellow); --alert-bg: rgba(245,158,11,0.12); }
+  .alert-item.level-3 { --alert-color: var(--orange); --alert-bg: rgba(249,115,22,0.14); }
+  .alert-item.level-4 { --alert-color: var(--red); --alert-bg: rgba(239,68,68,0.16); }
+  .alert-item.level-5 { --alert-color: #f87171; --alert-bg: rgba(127,29,29,0.36); box-shadow: 0 0 0 1px rgba(248,113,113,0.18), 0 16px 36px rgba(127,29,29,0.34); }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.7} }
-  .alert-name { font-weight: 600; font-size: 13px; }
-  .alert-reason { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .alert-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .alert-name { font-weight: 800; font-size: 14px; line-height: 1.25; color: #f8fafc; }
+  .alert-reason { font-size: 12px; color: #cbd5e1; margin-top: 5px; line-height: 1.35; }
+  .alert-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 9px; }
+  .alert-meta { min-width: 0; border: 1px solid rgba(148,163,184,0.14); background: rgba(15,23,42,0.48); border-radius: 7px; padding: 6px 7px; }
+  .alert-meta-label { display: block; font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+  .alert-meta-value { display: block; font-size: 11px; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .alert-time { font-size: 10px; color: var(--text3); }
-  .alert-badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-bottom: 3px; }
-  .badge-1 { background: #1e3a5f; color: var(--blue); }
-  .badge-2 { background: #3d2e00; color: var(--yellow); }
-  .badge-3 { background: #3d1a00; color: var(--orange); }
-  .badge-4 { background: #3d0000; color: var(--red); }
-  .badge-5 { background: #000000; color: #ff3333; border: 1px solid #ff0000; }
+  .alert-actions { display: flex; gap: 6px; margin-top: 9px; }
+  .alert-actions button { flex: 1; min-height: 30px; font-size: 11px; }
+  .alert-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 850; white-space: nowrap; border: 1px solid transparent; }
+  .badge-1 { background: rgba(59,130,246,0.16); color: #bfdbfe; border-color: rgba(96,165,250,0.28); }
+  .badge-2 { background: rgba(245,158,11,0.15); color: #fde68a; border-color: rgba(245,158,11,0.28); }
+  .badge-3 { background: rgba(249,115,22,0.16); color: #fed7aa; border-color: rgba(251,146,60,0.32); }
+  .badge-4 { background: rgba(239,68,68,0.16); color: #fecaca; border-color: rgba(248,113,113,0.34); }
+  .badge-5 { background: rgba(127,29,29,0.82); color: #fee2e2; border-color: rgba(248,113,113,0.65); }
+  .alert-detail { border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--alert-color); background: linear-gradient(135deg, var(--alert-bg), rgba(15,23,42,0.82)); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
+  .alert-detail-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .alert-detail-title strong { color: #f8fafc; font-size: 14px; }
+  .alert-detail-body { color: #dbeafe; font-size: 12px; line-height: 1.45; }
+  .alert-critical-strip { border: 1px solid rgba(248,113,113,0.72); background: rgba(127,29,29,0.42); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .alert-critical-strip strong { display: block; color: #fee2e2; font-size: 15px; letter-spacing: .03em; text-align: center; }
+  .alert-critical-strip a { display: block; margin: 8px auto 0; width: fit-content; background: #dc2626; color: #fff; font-weight: 900; font-size: 15px; padding: 8px 22px; border-radius: 8px; text-decoration: none; }
 
   /* Resident grid */
   .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -256,6 +270,11 @@
   .agent-risk strong { display: block; font-size: 20px; line-height: 1.05; }
   .agent-risk span { color: var(--text2); font-size: 11px; }
   .agent-summary { border: 1px solid rgba(139,92,246,0.34); background: rgba(139,92,246,0.09); border-radius: 8px; padding: 9px; color: var(--text2); font-size: 12px; line-height: 1.45; }
+  .alert-source-card { border: 1px solid rgba(248,113,113,0.48); background: rgba(127,29,29,0.18); border-radius: 8px; padding: 10px; margin: 10px 0 12px; color: var(--text2); font-size: 12px; line-height: 1.4; }
+  .alert-source-card .source-title { display: flex; justify-content: space-between; gap: 8px; align-items: center; color: #fee2e2; font-weight: 900; margin-bottom: 6px; }
+  .alert-source-card .source-pill { border-radius: 999px; background: rgba(248,113,113,0.20); color: #fecaca; padding: 3px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; }
+  .risk-separation-note { margin-top: 6px; color: #bfdbfe; font-size: 11px; }
+  .agent-strip.forecast-only .agent-risk { background: rgba(14,165,233,0.08); border-color: rgba(14,165,233,0.30); }
   .validation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
   .validation-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 0; }
   .validation-card.done { border-color: rgba(16,185,129,0.45); }
@@ -414,7 +433,7 @@
         <div class="filter-bar">
           <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
           <button class="filter-btn" onclick="setFilter('alert', this)">En alerte</button>
-          <button class="filter-btn" onclick="setFilter('risk', this)">Risque ML</button>
+          <button class="filter-btn" onclick="setFilter('risk', this)">Risque malaise ML</button>
           <button class="filter-btn" onclick="focusDemoResident(this)">Démo R005</button>
         </div>
       </div>
@@ -593,8 +612,10 @@
 <div id="toast-container"></div>
 
 <script>
-const BACKEND_WS = `ws://${location.hostname}:8001/ws`;
-const BACKEND_HTTP = `http://${location.hostname}:8001`;
+const USE_SAME_ORIGIN_API = location.protocol === 'https:' || location.port === '3443';
+const BACKEND_HTTP = USE_SAME_ORIGIN_API ? '' : `http://${location.hostname}:8001`;
+const BACKEND_WS = USE_SAME_ORIGIN_API ? null : `ws://${location.hostname}:8001/ws`;
+console.info('EPicare dashboard build: https-api-v2', { protocol: location.protocol, backendHttp: BACKEND_HTTP || 'same-origin' });
 
 let ws = null;
 let residents = {};
@@ -723,6 +744,11 @@ async function secureResidentJson(url, retry = true) {
 // WebSocket
 // ============================================================
 function connect() {
+  if (!BACKEND_WS) {
+    document.getElementById('conn-dot').classList.remove('connected');
+    document.getElementById('conn-status').textContent = 'HTTPS REST';
+    return;
+  }
   ws = new WebSocket(BACKEND_WS);
 
   ws.onopen = () => {
@@ -1071,7 +1097,7 @@ function renderCard(card, r) {
     <div class="ml-risk-bar">
       <div class="ml-risk-fill" style="width:${mlRisk*100}%;background:${getMLRiskColor(mlRisk)}"></div>
     </div>
-    <div style="font-size:10px;color:var(--text3);margin-top:3px">Risque ML: ${(mlRisk*100).toFixed(0)}%</div>
+    <div style="font-size:10px;color:var(--text3);margin-top:3px">Risque malaise ML: ${(mlRisk*100).toFixed(0)}%</div>
     <div style="font-size:10px;color:${(routine.score || 0) >= .4 ? 'var(--yellow)' : 'var(--text3)'};margin-top:3px">Routine: ${routine.status === 'learning' ? 'apprentissage' : `${Math.round((routine.score || 0) * 100)}%`}</div>
     <div style="font-size:10px;color:var(--text2);margin-top:3px">${life.archetype_label || life.label || 'Profil standard'} · ${life.supervision || 'surveillance'}</div>
     <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.time_label || '--:--'} · ${r.routine_label || 'routine'}${r.meal_mode === 'chambre' ? ' · repas en chambre' : (r.current_zone === 'salle_manger' ? ` · table ${r.dining_table || '?'}` : '')}</div>
@@ -1117,7 +1143,7 @@ function updateDemoBanner() {
   const level = getAlertLevel('R005');
   const scenario = r.movement_scenario || r.scenario_active || r.scenario || 'démo';
   banner.classList.add('active');
-  meta.textContent = `SpO2 ${v.spo2 ?? '—'}% · FC ${v.heart_rate ?? '—'} bpm · ML ${mlRisk}% signalé 30 min avant · alerte niveau ${level || '—'} · ${scenario}`;
+  meta.textContent = `SpO2 ${v.spo2 ?? '—'}% · FC ${v.heart_rate ?? '—'} bpm · risque malaise ML ${mlRisk}% · alerte sécurité ${level ? `N${level}` : 'aucune'} · ${scenario}`;
 }
 
 function updateAlertSidebar() {
@@ -1152,22 +1178,26 @@ function updateAlertSidebar() {
     })();
     return `
     <div class="alert-item level-${a.level}" onclick="openDetail('${a.resident_id}'); toggleAlertPanel(false)">
-      <span class="alert-badge badge-${a.level}">${levelNames[a.level]}</span>
-      <div class="alert-name">${a.resident_name}</div>
-      <div class="alert-reason">${a.reason}</div>
-      <div class="alert-reason">Position: ${formatAlertLocation(a)}</div>
-      <div class="alert-reason">Soignants notifiés: ${formatNotifiedStaff(a.notified_staff)}</div>
-      ${formatPushDelivery(a.push_delivery)}
-      <div style="display:flex;justify-content:space-between;margin-top:4px">
-        <span class="alert-time">Chambre ${a.room} · ${formatSensorEvents(a.sensor_events)}</span>
-        <span class="alert-time">${a.time_since_s}s</span>
+      <div class="alert-row">
+        <div>
+          <div class="alert-name">${a.resident_name}</div>
+          <div class="alert-time">Chambre ${a.room} · depuis ${a.time_since_s}s</div>
+        </div>
+        <span class="alert-badge badge-${a.level}">N${a.level} ${levelNames[a.level]}</span>
+      </div>
+      <div class="alert-reason">${displayAlertReason(a.reason_label || a.reason)}</div>
+      <div class="alert-meta-grid">
+        <div class="alert-meta"><span class="alert-meta-label">Position</span><span class="alert-meta-value">${formatAlertLocation(a)}</span></div>
+        <div class="alert-meta"><span class="alert-meta-label">Capteurs</span><span class="alert-meta-value">${formatSensorEvents(a.sensor_events)}</span></div>
+        <div class="alert-meta"><span class="alert-meta-label">Equipe</span><span class="alert-meta-value">${formatNotifiedStaff(a.notified_staff)}</span></div>
+        <div class="alert-meta"><span class="alert-meta-label">Push</span><span class="alert-meta-value">${formatPushDelivery(a.push_delivery).replace(/<[^>]*>/g, '') || 'non mesure'}</span></div>
       </div>
       <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); openDetail('${a.resident_id}'); loadAlertExplanation('${a.resident_id}')">Explication</button>
-      <div style="display:flex;gap:6px;margin-top:8px">
+      <div class="alert-actions">
         ${a.acknowledged
-          ? `<button class="filter-btn" style="flex:1;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); takeAlertInCharge('${a.resident_id}')">Prendre en charge</button>`
-          : `<button class="filter-btn" style="flex:1;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); acknowledgeAlert('${a.resident_id}')">Acquitter</button>`}
-        <button class="resolve-btn" style="flex:1;margin-top:0;padding:5px 8px;font-size:11px" onclick="event.stopPropagation(); validateAlert('${a.resident_id}')">✓ Clôturer</button>
+          ? `<button class="filter-btn" onclick="event.stopPropagation(); takeAlertInCharge('${a.resident_id}')">Prendre en charge</button>`
+          : `<button class="filter-btn" onclick="event.stopPropagation(); acknowledgeAlert('${a.resident_id}')">Acquitter</button>`}
+        <button class="resolve-btn" style="margin-top:0" onclick="event.stopPropagation(); validateAlert('${a.resident_id}')">Cloturer</button>
       </div>
       ${escaladeBar}
     </div>`;
@@ -1215,13 +1245,31 @@ function mergeAlertSensorEvents(data = {}) {
 
 function formatAlertReason(reason = '') {
   if (!reason) return { escalation: '', event: 'Alerte active' };
+  const cleaned = String(reason).replace(/^\[KB:[^\]]+\]\s*/, '');
   const marker = '→';
-  if (!reason.includes(marker)) return { escalation: '', event: reason };
-  const [left, right] = reason.split(marker);
+  if (!cleaned.includes(marker)) return { escalation: '', event: cleaned };
+  const [left, right] = cleaned.split(marker);
   return {
     escalation: left.trim(),
     event: (right || '').trim(),
   };
+}
+
+function displayAlertReason(reason = '') {
+  return formatAlertReason(reason).event || 'Alerte active';
+}
+
+function alertSourceLabel(reason = '') {
+  const raw = String(reason || '');
+  if (raw.includes('[KB:fugue') || raw.toLowerCase().includes('fugue') || raw.toLowerCase().includes('hors ehpad')) return 'Règle sécurité fugue';
+  if (raw.includes('[KB:fall') || raw.toLowerCase().includes('chute')) return 'Règle sécurité chute';
+  if (raw.includes('[KB:predictive') || raw.toLowerCase().includes('predictif')) return 'Règle risque prédictif';
+  if (raw.includes('[KB:')) return 'Règle KB sécurité';
+  return 'Alerte active';
+}
+
+function renderRiskSeparationNote(mlRisk = 0) {
+  return `Le niveau N3-N5 décrit l'urgence de l'alerte sécurité. Le ${Math.round((mlRisk || 0) * 100)}% est seulement le risque ML de malaise dans les 30-60 min.`;
 }
 
 function renderEvidenceList(evidence = []) {
@@ -1239,7 +1287,7 @@ function renderEvidenceList(evidence = []) {
       .replace('routine_flags', 'Routine')
       .replace('zone', 'Zone')
       .replace('NEWS', 'NEWS')
-      .replace('ML', 'Risque ML');
+      .replace('ML', 'Risque malaise ML');
     return `<div class="vital-row"><span style="color:var(--text2)">${label}</span><span>${value}</span></div>`;
   }).join('');
 }
@@ -1316,15 +1364,24 @@ function renderAlertExplanation(data) {
   const movement = data.clinical?.movement || {};
   const baseline = data.clinical?.baseline || data.routine?.baseline || {};
   const routineEntry = data.clinical?.routine_entry || data.routine?.entry || {};
+  const kb = data.kb_context || {};
   const newsScore = data.clinical?.news?.score ?? '—';
   const mlRisk = Number(data.clinical?.ml_risk || 0);
   const reason = formatAlertReason(data.reason || '');
+  const kbTags = Array.isArray(kb.kb_tags) ? kb.kb_tags : [];
+  const watch = Array.isArray(kb.watch) ? kb.watch : [];
+  const doNot = Array.isArray(kb.do_not) ? kb.do_not : [];
   return `
     <div class="watch-item" style="border-color:rgba(59,130,246,.35);display:grid;gap:8px">
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
         <b>Explication structuree</b>
         <span class="alert-badge badge-${data.level || 1}">N${data.level || '-'} ${data.level_name || ''}</span>
       </div>
+      ${kb.label ? `<div style="border-left:3px solid var(--blue);padding-left:8px">
+        <b>${kb.label}</b><br>
+        <span style="color:var(--text2)">Priorite: ${kb.priority || data.level_name || 'surveillance'}</span>
+        ${kbTags.length ? `<div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap">${kbTags.map(t => `<span class="scenario-chip">${t}</span>`).join('')}</div>` : ''}
+      </div>` : ''}
       ${reason.escalation ? `<div style="border-left:3px solid var(--red);padding-left:8px"><b>Pourquoi ce niveau ?</b><br><span style="color:var(--text2)">${reason.escalation}</span></div>` : ''}
       <div style="border-left:3px solid var(--orange);padding-left:8px"><b>Evenement initial</b><br>${reason.event}</div>
       <div class="dpi-grid" style="grid-template-columns:1fr;gap:0">
@@ -1338,13 +1395,18 @@ function renderAlertExplanation(data) {
         <div class="vital-row"><span style="color:var(--text2)">Respiration vs habituel</span><span>${formatCurrentVsUsual(vitals.respiratory_rate, baseline.respiratory_rate, '/min')}</span></div>
         ${formatMovementComparison(movement, baseline, routineEntry, data.location || {})}
         <div class="vital-row"><span style="color:var(--text2)">NEWS</span><span>${newsScore}</span></div>
-        <div class="vital-row"><span style="color:var(--text2)">Risque ML</span><span style="color:${getMLRiskColor(mlRisk)}">${Math.round(mlRisk * 100)}% · ${getMLRiskLabel(mlRisk)}</span></div>
+        <div class="vital-row"><span style="color:var(--text2)">Risque malaise ML</span><span style="color:${getMLRiskColor(mlRisk)}">${Math.round(mlRisk * 100)}% · ${getMLRiskLabel(mlRisk)}</span></div>
       </div>
       <div>
         <b>Preuves techniques</b>
         <div style="margin-top:4px">${renderEvidenceList(evidence)}</div>
       </div>
-      <div style="border-left:3px solid var(--green);padding-left:8px"><b>Action attendue</b><br>Verifier le resident, confirmer les capteurs et tracer la prise en charge.</div>
+      ${watch.length ? `<div>
+        <b>Points a verifier</b>
+        <div style="margin-top:4px;display:grid;gap:5px">${watch.map(item => `<div class="watch-item" style="padding:7px 8px">${item}</div>`).join('')}</div>
+      </div>` : ''}
+      <div style="border-left:3px solid var(--green);padding-left:8px"><b>Action attendue</b><br>${kb.action_hint || 'Verifier le resident, confirmer les capteurs et tracer la prise en charge.'}</div>
+      ${doNot.length ? `<div style="border-left:3px solid var(--red);padding-left:8px"><b>A eviter</b><br>${doNot.join(' · ')}</div>` : ''}
     </div>
   `;
 }
@@ -1410,7 +1472,7 @@ function renderHistoryTab() {
             <td style="padding:8px;color:var(--text2);font-size:12px">${formatAlertLocation(a)}</td>
             <td style="padding:8px;color:var(--text2);font-size:12px">${formatSensorEvents(a.sensor_events)}</td>
             <td style="padding:8px;color:var(--text2);font-size:12px">${formatNotifiedStaff(a.notified_staff)}</td>
-            <td style="padding:8px;color:var(--text2);font-size:12px">${a.reason}</td>
+            <td style="padding:8px;color:var(--text2);font-size:12px">${displayAlertReason(a.reason_label || a.reason)}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -1819,7 +1881,7 @@ function renderStaff(data) {
           </div>
           ${(s.notifications || []).length ? `<div class="section-sub">Notifications actives</div>
             <div class="watch-list">${s.notifications.map(n => `<div class="watch-item">
-              <b>N${n.level}</b> ${n.resident_name}<br>${n.location || ''} · ${n.reason || ''}
+              <b>N${n.level}</b> ${n.resident_name}<br>${n.location || ''} · ${displayAlertReason(n.reason_label || n.reason || '')}
             </div>`).join('')}</div>` : ''}
           <div class="section-sub">Historique simulé soignant</div>
           <div class="watch-list">
@@ -2344,6 +2406,12 @@ function renderResidentDpi(report) {
   const medicalDoc = report.medical_document || {};
   const routine = current.routine || current.routine_label || current.time_of_day || '—';
   const scenario = current.movement_scenario || current.scenario_active || current.scenario || 'routine';
+  const activeAlert = report.active_alert || null;
+  const alertReason = risk.alert_source || activeAlert?.reason_label || activeAlert?.reason || '';
+  const alertSource = activeAlert ? alertSourceLabel(alertReason) : 'Aucune alerte sécurité active';
+  const alertLevelText = activeAlert
+    ? `N${activeAlert.level || risk.alert_level || 0} · ${activeAlert.level_name || risk.alert_level_name || 'Alerte'}`
+    : (risk.alert_level ? `N${risk.alert_level} · ${risk.alert_level_name || 'Alerte'}` : 'Aucune');
   panel.innerHTML = `
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:10px">
       <div>
@@ -2351,6 +2419,14 @@ function renderResidentDpi(report) {
         <div style="font-size:12px;color:var(--text2)">Ch. ${report.room || '—'} · ${profile.age || '?'} ans · ${profile.mobility || 'mobilité inconnue'}</div>
       </div>
       <button class="filter-btn" onclick="openDetail('${report.resident_id}')">Live</button>
+    </div>
+    <div class="alert-source-card">
+      <div class="source-title">
+        <span>Alerte sécurité actuelle</span>
+        <span class="source-pill">${alertLevelText}</span>
+      </div>
+      <div><b>${alertSource}</b>${alertReason ? ` · ${displayAlertReason(alertReason)}` : ''}</div>
+      <div class="risk-separation-note">${renderRiskSeparationNote(risk.ml_risk || 0)}</div>
     </div>
     <div class="dpi-grid">
       <div class="dpi-row"><span>Soignant référent</span><b>${report.caregiver || profile.caregiver || '—'}</b></div>
@@ -2360,9 +2436,10 @@ function renderResidentDpi(report) {
       <div class="dpi-row"><span>Scénario</span><b>${scenario}</b></div>
       <div class="dpi-row"><span>Profil de vie</span><b>${life.archetype_label || life.label || 'standard'}</b></div>
       <div class="dpi-row"><span>Surveillance</span><b>${life.supervision || 'standard'}</b></div>
-      <div class="dpi-row"><span>Risque ML actuel</span><b style="color:${getMLRiskColor(risk.ml_risk || 0)}">${Math.round((risk.ml_risk || 0) * 100)}% · ${getMLRiskLabel(risk.ml_risk || 0)}</b></div>
-      <div class="dpi-row"><span>Niveau alerte clinique</span><b>${risk.alert_level_name || 'Stable'}</b></div>
-      <div class="dpi-row"><span>Niveau agents</span><b>${a2a.recommended_level_name || 'Stable'}</b></div>
+      <div class="dpi-row"><span>Risque malaise ML actuel</span><b style="color:${getMLRiskColor(risk.ml_risk || 0)}">${Math.round((risk.ml_risk || 0) * 100)}% · ${getMLRiskLabel(risk.ml_risk || 0)}</b></div>
+      <div class="dpi-row"><span>Niveau alerte sécurité</span><b>${alertLevelText}</b></div>
+      <div class="dpi-row"><span>Source du niveau</span><b>${alertSource}</b></div>
+      <div class="dpi-row"><span>Niveau agents malaise</span><b>${a2a.recommended_level_name || 'Stable'}</b></div>
       <div class="dpi-row"><span>Tendance prédictive</span><b>${a2a.prediction_trend || risk.prediction_trend || 'indisponible'} ${Number.isFinite(a2a.risk_delta_15min) ? `(${Math.round(a2a.risk_delta_15min * 100)} pts/15min)` : ''}</b></div>
       <div class="dpi-row"><span>Tendance 30 jours</span><b>${risk.trend_30d || 'stable'}</b></div>
       <div class="dpi-row"><span>FC / SpO2</span><b>${v.heart_rate ?? '—'} bpm · ${v.spo2 ?? '—'}%</b></div>
@@ -2372,8 +2449,8 @@ function renderResidentDpi(report) {
       <div class="dpi-row"><span>Evénements 30j</span><b>${hist.alerts_count ?? 0}</b></div>
       <div class="dpi-row"><span>Généré le</span><b>${report.generated_at ? new Date(report.generated_at).toLocaleString('fr-FR') : '—'}</b></div>
     </div>
-    <div class="section-sub">Agents prédictifs A2A</div>
-    <div class="agent-strip">
+    <div class="section-sub">Agents prédictifs A2A · malaise</div>
+    <div class="agent-strip forecast-only">
       <div class="agent-risk">
         <span>Risque 30 min</span>
         <strong style="color:${getMLRiskColor(a2a.risk_30min || 0)}">${Math.round((a2a.risk_30min || 0) * 100)}%</strong>
@@ -2578,7 +2655,7 @@ function exportAlertsCSV() {
       a.room,
       formatAlertLocation(a),
       levelNames[a.level] || a.level,
-      `"${(a.reason || '').replace(/"/g, '""')}"`,
+      `"${displayAlertReason(a.reason_label || a.reason || '').replace(/"/g, '""')}"`,
       formatSensorEvents(a.sensor_events),
       `"${formatNotifiedStaff(a.notified_staff).replace(/"/g, '""')}"`,
       a.acknowledged_at ? 'Oui' : 'Non'
@@ -2855,6 +2932,7 @@ function openDetail(rid) {
 
   const v = r.vitals || {};
   const m = r.movement || {};
+  const mlRisk = r.ml_risk || 0;
   const alert = activeAlerts[rid];
   const buf = historyBuffer[rid] || {};
   const life = r.life_profile || r.routine_context || {};
@@ -2867,24 +2945,38 @@ function openDetail(rid) {
   if (alert && !alert.resolved) {
     const levelColors = ['', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
     const isVital = alert.level === 5;
-    const bg = isVital ? '#000000' : `${levelColors[alert.level]}22`;
     const border = levelColors[alert.level];
+    const alertBg = isVital ? 'rgba(127,29,29,0.36)' : `${border}22`;
+    const levelLabel = alert.level_name || ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][alert.level] || 'Alerte';
+    const reasonText = alert.reason_label || alert.reason || '';
+    const sourceText = alertSourceLabel(reasonText);
     html += `
       ${isVital ? `
-      <div style="background:#000;border:2px solid #ff0000;border-radius:8px;padding:12px;margin-bottom:10px;animation:blink 1s infinite">
-        <div style="font-size:16px;font-weight:900;color:#ff0000;text-align:center;letter-spacing:.05em">⚠ DANGER VITAL — APPELER LE 15</div>
-        <div style="text-align:center;margin-top:6px">
-          <a href="tel:15" style="display:inline-block;background:#ff0000;color:#fff;font-weight:900;font-size:18px;padding:8px 24px;border-radius:8px;text-decoration:none;letter-spacing:.05em">📞 SAMU 15</a>
-        </div>
-        <div style="font-size:11px;color:#ff6666;text-align:center;margin-top:6px">Direction + tous soignants notifiés</div>
+      <div class="alert-critical-strip">
+        <strong>DANGER VITAL N5 - APPELER LE 15</strong>
+        <a href="tel:15">SAMU 15</a>
+        <div style="font-size:11px;color:#fecaca;text-align:center;margin-top:6px">Direction + tous soignants notifies</div>
       </div>` : ''}
-      <div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:10px;margin-bottom:12px${isVital ? ';color:#ff3333' : ''}">
-        <div style="font-weight:700;color:${border}">⚠ Niveau ${alert.level} — ${alert.level_name}</div>
-        <div style="font-size:12px;margin-top:4px">${alert.reason}</div>
-        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Position: ${formatAlertLocation(alert)}</div>
-        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Capteurs actifs: ${formatSensorEvents(alert.sensor_events)}</div>
-        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">Soignants notifiés: ${formatNotifiedStaff(alert.notified_staff)}</div>
-        <div style="font-size:12px;margin-top:4px;color:${isVital ? '#ff6666' : 'var(--text2)'}">${formatPushDelivery(alert.push_delivery).replace('class="alert-reason"', '')}</div>
+      <div class="alert-detail" style="--alert-color:${border};--alert-bg:${alertBg}">
+        <div class="alert-detail-title">
+          <strong>Niveau ${alert.level} - ${levelLabel}</strong>
+          <span class="alert-badge badge-${alert.level}">${levelLabel}</span>
+        </div>
+        <div class="alert-detail-body">${displayAlertReason(reasonText)}</div>
+        <div class="alert-source-card" style="margin-bottom:8px">
+          <div class="source-title">
+            <span>Pourquoi N${alert.level} ?</span>
+            <span class="source-pill">${sourceText}</span>
+          </div>
+          <div>Le niveau vient de l'événement sécurité détecté, pas du pourcentage ML.</div>
+          <div class="risk-separation-note">${renderRiskSeparationNote(mlRisk)}</div>
+        </div>
+        <div class="alert-meta-grid">
+          <div class="alert-meta"><span class="alert-meta-label">Position</span><span class="alert-meta-value">${formatAlertLocation(alert)}</span></div>
+          <div class="alert-meta"><span class="alert-meta-label">Capteurs</span><span class="alert-meta-value">${formatSensorEvents(alert.sensor_events)}</span></div>
+          <div class="alert-meta"><span class="alert-meta-label">Equipe</span><span class="alert-meta-value">${formatNotifiedStaff(alert.notified_staff)}</span></div>
+          <div class="alert-meta"><span class="alert-meta-label">Push</span><span class="alert-meta-value">${formatPushDelivery(alert.push_delivery).replace(/<[^>]*>/g, '') || 'non mesure'}</span></div>
+        </div>
         <button class="filter-btn" style="margin-top:8px;padding:5px 8px;font-size:11px" onclick="loadAlertExplanation('${rid}')">Voir explication</button>
         <div id="alert-explain-block" style="margin-top:8px"></div>
       </div>
@@ -2958,16 +3050,15 @@ function openDetail(rid) {
   });
 
   // ML Risk
-  const mlRisk = r.ml_risk || 0;
   html += `
-    <div class="section-sub">Prédiction IA</div>
+    <div class="section-sub">Prédiction IA · malaise</div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
       <div style="flex:1;background:var(--bg3);height:8px;border-radius:4px;overflow:hidden">
         <div style="width:${mlRisk*100}%;height:100%;background:${getMLRiskColor(mlRisk)};border-radius:4px;transition:width 0.5s"></div>
       </div>
       <span style="font-weight:700;color:${getMLRiskColor(mlRisk)}">${(mlRisk*100).toFixed(1)}%</span>
     </div>
-    <div style="font-size:11px;color:var(--text2)">Risque de malaise dans les 30-60 min</div>
+    <div style="font-size:11px;color:var(--text2)">Risque de malaise dans les 30-60 min, indépendant des alertes sécurité type fugue/chute.</div>
   `;
 
   // Mouvement
@@ -3278,7 +3369,7 @@ async function recordAlertWorkflowAction(rid, action) {
     resident_id: rid,
     resident_name: a.resident_name || residents[rid]?.name || rid,
     level: a.level || null,
-    reason: a.reason || null,
+    reason: a.reason_label || displayAlertReason(a.reason || ''),
     location: formatAlertLocation(a),
   };
   let res = await fetch(`${BACKEND_HTTP}/api/notifications/action`, {
@@ -3304,7 +3395,12 @@ async function recordAlertWorkflowAction(rid, action) {
 
 async function takeAlertInCharge(rid) {
   try {
-    await recordAlertWorkflowAction(rid, 'prise_en_charge');
+    try {
+      await recordAlertWorkflowAction(rid, 'prise_en_charge');
+    } catch (_) {
+      const res = await fetch(`${BACKEND_HTTP}/api/alerts/${rid}/take?by=soignant_dashboard`, { method: 'POST' });
+      if (!res.ok) throw new Error('Prise en charge impossible');
+    }
     if (activeAlerts[rid]) {
       activeAlerts[rid].taken_by = staffId || 'chef_garde';
       activeAlerts[rid].taken_at = new Date().toISOString();
@@ -3322,7 +3418,8 @@ async function takeAlertInCharge(rid) {
 
 async function validateAlert(rid) {
   try {
-    await recordAlertWorkflowAction(rid, 'resolue');
+    const res = await fetch(`${BACKEND_HTTP}/api/alerts/${rid}/resolve?by=soignant_dashboard`, { method: 'POST' });
+    if (!res.ok) throw new Error('Cloture impossible: alerte deja cloturee ou inexistante');
     delete activeAlerts[rid];
     delete liveActiveAlerts[rid];
     updateResidentCard(rid);
@@ -3336,6 +3433,7 @@ async function validateAlert(rid) {
 
 async function loadAlertExplanation(rid) {
   openDetail(rid);
+  await new Promise(resolve => requestAnimationFrame(resolve));
   const block = document.getElementById('alert-explain-block');
   if (block) block.innerHTML = '<div class="watch-item">Chargement de l explication...</div>';
   try {
@@ -3374,7 +3472,7 @@ function showToast(alert) {
   const toast = document.createElement('div');
   const levelNames = ['', '', '', 'Alerte', 'URGENCE', 'DANGER VITAL'];
   toast.className = `toast toast-${alert.level}`;
-  toast.innerHTML = `<strong>${levelNames[alert.level]}</strong> — ${alert.resident_name}<br><small>${formatAlertLocation(alert)} · ${alert.reason}</small>`;
+  toast.innerHTML = `<strong>${levelNames[alert.level]}</strong> — ${alert.resident_name}<br><small>${formatAlertLocation(alert)} · ${displayAlertReason(alert.reason_label || alert.reason)}</small>`;
   container.appendChild(toast);
   if (alert.level >= 4) {
     document.body.style.borderTop = `3px solid ${alert.level >= 5 ? '#ff0000' : '#ef4444'}`;
@@ -3972,7 +4070,7 @@ function pickEHPAD3D(event) {
   if (data.type === 'resident') {
     const r = residents[data.resident_id];
     openResidentDossier(data.resident_id);
-    detail.innerHTML = `<strong>${r.name}</strong><br>Chambre ${r.room} · risque ML ${((r.ml_risk || 0) * 100).toFixed(0)}%<br>FC ${r.vitals?.heart_rate || '—'} · SpO2 ${r.vitals?.spo2 || '—'}%`;
+    detail.innerHTML = `<strong>${r.name}</strong><br>Chambre ${r.room} · risque malaise ML ${((r.ml_risk || 0) * 100).toFixed(0)}%<br>FC ${r.vitals?.heart_rate || '—'} · SpO2 ${r.vitals?.spo2 || '—'}%`;
     if (r.current_zone) detail.innerHTML += `<br>Zone actuelle: ${r.current_zone}<br>Activite: ${r.activity || '—'}<br>${r.time_label || '--:--'} · ${r.routine_label || 'routine'}<br>Autonomie: ${r.care_level || 'autonome'}${r.meal_mode === 'chambre' ? '<br>Repas servi en chambre' : (r.dining_table ? `<br>Table repas: ${r.dining_table}, place ${r.dining_seat || '?'}` : '')}`;
   } else if (data.type === 'sensor') {
     detail.innerHTML = `<strong>${data.label}</strong><br>${data.location}<br>Topic MQTT: ehpad/${data.room ? 'ch' + data.room + '/resident_id' : data.location.toLowerCase().replaceAll(' ', '_')}/...`;

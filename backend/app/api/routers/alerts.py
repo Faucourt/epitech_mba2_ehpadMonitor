@@ -71,6 +71,22 @@ def acknowledge_alert(resident_id: str, by: str = "soignant"):
     return {"ok": True, "message": f"Alerte acquittée par {by}"}
 
 
+@router.post("/api/alerts/{resident_id}/take")
+def take_alert(resident_id: str, by: str = "soignant"):
+    ok = rt.alert_engine.take_in_charge(resident_id, by)
+    if not ok:
+        raise HTTPException(404, "Pas d'alerte active pour ce resident")
+    return {"ok": True, "message": f"Alerte prise en charge par {by}"}
+
+
+@router.post("/api/alerts/{resident_id}/resolve")
+def resolve_alert(resident_id: str, by: str = "soignant"):
+    ok = rt.alert_engine.resolve(resident_id, by)
+    if not ok:
+        raise HTTPException(404, "Pas d'alerte active pour ce resident")
+    return {"ok": True, "message": f"Alerte cloturee par {by}"}
+
+
 @router.get("/api/alerts/explain/{resident_id}")
 def explain_alert(resident_id: str):
     alert = rt.active_alert_for_resident(resident_id)
@@ -89,6 +105,7 @@ def explain_alert(resident_id: str):
         }
     alert = rt.attach_push_delivery(alert)
     trigger = alert.get("trigger_data", {})
+    reason_label = alert.get("reason_label") or str(alert.get("reason") or "").split("]", 1)[-1].strip()
     routine = trigger.get("routine_analysis") or {}
     routine_baseline = routine.get("baseline") or {}
     routine_entry = routine.get("entry") or {}
@@ -106,6 +123,7 @@ def explain_alert(resident_id: str):
         "level": alert.get("level"),
         "level_name": alert.get("level_name"),
         "reason": alert.get("reason"),
+        "reason_label": reason_label,
         "location": {
             "label": alert.get("location_label"),
             "zone": alert.get("current_zone"),
@@ -126,6 +144,7 @@ def explain_alert(resident_id: str):
             "baseline": routine_baseline,
             "entry": routine_entry,
         },
+        "kb_context": trigger.get("kb_context") or {},
         "sensors": {
             "events": sensor_events,
             "evidence": evidence,
@@ -139,9 +158,9 @@ def explain_alert(resident_id: str):
         "notified_staff": alert.get("notified_staff", []),
         "push_delivery": alert.get("push_delivery"),
         "professional_summary": (
-            f"{alert.get('level_name')} pour {alert.get('resident_name')}: {alert.get('reason')} "
+            f"{alert.get('level_name')} pour {alert.get('resident_name')}: {reason_label} "
             f"a {alert.get('location_label') or alert.get('current_zone')}. "
-            f"Verifier constantes, capteurs confirmants et acquitter apres prise en charge."
+            f"{(trigger.get('kb_context') or {}).get('action_hint') or 'Verifier constantes, capteurs confirmants et acquitter apres prise en charge.'}"
         ),
     }
 

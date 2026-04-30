@@ -698,6 +698,8 @@ class DailyReportService:
         hist = self.history_summary(resident_id)
         alerts_today = self.alerts_for_resident_on_date(resident_id, report_date)
         active_alert = self.active_alert_for_resident(resident_id)
+        alert_reason = (active_alert or {}).get("reason_label") or (active_alert or {}).get("reason")
+        alert_source_type = "regle_securite" if active_alert else "aucune_alerte_active"
         risk = float(state.get("ml_risk", 0))
         level = max([a.get("level", 0) for a in alerts_today] + ([active_alert.get("level", 0)] if active_alert else [0]))
         location = state.get("location_label") or state.get("current_zone") or state.get("zone") or f"chambre {state.get('room', profile.get('room'))}"
@@ -744,6 +746,9 @@ class DailyReportService:
             "current": {
                 "location": location,
                 "activity": state.get("activity"),
+                "movement_scenario": state.get("movement_scenario"),
+                "scenario_active": state.get("scenario_active"),
+                "scenario": state.get("scenario"),
                 "routine": state.get("routine_label") or state.get("time_of_day"),
                 "time_label": state.get("time_label"),
                 "timestamp_simulated": state.get("timestamp_simulated"),
@@ -769,9 +774,12 @@ class DailyReportService:
                 "risk_delta_15min": a2a_prediction["prediction"].get("risk_delta_15min"),
                 "alert_level": level,
                 "alert_level_name": self.alert_level_name(level),
+                "alert_source_type": alert_source_type,
+                "alert_source": alert_reason,
                 "trend_30d": hist.get("risk_trend", "stable"),
             },
             "a2a_prediction": a2a_prediction,
+            "active_alert": active_alert,
             "history_30d": hist,
             "alerts_today": alerts_today[-10:],
             "nursing_transmission": nursing_transmission,

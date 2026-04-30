@@ -175,6 +175,11 @@
       walls: null, sensors: null, avatar: null, target: null, labels: [], floorMode: 'all',
     };
 
+    function displayAlertReason(reason = '') {
+      const text = String(reason || '').replace(/^\[KB:[^\]]+\]\s*/, '');
+      return text.includes('→') ? text.split('→').pop().trim() : (text || 'Alerte active');
+    }
+
     const FACILITY_3D = {
       rooms: [
         ['101', -18, -8, 4, 4, 0, ['wearable', 'pir', 'matelas']], ['102', -13.5, -8, 4, 4, 0, ['wearable', 'radar', 'porte']],
@@ -862,7 +867,7 @@
       const staff = (alert.notified_staff || []).filter(s => s.id !== 'dashboard').map(s => s.name || s.id).join(', ') || 'dashboard';
       panel.innerHTML = `<div class="alert-box level-${alert.level}">
         <span class="badge red">N${alert.level} ${alert.level_name || levelName(alert.level)}</span>
-        <h3 style="margin-top:10px">${alert.reason || 'Alerte active'}</h3>
+        <h3 style="margin-top:10px">${displayAlertReason(alert.reason_label || alert.reason)}</h3>
         <p class="muted small">Position : ${alert.location_label || location}</p>
         <p class="muted small">Notifie : ${staff}</p>
         ${predictive}
@@ -951,7 +956,7 @@
         </div>` : ''}
         <h3 style="margin-top:12px">Alertes du jour</h3>
         <div class="timeline">
-          ${alerts.map(a => `<div class="event"><strong>N${a.level} ${levelName(a.level)}</strong><br>${a.reason || ''}<br><span class="muted">${a.location_label || a.current_zone || 'position non precisee'}</span></div>`).join('') || '<div class="event">Aucune alerte du jour.</div>'}
+          ${alerts.map(a => `<div class="event"><strong>N${a.level} ${levelName(a.level)}</strong><br>${displayAlertReason(a.reason_label || a.reason || '')}<br><span class="muted">${a.location_label || a.current_zone || 'position non precisee'}</span></div>`).join('') || '<div class="event">Aucune alerte du jour.</div>'}
         </div>`;
     }
 

@@ -193,6 +193,7 @@
 
   <script>
     const BACKEND_HTTP = '';
+    const DIRECT_BACKEND_HTTP = location.protocol === 'https:' ? '' : `http://${location.hostname}:8001`;
     const pathParts = location.pathname.split('/').filter(Boolean);
     let staffId = pathParts[1] || new URLSearchParams(location.search).get('id') || '';
     let staffData = [];
@@ -220,7 +221,7 @@
         return await fetch(`${BACKEND_HTTP}${path}`, options);
       } catch (err) {
         if (location.protocol === 'http:') {
-          return fetch(`http://${location.hostname}:8001${path}`, options);
+          return DIRECT_BACKEND_HTTP ? fetch(`${DIRECT_BACKEND_HTTP}${path}`, options) : res;
         }
         throw err;
       }
@@ -249,6 +250,11 @@
 
     function levelName(level) {
       return ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][level] || 'Alerte';
+    }
+
+    function displayAlertReason(reason = '') {
+      const text = String(reason || '').replace(/^\[KB:[^\]]+\]\s*/, '');
+      return text.includes('→') ? text.split('→').pop().trim() : (text || 'Alerte active');
     }
 
     function pushDeliveryLabel(delivery) {
@@ -314,7 +320,7 @@
       const level = Number(n?.level || 0);
       const label = level >= 5 ? 'Danger vital' : 'Urgence';
       const location = n?.location || n?.zone || `chambre ${n?.room || ''}`;
-      return `${label}. ${n?.resident_name || 'resident'}. ${location}. ${n?.reason || n?.event || 'alerte critique'}.`;
+      return `${label}. ${n?.resident_name || 'resident'}. ${location}. ${displayAlertReason(n?.reason_label || n?.reason || n?.event || 'alerte critique')}.`;
     }
 
     function speakCritical(n) {
@@ -346,7 +352,7 @@
       document.getElementById('critical-level').textContent = level >= 5 ? 'DANGER VITAL N5' : 'URGENCE N4';
       document.getElementById('critical-name').textContent = n.resident_name || n.resident_id || 'Resident';
       document.getElementById('critical-location').textContent = n.location || n.zone || `Chambre ${n.room || '?'}`;
-      document.getElementById('critical-reason').textContent = n.reason || n.event || 'Alerte critique';
+      document.getElementById('critical-reason').textContent = displayAlertReason(n.reason_label || n.reason || n.event || 'Alerte critique');
       document.getElementById('critical-samu-btn').style.display = level >= 5 ? 'block' : 'none';
       document.getElementById('critical-file-link').href = `/mobile/resident/${n.resident_id}?staff=${encodeURIComponent(staffId)}&token=${encodeURIComponent(staffToken)}&return=${encodeURIComponent(`/soignant/${staffId}`)}`;
       if (key !== lastCriticalKey) {
@@ -404,7 +410,7 @@
           resident_id: notification.resident_id || null,
           resident_name: notification.resident_name || null,
           level: notification.level || null,
-          reason: notification.reason || notification.event || null,
+          reason: notification.reason_label || displayAlertReason(notification.reason || notification.event || ''),
           location: notification.location || notification.location_label || notification.zone || null,
         };
         let res = await apiFetch('/api/notifications/action', {
@@ -625,7 +631,7 @@
         <h2>${isLive ? 'Notification push' : 'Dernier evenement'} - N${top.level} ${levelName(top.level)}</h2>
         <p><b>${top.resident_name}</b> - Chambre ${top.room || '-'}</p>
         <p>${top.location || top.zone || 'Localisation a confirmer'}</p>
-        <p>${top.reason || top.event || 'Evenement simule'} - statut: <b>${status}</b></p>
+        <p>${displayAlertReason(top.reason_label || top.reason || top.event || 'Evenement simule')} - statut: <b>${status}</b></p>
         <div class="actions">
           ${isTaken
             ? `<button class="danger" onclick="resolveTop()">Cloturer l'alerte</button>`
@@ -653,7 +659,7 @@
         return `<div class="mini-card">
           <b>N${n.level} ${levelName(n.level)} - ${n.resident_name}</b><br>
           ${n.location || 'zone ?'}<br>
-          ${n.reason || ''}<br>
+          ${displayAlertReason(n.reason_label || n.reason || '')}<br>
           <span class="badge">${n.status || localStatus[key]?.status || 'envoyee'}</span>
           ${pushDeliveryLabel(n.push_delivery)}
         </div>`;
@@ -714,7 +720,7 @@
           <b>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
           <span class="badge">${a.action}</span><br>
           ${a.resident_name || a.resident_id || 'resident ?'} - N${a.level || '?'}<br>
-          ${a.location || 'zone ?'} - ${a.reason || ''}
+          ${a.location || 'zone ?'} - ${displayAlertReason(a.reason_label || a.reason || '')}
         </div>`;
       }).join('');
     }

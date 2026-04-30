@@ -105,6 +105,7 @@
 
   <script>
     const BACKEND_HTTP = '';
+    const DIRECT_BACKEND_HTTP = location.protocol === 'https:' ? '' : `http://${location.hostname}:8001`;
     const residentId = location.pathname.split('/').filter(Boolean)[2] || 'R005';
     const params = new URLSearchParams(location.search);
     let staffId = params.get('staff') || localStorage.getItem('ehpad_staff_id') || '';
@@ -115,6 +116,11 @@
     let alertExplain = null;
     let actionState = null;
     const autoSeenKey = `ehpad_mobile_seen_${residentId}_${staffId}`;
+
+    function displayAlertReason(reason = '') {
+      const text = String(reason || '').replace(/^\[KB:[^\]]+\]\s*/, '');
+      return text.includes('→') ? text.split('→').pop().trim() : (text || 'Alerte active');
+    }
 
     if (params.get('staff') && params.get('token')) {
       localStorage.setItem('ehpad_staff_id', staffId);
@@ -130,7 +136,7 @@
         return await fetch(`${BACKEND_HTTP}${path}`, options);
       } catch (err) {
         if (location.protocol === 'http:') {
-          return fetch(`http://${location.hostname}:8001${path}`, options);
+          return DIRECT_BACKEND_HTTP ? fetch(`${DIRECT_BACKEND_HTTP}${path}`, options) : res;
         }
         throw err;
       }
@@ -243,7 +249,7 @@
           resident_id: residentId,
           level: alertExplain.level,
           level_name: alertExplain.level_name,
-          reason: alertExplain.reason,
+          reason: alertExplain.reason_label || alertExplain.reason,
           location_label: alertExplain.location?.label,
           current_zone: alertExplain.location?.zone,
           sensor_events: alertExplain.sensors?.events || {},
@@ -264,7 +270,7 @@
       }
       card.innerHTML = `
         <span class="badge red">N${alert.level} ${alert.level_name || levelName(alert.level)}</span>
-        <h1 style="margin-top:8px">${alert.reason || 'Alerte active'}</h1>
+        <h1 style="margin-top:8px">${displayAlertReason(alert.reason_label || alert.reason)}</h1>
         <p class="muted small">${alert.location_label || zone}</p>
         <p class="muted small" style="margin-top:6px">Capteurs: ${formatSensorEvents(alert.sensor_events || alertExplain?.sensors?.events || {})}</p>
       `;
@@ -405,7 +411,7 @@
           resident_id: residentId,
           resident_name: state?.name || dpi?.resident_name || residentId,
           level: alert.level || 0,
-          reason: alert.reason || 'fiche intervention mobile',
+          reason: alert.reason_label || displayAlertReason(alert.reason || 'fiche intervention mobile'),
           location: alert.location_label || state?.current_zone || null,
         }),
       }).catch(() => null);

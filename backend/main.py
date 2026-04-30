@@ -546,7 +546,7 @@ def _handle_sos(data: dict):
         "room": data.get("room"),
         "zone": data.get("zone"),
         "timestamp": data.get("timestamp"),
-        "message": "Bouton SOS resident active",
+        "message": "Appel SOS resident",
         "level": 4,
     }
     redis_client.lpush("alerts:sos", json.dumps(alert))
@@ -585,7 +585,7 @@ def _check_elopement(zone_data: dict):
         "zone": zone_data["zone_name"],
         "resident_ids": zone_data.get("resident_ids", []),
         "timestamp": zone_data.get("timestamp"),
-        "message": "Fugue detectee: resident en sortie hors EHPAD",
+        "message": "Fugue / sortie hors EHPAD confirmee",
         "level": 4
     }
     redis_client.lpush("alerts:elopement", json.dumps(alert))
