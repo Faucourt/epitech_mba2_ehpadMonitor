@@ -1,0 +1,102 @@
+Projet : Détection et prédiction de malaise en EHPAD
+
+Dépôt Git :
+https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD.git
+
+Présentation courte :
+Ce projet répond au cahier des charges Epitech MBA1 « Projet 2 : Détection de malaise en EHPAD ».
+
+Il propose un prototype complet de surveillance intelligente pour un établissement de type EHPAD, avec une chaîne technique de bout en bout : simulation des résidents, génération de constantes vitales et de données de capteurs ambiants, transmission temps réel via MQTT, traitement backend, stockage, dashboard multi-résidents, alertes graduées et prédiction du risque de malaise.
+
+Objectif du projet :
+Détecter plus rapidement les situations à risque chez des résidents fragiles et aider les soignants à prioriser leurs interventions, sans remplacer leur décision clinique.
+
+Fonctionnalités principales :
+- simulation d’un EHPAD avec 25 résidents ;
+- profils résidents variés : âge, pathologies, mobilité, habitudes de vie ;
+- génération de constantes vitales simulées : fréquence cardiaque, SpO2, pression artérielle, température, fréquence respiratoire ;
+- simulation de capteurs ambiants : mouvement, présence, porte, chambre, zones communes ;
+- transmission des données en temps réel via MQTT/Mosquitto ;
+- backend FastAPI pour l’ingestion, le traitement et l’exposition des données ;
+- stockage de l’état courant dans Redis ;
+- stockage de l’historique des constantes dans InfluxDB ;
+- dashboard web multi-résidents ;
+- vue globale établissement + détail par résident ;
+- système d’alertes graduées à 5 niveaux ;
+- acquittement et traçabilité des alertes ;
+- prédiction ML du risque de malaise à 30–60 minutes ;
+- interface soignant ;
+- espace famille limité, sans détail médical sensible.
+
+Fonctionnalités bonus :
+- détection de chute ;
+- détection de fugue ou sortie de zone ;
+- détection de changement de routine ;
+- score clinique inspiré de NEWS2 ;
+- synthèse clinique assistée par LLM local optionnel ;
+- notifications côté interface ;
+- documentation technique ;
+- guide de démonstration ;
+- benchmark de scalabilité ;
+- éléments sécurité/RGPD.
+
+Stack technique principale :
+- Python ;
+- FastAPI ;
+- MQTT / Mosquitto ;
+- Redis ;
+- InfluxDB ;
+- Docker Compose ;
+- HTML / CSS / JavaScript ;
+- Express ;
+- Scikit-learn ;
+- Ollama optionnel pour les synthèses LLM locales.
+
+Commande de lancement recommandée :
+docker compose up --build -d
+
+Accès typique après lancement :
+- dashboard : http://localhost:3002
+- backend/API : selon configuration du docker-compose
+- services techniques : Mosquitto, Redis et InfluxDB via le réseau Docker interne
+
+Positionnement IA :
+L’IA du projet sert à assister la vigilance soignante :
+- les règles et seuils cliniques déclenchent les alertes ;
+- le modèle ML estime un risque de malaise à 30–60 minutes ;
+- le LLM, lorsqu’il est activé, reformule et synthétise les informations, mais ne décide pas seul du niveau d’alerte.
+
+Limites assumées :
+- les données sont simulées ;
+- les résidents sont fictifs ;
+- les capteurs ne sont pas de vrais dispositifs médicaux ;
+- le modèle ML n’est pas validé sur cohorte clinique réelle ;
+- le projet n’est pas un dispositif médical certifié CE/FDA ;
+- les alertes sont indicatives et ne remplacent pas l’évaluation soignante ;
+- la sécurité est adaptée à un prototype pédagogique, pas encore à une production réelle HDS.
+
+Conformité au cahier des charges :
+Le projet couvre les principaux attendus :
+- M1 : simulateur 20+ résidents ;
+- M2 : capteurs ambiants simulés ;
+- M3 : communication MQTT ;
+- M4 : dashboard multi-résidents ;
+- M5 : alertes graduées à 5 niveaux ;
+- M6 : lancement Docker Compose ;
+- M7 : documentation.
+
+Il couvre aussi plusieurs attendus bonus :
+- S1 : prédiction de malaise ;
+- S3 : historique et routine comportementale ;
+- S4 : logique d’escalade et d’acquittement ;
+- C1 : fugue ;
+- C2 : résumé LLM optionnel ;
+- C3 : interface famille ;
+- C4 : analyse de routine ;
+- C5 : tests/benchmark selon état du dépôt.
+
+Phrase de conclusion :
+EHPAD Monitor est un prototype avancé de surveillance IoT et IA pour EHPAD. Il démontre une architecture complète, réaliste et scalable à l’échelle d’un établissement de 25 résidents, avec une approche prudente : l’IA aide à détecter, prioriser et expliquer, mais la décision reste soignante.
+
+Résumé en une phrase :
+Un système IoT + IA de vigilance EHPAD qui surveille 25 résidents en temps réel, détecte les anomalies, prédit les risques de malaise et aide les soignants à réagir plus vite.
