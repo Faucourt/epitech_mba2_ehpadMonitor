@@ -27,14 +27,14 @@ Validation:
 | Espace | URL | Identifiant | Mot de passe / token |
 |---|---|---|---|
 | Dashboard central | http://localhost:3002 | aucun | aucun |
-| Soignant A | http://localhost:3002/soignant | `soignant_A` | `EHPAD2024!` |
-| Soignant B | http://localhost:3002/soignant | `soignant_B` | `EHPAD2024!` |
-| Soignant C | http://localhost:3002/soignant | `soignant_C` | `EHPAD2024!` |
-| Chef de garde | http://localhost:3002/soignant | `chef_garde` | `EHPAD2024!` |
-| Direction | http://localhost:3002/soignant | `direction` | `EHPAD2024!` |
-| Famille Edith Piaf | http://localhost:3002/famille.html | `piaf` | `piaf105` |
-| Famille Marie Curie | http://localhost:3002/famille.html | `curie` | `curie101` |
-| Admin familles | http://localhost:3002/admin_famille.html | token admin | `ADMIN_EHPAD_2024` |
+| Soignant A | http://localhost:3002/soignant | `soignant_A` | voir `.env` |
+| Soignant B | http://localhost:3002/soignant | `soignant_B` | voir `.env` |
+| Soignant C | http://localhost:3002/soignant | `soignant_C` | voir `.env` |
+| Chef de garde | http://localhost:3002/soignant | `chef_garde` | voir `.env` |
+| Direction | http://localhost:3002/soignant | `direction` | voir `.env` |
+| Famille Edith Piaf | http://localhost:3002/famille.html | `piaf` | voir `.env` / procedure locale |
+| Famille Marie Curie | http://localhost:3002/famille.html | `curie` | voir `.env` / procedure locale |
+| Admin familles | http://localhost:3002/admin_famille.html | token admin | voir `.env` |
 
 Patients utiles pour la demo:
 
@@ -213,9 +213,9 @@ Montrer le login avec un compte demo :
 
 | Utilisateur | Mot de passe | Resident |
 |-------------|-------------|---------|
-| `curie`      | `curie101` | Marie Curie - Chambre 101 |
-| `coubertin`  | `coubertin104` | Pierre de Coubertin - Chambre 104 |
-| `piaf`       | `piaf105` | Edith Piaf - Chambre 105 |
+| `curie`      | voir `.env` / procedure locale | Marie Curie - Chambre 101 |
+| `coubertin`  | voir `.env` / procedure locale | Pierre de Coubertin - Chambre 104 |
+| `piaf`       | voir `.env` / procedure locale | Edith Piaf - Chambre 105 |
 
 Points a montrer :
 
@@ -235,7 +235,7 @@ Montrer ensuite l'interface admin :
 http://localhost:3002/admin_famille.html
 ```
 
-Token admin : `ADMIN_EHPAD_2024`
+Token admin : voir `.env` (`FAMILLE_ADMIN_TOKEN`)
 
 - lister les comptes existants;
 - creer un nouveau compte pour un resident;

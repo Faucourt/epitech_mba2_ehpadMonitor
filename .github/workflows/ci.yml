@@ -1,0 +1,81 @@
+name: CI EHPAD Monitor
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements-dev.txt
+          pip install -r simulator/requirements.txt
+
+      - name: Start Docker stack
+        run: docker compose up --build -d
+
+      - name: Wait for backend healthcheck
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:8001/health; then
+              exit 0
+            fi
+            sleep 5
+          done
+          docker compose ps
+          docker compose logs --tail=120 backend
+          exit 1
+
+      - name: Run backend tests
+        env:
+          EHPAD_API_URL: http://localhost:8001
+        run: python -m pytest tests -q
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs --tail=120
+
+  dashboard-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dashboard dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Audit dashboard dependencies
+        working-directory: dashboard
+        run: npm audit --audit-level=moderate
+
+  docker-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose config

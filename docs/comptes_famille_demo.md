@@ -9,31 +9,31 @@ URL : http://localhost:3002/famille.html
 
 | Utilisateur | Mot de passe | Resident | Chambre |
 |-------------|--------------|----------|---------|
-| curie | curie101 | Marie Curie | 101 |
-| pasteur | pasteur102 | Louis Pasteur | 102 |
-| veil | veil103 | Simone Veil | 103 |
-| coubertin | coubertin104 | Pierre de Coubertin | 104 |
-| piaf | piaf105 | Edith Piaf | 105 |
-| gabin | gabin106 | Jean Gabin | 106 |
-| girardot | girardot107 | Annie Girardot | 107 |
-| bourvil | bourvil108 | Bourvil | 108 |
-| chanel | chanel201 | Coco Chanel | 201 |
-| montand | montand202 | Yves Montand | 202 |
-| moreau | moreau203 | Jeanne Moreau | 203 |
-| aznavour | aznavour204 | Charles Aznavour | 204 |
-| bardot | bardot208 | Brigitte Bardot | 208 |
-| depardieu | depardieu209 | Gerard Depardieu | 209 |
-| mathieu | mathieu210 | Mireille Mathieu | 210 |
-| francois | francois211 | Claude Francois | 211 |
-| baker | baker212 | Josephine Baker | 212 |
-| fernandel | fernandel213 | Fernandel | 213 |
-| dalida | dalida214 | Dalida | 214 |
-| ventura | ventura215 | Lino Ventura | 215 |
-| schneider | schneider216 | Romy Schneider | 216 |
-| belmondo | belmondo217 | Jean-Paul Belmondo | 217 |
-| marceau | marceau218 | Sophie Marceau | 218 |
-| sardou | sardou219 | Michel Sardou | 219 |
-| adjani | adjani220 | Isabelle Adjani | 220 |
+| curie | voir `.env` / procedure locale | Marie Curie | 101 |
+| pasteur | voir `.env` / procedure locale | Louis Pasteur | 102 |
+| veil | voir `.env` / procedure locale | Simone Veil | 103 |
+| coubertin | voir `.env` / procedure locale | Pierre de Coubertin | 104 |
+| piaf | voir `.env` / procedure locale | Edith Piaf | 105 |
+| gabin | voir `.env` / procedure locale | Jean Gabin | 106 |
+| girardot | voir `.env` / procedure locale | Annie Girardot | 107 |
+| bourvil | voir `.env` / procedure locale | Bourvil | 108 |
+| chanel | voir `.env` / procedure locale | Coco Chanel | 201 |
+| montand | voir `.env` / procedure locale | Yves Montand | 202 |
+| moreau | voir `.env` / procedure locale | Jeanne Moreau | 203 |
+| aznavour | voir `.env` / procedure locale | Charles Aznavour | 204 |
+| bardot | voir `.env` / procedure locale | Brigitte Bardot | 208 |
+| depardieu | voir `.env` / procedure locale | Gerard Depardieu | 209 |
+| mathieu | voir `.env` / procedure locale | Mireille Mathieu | 210 |
+| francois | voir `.env` / procedure locale | Claude Francois | 211 |
+| baker | voir `.env` / procedure locale | Josephine Baker | 212 |
+| fernandel | voir `.env` / procedure locale | Fernandel | 213 |
+| dalida | voir `.env` / procedure locale | Dalida | 214 |
+| ventura | voir `.env` / procedure locale | Lino Ventura | 215 |
+| schneider | voir `.env` / procedure locale | Romy Schneider | 216 |
+| belmondo | voir `.env` / procedure locale | Jean-Paul Belmondo | 217 |
+| marceau | voir `.env` / procedure locale | Sophie Marceau | 218 |
+| sardou | voir `.env` / procedure locale | Michel Sardou | 219 |
+| adjani | voir `.env` / procedure locale | Isabelle Adjani | 220 |
 
 Chaque compte donne acces uniquement au resident associe.
 Le token de session expire apres 24h.
@@ -44,6 +44,6 @@ URL : http://localhost:3002/admin_famille.html
 
 | Role | Token |
 |------|-------|
-| Admin | ADMIN_EHPAD_2024 |
+| Admin | voir `.env` (`FAMILLE_ADMIN_TOKEN`) |
 
 L'admin peut creer, lister et supprimer des comptes famille.

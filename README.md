@@ -16,6 +16,12 @@ simulation -> MQTT -> backend -> Redis / InfluxDB -> dashboard -> soignant / fam
 Le systeme vise une assistance clinique prudente et explicable. Il ne remplace
 pas un diagnostic medical autonome.
 
+Ce projet est un prototype avance de surveillance EHPAD temps reel. Il demontre
+une chaine technique complete, mais ne constitue pas un dispositif medical
+certifie ni un outil de decision clinique autonome. Les alertes, le ML et le LLM
+servent a prioriser et contextualiser la vigilance; la decision finale reste
+humaine.
+
 ## Sommaire
 
 - [Demarrage rapide](#demarrage-rapide)
@@ -152,6 +158,11 @@ La liste complete des comptes famille est dans `docs/comptes_famille_demo.md`.
 
 > **Demo locale** : copier `.env.example` en `.env` et renseigner les valeurs avant `docker compose up`.
 
+`.env.example` documente les variables necessaires avec des valeurs de type
+`change-me-*`. Le fichier `.env` local n'est pas versionne et doit contenir les
+secrets reels de demonstration. Ces valeurs ne doivent jamais etre reutilisees
+en production.
+
 ## Activation des fonctions
 
 Les variables principales sont documentees dans `.env.example`.
@@ -220,7 +231,7 @@ http://192.168.1.85:3002/soignant
 5. Se connecter avec:
 
 ```text
-chef_garde / EHPAD2024!
+chef_garde / mot de passe defini dans .env
 ```
 
 6. Ouvrir une fiche mobile:
@@ -1173,9 +1184,9 @@ docker compose ps
 4. Montrer les alertes actives et la configuration 5 niveaux.
 5. Ouvrir un resident et son Mini DPI.
 6. Montrer le plan 2D / 3D et les capteurs.
-7. Ouvrir l'espace soignant avec `chef_garde / EHPAD2024!`.
+7. Ouvrir l'espace soignant avec `chef_garde` et le mot de passe defini dans `.env`.
 8. Montrer la mini app telephone ou la fiche mobile.
-9. Ouvrir l'espace famille avec `piaf / piaf105`.
+9. Ouvrir l'espace famille avec un compte famille de demonstration defini dans `.env` ou dans la procedure locale.
 10. Montrer ML/A2A et scalabilite.
 
 Guide detaille:
@@ -1254,6 +1265,18 @@ cd ..
 docker run --rm -v "${PWD}:/repo" zricethezav/gitleaks:latest detect --source=/repo --verbose --no-git
 docker run --rm -v "${PWD}:/repo" aquasec/trivy:latest fs /repo --severity CRITICAL,HIGH --no-progress
 ```
+
+CI GitHub Actions:
+
+Le workflow `.github/workflows/ci.yml` lance automatiquement les controles
+principaux sur `master`, `main` et les pull requests:
+
+- installation des dependances backend et simulateur;
+- demarrage de la stack Docker Compose;
+- attente de `http://localhost:8001/health`;
+- execution de `pytest`;
+- audit npm du dashboard;
+- validation `docker compose config`.
 
 Notes securite:
 

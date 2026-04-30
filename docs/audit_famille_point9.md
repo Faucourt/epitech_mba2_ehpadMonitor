@@ -19,7 +19,7 @@ Date audit: 2026-04-28
 
 ## Verification
 
-- `POST /api/famille/login` avec `piaf/piaf105`: OK.
+- `POST /api/famille/login` avec un compte famille de demonstration: OK.
 - `GET /api/famille/R005` avec token Piaf: OK.
 - Champs medicaux absents: `vitals`, `heart_rate`, `spo2` absents.
 - `GET /api/famille/R002` avec token Curie: 403 attendu.
