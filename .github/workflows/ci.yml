@@ -25,7 +25,11 @@ jobs:
           pip install -r simulator/requirements.txt
 
       - name: Start Docker stack
-        run: docker compose up --build -d
+        run: |
+          mkdir -p data dashboard/certs
+          docker compose config --quiet
+          docker compose up --build -d mosquitto redis influxdb backend simulator
+          docker compose ps
 
       - name: Wait for backend healthcheck
         run: |
@@ -47,6 +51,10 @@ jobs:
       - name: Show logs on failure
         if: failure()
         run: docker compose logs --tail=120
+
+      - name: Stop Docker stack
+        if: always()
+        run: docker compose down --remove-orphans
 
   dashboard-check:
     runs-on: ubuntu-latest
