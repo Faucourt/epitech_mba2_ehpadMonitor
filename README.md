@@ -10,6 +10,7 @@ ne sont jamais remplacées par les valeurs normales du simulateur.
 
 - [Démarrer les bancs et le tableau de bord](firmware/all_sensors/README.md)
 - [Lancer trois résidents complets et les vingt zones](firmware/all_sensors/COLLECTIVE.md)
+- [Vidéos existantes du TP M1](firmware/m1_wokwi/livrables/video/README.md)
 - [Inventaire complet, modèles et unités](firmware/all_sensors/inventory.json)
 - [Correspondance avec les messages des simulateurs](docs/contrat_capteurs_materiels.md)
 - [Validation et limites de portage](firmware/all_sensors/VALIDATION.md)

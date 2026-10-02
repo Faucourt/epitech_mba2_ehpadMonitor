@@ -34,7 +34,9 @@
       ['contact_temperature_c','°C'],['respiratory_rate','resp./min']];
     for (const [field, unit] of entries) {
       const item=node('div','vital');
-      item.append(node('span','vital-val',valueText(r.vitals[field],unit)),node('span','vital-label',labels[field]));
+      const waitingForCuff=field.startsWith('blood_pressure_')&&r.vitals[field]==null&&r.acquisition.devices.some(d=>d.kind==='nibp'&&d.communicating);
+      item.append(node('span','vital-val',waitingForCuff?'En attente de START':valueText(r.vitals[field],unit)),node('span','vital-label',labels[field]));
+      if(waitingForCuff)item.title='Démarrer une mesure avec le bouton START du tensiomètre dans Wokwi.';
       vitals.append(item);
     }
     card.append(vitals,node('p','card-room',`Wokwi · ${r.acquisition.live} capteurs avec une mesure récente`));
@@ -51,6 +53,7 @@
       const model=inventory.catalog[device.kind];
       body.append(node('h3','section-sub',model?.model || device.kind),node('p','card-room',device.id),
         node('p','',device.status==='live'?'Mesures reçues':device.communicating?'Connecté · en attente de mesure':'Déconnecté'));
+      if(device.kind==='nibp'&&device.communicating&&device.status!=='live')body.append(node('p','','Appuyer sur START dans Wokwi pour lancer une mesure de tension.'));
       for (const [field,unit] of Object.entries(device.fields)) {
         const row=node('div','vital-row');
         row.append(node('span','',labels[field] || field),node('span','',valueText(device.values[field],unit)));
