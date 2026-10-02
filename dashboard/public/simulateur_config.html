@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPicare Palace — Simulateur</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; background: #0f1422; color: #e6edf8; }
+    header { position: sticky; top: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(15,20,34,.96); border-bottom: 1px solid #26334c; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 13px; color: #9fb0c7; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+    button, a.button { border: 0; border-radius: 8px; background: #2563eb; color: #fff; padding: 9px 12px; font-weight: 800; text-decoration: none; cursor: pointer; }
+    button.secondary { background: #334155; }
+    button.ok { background: #059669; }
+    button.warn { background: #d97706; }
+    .page { padding: 16px; display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 14px; }
+    .panel { background: #151c2d; border: 1px solid #26334c; border-radius: 10px; padding: 14px; min-width: 0; }
+    .resident-list { display: grid; gap: 8px; max-height: calc(100vh - 130px); overflow: auto; }
+    .resident-row { display: flex; align-items: center; gap: 10px; border: 1px solid #26334c; background: #101827; border-radius: 8px; padding: 9px; cursor: pointer; }
+    .resident-row.active { border-color: #60a5fa; background: #13213a; }
+    .avatar { width: 42px; height: 42px; border-radius: 10px; overflow: hidden; background: #26334c; flex: 0 0 auto; display: grid; place-items: center; font-weight: 900; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .muted { color: #9fb0c7; }
+    .small { font-size: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    label { display: grid; gap: 6px; color: #cbd5e1; font-size: 12px; font-weight: 700; }
+    input, select, textarea { width: 100%; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: #e5edf8; padding: 9px 10px; font: inherit; }
+    textarea { min-height: 74px; resize: vertical; }
+    .checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
+    .check { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid #26334c; border-radius: 8px; background: #101827; font-weight: 600; }
+    .check input { width: auto; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .status { margin-top: 10px; padding: 10px; border-radius: 8px; background: #101827; border: 1px solid #26334c; color: #cbd5e1; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 7px; border-bottom: 1px solid #26334c; vertical-align: top; }
+    th { color: #9fb0c7; }
+    @media (max-width: 900px) { .page { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Config simulateur</h1>
+      <p class="muted small">Profils persistants, scénarios assignés, historique patient généré</p>
+    </div>
+    <a class="button" href="/">Dashboard</a>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <h2>Résidents</h2>
+      <div class="resident-list" id="resident-list"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Profil et historique</h2>
+      <div id="editor" class="muted">Chargement...</div>
+    </section>
+  </main>
+
+  <script>
+    const API = '';
+    let config = null;
+    let selectedId = null;
+
+    const PATHOLOGIES = ['hypertension', 'diabete', 'alzheimer', 'insuffisance_cardiaque', 'parkinson', 'bpco', 'insuffisance_renale'];
+
+    function initials(name) {
+      return String(name || '').split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase();
+    }
+
+    async function loadConfig() {
+      const resp = await fetch(`${API}/api/simulator/config`);
+      config = await resp.json();
+      selectedId = selectedId || config.profiles?.[0]?.resident_id;
+      renderList();
+      renderEditor();
+    }
+
+    function profileOf(id) {
+      return (config.profiles || []).find(p => p.resident_id === id);
+    }
+
+    function renderList() {
+      document.getElementById('resident-list').innerHTML = (config.profiles || []).map(p => {
+        const e = p.effective || {};
+        const h = p.history || {};
+        return `<div class="resident-row ${p.resident_id === selectedId ? 'active' : ''}" onclick="selectResident('${p.resident_id}')">
+          <div class="avatar">${e.avatar ? `<img src="${e.avatar}" alt="${e.name}">` : initials(e.name)}</div>
+          <div>
+            <b>${e.name || p.resident_id}</b>
+            <div class="muted small">${p.resident_id} · Ch. ${e.room || '-'} · ${h.status === 'ready' ? `${h.daily_days}j hist.` : 'historique absent'}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function selectResident(id) {
+      selectedId = id;
+      renderList();
+      renderEditor();
+    }
+
+    function checkedList(name) {
+      return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(x => x.value);
+    }
+
+    function renderEditor() {
+      const p = profileOf(selectedId);
+      if (!p) return;
+      const e = p.effective || {};
+      const h = p.history || {};
+      const activePathos = new Set(e.pathologies || []);
+      const activeScenarios = new Set(e.assigned_scenarios || [e.assigned_movement_scenario].filter(Boolean));
+      document.getElementById('editor').innerHTML = `
+        <div class="grid">
+          <label>Âge <input id="age" type="number" min="50" max="110" value="${e.age || 80}"></label>
+          <label>Mobilité
+            <select id="mobility">
+              ${['bonne','moyenne','faible','tres_faible'].map(x => `<option value="${x}" ${e.mobility === x ? 'selected' : ''}>${x}</option>`).join('')}
+            </select>
+          </label>
+          <label>Risque global <input id="risk" type="number" min="0" max="1" step="0.01" value="${e.risk_factor ?? 0.3}"></label>
+          <label>Repas
+            <select id="meal_mode">
+              ${['salle','accompagne','chambre'].map(x => `<option value="${x}" ${e.meal_mode === x ? 'selected' : ''}>${x}</option>`).join('')}
+            </select>
+          </label>
+          <label>Soignant référent
+            <select id="caregiver">
+              ${['soignant_A','soignant_B','soignant_C','chef_garde'].map(x => `<option value="${x}" ${e.caregiver === x ? 'selected' : ''}>${x}</option>`).join('')}
+            </select>
+          </label>
+          <label>Niveau autonomie
+            <select id="care_level">
+              ${['autonome','accompagne','chambre'].map(x => `<option value="${x}" ${e.care_level === x ? 'selected' : ''}>${x}</option>`).join('')}
+            </select>
+          </label>
+        </div>
+
+        <h2 style="margin-top:16px">Pathologies</h2>
+        <div class="checks">
+          ${PATHOLOGIES.map(x => `<label class="check"><input type="checkbox" name="pathology" value="${x}" ${activePathos.has(x) ? 'checked' : ''}> ${x}</label>`).join('')}
+        </div>
+
+        <h2 style="margin-top:16px">Scénarios assignés</h2>
+        <div class="checks">
+          ${config.scenarios.map(x => `<label class="check"><input type="checkbox" name="scenario" value="${x}" ${activeScenarios.has(x) ? 'checked' : ''}> ${x}</label>`).join('')}
+        </div>
+
+        <label style="margin-top:12px">Notes profil
+          <textarea id="notes">${e.notes || ''}</textarea>
+        </label>
+
+        <div class="actions">
+          <button class="ok" onclick="saveProfile()">Appliquer au live</button>
+          <button class="warn" onclick="generateHistory(true)">Générer 12 mois</button>
+          <button class="secondary" onclick="generateHistory(false)">Générer 30 jours</button>
+          <a class="button secondary" href="/resident/${selectedId}">Mini-DPI</a>
+        </div>
+
+        <div class="status" id="status">Stockage profils: ${config.storage_policy.profiles}
+Historique: ${h.status === 'ready' ? `${h.daily_days} jours, généré le ${h.generated_at}` : 'non généré'}
+Source dossier visible: D:\\projet spé Hepad\\data\\patients\\${selectedId}\\profile.json
+Live/cache: Redis + InfluxDB pour les séries capteurs.</div>
+
+        <h2 style="margin-top:16px">Politique stockage</h2>
+        <table>
+          ${Object.entries(config.storage_policy).map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('')}
+        </table>
+      `;
+    }
+
+    async function saveProfile() {
+      const body = {
+        age: Number(document.getElementById('age').value),
+        mobility: document.getElementById('mobility').value,
+        risk_factor: Number(document.getElementById('risk').value),
+        caregiver: document.getElementById('caregiver').value,
+        meal_mode: document.getElementById('meal_mode').value,
+        care_level: document.getElementById('care_level').value,
+        pathologies: checkedList('pathology'),
+        assigned_scenarios: checkedList('scenario'),
+        notes: document.getElementById('notes').value.trim(),
+      };
+      const resp = await fetch(`${API}/api/simulator/config/residents/${selectedId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) throw new Error(await resp.text());
+      document.getElementById('status').textContent = 'Profil appliqué au live, profile.json mis à jour, historique 12 mois régénéré.';
+      await loadConfig();
+    }
+
+    async function generateHistory(longMode) {
+      document.getElementById('status').textContent = 'Génération en cours...';
+      const body = {
+        resident_id: selectedId,
+        months: longMode ? 12 : 1,
+        detailed_days: longMode ? 30 : 30,
+        step_hours: 6,
+        overwrite: true,
+      };
+      const resp = await fetch(`${API}/api/simulator/config/history/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await resp.json();
+      document.getElementById('status').textContent = JSON.stringify(data.histories?.[0] || data, null, 2);
+      await loadConfig();
+    }
+
+    loadConfig().catch(err => {
+      document.getElementById('editor').textContent = `Erreur: ${err.message}`;
+    });
+  </script>
+</body>
+</html>

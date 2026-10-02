@@ -1,0 +1,125 @@
+{
+  "residentCount": 26,
+  "backendConnected": true,
+  "wokwi": {
+    "id": "P001",
+    "resident_id": "P001",
+    "name": "P001 · Wokwi",
+    "room": "TP",
+    "source": "wokwi",
+    "vitals": {
+      "heart_rate": null,
+      "spo2": null,
+      "temperature": null,
+      "blood_pressure_sys": null,
+      "blood_pressure_dia": null,
+      "respiratory_rate": null
+    },
+    "ml_risk": null,
+    "movement": {},
+    "wokwi": {
+      "fresh": false,
+      "connected": true,
+      "online": false,
+      "received": 1790952679186,
+      "level": "danger",
+      "peak": 2.83,
+      "imu": true,
+      "seq": 16,
+      "timestamp": "2026-10-02T14:50:14Z",
+      "points": [
+        {
+          "t": 1790952619757,
+          "v": 85
+        },
+        {
+          "t": 1790952625631,
+          "v": 119
+        },
+        {
+          "t": 1790952631173,
+          "v": 119
+        },
+        {
+          "t": 1790952636740,
+          "v": 120
+        },
+        {
+          "t": 1790952642171,
+          "v": 152
+        },
+        {
+          "t": 1790952648631,
+          "v": 153
+        },
+        {
+          "t": 1790952655360,
+          "v": 155
+        },
+        {
+          "t": 1790952661402,
+          "v": 154
+        },
+        {
+          "t": 1790952667048,
+          "v": 154
+        },
+        {
+          "t": 1790952672507,
+          "v": 154
+        },
+        {
+          "t": 1790952679186,
+          "v": 152
+        }
+      ],
+      "events": [
+        {
+          "type": "fall_suspected",
+          "name": "Chute suspectée",
+          "level": "danger",
+          "value": 2.83,
+          "time": "2026-10-02T14:50:12Z"
+        },
+        {
+          "type": "sos",
+          "name": "Appel SOS",
+          "level": "danger",
+          "value": 1,
+          "time": "2026-10-02T14:50:04Z"
+        },
+        {
+          "type": "hr_out_of_range",
+          "name": "Fréquence hors plage",
+          "level": "danger",
+          "value": 152,
+          "time": "2026-10-02T14:50:02Z"
+        },
+        {
+          "type": "hr_out_of_range",
+          "name": "Fréquence hors plage",
+          "level": "warning",
+          "value": 119,
+          "time": "2026-10-02T14:49:56Z"
+        }
+      ],
+      "invalid": 0
+    }
+  },
+  "clinicalResidents": 25,
+  "checks": {
+    "backendReconnectPreservesP001": true,
+    "backendReconnectPreservesFourEvents": true,
+    "clinicalReportSelectorExcludesP001": true,
+    "nightViewHas25HistoricalResidents": true,
+    "frontendPageErrors": [],
+    "targetRepositorySmokeTest": "http://localhost:3004/ : 26 fiches, mqtt disponible",
+    "video": {
+      "file": "demo-digi4-wokwi-firefox.webm",
+      "seconds": 59,
+      "width": 1980,
+      "height": 900,
+      "audio": false
+    }
+  }
+}

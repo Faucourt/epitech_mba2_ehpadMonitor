@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPicare Palace — Administration</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a2533; min-height: 100vh; }
+
+    .login-screen {
+      display: flex; align-items: center; justify-content: center; min-height: 100vh;
+    }
+    .login-card {
+      background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 380px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10); display: flex; flex-direction: column; gap: 18px;
+    }
+    .login-card h1 { font-size: 1.3rem; color: #922b21; text-align: center; }
+    input, select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #dce3ea; border-radius: 8px;
+      font-size: 0.95rem; outline: none;
+    }
+    input:focus, select:focus { border-color: #922b21; }
+    .btn {
+      padding: 10px 18px; border: none; border-radius: 8px; font-size: 0.9rem;
+      cursor: pointer; transition: opacity .2s;
+    }
+    .btn:hover { opacity: .85; }
+    .btn-primary { background: #922b21; color: white; }
+    .btn-danger  { background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.82rem; }
+    .btn-full { width: 100%; }
+    .error-msg { color: #e74c3c; font-size: 0.85rem; text-align: center; display: none; }
+    .demo-creds { border: 1px solid #f0d1cd; background: #fff7f6; border-radius: 12px; padding: 12px; display: grid; gap: 8px; font-size: 0.8rem; }
+    .demo-creds b { color: #922b21; }
+    .demo-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; color: #7f5f5b; }
+    .demo-row code { display: block; background: #fff; border: 1px solid #f0d1cd; color: #922b21; border-radius: 8px; padding: 7px 8px; user-select: all; font-family: Consolas, monospace; }
+    .demo-fill { background: #fdf2f2; color: #922b21; border: 1px solid #f0d1cd; padding: 7px 9px; white-space: nowrap; }
+
+    .app-screen { display: none; flex-direction: column; min-height: 100vh; }
+    header {
+      background: #922b21; color: white; padding: 14px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header h1 { font-size: 1.1rem; }
+    .logout-btn {
+      background: rgba(255,255,255,0.2); border: none; color: white;
+      padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    }
+
+    .content { max-width: 900px; margin: 0 auto; padding: 32px 24px; display: flex; flex-direction: column; gap: 32px; }
+
+    .section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .section h2 { font-size: 1rem; color: #922b21; margin-bottom: 18px; border-bottom: 1px solid #f0e0e0; padding-bottom: 10px; }
+
+    .form-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 160px; }
+    .form-group label { font-size: 0.8rem; color: #666; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { text-align: left; padding: 10px 12px; background: #fdf2f2; color: #922b21; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #f5e6e6; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fef9f9; }
+
+    .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;
+             background: #fdf2f2; color: #922b21; display: inline-block; }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #2ecc71; color: white;
+      padding: 12px 20px; border-radius: 8px; font-size: 0.9rem;
+      display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .toast.error { background: #e74c3c; }
+
+    .empty { text-align: center; padding: 32px; color: #aaa; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+<!-- Login admin -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div style="text-align:center;font-size:2rem;">&#128272;</div>
+    <h1>Administration</h1>
+    <p style="font-size:0.85rem;color:#666;text-align:center;">Acces reserve au personnel de direction.</p>
+    <input type="password" id="adminToken" placeholder="Token administrateur"
+           onkeydown="if(event.key==='Enter') doAdminLogin()">
+    <div class="demo-creds">
+      <b>Compte demo admin</b>
+      <div class="demo-row"><code>ADMIN_EHPAD_2024</code><button class="btn demo-fill" onclick="fillDemoAdmin()">Remplir</button></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doAdminLogin()">Connexion</button>
+    <div class="error-msg" id="loginError">Token incorrect.</div>
+  </div>
+</div>
+
+<!-- App admin -->
+<div class="app-screen" id="appScreen">
+  <header>
+    <h1>&#128272; Administration — Comptes famille</h1>
+    <button class="logout-btn" onclick="doAdminLogout()">Deconnexion</button>
+  </header>
+
+  <div class="content">
+
+    <!-- Creer un compte -->
+    <div class="section">
+      <h2>Creer un compte famille</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nom d'utilisateur</label>
+          <input type="text" id="newUsername" placeholder="ex : curie">
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="newPassword" placeholder="Min. 6 caracteres">
+        </div>
+        <div class="form-group" style="flex:2;">
+          <label>Resident concerne</label>
+          <select id="newResident">
+            <option value="">-- Choisir un resident --</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" style="align-self:flex-end;" onclick="createAccount()">Creer</button>
+      </div>
+    </div>
+
+    <!-- Liste des comptes -->
+    <div class="section">
+      <h2>Comptes existants</h2>
+      <div id="accountsContainer"><div class="empty">Chargement…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let adminToken = '';
+
+// --- Residents list (fetched once for the dropdown) ---
+let residentsList = [];
+
+function fillDemoAdmin() {
+  document.getElementById('adminToken').value = 'ADMIN_EHPAD_2024';
+}
+
+async function doAdminLogin() {
+  const t = document.getElementById('adminToken').value.trim();
+  if (!t) return;
+  const resp = await fetch(`${API}/api/admin/famille/accounts`, {
+    headers: { Authorization: `Bearer ${t}` }
+  });
+  if (!resp.ok) {
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  adminToken = t;
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display  = 'flex';
+  await loadResidents();
+  await loadAccounts();
+}
+
+function doAdminLogout() {
+  adminToken = '';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appScreen').style.display   = 'none';
+  document.getElementById('adminToken').value = '';
+}
+
+async function loadResidents() {
+  try {
+    const resp = await fetch(`${API}/api/residents`);
+    const data = await resp.json();
+    residentsList = (data.residents || []).sort((a, b) => (a.name || '').localeCompare(b.name || '', 'fr'));
+    const sel = document.getElementById('newResident');
+    sel.innerHTML = '<option value="">-- Choisir un resident --</option>' +
+      residentsList.map(r => `<option value="${r.id}">${r.name} — Chambre ${r.room || '?'}</option>`).join('');
+  } catch (e) { console.error(e); }
+}
+
+async function loadAccounts() {
+  const resp = await fetch(`${API}/api/admin/famille/accounts`, {
+    headers: { Authorization: `Bearer ${adminToken}` }
+  });
+  const data = await resp.json();
+  renderAccounts(data.accounts || []);
+}
+
+function renderAccounts(accounts) {
+  const c = document.getElementById('accountsContainer');
+  if (!accounts.length) {
+    c.innerHTML = '<div class="empty">Aucun compte cree.</div>';
+    return;
+  }
+  c.innerHTML = `<table>
+    <thead><tr>
+      <th>Utilisateur</th><th>Resident</th><th>Chambre</th><th>Cree le</th><th>Action</th>
+    </tr></thead>
+    <tbody>${accounts.map(acc => `
+      <tr>
+        <td><strong>${acc.username}</strong></td>
+        <td>${acc.resident_name || acc.resident_id}</td>
+        <td><span class="badge">${acc.room || '—'}</span></td>
+        <td>${acc.created_at ? new Date(acc.created_at).toLocaleDateString('fr-FR') : '—'}</td>
+        <td>
+          <button class="btn btn-danger" onclick="deleteAccount('${acc.username}')">Supprimer</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>`;
+}
+
+async function createAccount() {
+  const username   = document.getElementById('newUsername').value.trim();
+  const password   = document.getElementById('newPassword').value;
+  const residentId = document.getElementById('newResident').value;
+  if (!username || !password || !residentId) { showToast('Remplissez tous les champs.', true); return; }
+  if (password.length < 6)                   { showToast('Mot de passe trop court (min. 6 caracteres).', true); return; }
+  const resp = await fetch(`${API}/api/admin/famille/accounts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+    body: JSON.stringify({ username, password, resident_id: residentId })
+  });
+  if (resp.ok) {
+    showToast(`Compte "${username}" cree.`);
+    document.getElementById('newUsername').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('newResident').value = '';
+    await loadAccounts();
+  } else {
+    const err = await resp.json();
+    showToast(err.detail || 'Erreur creation.', true);
+  }
+}
+
+async function deleteAccount(username) {
+  if (!confirm(`Supprimer le compte "${username}" ?`)) return;
+  const resp = await fetch(`${API}/api/admin/famille/accounts/${encodeURIComponent(username)}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${adminToken}` }
+  });
+  if (resp.ok) { showToast(`Compte "${username}" supprime.`); await loadAccounts(); }
+  else         { showToast('Erreur suppression.', true); }
+}
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+</script>
+</body>
+</html>

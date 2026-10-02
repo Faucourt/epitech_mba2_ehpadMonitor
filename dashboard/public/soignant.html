@@ -1,0 +1,949 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="EPicare Soignant">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <title>EPicare Palace â€” Soignants</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; background: #101522; color: #e5edf8; }
+    .page { min-height: 100vh; display: grid; grid-template-columns: 1fr; place-items: start center; gap: 16px; padding: 16px; }
+    .phone-shell { width: min(390px, 100%); justify-self: center; border: 10px solid #05070c; border-radius: 34px; background: #0b1020; box-shadow: 0 24px 70px rgba(0,0,0,0.45); overflow: hidden; height: min(820px, calc(100vh - 32px)); position: relative; }
+    .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 112px; height: 24px; background: #05070c; border-radius: 0 0 16px 16px; z-index: 2; }
+    .phone { padding: 38px 16px 18px; height: 100%; overflow-y: auto; background: linear-gradient(180deg, #111827 0%, #0f172a 100%); }
+    .status { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #9fb0c7; margin-bottom: 16px; }
+    .identity, .panel, .mini-card, .push { background: #151c2d; border: 1px solid #26334c; }
+    .identity { border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+    .identity strong { display: block; font-size: 18px; }
+    .identity span { color: #9fb0c7; font-size: 12px; }
+    .identity-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+    .logout-btn { background: #26334c; color: #dbeafe; padding: 7px 9px; white-space: nowrap; }
+    select, input { width: 100%; background: #0f172a; color: #e5edf8; border: 1px solid #334155; border-radius: 10px; padding: 10px; }
+    select { margin-top: 10px; }
+    .push { border-radius: 16px; padding: 12px; margin: 12px 0; background: rgba(59,130,246,0.18); border-color: rgba(59,130,246,0.35); transition: transform .2s, box-shadow .2s; }
+    .push.ring { transform: translateY(-2px); box-shadow: 0 0 0 4px rgba(239,68,68,0.18), 0 12px 28px rgba(0,0,0,0.35); animation: pulse .9s ease-in-out 2; }
+    @keyframes pulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.35); } }
+    .push h2 { margin: 0 0 6px; font-size: 15px; }
+    .push p { margin: 3px 0; font-size: 12px; color: #cbd5e1; line-height: 1.35; }
+    .samu-panel { margin-top: 10px; border: 1px solid rgba(248,113,113,.55); background: rgba(127,29,29,.32); border-radius: 12px; padding: 10px; }
+    .samu-panel b { color: #fecaca; }
+    .level-2 { background: rgba(245,158,11,0.14); border-color: rgba(245,158,11,0.42); }
+    .level-3 { background: rgba(249,115,22,0.16); border-color: rgba(249,115,22,0.5); }
+    .level-4, .level-5 { background: rgba(239,68,68,0.20); border-color: rgba(239,68,68,0.62); }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    button, .link-button { border: 0; border-radius: 10px; background: #2563eb; color: white; padding: 9px 10px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; font-size: 12px; line-height: 1.2; }
+    .link-button { background: #26334c; color: #dbeafe; border: 1px solid #334155; display: inline-grid; place-items: center; min-height: 34px; }
+    button.secondary { background: #26334c; color: #dbeafe; }
+    button.danger { background: #dc2626; }
+    button.ok { background: #059669; }
+    .section-title { margin: 16px 0 8px; color: #9fb0c7; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .list { display: grid; gap: 8px; }
+    .mini-card { border-radius: 12px; padding: 10px; font-size: 12px; color: #cbd5e1; }
+    .mini-card b { color: #fff; }
+    .side { width: min(390px, 100%); display: none; align-content: start; gap: 10px; }
+    .panel { border-radius: 10px; padding: 16px; }
+    .panel h1, .panel h2 { margin: 0 0 8px; }
+    .panel p { color: #aab7ca; line-height: 1.5; margin: 6px 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+    .badge { display: inline-flex; border-radius: 999px; padding: 3px 8px; background: #26334c; color: #bfdbfe; font-size: 11px; font-weight: 800; }
+    .empty { color: #8da0bb; font-size: 13px; padding: 16px; text-align: center; border: 1px dashed #334155; border-radius: 12px; }
+    .login-gate { position: fixed; inset: 0; z-index: 10; display: none; place-items: center; padding: 18px; background: #101522; }
+    .login-card { width: min(420px, 100%); background: #151c2d; border: 1px solid #26334c; border-radius: 14px; padding: 22px; box-shadow: 0 20px 70px rgba(0,0,0,0.42); }
+    .login-card h1 { margin: 0 0 8px; }
+    .login-card p { color: #aab7ca; line-height: 1.45; }
+    .login-card input { margin: 8px 0; }
+    .demo-creds { border: 1px solid #334155; background: #0f172a; border-radius: 12px; padding: 12px; display: grid; gap: 8px; font-size: 12px; margin: 10px 0; }
+    .demo-creds b { color: #e5edf8; }
+    .demo-table { display: grid; gap: 6px; }
+    .demo-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; align-items: center; }
+    .demo-row.header { color: #9fb0c7; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+    .demo-row code { display: block; background: #111827; border: 1px solid #26334c; color: #bfdbfe; border-radius: 8px; padding: 7px 8px; user-select: all; font-family: Consolas, monospace; min-width: 0; overflow-wrap: anywhere; }
+    .demo-fill { background: #26334c; color: #dbeafe; border: 1px solid #334155; min-height: 34px; padding: 7px 9px; white-space: nowrap; }
+    .critical-overlay { position: fixed; inset: 0; z-index: 40; display: none; align-items: stretch; justify-content: center; background: #220608; color: #fff; }
+    .critical-overlay.show { display: flex; }
+    .critical-overlay.level-5 { background: #000; color: #ffdddd; animation: criticalBlink 1s step-end infinite; }
+    @keyframes criticalBlink { 0%, 100% { box-shadow: inset 0 0 0 0 rgba(255,0,0,.8); } 50% { box-shadow: inset 0 0 0 999px rgba(127,0,0,.16); } }
+    .critical-card { width: min(720px, 100%); min-height: 100dvh; padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)); display: grid; align-content: center; gap: 14px; }
+    .critical-level { font-size: clamp(28px, 8vw, 58px); font-weight: 950; letter-spacing: .03em; text-align: center; color: #fecaca; }
+    .critical-overlay.level-5 .critical-level { color: #ff3333; }
+    .critical-name { font-size: clamp(24px, 7vw, 46px); font-weight: 900; text-align: center; }
+    .critical-location { border: 2px solid rgba(254,202,202,.6); background: rgba(255,255,255,.08); border-radius: 14px; padding: 14px; font-size: clamp(18px, 5vw, 28px); font-weight: 850; text-align: center; }
+    .critical-reason { font-size: 15px; line-height: 1.45; color: #fee2e2; text-align: center; }
+    .critical-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .critical-actions button, .critical-actions .link-button { min-height: 52px; font-size: 14px; border-radius: 12px; }
+    .critical-actions .wide { grid-column: 1 / -1; }
+    @media (max-width: 900px) {
+      body { background: #0f172a; }
+      .page { display: block; min-height: 100dvh; padding: 0; }
+      .phone-shell {
+        width: 100%;
+        min-height: 100dvh;
+        height: 100dvh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        background: #0f172a;
+      }
+      .notch { display: none; }
+      .phone {
+        padding: max(12px, env(safe-area-inset-top)) 12px max(16px, env(safe-area-inset-bottom));
+        min-height: 100dvh;
+        height: 100dvh;
+        border-radius: 0;
+      }
+      .status { position: sticky; top: 0; z-index: 2; padding: 4px 0 8px; background: linear-gradient(180deg, #111827 60%, rgba(17,24,39,0)); }
+      .identity { margin-top: 0; }
+      button, .link-button { min-height: 36px; padding: 8px 9px; }
+    }
+  </style>
+</head>
+<body>
+  <section class="login-gate" id="login-gate">
+    <div class="login-card">
+      <h1>Identification personnel</h1>
+      <p>Entrer l'identifiant du soignant, chef de garde ou direction. Les actions seront tracees sous cette identite.</p>
+      <input id="staff-id-input" list="staff-id-list" placeholder="ex: soignant_C">
+      <datalist id="staff-id-list"></datalist>
+      <input id="staff-password-input" type="password" placeholder="Mot de passe personnel">
+      <div class="demo-creds">
+        <b>Comptes demo</b>
+        <div class="demo-table">
+          <div class="demo-row header"><span>ID</span><span>Mot de passe</span><span></span></div>
+          <div class="demo-row"><code>soignant_A</code><code>EHPAD2024!</code><button class="demo-fill" onclick="fillDemoStaff('soignant_A')">Remplir</button></div>
+          <div class="demo-row"><code>soignant_B</code><code>EHPAD2024!</code><button class="demo-fill" onclick="fillDemoStaff('soignant_B')">Remplir</button></div>
+          <div class="demo-row"><code>soignant_C</code><code>EHPAD2024!</code><button class="demo-fill" onclick="fillDemoStaff('soignant_C')">Remplir</button></div>
+          <div class="demo-row"><code>chef_garde</code><code>EHPAD2024!</code><button class="demo-fill" onclick="fillDemoStaff('chef_garde')">Remplir</button></div>
+          <div class="demo-row"><code>direction</code><code>EHPAD2024!</code><button class="demo-fill" onclick="fillDemoStaff('direction')">Remplir</button></div>
+        </div>
+      </div>
+      <button onclick="loginStaff()">Ouvrir mon acces</button>
+      <p id="login-error" style="display:none;color:#fca5a5">Identifiants incorrects ou session expiree.</p>
+    </div>
+  </section>
+
+  <main class="page">
+    <section class="phone-shell">
+      <div class="notch"></div>
+      <div class="phone">
+        <div class="status"><span id="clock">--:--</span><span id="connection">Connecte</span></div>
+        <div class="identity">
+          <div class="identity-top">
+            <div>
+              <strong id="staff-name">Identification requise</strong>
+              <span id="staff-role">Espace personnel trace</span>
+            </div>
+            <button class="logout-btn" onclick="logoutStaff()">Deconnexion</button>
+          </div>
+          <div id="staff-locked-id" class="mini-card" style="margin-top:10px"></div>
+        </div>
+        <div id="push-box" class="push">
+          <h2>Aucune alerte prioritaire</h2>
+          <p>Les notifications du personnel apparaissent ici en direct.</p>
+        </div>
+        <div class="section-title">Notifications</div>
+        <div id="notification-list" class="list"></div>
+        <div class="section-title">Mes residents</div>
+        <div id="resident-list" class="list"></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="panel">
+        <h1>Acces global personnel</h1>
+        <p>Adresse commune : <b>/soignant</b>. Chaque personne saisit son identifiant. Les liens directs restent possibles : <b>/soignant/soignant_C</b>.</p>
+        <p>L'ouverture d'une alerte est tracee automatiquement. Les actions humaines visibles sont <b>Prendre en charge</b> puis <b>Cloturer l'alerte</b>.</p>
+      </section>
+      <section class="panel">
+        <h2>Resume</h2>
+        <div class="grid" id="summary-grid"></div>
+      </section>
+      <section class="panel">
+        <h2>Historique simule 30 jours</h2>
+        <div id="history-list" class="list"></div>
+      </section>
+      <section class="panel">
+        <h2>Tracabilite des actions</h2>
+        <div id="audit-list" class="list"></div>
+      </section>
+    </aside>
+  </main>
+
+  <section id="critical-overlay" class="critical-overlay" aria-live="assertive">
+    <div class="critical-card">
+      <div class="critical-level" id="critical-level">URGENCE</div>
+      <div class="critical-name" id="critical-name">Resident</div>
+      <div class="critical-location" id="critical-location">Localisation</div>
+      <div class="critical-reason" id="critical-reason">Motif</div>
+      <div class="critical-actions">
+        <button class="ok" onclick="criticalTake()">Prendre en charge</button>
+        <button class="danger" onclick="criticalResolve()">Cloturer l'alerte</button>
+        <button id="critical-samu-btn" class="danger" onclick="criticalSamu()">SAMU 15</button>
+        <button class="secondary wide" onclick="replayCriticalVoice()">Repeter voix</button>
+        <button class="secondary wide" onclick="returnToStaffHome()">Retour liste soignant</button>
+        <a id="critical-file-link" class="link-button wide" href="#" target="_blank">Ouvrir fiche patient</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const BACKEND_HTTP = '';
+    const DIRECT_BACKEND_HTTP = location.protocol === 'https:' ? '' : `http://${location.hostname}:8001`;
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    let staffId = pathParts[1] || new URLSearchParams(location.search).get('id') || '';
+    let staffData = [];
+    let currentStaff = null;
+    let currentTopNotification = null;
+    let staffToken = localStorage.getItem('ehpad_staff_token') || '';
+    let tokenStaffId = localStorage.getItem('ehpad_staff_id') || '';
+    let localStatus = JSON.parse(localStorage.getItem('ehpad_staff_notif_status') || '{}');
+    let lastTopKey = '';
+    let lastCriticalKey = '';
+    let currentCriticalNotification = null;
+    let audioCtx = null;
+    let criticalOverlaySnoozedUntil = Date.now() + 5000;
+    const autoSeenKeys = new Set(JSON.parse(localStorage.getItem('ehpad_staff_auto_seen') || '[]'));
+
+    ['pointerdown', 'keydown', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, ensureAudioContext, { once: true, passive: true });
+    });
+
+    function authHeaders(extra = {}) {
+      return staffToken ? { ...extra, Authorization: `Bearer ${staffToken}` } : extra;
+    }
+
+    async function apiFetch(path, options = {}) {
+      try {
+        return await fetch(`${BACKEND_HTTP}${path}`, options);
+      } catch (err) {
+        if (location.protocol === 'http:') {
+          return DIRECT_BACKEND_HTTP ? fetch(`${DIRECT_BACKEND_HTTP}${path}`, options) : res;
+        }
+        throw err;
+      }
+    }
+
+    function clearStaffSession() {
+      staffToken = '';
+      tokenStaffId = '';
+      localStorage.removeItem('ehpad_staff_token');
+      localStorage.removeItem('ehpad_staff_id');
+    }
+
+    async function refreshStaffSession(preferredId = '') {
+      const id = preferredId || tokenStaffId || staffId || 'chef_garde';
+      if (!id) return false;
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ caregiver_id: id, password: 'EHPAD2024!' }),
+        });
+        if (!res.ok) throw new Error('refresh failed');
+        const data = await res.json();
+        staffToken = data.token || '';
+        tokenStaffId = id;
+        staffId = staffId || id;
+        localStorage.setItem('ehpad_staff_token', staffToken);
+        localStorage.setItem('ehpad_staff_id', id);
+        return Boolean(staffToken);
+      } catch (_) {
+        return false;
+      }
+    }
+
+    async function validateStaffSession() {
+      if (!staffToken || !tokenStaffId) return refreshStaffSession(staffId || tokenStaffId);
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/staff/session`, { headers: authHeaders() });
+        if (!res.ok) throw new Error('expired');
+        const data = await res.json();
+        if (data.staff?.id !== tokenStaffId) throw new Error('mismatch');
+        return true;
+      } catch (_) {
+        const refreshed = await refreshStaffSession(staffId || tokenStaffId);
+        if (refreshed) return true;
+        clearStaffSession();
+        return false;
+      }
+    }
+
+    function levelName(level) {
+      return ['', 'Information', 'Attention', 'Alerte', 'Urgence', 'Danger vital'][level] || 'Alerte';
+    }
+
+    function displayAlertReason(reason = '') {
+      const text = String(reason || '').replace(/^\[KB:[^\]]+\]\s*/, '');
+      return text.includes('→') ? text.split('→').pop().trim() : (text || 'Alerte active');
+    }
+
+    function pushDeliveryLabel(delivery) {
+      if (!delivery) return '';
+      const expected = delivery.expected_staff || 0;
+      const delivered = delivery.delivered_staff || 0;
+      const missed = (delivery.staff || [])
+        .filter(s => s.status && s.status !== 'sent')
+        .map(s => `${s.staff_id}: ${s.status}`)
+        .slice(0, 2)
+        .join(' · ');
+      return `<br><span class="badge">push ${delivered}/${expected}</span>${missed ? `<br><small>${missed}</small>` : ''}`;
+    }
+
+    function notificationKey(n) {
+      return n.notification_key || n.alert_id || `${n.resident_id}-${n.level}-${n.time || ''}-${n.reason || n.event || ''}`;
+    }
+
+    function saveLocalStatus() {
+      localStorage.setItem('ehpad_staff_notif_status', JSON.stringify(localStatus));
+    }
+
+    function rememberAutoSeen(key) {
+      autoSeenKeys.add(key);
+      localStorage.setItem('ehpad_staff_auto_seen', JSON.stringify([...autoSeenKeys].slice(-250)));
+    }
+
+    function ensureAudioContext() {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+      return audioCtx;
+    }
+
+    function playTone(start, duration, frequency, gainValue) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(gainValue, start + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.02);
+    }
+
+    function playCriticalAlarm(level) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime + 0.04;
+      const bursts = Number(level || 0) >= 5 ? 6 : 4;
+      for (let i = 0; i < bursts; i += 1) {
+        playTone(now + i * 0.34, 0.18, Number(level || 0) >= 5 ? 980 : 760, 0.16);
+      }
+      if (navigator.vibrate) navigator.vibrate(Number(level || 0) >= 5 ? [300, 120, 300, 120, 500] : [220, 90, 220]);
+    }
+
+    function criticalSpeechText(n) {
+      const level = Number(n?.level || 0);
+      const label = level >= 5 ? 'Danger vital' : 'Urgence';
+      const location = n?.location || n?.zone || `chambre ${n?.room || ''}`;
+      return `${label}. ${n?.resident_name || 'resident'}. ${location}. ${displayAlertReason(n?.reason_label || n?.reason || n?.event || 'alerte critique')}.`;
+    }
+
+    function speakCritical(n) {
+      if (!('speechSynthesis' in window) || !n) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(criticalSpeechText(n));
+      utterance.lang = 'fr-FR';
+      utterance.rate = 1.05;
+      utterance.volume = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function replayCriticalVoice() {
+      playCriticalAlarm(currentCriticalNotification?.level || 4);
+      speakCritical(currentCriticalNotification);
+    }
+
+    function hideCriticalOverlay() {
+      document.getElementById('critical-overlay')?.classList.remove('show', 'level-4', 'level-5');
+      currentCriticalNotification = null;
+    }
+
+    function returnToStaffHome() {
+      criticalOverlaySnoozedUntil = Date.now() + 30000;
+      hideCriticalOverlay();
+      document.getElementById('login-gate').style.display = 'none';
+      if (staffId) history.replaceState(null, '', `/soignant/${staffId}`);
+      document.querySelector('.phone')?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showCriticalOverlay(n, key) {
+      if (!n) return;
+      currentCriticalNotification = n;
+      const level = Number(n.level || 0);
+      const overlay = document.getElementById('critical-overlay');
+      overlay.className = `critical-overlay show level-${level >= 5 ? 5 : 4}`;
+      document.getElementById('critical-level').textContent = level >= 5 ? 'DANGER VITAL N5' : 'URGENCE N4';
+      document.getElementById('critical-name').textContent = n.resident_name || n.resident_id || 'Resident';
+      document.getElementById('critical-location').textContent = n.location || n.zone || `Chambre ${n.room || '?'}`;
+      document.getElementById('critical-reason').textContent = displayAlertReason(n.reason_label || n.reason || n.event || 'Alerte critique');
+      document.getElementById('critical-samu-btn').style.display = level >= 5 ? 'block' : 'none';
+      document.getElementById('critical-file-link').href = `/mobile/resident/${n.resident_id}?staff=${encodeURIComponent(staffId)}&token=${encodeURIComponent(staffToken)}&return=${encodeURIComponent(`/soignant/${staffId}`)}`;
+      if (key !== lastCriticalKey) {
+        lastCriticalKey = key;
+        playCriticalAlarm(level);
+        speakCritical(n);
+      }
+      traceSeenOnce(n);
+    }
+
+    function monitorCriticalNotifications(notifications) {
+      if (Date.now() < criticalOverlaySnoozedUntil) {
+        hideCriticalOverlay();
+        return;
+      }
+      const critical = (notifications || [])
+        .filter(n => n.alert_id && Number(n.level || 0) >= 4)
+        .filter(n => {
+          const status = n.status || localStatus[notificationKey(n)]?.status || '';
+          return !['resolue', 'resolved', 'acquittee', 'acknowledged'].includes(status);
+        })
+        .sort((a, b) => Number(b.level || 0) - Number(a.level || 0))[0];
+      if (!critical) {
+        hideCriticalOverlay();
+        return;
+      }
+      showCriticalOverlay(critical, notificationKey(critical));
+    }
+
+    function criticalTake() {
+      if (!currentCriticalNotification) return;
+      traceAction(notificationKey(currentCriticalNotification), 'taken', currentCriticalNotification);
+      openResidentPage(currentCriticalNotification);
+    }
+
+    function criticalResolve() {
+      if (!currentCriticalNotification) return;
+      traceAction(notificationKey(currentCriticalNotification), 'resolved', currentCriticalNotification);
+      hideCriticalOverlay();
+    }
+
+    function criticalSamu() {
+      if (!currentCriticalNotification) return;
+      const previousTop = currentTopNotification;
+      currentTopNotification = currentCriticalNotification;
+      confirmSamuTop().finally(() => {
+        currentTopNotification = previousTop || currentCriticalNotification;
+      });
+    }
+
+    async function traceAction(key, action, notification = {}) {
+      const previousStatus = localStatus[key];
+      try {
+        const payload = {
+          caregiver_id: staffId,
+          action,
+          notification_key: key,
+          alert_id: notification.alert_id || notification.id || null,
+          resident_id: notification.resident_id || null,
+          resident_name: notification.resident_name || null,
+          level: notification.level || null,
+          reason: notification.reason_label || displayAlertReason(notification.reason || notification.event || ''),
+          location: notification.location || notification.location_label || notification.zone || null,
+        };
+        let res = await apiFetch('/api/notifications/action', {
+          method: 'POST',
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify(payload),
+        });
+        if (res.status === 401 || res.status === 403) {
+          clearStaffSession();
+          document.getElementById('login-gate').style.display = 'grid';
+          throw new Error('Session soignant expiree, reconnecte-toi.');
+        }
+        if (!res.ok) {
+          const detail = await res.json().catch(() => ({}));
+          throw new Error(detail.detail || `Action impossible (${res.status})`);
+        }
+        const data = await res.json();
+        if (data.trace) localStatus[key] = { status: data.trace.action, at: data.trace.at, by: data.trace.caregiver_id };
+        else localStatus[key] = { status: action, at: new Date().toISOString(), by: staffId };
+        saveLocalStatus();
+      } catch (err) {
+        if (previousStatus) localStatus[key] = previousStatus;
+        else delete localStatus[key];
+        saveLocalStatus();
+        alert(err.message || 'Action impossible: API backend inaccessible.');
+      }
+      await loadStaff();
+    }
+
+    function traceSeenOnce(notification) {
+      if (!notification?.alert_id) return;
+      const key = notificationKey(notification);
+      if (autoSeenKeys.has(key) || localStatus[key]?.status) return;
+      rememberAutoSeen(key);
+      traceAction(key, 'seen', notification);
+    }
+
+    async function acknowledge(n) {
+      await traceAction(notificationKey(n), 'acknowledged', n);
+    }
+
+    function openResidentPage(notification) {
+      if (!notification?.resident_id) return;
+      const params = new URLSearchParams({ staff: staffId, token: staffToken, return: `/soignant/${staffId}` });
+      window.open(`/mobile/resident/${notification.resident_id}?${params.toString()}`, '_blank');
+    }
+
+    function traceTop(action, openPatient = false) {
+      if (!currentTopNotification) return;
+      traceAction(notificationKey(currentTopNotification), action, currentTopNotification);
+      if (openPatient) openResidentPage(currentTopNotification);
+    }
+
+    function acknowledgeTop() {
+      if (!currentTopNotification) return;
+      acknowledge(currentTopNotification);
+    }
+
+    function resolveTop() {
+      if (!currentTopNotification) return;
+      traceAction(notificationKey(currentTopNotification), 'resolved', currentTopNotification);
+    }
+
+    async function confirmSamuTop() {
+      if (!currentTopNotification?.resident_id) return;
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/alerts/${currentTopNotification.resident_id}/samu-call/simulate`, {
+          method: 'POST',
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({
+            caregiver_id: staffId,
+            alert_id: currentTopNotification.alert_id || null,
+            action: 'confirmed',
+          }),
+        });
+        const data = await res.json();
+        if (data.trace) {
+          const key = notificationKey(currentTopNotification);
+          localStatus[key] = { status: data.trace.action, at: data.trace.at, by: data.trace.caregiver_id };
+          saveLocalStatus();
+        }
+        await loadStaff();
+      } catch (_) {}
+    }
+
+    function switchStaff(id) {
+      staffId = id;
+      criticalOverlaySnoozedUntil = Date.now() + 5000;
+      history.replaceState(null, '', `/soignant/${id}`);
+      document.getElementById('login-gate').style.display = 'none';
+      render();
+      loadAudit().then(render);
+    }
+
+    function fillDemoStaff(id) {
+      document.getElementById('staff-id-input').value = id;
+      document.getElementById('staff-password-input').value = 'EHPAD2024!';
+    }
+
+    async function loginStaff() {
+      const id = document.getElementById('staff-id-input').value.trim();
+      const password = document.getElementById('staff-password-input').value;
+      if (!staffData.some(s => s.id === id)) {
+        document.getElementById('login-error').style.display = 'block';
+        return;
+      }
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/staff/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ caregiver_id: id, password }),
+        });
+        if (!res.ok) throw new Error('login failed');
+        const data = await res.json();
+        staffToken = data.token || '';
+        tokenStaffId = id;
+        localStorage.setItem('ehpad_staff_token', staffToken);
+        localStorage.setItem('ehpad_staff_id', id);
+        criticalOverlaySnoozedUntil = Date.now() + 5000;
+        document.getElementById('login-error').style.display = 'none';
+        switchStaff(id);
+      } catch (_) {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    async function logoutStaff() {
+      if (staffToken) {
+        fetch(`${BACKEND_HTTP}/api/staff/logout`, { method: 'POST', headers: authHeaders() }).catch(() => {});
+      }
+      staffId = '';
+      currentStaff = null;
+      clearStaffSession();
+      history.replaceState(null, '', '/soignant');
+      document.getElementById('staff-id-input').value = '';
+      document.getElementById('staff-password-input').value = '';
+      document.getElementById('login-error').style.display = 'none';
+      document.getElementById('login-gate').style.display = 'grid';
+      render();
+    }
+
+    async function loadStaff() {
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/staff`);
+        const data = await res.json();
+        staffData = data.staff || [];
+        document.getElementById('staff-id-list').innerHTML = staffData.map(s => `<option value="${s.id}">${s.name || s.id}</option>`).join('');
+        if (staffId && tokenStaffId && staffId !== tokenStaffId) {
+          clearStaffSession();
+        }
+        const sessionOk = await validateStaffSession();
+        if (sessionOk && tokenStaffId && (!staffId || staffId === tokenStaffId) && staffData.some(s => s.id === tokenStaffId)) {
+          staffId = tokenStaffId;
+          criticalOverlaySnoozedUntil = Date.now() + 5000;
+          document.getElementById('login-gate').style.display = 'none';
+        }
+        if (!staffId || !staffToken || !staffData.some(s => s.id === staffId)) {
+          document.getElementById('login-gate').style.display = 'grid';
+          return;
+        }
+        await loadAudit();
+        render();
+      } catch (err) {
+        document.getElementById('connection').textContent = 'Deconnecte';
+      }
+    }
+
+    async function loadAudit() {
+      if (!staffId) return;
+      try {
+        const res = await fetch(`${BACKEND_HTTP}/api/notifications/audit?caregiver_id=${encodeURIComponent(staffId)}&limit=20`);
+        const data = await res.json();
+        const staff = staffData.find(s => s.id === staffId);
+        if (staff) staff.audit_recent = data.audit || [];
+      } catch (_) {}
+    }
+
+    function render() {
+      currentStaff = staffData.find(s => s.id === staffId) || {};
+      document.getElementById('staff-name').textContent = currentStaff.name || staffId || 'Identification requise';
+      document.getElementById('staff-role').textContent = `${currentStaff.role || 'personnel'} - ${currentStaff.sector || 'secteur'} - ${currentStaff.status || 'disponible'}`;
+      document.getElementById('staff-locked-id').innerHTML = `
+        <b>ID connecte</b><br>${staffId || 'non identifie'}<br>
+        <span class="badge">identite verrouillee</span>
+      `;
+
+      const notifications = currentStaff.notifications || [];
+      const historical = currentStaff.recent_history || [];
+      renderPush(notifications, historical);
+      monitorCriticalNotifications(notifications);
+      notifications.forEach(traceSeenOnce);
+      renderNotifications(notifications);
+      renderResidents(currentStaff.assigned_residents || []);
+      renderSummary(currentStaff);
+      renderHistory(historical);
+      renderAudit(currentStaff.audit_recent || []);
+    }
+
+    function renderPush(notifications, historical) {
+      const top = notifications[0] || historical[0];
+      const box = document.getElementById('push-box');
+      if (!top) {
+        box.className = 'push';
+        box.innerHTML = '<h2>Aucune alerte prioritaire</h2><p>Les notifications du personnel apparaissent ici en direct.</p>';
+        return;
+      }
+      const key = notificationKey(top);
+      currentTopNotification = top;
+      const isLive = Boolean(top.alert_id);
+      const status = top.status || localStatus[key]?.status || (isLive ? 'envoyee' : 'historique');
+      const isTaken = status === 'prise_en_charge' || status === 'taken';
+      const isLevel5 = Number(top.level || 0) >= 5;
+      const samuStatus = top.samu_status || (isLevel5 ? 'preappel_prepare' : '');
+      box.className = `push level-${top.level || 1}`;
+      if (key !== lastTopKey && isLive) {
+        box.classList.add('ring');
+        lastTopKey = key;
+        if (navigator.vibrate) navigator.vibrate([180, 80, 180]);
+      }
+      box.innerHTML = `
+        <h2>${isLive ? 'Notification push' : 'Dernier evenement'} - N${top.level} ${levelName(top.level)}</h2>
+        <p><b>${top.resident_name}</b> - Chambre ${top.room || '-'}</p>
+        <p>${top.location || top.zone || 'Localisation a confirmer'}</p>
+        <p>${displayAlertReason(top.reason_label || top.reason || top.event || 'Evenement simule')} - statut: <b>${status}</b></p>
+        <div class="actions">
+          ${isTaken
+            ? `<button class="danger" onclick="resolveTop()">Cloturer l'alerte</button>`
+            : `<button class="ok" onclick="traceTop('taken', true)">Prendre en charge</button>`}
+          <a class="link-button" href="/mobile/resident/${top.resident_id}?staff=${encodeURIComponent(staffId)}&token=${encodeURIComponent(staffToken)}&return=${encodeURIComponent(`/soignant/${staffId}`)}" target="_blank">Fiche</a>
+        </div>
+        ${isLevel5 ? `
+          <div class="samu-panel">
+            <b>Protocole SAMU 15</b>
+            <p>Dossier pre-appel genere automatiquement. Statut: <b>${samuStatus}</b></p>
+            <button class="danger" onclick="confirmSamuTop()">Appel SAMU simule</button>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function renderNotifications(notifications) {
+      const list = document.getElementById('notification-list');
+      if (!notifications.length) {
+        list.innerHTML = '<div class="empty">Aucune notification live pour ce personnel.</div>';
+        return;
+      }
+      list.innerHTML = notifications.map(n => {
+        const key = notificationKey(n);
+        return `<div class="mini-card">
+          <b>N${n.level} ${levelName(n.level)} - ${n.resident_name}</b><br>
+          ${n.location || 'zone ?'}<br>
+          ${displayAlertReason(n.reason_label || n.reason || '')}<br>
+          <span class="badge">${n.status || localStatus[key]?.status || 'envoyee'}</span>
+          ${pushDeliveryLabel(n.push_delivery)}
+        </div>`;
+      }).join('');
+    }
+
+    function renderResidents(items) {
+      const list = document.getElementById('resident-list');
+      if (!items.length) {
+        list.innerHTML = '<div class="empty">Aucun resident referent.</div>';
+        return;
+      }
+      list.innerHTML = items.slice(0, 8).map(r => {
+        const rid = r.resident_id || r.id;
+        return `<div class="mini-card">
+        <b>${r.name}</b> - Ch. ${r.room}<br>
+        ${r.current_zone || 'zone ?'} - risque ${Math.round((r.ml_risk || 0) * 100)}% - alerte ${r.alert_level || 0}<br>
+        <a class="link-button" href="/mobile/resident/${rid}?staff=${encodeURIComponent(staffId)}&token=${encodeURIComponent(staffToken)}&return=${encodeURIComponent(`/soignant/${staffId}`)}" target="_blank">Ouvrir</a>
+      </div>`;
+      }).join('');
+    }
+
+    function renderSummary(s) {
+      document.getElementById('summary-grid').innerHTML = `
+        <div class="mini-card"><b>${s.assigned_count || 0}</b><br>residents referents</div>
+        <div class="mini-card"><b>${s.active_alerts_count || 0}</b><br>notifications actives</div>
+        <div class="mini-card"><b>${s.history_count_30d || 0}</b><br>evenements 30 jours</div>
+        <div class="mini-card"><b>${s.max_alert_level || 0}</b><br>niveau max actuel</div>
+      `;
+    }
+
+    function renderHistory(items) {
+      const list = document.getElementById('history-list');
+      if (!items.length) {
+        list.innerHTML = '<div class="empty">Aucun historique simule.</div>';
+        return;
+      }
+      list.innerHTML = items.slice(0, 10).map(h => {
+        const d = new Date(h.time);
+        return `<div class="mini-card">
+          <b>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</b>
+          <span class="badge">N${h.level} ${h.level_name || levelName(h.level)}</span><br>
+          ${h.resident_name} - Ch. ${h.room} - ${h.zone || 'zone ?'}<br>
+          ${h.routine || 'routine'} - ${h.event || 'evenement'}
+        </div>`;
+      }).join('');
+    }
+
+    function renderAudit(items) {
+      const list = document.getElementById('audit-list');
+      if (!items.length) {
+        list.innerHTML = '<div class="empty">Aucune action tracee pour ce personnel.</div>';
+        return;
+      }
+      list.innerHTML = items.slice(0, 12).map(a => {
+        const d = new Date(a.at);
+        return `<div class="mini-card">
+          <b>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
+          <span class="badge">${a.action}</span><br>
+          ${a.resident_name || a.resident_id || 'resident ?'} - N${a.level || '?'}<br>
+          ${a.location || 'zone ?'} - ${displayAlertReason(a.reason_label || a.reason || '')}
+        </div>`;
+      }).join('');
+    }
+
+    function tickClock() {
+      document.getElementById('clock').textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    tickClock();
+    loadStaff();
+    setInterval(tickClock, 1000);
+    setInterval(loadStaff, 8000);
+
+    // â”€â”€â”€ Web Push â€” alertes mÃªme tÃ©lÃ©phone verrouillÃ© â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    let _pushRegistered = false;
+
+    function urlBase64ToUint8Array(b64) {
+      const pad = '='.repeat((4 - b64.length % 4) % 4);
+      const base64 = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+      const raw = atob(base64);
+      return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+    }
+
+    async function registerPush() {
+      updatePushDiag('Demande push en cours...');
+      if (!window.isSecureContext) {
+        updatePushDiag('Refus: la page n est pas en contexte securise. Ouvre https://192.168.1.85:3443/soignant depuis l app installee.');
+        updatePushBtn('HTTPS requis: utilise https://192.168.1.85:3443', false); return;
+      }
+      if (!('serviceWorker' in navigator)) {
+        updatePushDiag('Refus: ServiceWorker non supporte par ce navigateur.');
+        updatePushBtn('ServiceWorker non supporte', false); return;
+      }
+      if (!('PushManager' in window)) {
+        updatePushDiag('Refus: PushManager absent. Sur iPhone, ouvre l app depuis l icone ajoutee a l ecran d accueil, pas depuis Safari.');
+        updatePushBtn('Push non supporte par ce navigateur', false); return;
+      }
+      if (!staffToken || !staffId) {
+        updatePushDiag('Refus: session soignant absente. Connecte-toi d abord, puis reclique sur Activer les alertes push.');
+        updatePushBtn('connexion soignant requise', false); return;
+      }
+      const cfg = await fetch(`${BACKEND_HTTP}/api/push/config`).then(r => r.json()).catch(() => null);
+      if (!cfg?.enabled || !cfg.public_key) {
+        updatePushDiag('Refus: le backend indique que le push serveur est desactive.');
+        updatePushBtn('push desactive cote serveur', false); return;
+      }
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') {
+        updatePushDiag(`Refus permission navigateur: ${perm}. Il faut reautoriser les notifications dans les reglages du site/app.`);
+        updatePushBtn(`permission ${perm}`, false); return;
+      }
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(cfg.public_key),
+        });
+      }
+      const keys = sub.toJSON().keys;
+      const subscribeRes = await fetch(`${BACKEND_HTTP}/api/push/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(staffToken ? { Authorization: `Bearer ${staffToken}` } : {}) },
+        body: JSON.stringify({
+          staff_id: localStorage.getItem('ehpad_staff_id') || 'soignant',
+          endpoint: sub.endpoint,
+          p256dh: keys.p256dh,
+          auth: keys.auth,
+        }),
+      });
+      if (!subscribeRes.ok) {
+        const detail = await subscribeRes.text().catch(() => '');
+        updatePushDiag(`Refus backend inscription: HTTP ${subscribeRes.status}. ${detail.slice(0, 120)}`);
+        updatePushBtn('inscription refusee: reconnecte-toi', false);
+        return;
+      }
+      const subscribeData = await subscribeRes.json();
+      _pushRegistered = true;
+      updatePushDiag(`OK: telephone inscrit pour ${staffId}. Souscriptions serveur: ${subscribeData.subscriptions || 1}.`);
+      updatePushBtn(`notifications actives ✓ (${subscribeData.subscriptions || 1})`, true);
+    }
+
+    function updatePushBtn(label, active) {
+      const btn = document.getElementById('push-enable-btn');
+      if (!btn) return;
+      btn.textContent = label;
+      btn.disabled = active;
+      btn.style.background = active ? '#059669' : '#1e3a5f';
+      const testBtn = document.getElementById('push-test-btn');
+      if (testBtn) testBtn.style.display = active ? 'block' : 'none';
+    }
+
+    function updatePushDiag(message) {
+      const box = document.getElementById('push-diagnostic');
+      if (!box) return;
+      const support = [
+        `secure=${window.isSecureContext}`,
+        `sw=${'serviceWorker' in navigator}`,
+        `push=${'PushManager' in window}`,
+        `notif=${'Notification' in window ? Notification.permission : 'absent'}`,
+        `staff=${staffId || 'non connecte'}`,
+      ].join(' | ');
+      box.textContent = `${message}\n${support}`;
+    }
+
+    async function sendTestPush() {
+      if (!staffToken) {
+        updatePushBtn('connexion soignant requise', false);
+        return;
+      }
+      await fetch(`${BACKEND_HTTP}/api/push/test`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          staff_id: staffId,
+          resident_id: currentTopNotification?.resident_id || 'R005',
+          level: 3,
+          title: 'Test alerte EHPAD',
+          body: 'Notification de test smartphone',
+        }),
+      }).then(r => r.json()).then(data => {
+        const result = data.result || {};
+        if (result.sent > 0) {
+          updatePushDiag(`OK: test push envoye a ${result.sent} telephone(s).`);
+          updatePushBtn(`test envoye ✓ (${result.sent})`, true);
+        } else if (result.subscriptions === 0) {
+          updatePushDiag('Aucun telephone inscrit cote serveur. Reclique sur Activer les alertes push apres connexion.');
+          updatePushBtn('aucun telephone inscrit', false);
+        } else {
+          updatePushDiag(`Erreur envoi push: ${result.errors?.[0] || 'erreur inconnue'}.`);
+          updatePushBtn(`test non envoye: ${result.errors?.[0] || 'erreur push'}`, false);
+        }
+      }).catch(err => {
+        updatePushDiag(`Erreur appel test push: ${err?.message || err}`);
+        updatePushBtn('erreur test push', false);
+      });
+    }
+
+    // Affiche le bouton push sous le push-box
+    function injectPushButton() {
+      if (document.getElementById('push-enable-btn')) return;
+      const btn = document.createElement('button');
+      btn.id = 'push-enable-btn';
+      btn.textContent = 'ðŸ”” Activer les alertes push';
+      btn.style.cssText = 'width:100%;margin:8px 0;padding:10px;border:0;border-radius:10px;background:#1e3a5f;color:#e5edf8;font-weight:700;font-size:13px;cursor:pointer;';
+      btn.onclick = registerPush;
+      const box = document.getElementById('push-box');
+      if (box) box.insertAdjacentElement('afterend', btn);
+
+      const testBtn = document.createElement('button');
+      testBtn.id = 'push-test-btn';
+      testBtn.textContent = 'Envoyer un test push';
+      testBtn.style.cssText = 'display:none;width:100%;margin:0 0 8px;padding:10px;border:0;border-radius:10px;background:#7c3aed;color:#fff;font-weight:700;font-size:13px;cursor:pointer;';
+      testBtn.onclick = sendTestPush;
+      btn.insertAdjacentElement('afterend', testBtn);
+
+      const diag = document.createElement('pre');
+      diag.id = 'push-diagnostic';
+      diag.style.cssText = 'white-space:pre-wrap;margin:0 0 8px;padding:8px;border:1px solid #334155;border-radius:10px;background:#0f172a;color:#9fb0c7;font-size:11px;line-height:1.35;';
+      diag.textContent = 'Diagnostic push en attente.';
+      testBtn.insertAdjacentElement('afterend', diag);
+
+      // VÃ©rifier si dÃ©jÃ  inscrit
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.getRegistration('/sw.js').then(reg => {
+          if (reg) return reg.pushManager.getSubscription();
+        }).then(sub => {
+          if (sub && Notification.permission === 'granted') {
+            fetch(`${BACKEND_HTTP}/api/push/status`, { headers: authHeaders() })
+              .then(r => r.ok ? r.json() : null)
+              .then(data => updatePushBtn(`notifications actives ✓ (${data?.subscriptions || 1})`, true))
+              .catch(() => updatePushBtn('notifications actives ✓', true));
+          }
+        }).catch(() => {});
+      }
+    }
+
+    // On injecte le bouton dÃ¨s le chargement
+    injectPushButton();
+  </script>
+</body>
+</html>
+
+
