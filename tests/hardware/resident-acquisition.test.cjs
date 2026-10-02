@@ -12,6 +12,11 @@ test('all 25 original residents, no extra P001 and no default measurements',()=>
   assert.ok(!models.some(r=>r.id==='P001'));
   assert.ok(models.every(r=>Object.keys(r.vitals).length===0 && r.acquisition.communicating===0 && r.ml_risk===null));
 });
+test('environment views include all 20 zones without copying resident measurements',()=>{
+  const models=project(inventory,snapshot(),0,'zone');
+  assert.equal(models.length,20);
+  assert.ok(models.every(e=>e.type==='zone' && Object.keys(e.vitals).length===0));
+});
 test('R001 measurements never populate R002 or another resident',()=>{
   const models=project(inventory,snapshot());
   assert.equal(models.find(r=>r.id==='R001').vitals.heart_rate,78);

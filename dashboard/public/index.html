@@ -648,7 +648,7 @@
 <script>
 const ACQUISITION_MODE = new URLSearchParams(location.search).get('source') !== 'simulator';
 const USE_SAME_ORIGIN_API = location.protocol === 'https:' || location.port === '3443';
-const BACKEND_HTTP = USE_SAME_ORIGIN_API ? '' : `http://${location.hostname}:8001`;
+const BACKEND_HTTP = (ACQUISITION_MODE || USE_SAME_ORIGIN_API) ? '' : `http://${location.hostname}:8001`;
 const BACKEND_WS = USE_SAME_ORIGIN_API ? null : `ws://${location.hostname}:8001/ws`;
 console.info('EPicare dashboard build: https-api-v2', { protocol: location.protocol, backendHttp: BACKEND_HTTP || 'same-origin' });
 
@@ -1682,6 +1682,7 @@ function getNightStatus(r) {
 }
 
 function renderNightView() {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderNight();
   const grid = document.getElementById('night-grid');
   if (!grid) return;
   const all = Object.values(residents).filter(r => r.source !== 'wokwi').sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
@@ -1762,6 +1763,7 @@ function renderHistoryRowsTable(rows, levelNames) {
 }
 
 async function loadSimulatedHistory(mode = 'year') {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderHistory();
   updateSimulatedHistorySelect();
   const residentId = document.getElementById('sim-history-resident')?.value || currentDetailResident || Object.keys(residents)[0];
   const panel = document.getElementById('simulated-history');
@@ -1860,6 +1862,7 @@ function updateReportResidentSelect() {
 }
 
 async function loadDailyReport() {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderReports();
   updateReportResidentSelect();
   const date = document.getElementById('report-date')?.value || todayIsoDate();
   const globalPanel = document.getElementById('global-report');
@@ -1878,6 +1881,7 @@ async function loadDailyReport() {
 }
 
 async function generateDailyReport() {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderReports();
   const date = document.getElementById('report-date')?.value || todayIsoDate();
   const globalPanel = document.getElementById('global-report');
   if (globalPanel) globalPanel.innerHTML = '<div class="no-alerts">Génération de la fiche de transmission...</div>';
@@ -1894,6 +1898,7 @@ async function generateDailyReport() {
 }
 
 async function loadResidentDpi(rid) {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderReports();
   updateReportResidentSelect();
   const residentId = rid || document.getElementById('report-resident-select')?.value || Object.keys(residents)[0];
   const date = document.getElementById('report-date')?.value || todayIsoDate();
@@ -1912,6 +1917,7 @@ async function loadResidentDpi(rid) {
 }
 
 async function loadReadiness(showLoading = true) {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderValidation();
   const panel = document.getElementById('readiness-panel');
   if (!panel) return;
   if (showLoading) panel.innerHTML = '<div class="no-alerts">Chargement de la matrice de validation...</div>';
@@ -2869,7 +2875,7 @@ function renderFloorPlan(floor) {
     const isPresent = resident && resident.current_zone === `ch${room}`;
     const isMoving = resident && resident.activity === 'deplacement';
     const occupancyColor = isPresent ? '#10b981' : isMoving ? '#f59e0b' : '#64748b';
-    const occupancyText = isPresent ? 'Dans chambre' : isMoving ? 'En deplacement' : 'Hors chambre';
+    const occupancyText = ACQUISITION_MODE ? 'Présence inconnue' : isPresent ? 'Dans chambre' : isMoving ? 'En deplacement' : 'Hors chambre';
 
     const colors = ['#2d3748', '#1e3a5f', '#3d2e00', '#3d1a00', '#3d0000', '#1a0000'];
     const borderColors = ['#4a5568', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#ff0000'];
@@ -3716,15 +3722,15 @@ function showToast(alert) {
 // UI helpers
 // ============================================================
 function showTab(name) {
-  if (ACQUISITION_MODE && name !== 'grid') return;
   document.querySelectorAll('.tab').forEach((t, i) => {
     const names = ['grid', 'plan', 'model3d', 'night', 'reports', 'staff', 'validation', 'history'];
     t.classList.toggle('active', names[i] === name);
   });
   document.querySelectorAll('.tab-content').forEach((c, i) => {
     const names = ['tab-grid', 'tab-plan', 'tab-model3d', 'tab-night', 'tab-reports', 'tab-staff', 'tab-validation', 'tab-history'];
-    c.classList.toggle('active', names[i] === `tab-${name}`);
+    c.classList.toggle('active', c.id === `tab-${name}`);
   });
+  if (ACQUISITION_MODE) return AcquisitionDashboard.showTab(name);
   if (name === 'plan') renderFloorPlan(currentFloor);
   if (name === 'model3d') initEHPAD3D();
   if (name === 'night') renderNightView();
@@ -4224,7 +4230,7 @@ function updateEHPAD3D() {
       mesh.position.set(x, floor * 6 + 1.05, z + 0.2);
     }
     const level = getAlertLevel(r.id);
-    const color = [0x10b981, 0x3b82f6, 0xf59e0b, 0xf97316, 0xef4444, 0xff0000][level] || 0x10b981;
+    const color = ACQUISITION_MODE ? (r.acquisition.communicating ? 0x3b82f6 : 0x64748b) : [0x10b981, 0x3b82f6, 0xf59e0b, 0xf97316, 0xef4444, 0xff0000][level] || 0x10b981;
     mesh.traverse((obj) => {
       if (obj.userData?.avatarColor && obj.material) {
         obj.material.color.setHex(color);
@@ -4287,6 +4293,7 @@ function pickEHPAD3D(event) {
   if (!hit) return;
   const data = hit.object.userData;
   const detail = document.getElementById('model-3d-detail');
+  if (ACQUISITION_MODE) return AcquisitionDashboard.modelDetail(data, detail);
   if (data.type === 'resident') {
     const r = residents[data.resident_id];
     openResidentDossier(data.resident_id);
@@ -4324,6 +4331,10 @@ function hoverEHPAD3D(event) {
   tooltip.style.display = 'block';
   tooltip.style.left = `${event.clientX - rect.left}px`;
   tooltip.style.top = `${event.clientY - rect.top}px`;
+  if (ACQUISITION_MODE) {
+    tooltip.textContent = `${r.name} · chambre attribuée ${r.room} · position non mesurée · FC ${r.vitals.heart_rate ?? 'non mesuré'} · SpO₂ ${r.vitals.spo2 ?? 'non mesuré'}`;
+    return;
+  }
   tooltip.innerHTML = `
     <strong>${r.name || r.id}</strong>
     Chambre ${r.room || '—'} · ${r.current_zone || r.zone || 'zone inconnue'}<br>

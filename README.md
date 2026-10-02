@@ -26,6 +26,12 @@ sans ajouter P001 et sans reprendre les constantes de l'ancien simulateur.
 Une absence de mesure récente affiche « déconnecté / non mesuré » ; la présence
 des fiches ne signifie pas que les 437 capteurs tournent simultanément.
 Le simulateur historique reste accessible via **http://localhost:3005/?source=simulator**.
+Les huit vues restent accessibles en mode Wokwi : grille, plan, 3D, nuit,
+transmissions, personnel, validation et historique. Elles distinguent les signaux
+reçus des informations non mesurées : les avatars de la maquette indiquent les
+chambres attribuées, sans prétendre localiser les résidents ; sommeil, lever et
+risque clinique ne sont pas déduits automatiquement. Les signaux SOS / impact
+de l'historique sont ceux reçus pendant la session du navigateur.
 
 Projet MBA1 Epitech de monitoring EHPAD connecte.
 

@@ -5,7 +5,7 @@
   else root.ResidentAcquisition = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
-  function project(inventory, snapshot, elapsedSeconds = 0) {
+  function project(inventory, snapshot, elapsedSeconds = 0, entityType = 'resident') {
     const incoming = new Map();
     if (snapshot?.source === 'wokwi' && Number.isFinite(snapshot.received_at)) {
       for (const entity of snapshot.entities || []) {
@@ -14,7 +14,7 @@
         }
       }
     }
-    return inventory.entities.filter(e => e.type === 'resident').map(entity => {
+    return inventory.entities.filter(e => e.type === entityType).map(entity => {
       const readings = {};
       const devices = inventory.devices.filter(d => d.entity_id === entity.id).map(expected => {
         const received = incoming.get(expected.id);
