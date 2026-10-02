@@ -2,6 +2,12 @@
 
 Ajout du TP au dépôt de l'équipe, sans modifier la note de cadrage existante.
 
+## Origine du projet
+
+Ce TP s'appuie sur le projet EHPAD d'origine : **[Détection de malaise en EHPAD — dépôt complet](https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD)**.
+
+Le dépôt d'origine contient l'application EHPAD multi-patients. Ce dépôt regroupe l'adaptation du TP M1 : firmware ESP32 Wokwi, dashboard MQTT dédié au patient fictif P001 et livrables de démonstration.
+
 ## Lancer le dashboard
 
 Prérequis : Node.js et npm.
@@ -29,4 +35,4 @@ La vidéo fournie juxtapose des captures réelles des deux vues Firefox, à une 
 
 **Périmètre : un patient fictif P001**, FC simulée par potentiomètre, chute par MPU-6050 et bouton SOS. SpO₂ et température non mesurées. L'intégration à l'application historique multi-patients n'est pas incluse.
 
-Les informations Digi4 dans le contrat décrivent le projet source `lebretyves/D-tection-de-malaise-en-EHPAD`, dont la page M1 a été extraite. Les données sont fictives et les seuils pédagogiques.
+Les informations Digi4 dans le contrat décrivent le [projet source](https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD), dont la page M1 a été extraite. Les données sont fictives et les seuils pédagogiques.
