@@ -1,0 +1,67 @@
+{
+  "kind": "ze07co",
+  "device_id": "entree-co-ze07co",
+  "firmware_sha256": "86389d4128f2282393a95a07c0a3f3546045e9f5f1d8c9861eda89265bc5eb30",
+  "started": "2026-10-02T18:20:42.633Z",
+  "url": "https://wokwi.com/projects/476794248147402753",
+  "cases": [
+    {
+      "name": "nominal",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-co-ze07co",
+        "entity_id": "entree",
+        "kind": "ze07co",
+        "source": "wokwi",
+        "boot": "e6c04f1",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 811,
+        "values": {
+          "co_ppm": 2
+        }
+      }
+    },
+    {
+      "name": "CO changed",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-co-ze07co",
+        "entity_id": "entree",
+        "kind": "ze07co",
+        "source": "wokwi",
+        "boot": "e6c04f1",
+        "seq": 4,
+        "uptime_ms": 8000,
+        "available": true,
+        "sample_age_ms": 991,
+        "values": {
+          "co_ppm": 35
+        }
+      }
+    },
+    {
+      "name": "invalid checksum expires",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-co-ze07co",
+        "entity_id": "entree",
+        "kind": "ze07co",
+        "source": "wokwi",
+        "boot": "e6c04f1",
+        "seq": 10,
+        "uptime_ms": 20000,
+        "available": false,
+        "sample_age_ms": 10991,
+        "values": {}
+      }
+    }
+  ]
+}

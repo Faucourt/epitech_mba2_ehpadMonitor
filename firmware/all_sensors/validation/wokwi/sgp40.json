@@ -1,0 +1,69 @@
+{
+  "kind": "sgp40",
+  "device_id": "entree-ambiant-sgp40",
+  "firmware_sha256": "44e8b196a6f6a1705deb086f4f36d64d1c6a8d73c0ba67868040bd0d735a86ab",
+  "started": "2026-10-02T18:35:01.656Z",
+  "url": "https://wokwi.com/projects/476795239696897025",
+  "cases": [
+    {
+      "name": "raw VOC and algorithm warmup",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-ambiant-sgp40",
+        "entity_id": "entree",
+        "kind": "sgp40",
+        "source": "wokwi",
+        "boot": "817f74f3",
+        "seq": 24,
+        "uptime_ms": 48172,
+        "available": true,
+        "sample_age_ms": 32,
+        "values": {
+          "voc_raw": 25000,
+          "voc_index": 1
+        }
+      }
+    },
+    {
+      "name": "raw VOC changed",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-ambiant-sgp40",
+        "entity_id": "entree",
+        "kind": "sgp40",
+        "source": "wokwi",
+        "boot": "817f74f3",
+        "seq": 25,
+        "uptime_ms": 50172,
+        "available": true,
+        "sample_age_ms": 32,
+        "values": {
+          "voc_raw": 20000,
+          "voc_index": 22
+        }
+      }
+    },
+    {
+      "name": "invalid CRC expires",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-ambiant-sgp40",
+        "entity_id": "entree",
+        "kind": "sgp40",
+        "source": "wokwi",
+        "boot": "817f74f3",
+        "seq": 31,
+        "uptime_ms": 62172,
+        "available": false,
+        "sample_age_ms": 11032,
+        "values": {}
+      }
+    }
+  ]
+}

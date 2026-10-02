@@ -1,0 +1,4 @@
+{"schema":1,"device_id":"R001-porte-door","entity_id":"R001","kind":"door","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":440,"values":{"door_open":false}}
+{"schema":1,"device_id":"R001-porte-door","entity_id":"R001","kind":"door","source":"wokwi","boot":"593d591a","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":278,"values":{"door_open":false}}
+{"schema":1,"device_id":"R001-porte-door","entity_id":"R001","kind":"door","source":"wokwi","boot":"593d591a","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":278,"values":{"door_open":true}}
+{"schema":1,"device_id":"R001-porte-door","entity_id":"R001","kind":"door","source":"wokwi","boot":"593d591a","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":278,"values":{"door_open":false}}

@@ -1,0 +1,4 @@
+{"schema":1,"device_id":"R002-radar-radar","entity_id":"R002","kind":"radar","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":440,"values":{"presence":false}}
+{"schema":1,"device_id":"R002-radar-radar","entity_id":"R002","kind":"radar","source":"wokwi","boot":"cd54f3bf","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":344,"values":{"presence":false}}
+{"schema":1,"device_id":"R002-radar-radar","entity_id":"R002","kind":"radar","source":"wokwi","boot":"cd54f3bf","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":344,"values":{"presence":true}}
+{"schema":1,"device_id":"R002-radar-radar","entity_id":"R002","kind":"radar","source":"wokwi","boot":"cd54f3bf","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":344,"values":{"presence":false}}

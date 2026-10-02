@@ -1,0 +1,78 @@
+{
+  "kind": "max30102",
+  "device_id": "R001-wearable-max30102",
+  "firmware_sha256": "5db5d9f4b59b56258f1367d08dff590552da53e1b9830c9569b28de551a00bf8",
+  "started": "2026-10-02T18:16:48.572Z",
+  "url": "https://wokwi.com/projects/476794031039670273",
+  "cases": [
+    {
+      "name": "optical calculation",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-max30102",
+        "entity_id": "R001",
+        "kind": "max30102",
+        "source": "wokwi",
+        "boot": "2b9ad4d3",
+        "seq": 4,
+        "uptime_ms": 8002,
+        "available": true,
+        "sample_age_ms": 0,
+        "values": {
+          "heart_rate": 75,
+          "spo2": 93,
+          "red_raw": 54296,
+          "ir_raw": 58918
+        }
+      }
+    },
+    {
+      "name": "finger removed",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-max30102",
+        "entity_id": "R001",
+        "kind": "max30102",
+        "source": "wokwi",
+        "boot": "2b9ad4d3",
+        "seq": 5,
+        "uptime_ms": 10003,
+        "available": true,
+        "sample_age_ms": 3,
+        "values": {
+          "heart_rate": null,
+          "spo2": null,
+          "red_raw": 0,
+          "ir_raw": 0
+        }
+      }
+    },
+    {
+      "name": "finger restored",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-max30102",
+        "entity_id": "R001",
+        "kind": "max30102",
+        "source": "wokwi",
+        "boot": "2b9ad4d3",
+        "seq": 8,
+        "uptime_ms": 16006,
+        "available": true,
+        "sample_age_ms": 4,
+        "values": {
+          "heart_rate": 75,
+          "spo2": 93,
+          "red_raw": 54296,
+          "ir_raw": 58918
+        }
+      }
+    }
+  ]
+}

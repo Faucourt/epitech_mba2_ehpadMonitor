@@ -12,11 +12,13 @@ ne sont jamais remplacées par les valeurs normales du simulateur.
 - [Inventaire complet, modèles et unités](firmware/all_sensors/inventory.json)
 - [Correspondance avec les messages des simulateurs](docs/contrat_capteurs_materiels.md)
 - [Validation et limites de portage](firmware/all_sensors/VALIDATION.md)
+- [Ouvrir les 21 bancs Wokwi testés — 62 scénarios](firmware/all_sensors/validation/WOKWI.md)
 
 L'écran **Capteurs · 25 résidents + environnement**, accessible depuis le dashboard,
-présente les sources Wokwi et matérielles séparément. Les prototypes de tensiomètre
-et de radio BLE comportent des limites explicites : ils ne sont pas présentés comme
-des capteurs physiques validés. Aucun nouvel enregistrement vidéo.
+présente les sources Wokwi et matérielles séparément. Le tensiomètre utilise désormais
+le protocole constructeur PAR NIBP2010 / NIBP2020 UP ; le modèle Wokwi simule son
+interface série. La radio BLE, le câblage physique et la pneumatique restent des
+validations matérielles distinctes. Aucun nouvel enregistrement vidéo.
 
 Projet MBA1 Epitech de monitoring EHPAD connecte.
 

@@ -1,0 +1,69 @@
+{
+  "kind": "sos",
+  "device_id": "R001-wearable-sos",
+  "firmware_sha256": "847f6de7716a4e93dd6d197c81e7fac3aa8a18343c0415b9d2dddf89a2154b01",
+  "started": "2026-10-02T18:21:53.437Z",
+  "url": "https://wokwi.com/projects/476794303181936641",
+  "cases": [
+    {
+      "name": "released",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-sos",
+        "entity_id": "R001",
+        "kind": "sos",
+        "source": "wokwi",
+        "boot": "37394a4a",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 8,
+        "values": {
+          "sos_pressed": false
+        }
+      }
+    },
+    {
+      "name": "SOS pressed and held for publication",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-sos",
+        "entity_id": "R001",
+        "kind": "sos",
+        "source": "wokwi",
+        "boot": "37394a4a",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 0,
+        "values": {
+          "sos_pressed": true
+        }
+      }
+    },
+    {
+      "name": "SOS released",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-sos",
+        "entity_id": "R001",
+        "kind": "sos",
+        "source": "wokwi",
+        "boot": "37394a4a",
+        "seq": 5,
+        "uptime_ms": 10000,
+        "available": true,
+        "sample_age_ms": 19,
+        "values": {
+          "sos_pressed": false
+        }
+      }
+    }
+  ]
+}

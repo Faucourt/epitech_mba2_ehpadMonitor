@@ -11,11 +11,31 @@
       "attrs": {}
     },
     {
-      "type": "chip-nibp-fixture",
+      "type": "chip-par-nibp",
       "id": "sensor",
       "top": -20,
       "left": 270,
       "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "start",
+      "top": 160,
+      "left": 270,
+      "attrs": {
+        "color": "green",
+        "label": "START"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "stop",
+      "top": 160,
+      "left": 370,
+      "attrs": {
+        "color": "red",
+        "label": "STOP"
+      }
     }
   ],
   "connections": [
@@ -53,6 +73,30 @@
       "sensor:RX",
       "esp:17",
       "green",
+      []
+    ],
+    [
+      "start:1.l",
+      "esp:27",
+      "green",
+      []
+    ],
+    [
+      "start:2.l",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "stop:1.l",
+      "esp:26",
+      "green",
+      []
+    ],
+    [
+      "stop:2.l",
+      "esp:GND.1",
+      "black",
       []
     ]
   ],

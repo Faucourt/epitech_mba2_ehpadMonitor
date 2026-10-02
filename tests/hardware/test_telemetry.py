@@ -69,6 +69,14 @@ class TelemetryTests(unittest.TestCase):
   expected=exporter.inventory()
   for path in ['backend/hardware_inventory.json','dashboard/public/hardware-inventory.json','firmware/all_sensors/inventory.json']:
    self.assertEqual(expected,json.loads((ROOT/path).read_text(encoding='utf-8')))
+ def test_mq2_simulation_and_physical_wiring(self):
+  simulated=exporter.diagram('mq2')
+  physical=exporter.diagram('mq2',hardware=True)
+  self.assertTrue(any(c[:2]==['sensor:AO','esp:34'] for c in simulated['connections']))
+  self.assertFalse(any(c[:2]==['sensor:AO','esp:34'] for c in physical['connections']))
+  resistors={p['id']:p['attrs']['value'] for p in physical['parts'] if p['type']=='wokwi-resistor'}
+  self.assertEqual({'r1':'10000','r2':'18000'},resistors)
+  self.assertTrue(any(c[:2]==['r2:2','esp:GND.1'] for c in physical['connections']))
  def test_all_zone_environment_channels_exported(self):
   for e in self.store.inventory['entities']:
    if e['type']!='zone':continue
@@ -78,7 +86,7 @@ class TelemetryTests(unittest.TestCase):
   base=ROOT/'firmware/all_sensors'
   for d in self.store.inventory['devices']:
    project=base/'projects'/d['id']
-   for name in ['sketch.ino','sensors.h','protocols.h']:
+   for name in ['sketch.ino','sensors.h','protocols.h','nibp.h']:
     self.assertEqual((base/'src'/name).read_bytes(),(project/name).read_bytes(),str(project))
    cfg=(project/'device_config.h').read_text()
    self.assertIn('#define DEVICE_ID '+json.dumps(d['id']),cfg)

@@ -1,0 +1,5 @@
+{"schema":1,"device_id":"R001-matelas-hx711","entity_id":"R001","kind":"hx711","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":440,"values":{"load_raw":0,"load_kg":0}}
+{"schema":1,"device_id":"R001-matelas-hx711","entity_id":"R001","kind":"hx711","source":"wokwi","boot":"6c3728dd","seq":2,"uptime_ms":4156,"available":true,"sample_age_ms":0,"values":{"load_raw":0,"load_kg":0}}
+{"schema":1,"device_id":"R001-matelas-hx711","entity_id":"R001","kind":"hx711","source":"wokwi","boot":"6c3728dd","seq":3,"uptime_ms":6156,"available":true,"sample_age_ms":0,"values":{"load_raw":0,"load_kg":0}}
+{"schema":1,"device_id":"R001-matelas-hx711","entity_id":"R001","kind":"hx711","source":"wokwi","boot":"6c3728dd","seq":4,"uptime_ms":8156,"available":true,"sample_age_ms":0,"values":{"load_raw":10500,"load_kg":25}}
+{"schema":1,"device_id":"R001-matelas-hx711","entity_id":"R001","kind":"hx711","source":"wokwi","boot":"6c3728dd","seq":5,"uptime_ms":10156,"available":true,"sample_age_ms":0,"values":{"load_raw":0,"load_kg":0}}

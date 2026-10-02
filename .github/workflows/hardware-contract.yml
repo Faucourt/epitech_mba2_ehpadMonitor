@@ -17,5 +17,9 @@ jobs:
           node-version: '20'
       - run: python -m unittest discover -s tests/hardware -p 'test_*.py' -v
       - run: node --test tests/hardware/chips.test.cjs
+      - run: |
+          g++ -std=c++11 tests/hardware/par_protocol.cpp -o /tmp/par-protocol
+          /tmp/par-protocol
       - run: node --check dashboard/public/hardware.js
+      - run: python firmware/all_sensors/tools/summarize_validation.py
       - run: python -m compileall -q backend/hardware_telemetry.py backend/hardware_routes.py backend/main.py

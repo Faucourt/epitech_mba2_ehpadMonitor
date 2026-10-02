@@ -83,6 +83,7 @@
     const count=t=>entities.filter(e=>e.type===t).length;
     const allDevices=entities.flatMap(e=>e.devices||[]),live=allDevices.filter(d=>currentStatus(d)==='live').length;
     const expected=snapshot?.expected_devices??inventory?.devices?.length;
+    $('live-help').hidden=source!=='wokwi';
     $('live-count').textContent=entities.length?live:'—';$('expected-count').textContent=` / ${expected??'—'}`;
     $('missing-count').textContent=expected===undefined?'—':Math.max(0,expected-live);
     $('coverage-progress').max=expected||1;$('coverage-progress').value=live;
@@ -117,7 +118,7 @@
       if(requestVersion!==version)return;
       if(data.source!==requestedSource||!Array.isArray(data.entities)||!Number.isFinite(data.expected_devices))throw new Error('Réponse d’acquisition invalide.');
       snapshot=data;failed=false;lastSuccess=Date.now();
-      $('connection-text').textContent=`${sourceName()} · acquisition joignable`;$('connection-light').className='light live';$('signin').hidden=true;
+      $('connection-text').textContent=`${sourceName()} · ${data.live_devices>0?'mesures reçues':'serveur joignable, aucune mesure en direct'}`;$('connection-light').className='light'+(data.live_devices>0?' live':'');$('signin').hidden=true;
     }catch(error){
       if(requestVersion!==version)return;
       failed=true;$('connection-light').className='light error';$('signin').hidden=error.status!==401;

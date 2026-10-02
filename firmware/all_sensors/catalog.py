@@ -21,7 +21,7 @@ CATALOG = {
     "gps": {"model": "GNSS NMEA 0183 (NEO-6M)", "bus": "UART RX16 TX17 9600", "chip": "gps-nmea", "fields": {"latitude": "deg", "longitude": "deg", "gps_fix": "bool"}},
     "rfid": {"model": "MFRC522", "bus": "SPI SCK18 MISO19 MOSI23 SS5 RST22", "native": "wokwi-mfrc522", "fields": {"tag_uid": "hex"}},
     "ble": {"model": "ESP32 BLE scanner", "bus": "Radio BLE / injection I2C Wokwi", "chip": "ble-fixture", "fields": {"ble_address": "MAC", "ble_rssi_dbm": "dBm"}, "limit": "Wokwi ne simule pas la radio BLE. Adaptateur de test I2C ; compilation matérielle utilise BLEDevice."},
-    "nibp": {"model": "Passerelle tensiomètre (contrat de projet)", "bus": "UART RX16 TX17 9600", "chip": "nibp-fixture", "fields": {"blood_pressure_sys": "mmHg", "blood_pressure_dia": "mmHg"}, "limit": "Contrat de passerelle testé, PAS un pilote de brassard identifié. Choix du tensiomètre et adaptation de son protocole restent requis."},
+    "nibp": {"model": "PAR NIBP2010 / NIBP2020 UP sans SpO2", "bus": "UART RX16 TX17 4800 ; START27 / STOP26", "chip": "par-nibp", "fields": {"blood_pressure_sys": "mmHg", "blood_pressure_dia": "mmHg"}, "limit": "Protocole constructeur rev. 2.12. Un cycle adulte manuel par bouton. Interface physique TTL 5 V à adapter vers 3,3 V (ou transceiver RS232 selon variante). Pneumatique et matériel non validés par Wokwi."},
 }
 
 WEARABLE = ["mpu6050", "max30102", "tmp117", "sos", "ecg", "respiration", "nibp"]

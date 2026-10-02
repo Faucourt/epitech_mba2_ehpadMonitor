@@ -1,0 +1,69 @@
+{
+  "kind": "pir",
+  "device_id": "R001-pir-pir",
+  "firmware_sha256": "ccc4528a58f465f7cd30e10112ee571b3234cdcf29e068fb3c6e02627b5af8b5",
+  "started": "2026-10-02T18:22:19.476Z",
+  "url": "https://wokwi.com/projects/476794333563386881",
+  "cases": [
+    {
+      "name": "no movement",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-pir-pir",
+        "entity_id": "R001",
+        "kind": "pir",
+        "source": "wokwi",
+        "boot": "f834491a",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 328,
+        "values": {
+          "motion": false
+        }
+      }
+    },
+    {
+      "name": "movement",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-pir-pir",
+        "entity_id": "R001",
+        "kind": "pir",
+        "source": "wokwi",
+        "boot": "f834491a",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 328,
+        "values": {
+          "motion": true
+        }
+      }
+    },
+    {
+      "name": "movement cleared",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-pir-pir",
+        "entity_id": "R001",
+        "kind": "pir",
+        "source": "wokwi",
+        "boot": "f834491a",
+        "seq": 6,
+        "uptime_ms": 12000,
+        "available": true,
+        "sample_age_ms": 328,
+        "values": {
+          "motion": false
+        }
+      }
+    }
+  ]
+}

@@ -16,7 +16,7 @@ def main():
  for kind,d in list(chosen.items())+[('ble-hardware',chosen['ble'])]:
   out=ROOT/'build'/'matrix'/kind;export(d,out,hardware=kind=='ble-hardware')
   started=time.monotonic()
-  run=subprocess.run([sys.executable,str(BASE/'tools/build.py'),str(out),'--cli',args.cli],capture_output=True,text=True)
+  run=subprocess.run([sys.executable,str(BASE/'tools/build.py'),str(out),'--cli',args.cli,'--reuse-build',str(ROOT/'build/arduino-matrix-cache')],capture_output=True,text=True)
   result={'kind':kind,'device_id':d['id'],'exit_code':run.returncode,'seconds':round(time.monotonic()-started,1),'compiler_output':run.stdout[-2000:],'compiler_errors':run.stderr[-2000:]}
   if run.returncode==0:
    result['firmware_sha256']=hashlib.sha256((out/'build/sketch.ino.bin').read_bytes()).hexdigest()

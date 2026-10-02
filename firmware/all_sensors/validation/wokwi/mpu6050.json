@@ -1,0 +1,75 @@
+{
+  "kind": "mpu6050",
+  "device_id": "R001-wearable-mpu6050",
+  "firmware_sha256": "bce36d3799708600a182efa10c75245d3456cf3a43f56c4f36116f25af20567f",
+  "started": "2026-10-02T18:33:47.004Z",
+  "url": "https://wokwi.com/projects/476795053855594497",
+  "cases": [
+    {
+      "name": "gravity at rest",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-mpu6050",
+        "entity_id": "R001",
+        "kind": "mpu6050",
+        "source": "wokwi",
+        "boot": "5a38abc1",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 17,
+        "values": {
+          "accel_g": 1,
+          "gyro_dps": 0,
+          "impact": false
+        }
+      }
+    },
+    {
+      "name": "acceleration impact",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-mpu6050",
+        "entity_id": "R001",
+        "kind": "mpu6050",
+        "source": "wokwi",
+        "boot": "5a38abc1",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 19,
+        "values": {
+          "accel_g": 2.734943,
+          "gyro_dps": 0,
+          "impact": true
+        }
+      }
+    },
+    {
+      "name": "impact clears",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-mpu6050",
+        "entity_id": "R001",
+        "kind": "mpu6050",
+        "source": "wokwi",
+        "boot": "5a38abc1",
+        "seq": 5,
+        "uptime_ms": 10000,
+        "available": true,
+        "sample_age_ms": 19,
+        "values": {
+          "accel_g": 1,
+          "gyro_dps": 0,
+          "impact": false
+        }
+      }
+    }
+  ]
+}

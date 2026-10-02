@@ -1,0 +1,4 @@
+{"schema":1,"device_id":"entree-son-sound","entity_id":"entree","kind":"sound","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":440,"values":{"sound_mv":900,"sound_db":45}}
+{"schema":1,"device_id":"entree-son-sound","entity_id":"entree","kind":"sound","source":"wokwi","boot":"eb7285ae","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":361,"values":{"sound_mv":900,"sound_db":45}}
+{"schema":1,"device_id":"entree-son-sound","entity_id":"entree","kind":"sound","source":"wokwi","boot":"eb7285ae","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":361,"values":{"sound_mv":900,"sound_db":45}}
+{"schema":1,"device_id":"entree-son-sound","entity_id":"entree","kind":"sound","source":"wokwi","boot":"eb7285ae","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":361,"values":{"sound_mv":1600,"sound_db":80}}

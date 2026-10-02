@@ -1,0 +1,6 @@
+{"schema":1,"device_id":"R001-pir-pir","entity_id":"R001","kind":"pir","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":438,"values":{"motion":false}}
+{"schema":1,"device_id":"R001-pir-pir","entity_id":"R001","kind":"pir","source":"wokwi","boot":"f834491a","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":328,"values":{"motion":false}}
+{"schema":1,"device_id":"R001-pir-pir","entity_id":"R001","kind":"pir","source":"wokwi","boot":"f834491a","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":328,"values":{"motion":true}}
+{"schema":1,"device_id":"R001-pir-pir","entity_id":"R001","kind":"pir","source":"wokwi","boot":"f834491a","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":328,"values":{"motion":true}}
+{"schema":1,"device_id":"R001-pir-pir","entity_id":"R001","kind":"pir","source":"wokwi","boot":"f834491a","seq":5,"uptime_ms":10000,"available":true,"sample_age_ms":328,"values":{"motion":true}}
+{"schema":1,"device_id":"R001-pir-pir","entity_id":"R001","kind":"pir","source":"wokwi","boot":"f834491a","seq":6,"uptime_ms":12000,"available":true,"sample_age_ms":328,"values":{"motion":false}}

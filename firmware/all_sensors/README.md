@@ -38,6 +38,10 @@ utilise le broker privé et exige une session soignant pour consulter l'API.
 
 ## Lancer un banc Wokwi
 
+[Ouvrir les 21 projets vérifiés dans Firefox](validation/WOKWI.md) : un banc par
+famille, 62 scénarios avec réception MQTT. Cliquer sur ▶ dans Wokwi pour démarrer
+un banc ; le laisser ouvert pour conserver ses mesures dans le dashboard.
+
 Exemple : `projects/R001-wearable-max30102/`. Chaque dossier contient :
 
 - `sketch.ino`, les pilotes `sensors.h` et `protocols.h` ;
@@ -89,6 +93,12 @@ Modifier `src/`, `catalog.py`, `chips/model.h` ou les générateurs, puis régé
 Les copies dans `projects/` sont des exports ; ne pas les modifier individuellement.
 `make_chips.py` régénère les définitions de customs et leurs contrôles.
 
+L'adaptateur `adcMillivolts` tient compte de la référence virtuelle 5 V de Wokwi.
+Sur une vraie carte il utilise `analogReadMilliVolts` et la calibration ESP32.
+Les pilotes ECG, respiration et sonomètre consomment des millivolts dans les deux
+cas ; aucun facteur de correction Wokwi n'est appliqué au matériel.
+Référence : [API analogique Wokwi](https://docs.wokwi.com/chips-api/analog).
+
 ## Passer au matériel
 
 ```powershell
@@ -112,6 +122,12 @@ diagramme MQ‑2 comprend un diviseur 10kΩ/20kΩ pour son signal analogique 5 V
 
 ## Capteurs disponibles et customs
 
+Les bancs `*-wearable-nibp` utilisent maintenant le protocole PAR NIBP2010 /
+NIBP2020 UP sans SpO2. START lance un cycle adulte manuel ; STOP l'annule.
+Aucun gonflage n'est lancé au démarrage. Le custom simule les échanges série,
+pas la pneumatique. Le pilote est identique en simulation et en mode matériel.
+Voir le [protocole et le raccordement physique](../../docs/contrat_capteurs_materiels.md#tensiomètre--protocole-constructeur-par).
+
 | Fonction | Référence / simulation | Données fournies |
 |---|---|---|
 | Mouvement bracelet | MPU6050 natif | norme accélération en g, rotation, impact |
@@ -133,12 +149,25 @@ diagramme MQ‑2 comprend un diviseur 10kΩ/20kΩ pour son signal analogique 5 V
 | BLE | scanner ESP32 réel / fixture I²C Wokwi | adresse et RSSI ; pas de radio simulée |
 | ECG | AD8232 / custom analogique | échantillon brut et électrodes débranchées |
 | Respiration | entrée analogique conditionnée / custom | signal et estimation par seuils |
-| Tension artérielle | custom passerelle UART de projet | contrat systolique/diastolique, **modèle de brassard encore à sélectionner** |
+| Tension artérielle | PAR NIBP2010 / NIBP2020 UP sans SpO2, custom UART 4800 | protocole constructeur, cycle manuel START/STOP, erreurs et checksum |
 
 Le modèle SGP30 est également fourni comme variante de test, avec eCO₂/TVOC bien
 distincts du CO₂/indice COV. Il n'est pas utilisé par les 437 bancs de l'inventaire.
 
 ## Comment créer un custom absent de Wokwi
+
+**MQ-2 et ADC :** Wokwi ne résout pas le pont diviseur à résistances : le premier
+banc renvoyait toujours zéro. Le diagramme simulé raccorde AO directement à
+l'ADC virtuel (référence 5 V). Ce raccordement est réservé à la simulation et
+signalé dans le dessin. L'export `--hardware` conserve un pont 10 kΩ / 18 kΩ
+(5 V vers 3,21 V) pour le véritable ESP32. Le pilote conserve `analogRead` ;
+le signal brut doit être calibré sur le montage final.
+Voir les [limites des résistances Wokwi](https://docs.wokwi.com/parts/wokwi-resistor).
+
+**Compteur du dashboard :** 437 est le nombre de configurations disponibles.
+Seules les simulations Wokwi démarrées publient des mesures. Ouvrir le dashboard
+ne lance pas ces simulations. Un arrêt entraîne l'expiration des mesures après
+15 secondes ; `0 / 437` signifie donc aucune mesure actuelle, pas 437 tests échoués.
 
 1. Choisir la référence matérielle, puis lire son protocole constructeur.
 2. Déclarer ses broches et ses curseurs dans `nom.chip.json`.

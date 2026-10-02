@@ -1,0 +1,1588 @@
+{
+  "families": 21,
+  "scenarios": 62,
+  "configured_endpoints": 437,
+  "scope": "One ESP32 Wokwi bench per active family; not 437 concurrent ESP32 simulations.",
+  "results": [
+    {
+      "kind": "amg8833",
+      "device_id": "patio-camera_thermique-amg8833",
+      "firmware_sha256": "1300907bf788ce4fe9b54fc23b0e5300303674a62b3241fa95f1c18b2e528860",
+      "started": "2026-10-02T18:19:22.525Z",
+      "url": "https://wokwi.com/projects/476794160713963521",
+      "cases": [
+        {
+          "name": "64 pixels",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "patio-camera_thermique-amg8833",
+            "entity_id": "patio",
+            "kind": "amg8833",
+            "source": "wokwi",
+            "boot": "60b17202",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 212,
+            "values": {
+              "thermal_pixels_c": [
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                34,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22
+              ],
+              "thermal_max_c": 34
+            }
+          }
+        },
+        {
+          "name": "hotspot changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "patio-camera_thermique-amg8833",
+            "entity_id": "patio",
+            "kind": "amg8833",
+            "source": "wokwi",
+            "boot": "60b17202",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 212,
+            "values": {
+              "thermal_pixels_c": [
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                45,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22,
+                22
+              ],
+              "thermal_max_c": 45
+            }
+          }
+        },
+        {
+          "name": "disconnected",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "patio-camera_thermique-amg8833",
+            "entity_id": "patio",
+            "kind": "amg8833",
+            "source": "wokwi",
+            "boot": "60b17202",
+            "seq": 9,
+            "uptime_ms": 18000,
+            "available": false,
+            "sample_age_ms": 10712,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ble",
+      "device_id": "couloir_aile_rdc-ble_beacon-ble",
+      "firmware_sha256": "9aa12c461c5c23a6c2b78f0d21c5e447146dc1e43585a5724307396b1abde42d",
+      "started": "2026-10-02T18:20:04.675Z",
+      "url": "https://wokwi.com/projects/476794199564766209",
+      "cases": [
+        {
+          "name": "fixture MAC and RSSI",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "couloir_aile_rdc-ble_beacon-ble",
+            "entity_id": "couloir_aile_rdc",
+            "kind": "ble",
+            "source": "wokwi",
+            "boot": "7b4b3128",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 361,
+            "values": {
+              "ble_address": "02:00:00:00:00:01",
+              "ble_rssi_dbm": -55
+            }
+          }
+        },
+        {
+          "name": "RSSI changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "couloir_aile_rdc-ble_beacon-ble",
+            "entity_id": "couloir_aile_rdc",
+            "kind": "ble",
+            "source": "wokwi",
+            "boot": "7b4b3128",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 361,
+            "values": {
+              "ble_address": "02:00:00:00:00:01",
+              "ble_rssi_dbm": -80
+            }
+          }
+        },
+        {
+          "name": "disconnected",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "couloir_aile_rdc-ble_beacon-ble",
+            "entity_id": "couloir_aile_rdc",
+            "kind": "ble",
+            "source": "wokwi",
+            "boot": "7b4b3128",
+            "seq": 9,
+            "uptime_ms": 18000,
+            "available": false,
+            "sample_age_ms": 10861,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "dht22",
+      "device_id": "entree-ambiant-dht22",
+      "firmware_sha256": "1a9683f72ab8e1d98f48c11ecf0621388aabe6a82177774d411b5c187fc33ade",
+      "started": "2026-10-02T18:20:41.770Z",
+      "url": "https://wokwi.com/projects/476794223981912065",
+      "cases": [
+        {
+          "name": "nominal temperature and humidity",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-ambiant-dht22",
+            "entity_id": "entree",
+            "kind": "dht22",
+            "source": "wokwi",
+            "boot": "2b8197d7",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 1800,
+            "values": {
+              "temperature_c": 24,
+              "humidity_pct": 40
+            }
+          }
+        },
+        {
+          "name": "warm humid room",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-ambiant-dht22",
+            "entity_id": "entree",
+            "kind": "dht22",
+            "source": "wokwi",
+            "boot": "2b8197d7",
+            "seq": 4,
+            "uptime_ms": 8000,
+            "available": true,
+            "sample_age_ms": 1400,
+            "values": {
+              "temperature_c": 32,
+              "humidity_pct": 75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "door",
+      "device_id": "R001-porte-door",
+      "firmware_sha256": "4666788b8ee1f901ea9b317c717314a7474c63f324110d795d316a54dfec6535",
+      "started": "2026-10-02T18:21:30.606Z",
+      "url": "https://wokwi.com/projects/476794275606473729",
+      "cases": [
+        {
+          "name": "initial contact",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-porte-door",
+            "entity_id": "R001",
+            "kind": "door",
+            "source": "wokwi",
+            "boot": "593d591a",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 278,
+            "values": {
+              "door_open": false
+            }
+          }
+        },
+        {
+          "name": "contact changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-porte-door",
+            "entity_id": "R001",
+            "kind": "door",
+            "source": "wokwi",
+            "boot": "593d591a",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 278,
+            "values": {
+              "door_open": true
+            }
+          }
+        },
+        {
+          "name": "contact restored",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-porte-door",
+            "entity_id": "R001",
+            "kind": "door",
+            "source": "wokwi",
+            "boot": "593d591a",
+            "seq": 4,
+            "uptime_ms": 8000,
+            "available": true,
+            "sample_age_ms": 278,
+            "values": {
+              "door_open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ecg",
+      "device_id": "R001-wearable-ecg",
+      "firmware_sha256": "4657550555f86751d1c457ad963ee615a3704d2c94169c7af5690b40646b46d7",
+      "started": "2026-10-02T18:15:45.618Z",
+      "url": "https://wokwi.com/projects/476793911048984577",
+      "cases": [
+        {
+          "name": "raw ECG signal",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-ecg",
+            "entity_id": "R001",
+            "kind": "ecg",
+            "source": "wokwi",
+            "boot": "7628a391",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 2,
+            "values": {
+              "leads_off": false,
+              "ecg_mv": 1261
+            }
+          }
+        },
+        {
+          "name": "electrode disconnected",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-ecg",
+            "entity_id": "R001",
+            "kind": "ecg",
+            "source": "wokwi",
+            "boot": "7628a391",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 9,
+            "values": {
+              "leads_off": true,
+              "ecg_mv": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "gps",
+      "device_id": "hors_ehpad-gps_bracelet-gps",
+      "firmware_sha256": "931dde4c4951121007399319de09f9b8313ed78ca7f7b97040666f9880f769e5",
+      "started": "2026-10-02T18:21:30.299Z",
+      "url": "https://wokwi.com/projects/476794292876527617",
+      "cases": [
+        {
+          "name": "valid RMC fix",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "hors_ehpad-gps_bracelet-gps",
+            "entity_id": "hors_ehpad",
+            "kind": "gps",
+            "source": "wokwi",
+            "boot": "c6708ffc",
+            "seq": 3,
+            "uptime_ms": 6179,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "gps_fix": true,
+              "latitude": 48.85660167,
+              "longitude": 2.3522
+            }
+          }
+        },
+        {
+          "name": "position changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "hors_ehpad-gps_bracelet-gps",
+            "entity_id": "hors_ehpad",
+            "kind": "gps",
+            "source": "wokwi",
+            "boot": "c6708ffc",
+            "seq": 4,
+            "uptime_ms": 8179,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "gps_fix": true,
+              "latitude": 48.90000167,
+              "longitude": 2.3522
+            }
+          }
+        },
+        {
+          "name": "invalid fix",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "hors_ehpad-gps_bracelet-gps",
+            "entity_id": "hors_ehpad",
+            "kind": "gps",
+            "source": "wokwi",
+            "boot": "c6708ffc",
+            "seq": 7,
+            "uptime_ms": 14179,
+            "available": true,
+            "sample_age_ms": 1111,
+            "values": {
+              "gps_fix": false,
+              "latitude": null,
+              "longitude": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "hx711",
+      "device_id": "R001-matelas-hx711",
+      "firmware_sha256": "6a22d378fb720dd31f953b6c3792e577f0fe70530ab35916768c8739a0eea5a6",
+      "started": "2026-10-02T18:21:04.254Z",
+      "url": "https://wokwi.com/projects/476794251138992129",
+      "cases": [
+        {
+          "name": "unloaded",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-matelas-hx711",
+            "entity_id": "R001",
+            "kind": "hx711",
+            "source": "wokwi",
+            "boot": "6c3728dd",
+            "seq": 3,
+            "uptime_ms": 6156,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "load_raw": 0,
+              "load_kg": 0
+            }
+          }
+        },
+        {
+          "name": "25 kg load",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-matelas-hx711",
+            "entity_id": "R001",
+            "kind": "hx711",
+            "source": "wokwi",
+            "boot": "6c3728dd",
+            "seq": 4,
+            "uptime_ms": 8156,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "load_raw": 10500,
+              "load_kg": 25
+            }
+          }
+        },
+        {
+          "name": "load removed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-matelas-hx711",
+            "entity_id": "R001",
+            "kind": "hx711",
+            "source": "wokwi",
+            "boot": "6c3728dd",
+            "seq": 5,
+            "uptime_ms": 10156,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "load_raw": 0,
+              "load_kg": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "max30102",
+      "device_id": "R001-wearable-max30102",
+      "firmware_sha256": "5db5d9f4b59b56258f1367d08dff590552da53e1b9830c9569b28de551a00bf8",
+      "started": "2026-10-02T18:16:48.572Z",
+      "url": "https://wokwi.com/projects/476794031039670273",
+      "cases": [
+        {
+          "name": "optical calculation",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-max30102",
+            "entity_id": "R001",
+            "kind": "max30102",
+            "source": "wokwi",
+            "boot": "2b9ad4d3",
+            "seq": 4,
+            "uptime_ms": 8002,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "heart_rate": 75,
+              "spo2": 93,
+              "red_raw": 54296,
+              "ir_raw": 58918
+            }
+          }
+        },
+        {
+          "name": "finger removed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-max30102",
+            "entity_id": "R001",
+            "kind": "max30102",
+            "source": "wokwi",
+            "boot": "2b9ad4d3",
+            "seq": 5,
+            "uptime_ms": 10003,
+            "available": true,
+            "sample_age_ms": 3,
+            "values": {
+              "heart_rate": null,
+              "spo2": null,
+              "red_raw": 0,
+              "ir_raw": 0
+            }
+          }
+        },
+        {
+          "name": "finger restored",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-max30102",
+            "entity_id": "R001",
+            "kind": "max30102",
+            "source": "wokwi",
+            "boot": "2b9ad4d3",
+            "seq": 8,
+            "uptime_ms": 16006,
+            "available": true,
+            "sample_age_ms": 4,
+            "values": {
+              "heart_rate": 75,
+              "spo2": 93,
+              "red_raw": 54296,
+              "ir_raw": 58918
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "mpu6050",
+      "device_id": "R001-wearable-mpu6050",
+      "firmware_sha256": "bce36d3799708600a182efa10c75245d3456cf3a43f56c4f36116f25af20567f",
+      "started": "2026-10-02T18:33:47.004Z",
+      "url": "https://wokwi.com/projects/476795053855594497",
+      "cases": [
+        {
+          "name": "gravity at rest",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-mpu6050",
+            "entity_id": "R001",
+            "kind": "mpu6050",
+            "source": "wokwi",
+            "boot": "5a38abc1",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 17,
+            "values": {
+              "accel_g": 1,
+              "gyro_dps": 0,
+              "impact": false
+            }
+          }
+        },
+        {
+          "name": "acceleration impact",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-mpu6050",
+            "entity_id": "R001",
+            "kind": "mpu6050",
+            "source": "wokwi",
+            "boot": "5a38abc1",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 19,
+            "values": {
+              "accel_g": 2.734943,
+              "gyro_dps": 0,
+              "impact": true
+            }
+          }
+        },
+        {
+          "name": "impact clears",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-mpu6050",
+            "entity_id": "R001",
+            "kind": "mpu6050",
+            "source": "wokwi",
+            "boot": "5a38abc1",
+            "seq": 5,
+            "uptime_ms": 10000,
+            "available": true,
+            "sample_age_ms": 19,
+            "values": {
+              "accel_g": 1,
+              "gyro_dps": 0,
+              "impact": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "mq2",
+      "device_id": "entree-fumee-mq2",
+      "firmware_sha256": "7c12b3b5c64541d8f9e1bfdc7893865a0c8706a5a11e0a42ded273abeb3a55ea",
+      "started": "2026-10-02T18:34:49.595Z",
+      "url": "https://wokwi.com/projects/476795116182973441",
+      "cases": [
+        {
+          "name": "gas baseline",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-fumee-mq2",
+            "entity_id": "entree",
+            "kind": "mq2",
+            "source": "wokwi",
+            "boot": "f0824c43",
+            "seq": 3,
+            "uptime_ms": 6140,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "gas_adc": 2865
+            }
+          }
+        },
+        {
+          "name": "gas signal changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-fumee-mq2",
+            "entity_id": "entree",
+            "kind": "mq2",
+            "source": "wokwi",
+            "boot": "f0824c43",
+            "seq": 4,
+            "uptime_ms": 8140,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "gas_adc": 2574
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "nibp",
+      "device_id": "R001-wearable-nibp",
+      "firmware_sha256": "86f04ca1d5cc76de8a221150b0046f6d937c00fc7246fa4f1ea95147756eae00",
+      "started": "2026-10-02T18:47:04.479Z",
+      "url": "https://wokwi.com/projects/476796015218635777",
+      "cases": [
+        {
+          "name": "no inflation at boot",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-nibp",
+            "entity_id": "R001",
+            "kind": "nibp",
+            "source": "wokwi",
+            "boot": "783a15ba",
+            "seq": 4,
+            "uptime_ms": 8000,
+            "available": false,
+            "sample_age_ms": 4294967295,
+            "values": {}
+          }
+        },
+        {
+          "name": "PAR measurement 120/75",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-nibp",
+            "entity_id": "R001",
+            "kind": "nibp",
+            "source": "wokwi",
+            "boot": "783a15ba",
+            "seq": 9,
+            "uptime_ms": 18000,
+            "available": true,
+            "sample_age_ms": 883,
+            "values": {
+              "blood_pressure_sys": 120,
+              "blood_pressure_dia": 75
+            }
+          }
+        },
+        {
+          "name": "PAR measurement 150/95",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-nibp",
+            "entity_id": "R001",
+            "kind": "nibp",
+            "source": "wokwi",
+            "boot": "783a15ba",
+            "seq": 15,
+            "uptime_ms": 30000,
+            "available": true,
+            "sample_age_ms": 1874,
+            "values": {
+              "blood_pressure_sys": 150,
+              "blood_pressure_dia": 95
+            }
+          }
+        },
+        {
+          "name": "leak error rejected",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-nibp",
+            "entity_id": "R001",
+            "kind": "nibp",
+            "source": "wokwi",
+            "boot": "783a15ba",
+            "seq": 20,
+            "uptime_ms": 40000,
+            "available": false,
+            "sample_age_ms": 4294967295,
+            "values": {}
+          }
+        },
+        {
+          "name": "invalid checksum rejected",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-nibp",
+            "entity_id": "R001",
+            "kind": "nibp",
+            "source": "wokwi",
+            "boot": "783a15ba",
+            "seq": 30,
+            "uptime_ms": 60000,
+            "available": false,
+            "sample_age_ms": 4294967295,
+            "values": {}
+          }
+        },
+        {
+          "name": "cancelled cycle remains unavailable",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-nibp",
+            "entity_id": "R001",
+            "kind": "nibp",
+            "source": "wokwi",
+            "boot": "783a15ba",
+            "seq": 38,
+            "uptime_ms": 76000,
+            "available": false,
+            "sample_age_ms": 4294967295,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "pir",
+      "device_id": "R001-pir-pir",
+      "firmware_sha256": "ccc4528a58f465f7cd30e10112ee571b3234cdcf29e068fb3c6e02627b5af8b5",
+      "started": "2026-10-02T18:22:19.476Z",
+      "url": "https://wokwi.com/projects/476794333563386881",
+      "cases": [
+        {
+          "name": "no movement",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-pir-pir",
+            "entity_id": "R001",
+            "kind": "pir",
+            "source": "wokwi",
+            "boot": "f834491a",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 328,
+            "values": {
+              "motion": false
+            }
+          }
+        },
+        {
+          "name": "movement",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-pir-pir",
+            "entity_id": "R001",
+            "kind": "pir",
+            "source": "wokwi",
+            "boot": "f834491a",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 328,
+            "values": {
+              "motion": true
+            }
+          }
+        },
+        {
+          "name": "movement cleared",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-pir-pir",
+            "entity_id": "R001",
+            "kind": "pir",
+            "source": "wokwi",
+            "boot": "f834491a",
+            "seq": 6,
+            "uptime_ms": 12000,
+            "available": true,
+            "sample_age_ms": 328,
+            "values": {
+              "motion": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "radar",
+      "device_id": "R002-radar-radar",
+      "firmware_sha256": "28e8a81abb2f26ed313445d5b35ae4a336ca73a04f46e9f4c606247e37f14ce1",
+      "started": "2026-10-02T18:18:01.649Z",
+      "url": "https://wokwi.com/projects/476794056911192065",
+      "cases": [
+        {
+          "name": "no presence",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R002-radar-radar",
+            "entity_id": "R002",
+            "kind": "radar",
+            "source": "wokwi",
+            "boot": "cd54f3bf",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 344,
+            "values": {
+              "presence": false
+            }
+          }
+        },
+        {
+          "name": "presence",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R002-radar-radar",
+            "entity_id": "R002",
+            "kind": "radar",
+            "source": "wokwi",
+            "boot": "cd54f3bf",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 344,
+            "values": {
+              "presence": true
+            }
+          }
+        },
+        {
+          "name": "presence clears",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R002-radar-radar",
+            "entity_id": "R002",
+            "kind": "radar",
+            "source": "wokwi",
+            "boot": "cd54f3bf",
+            "seq": 4,
+            "uptime_ms": 8000,
+            "available": true,
+            "sample_age_ms": 344,
+            "values": {
+              "presence": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "respiration",
+      "device_id": "R001-wearable-respiration",
+      "firmware_sha256": "94b805a5f3db12b862f6f40453150d96b0fca7d32ea7648ea7673f40dc4ac3b9",
+      "started": "2026-10-02T18:11:55.273Z",
+      "url": "https://wokwi.com/projects/476793774682694657",
+      "cases": [
+        {
+          "name": "15 respirations par minute",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-respiration",
+            "entity_id": "R001",
+            "kind": "respiration",
+            "source": "wokwi",
+            "boot": "72cec2d7",
+            "seq": 5,
+            "uptime_ms": 10000,
+            "available": true,
+            "sample_age_ms": 8,
+            "values": {
+              "respiration_mv": 1656,
+              "respiratory_rate": 14.99625
+            }
+          }
+        },
+        {
+          "name": "30 respirations par minute",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-respiration",
+            "entity_id": "R001",
+            "kind": "respiration",
+            "source": "wokwi",
+            "boot": "72cec2d7",
+            "seq": 22,
+            "uptime_ms": 44000,
+            "available": true,
+            "sample_age_ms": 8,
+            "values": {
+              "respiration_mv": 1637,
+              "respiratory_rate": 30
+            }
+          }
+        },
+        {
+          "name": "signal plat sans frequence inventee",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-respiration",
+            "entity_id": "R001",
+            "kind": "respiration",
+            "source": "wokwi",
+            "boot": "72cec2d7",
+            "seq": 30,
+            "uptime_ms": 60000,
+            "available": true,
+            "sample_age_ms": 8,
+            "values": {
+              "respiration_mv": 1650,
+              "respiratory_rate": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "rfid",
+      "device_id": "entree-rfid-rfid",
+      "firmware_sha256": "32a1cfad6fdb624d783bc94330616b7f65e7edc1eb9951e4cd51a83dd23cddd4",
+      "started": "2026-10-02T18:35:58.566Z",
+      "url": "https://wokwi.com/projects/476795205305687041",
+      "cases": [
+        {
+          "name": "no tag",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-rfid-rfid",
+            "entity_id": "entree",
+            "kind": "rfid",
+            "source": "wokwi",
+            "boot": "e75f9f0f",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": false,
+            "sample_age_ms": 4294967295,
+            "values": {}
+          }
+        },
+        {
+          "name": "blue card held",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-rfid-rfid",
+            "entity_id": "entree",
+            "kind": "rfid",
+            "source": "wokwi",
+            "boot": "e75f9f0f",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 363,
+            "values": {
+              "tag_uid": "01020304"
+            }
+          }
+        },
+        {
+          "name": "tag expires",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-rfid-rfid",
+            "entity_id": "entree",
+            "kind": "rfid",
+            "source": "wokwi",
+            "boot": "e75f9f0f",
+            "seq": 8,
+            "uptime_ms": 16000,
+            "available": false,
+            "sample_age_ms": 10363,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "scd41",
+      "device_id": "entree-co2-scd41",
+      "firmware_sha256": "bd293f743771e35eeda57ed106693fab3f5ff5963ac0747af493fce55b3d762d",
+      "started": "2026-10-02T18:18:32.937Z",
+      "url": "https://wokwi.com/projects/476794116085505025",
+      "cases": [
+        {
+          "name": "nominal",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-co2-scd41",
+            "entity_id": "entree",
+            "kind": "scd41",
+            "source": "wokwi",
+            "boot": "905450e3",
+            "seq": 4,
+            "uptime_ms": 8062,
+            "available": true,
+            "sample_age_ms": 907,
+            "values": {
+              "co2_ppm": 600,
+              "temperature_c": 21.99855,
+              "humidity_pct": 44.99886
+            }
+          }
+        },
+        {
+          "name": "high CO2",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-co2-scd41",
+            "entity_id": "entree",
+            "kind": "scd41",
+            "source": "wokwi",
+            "boot": "905450e3",
+            "seq": 7,
+            "uptime_ms": 14062,
+            "available": true,
+            "sample_age_ms": 1407,
+            "values": {
+              "co2_ppm": 2000,
+              "temperature_c": 21.99855,
+              "humidity_pct": 44.99886
+            }
+          }
+        },
+        {
+          "name": "invalid CRC expires",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-co2-scd41",
+            "entity_id": "entree",
+            "kind": "scd41",
+            "source": "wokwi",
+            "boot": "905450e3",
+            "seq": 12,
+            "uptime_ms": 24062,
+            "available": false,
+            "sample_age_ms": 11407,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "sgp40",
+      "device_id": "entree-ambiant-sgp40",
+      "firmware_sha256": "44e8b196a6f6a1705deb086f4f36d64d1c6a8d73c0ba67868040bd0d735a86ab",
+      "started": "2026-10-02T18:35:01.656Z",
+      "url": "https://wokwi.com/projects/476795239696897025",
+      "cases": [
+        {
+          "name": "raw VOC and algorithm warmup",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-ambiant-sgp40",
+            "entity_id": "entree",
+            "kind": "sgp40",
+            "source": "wokwi",
+            "boot": "817f74f3",
+            "seq": 24,
+            "uptime_ms": 48172,
+            "available": true,
+            "sample_age_ms": 32,
+            "values": {
+              "voc_raw": 25000,
+              "voc_index": 1
+            }
+          }
+        },
+        {
+          "name": "raw VOC changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-ambiant-sgp40",
+            "entity_id": "entree",
+            "kind": "sgp40",
+            "source": "wokwi",
+            "boot": "817f74f3",
+            "seq": 25,
+            "uptime_ms": 50172,
+            "available": true,
+            "sample_age_ms": 32,
+            "values": {
+              "voc_raw": 20000,
+              "voc_index": 22
+            }
+          }
+        },
+        {
+          "name": "invalid CRC expires",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-ambiant-sgp40",
+            "entity_id": "entree",
+            "kind": "sgp40",
+            "source": "wokwi",
+            "boot": "817f74f3",
+            "seq": 31,
+            "uptime_ms": 62172,
+            "available": false,
+            "sample_age_ms": 11032,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "sos",
+      "device_id": "R001-wearable-sos",
+      "firmware_sha256": "847f6de7716a4e93dd6d197c81e7fac3aa8a18343c0415b9d2dddf89a2154b01",
+      "started": "2026-10-02T18:21:53.437Z",
+      "url": "https://wokwi.com/projects/476794303181936641",
+      "cases": [
+        {
+          "name": "released",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-sos",
+            "entity_id": "R001",
+            "kind": "sos",
+            "source": "wokwi",
+            "boot": "37394a4a",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 8,
+            "values": {
+              "sos_pressed": false
+            }
+          }
+        },
+        {
+          "name": "SOS pressed and held for publication",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-sos",
+            "entity_id": "R001",
+            "kind": "sos",
+            "source": "wokwi",
+            "boot": "37394a4a",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 0,
+            "values": {
+              "sos_pressed": true
+            }
+          }
+        },
+        {
+          "name": "SOS released",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-sos",
+            "entity_id": "R001",
+            "kind": "sos",
+            "source": "wokwi",
+            "boot": "37394a4a",
+            "seq": 5,
+            "uptime_ms": 10000,
+            "available": true,
+            "sample_age_ms": 19,
+            "values": {
+              "sos_pressed": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "sound",
+      "device_id": "entree-son-sound",
+      "firmware_sha256": "6a2d9e3f19db218e62721cba06ed6999523bf582e8baab8ec589881ad9dd3888",
+      "started": "2026-10-02T18:22:11.525Z",
+      "url": "https://wokwi.com/projects/476794319373004801",
+      "cases": [
+        {
+          "name": "nominal dBA",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-son-sound",
+            "entity_id": "entree",
+            "kind": "sound",
+            "source": "wokwi",
+            "boot": "eb7285ae",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 361,
+            "values": {
+              "sound_mv": 900,
+              "sound_db": 45
+            }
+          }
+        },
+        {
+          "name": "sound changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-son-sound",
+            "entity_id": "entree",
+            "kind": "sound",
+            "source": "wokwi",
+            "boot": "eb7285ae",
+            "seq": 4,
+            "uptime_ms": 8000,
+            "available": true,
+            "sample_age_ms": 361,
+            "values": {
+              "sound_mv": 1600,
+              "sound_db": 80
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "tmp117",
+      "device_id": "R001-wearable-tmp117",
+      "firmware_sha256": "51dc87d71610b32aab0094510b7c3c55b785479575a768cc40c1170066c5c823",
+      "started": "2026-10-02T18:16:06.559Z",
+      "url": "https://wokwi.com/projects/476793955220259841",
+      "cases": [
+        {
+          "name": "nominal",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-tmp117",
+            "entity_id": "R001",
+            "kind": "tmp117",
+            "source": "wokwi",
+            "boot": "a5a0713f",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 327,
+            "values": {
+              "contact_temperature_c": 36.5
+            }
+          }
+        },
+        {
+          "name": "negative",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-tmp117",
+            "entity_id": "R001",
+            "kind": "tmp117",
+            "source": "wokwi",
+            "boot": "a5a0713f",
+            "seq": 3,
+            "uptime_ms": 6000,
+            "available": true,
+            "sample_age_ms": 327,
+            "values": {
+              "contact_temperature_c": -10.5
+            }
+          }
+        },
+        {
+          "name": "disconnected",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "R001-wearable-tmp117",
+            "entity_id": "R001",
+            "kind": "tmp117",
+            "source": "wokwi",
+            "boot": "a5a0713f",
+            "seq": 9,
+            "uptime_ms": 18000,
+            "available": false,
+            "sample_age_ms": 10827,
+            "values": {}
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ze07co",
+      "device_id": "entree-co-ze07co",
+      "firmware_sha256": "86389d4128f2282393a95a07c0a3f3546045e9f5f1d8c9861eda89265bc5eb30",
+      "started": "2026-10-02T18:20:42.633Z",
+      "url": "https://wokwi.com/projects/476794248147402753",
+      "cases": [
+        {
+          "name": "nominal",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-co-ze07co",
+            "entity_id": "entree",
+            "kind": "ze07co",
+            "source": "wokwi",
+            "boot": "e6c04f1",
+            "seq": 2,
+            "uptime_ms": 4000,
+            "available": true,
+            "sample_age_ms": 811,
+            "values": {
+              "co_ppm": 2
+            }
+          }
+        },
+        {
+          "name": "CO changed",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-co-ze07co",
+            "entity_id": "entree",
+            "kind": "ze07co",
+            "source": "wokwi",
+            "boot": "e6c04f1",
+            "seq": 4,
+            "uptime_ms": 8000,
+            "available": true,
+            "sample_age_ms": 991,
+            "values": {
+              "co_ppm": 35
+            }
+          }
+        },
+        {
+          "name": "invalid checksum expires",
+          "result": "pass",
+          "mqtt_received": true,
+          "sample": {
+            "schema": 1,
+            "device_id": "entree-co-ze07co",
+            "entity_id": "entree",
+            "kind": "ze07co",
+            "source": "wokwi",
+            "boot": "e6c04f1",
+            "seq": 10,
+            "uptime_ms": 20000,
+            "available": false,
+            "sample_age_ms": 10991,
+            "values": {}
+          }
+        }
+      ]
+    }
+  ]
+}

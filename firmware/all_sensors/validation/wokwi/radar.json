@@ -1,0 +1,69 @@
+{
+  "kind": "radar",
+  "device_id": "R002-radar-radar",
+  "firmware_sha256": "28e8a81abb2f26ed313445d5b35ae4a336ca73a04f46e9f4c606247e37f14ce1",
+  "started": "2026-10-02T18:18:01.649Z",
+  "url": "https://wokwi.com/projects/476794056911192065",
+  "cases": [
+    {
+      "name": "no presence",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R002-radar-radar",
+        "entity_id": "R002",
+        "kind": "radar",
+        "source": "wokwi",
+        "boot": "cd54f3bf",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 344,
+        "values": {
+          "presence": false
+        }
+      }
+    },
+    {
+      "name": "presence",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R002-radar-radar",
+        "entity_id": "R002",
+        "kind": "radar",
+        "source": "wokwi",
+        "boot": "cd54f3bf",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 344,
+        "values": {
+          "presence": true
+        }
+      }
+    },
+    {
+      "name": "presence clears",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R002-radar-radar",
+        "entity_id": "R002",
+        "kind": "radar",
+        "source": "wokwi",
+        "boot": "cd54f3bf",
+        "seq": 4,
+        "uptime_ms": 8000,
+        "available": true,
+        "sample_age_ms": 344,
+        "values": {
+          "presence": false
+        }
+      }
+    }
+  ]
+}

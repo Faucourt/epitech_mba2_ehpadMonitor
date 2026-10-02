@@ -6,13 +6,13 @@ MQTT et simulation ESP32. Aucun essai sur capteurs physiques et aucune vidéo n'
 
 ## Vérifications réalisées
 
-- **12 tests Python** : couverture des 25 résidents et 20 zones, chaque rôle du
+- **13 tests Python** : couverture des 25 résidents et 20 zones, chaque rôle du
   simulateur, 437 identifiants distincts, correspondance des exports, refus des
   identités incohérentes, NaN, champs inconnus, messages retained/rejoués,
   redémarrage, péremption, LWT et absence de fausses valeurs normales.
 - **10 tests Node/WebAssembly** sur les 13 modèles custom compilés : transactions
   I²C, registres, température négative, FIFO MAX30102, cycle SCD41, CRC, trames
-  ZE07‑CO/NMEA/passerelle tension, 64 pixels AMG8833, GPIO et signaux analogiques.
+  ZE07‑CO/NMEA/PAR NIBP, 64 pixels AMG8833, GPIO et signaux analogiques.
 - **MQTT → backend réel** dans une stack Docker isolée : 437 messages synthétiques
   répartis sur 45 entités, réception vérifiée, affectation de chaque résident,
   champ absent conservé à null, identité falsifiée refusée et accès au mode
@@ -50,50 +50,46 @@ arrêt, les mesures expirent ; ce comportement est attendu.
 
 ## Essais ESP32 réels dans Wokwi / Firefox
 
-### MAX30102
+**21 familles et 62 scénarios réussis**, avec publication du firmware ESP32
+simulé, réception MQTT vérifiée dans le backend et sauvegarde des projets.
+La [liste des 21 bancs Wokwi](validation/WOKWI.md) donne les liens exécutables.
+Les [résultats détaillés](validation/wokwi-results.json) donnent les échantillons,
+identifiants et empreintes SHA-256, identiques à la matrice de compilation finale.
+Les traces série sont conservées dans `validation/wokwi/`.
 
-Banc sauvegardé : https://wokwi.com/projects/476785728510969857
+Les valeurs nominales, variations et erreurs sont testées selon chaque modèle :
+retrait du doigt MAX30102, CRC SCD41/SGP40, déconnexion TMP117/AMG8833, perte de fix
+GPS, électrodes ECG, respiration 15 puis 30/min puis signal plat, son 45 puis
+80 dBA, UART CO, charge HX711, bouton SOS, porte, présence et accélération MPU6050.
+Le RFID a été vérifié avec la commande Hold ; un bref Tap peut être manqué à
+faible vitesse de simulation. Le BLE reste un adaptateur de données, sans radio.
 
-Le custom fournit une FIFO I²C rouge/IR. Le firmware utilise la bibliothèque
-SparkFun et l'algorithme Maxim ; la FC n'est pas injectée directement dans MQTT.
+Le tensiomètre utilise le protocole PAR NIBP2010 / NIBP2020 UP sans SpO2 :
+aucune inflation au démarrage, mesures 120/75 puis 150/95, erreur M07 rejetée,
+checksum corrompu rejeté et annulation STOP. Un test C++ du parseur emploie
+également des trames littérales du document constructeur ; son exemple §13.5
+contient une incohérence de checksum, documentée dans le contrat matériel.
 
-- Consigne 75 bpm : mesures observées 75–78 bpm après stabilisation.
-- Consigne 120 bpm : mesure observée 125 bpm. La quantification de l'algorithme à 25 Hz
-  et ses fenêtres limitent la précision ; aucune précision clinique n'est revendiquée.
-- Retrait du doigt : signaux rouge/IR à 0, `heart_rate` et `spo2` à null.
-- Retour du doigt : nouvelle fenêtre nécessaire avant retour des constantes.
-- Réception du résident R001 confirmée dans le nouveau dashboard.
+Deux défauts repérés pendant ces essais ont été corrigés : la conversion ADC
+virtuelle pour respiration/ECG/son et le pont diviseur MQ-2 non simulé par Wokwi.
+Le diagramme MQ-2 direct est réservé à la simulation ; l'export matériel conserve
+son atténuation. Les sources et limites sont dans le README.
 
-L'essai a révélé puis permis de corriger l'utilisation des accès « dernière valeur »
-au lieu des accès FIFO appariés. Le firmware final invalide également la fenêtre
-si le tampon logiciel déborde à la suite d'un blocage réseau.
-Les traces de la session ayant trouvé et vérifié la correction FIFO sont dans
-[validation/max30102-browser.jsonl](validation/max30102-browser.jsonl).
-Le firmware final a ensuite été rejoué : valeur nominale, retrait du doigt
-(valeurs null), puis retour du signal. Cette seconde trace figure dans
-[validation/max30102-final-browser.jsonl](validation/max30102-final-browser.jsonl).
+Les traces MAX30102/SCD41 situées directement dans `validation/` sont des essais
+historiques ; les résultats finaux de toutes les familles sont dans `validation/wokwi/`.
+Aucun de ces résultats ne signifie 437 ESP32 exécutés simultanément. Le compteur
+du dashboard n'inclut que les appareils qui publient des mesures actuelles.
 
-### SCD41
+Vérifier la cohérence des preuves et régénérer la liste :
 
-Essai du vrai pilote ESP32 avec le custom dans un nouveau projet Wokwi :
-
-- Mesure nominale : 600 ppm, environ 22°C et 45 % HR.
-- Modification des commandes : 2000 ppm, environ 30°C et 70 % HR reçus par MQTT.
-- Alerte de démonstration CO₂ visible dans l'état de la salle commune.
-- Activation de `corrupt` : CRC invalide, aucune nouvelle mesure validée ;
-  publications sans valeurs après expiration de la dernière acquisition valide.
-- Arrêt de la simulation : état hors ligne observé par le backend.
-
-L'historique réellement reçu est conservé dans
-[validation/scd41-mqtt-history.json](validation/scd41-mqtt-history.json).
-Les autres customs sont testés au niveau WebAssembly et compilés avec le firmware ;
-ils ne sont pas présentés comme ayant tous fait l'objet d'un essai visuel individuel.
+```powershell
+python firmware/all_sensors/tools/summarize_validation.py
+```
 
 ## Ce qui reste à vérifier ou décider sur le matériel final
 
-- Référence du tensiomètre : la fixture UART est un **contrat de passerelle du
-  projet**, pas le pilote d'un brassard constructeur. Son adaptateur reste à écrire
-  une fois le modèle retenu.
+- Tensiomètre : raccordement au module PAR et au brassard physiques. Le pilote
+  utilise désormais son protocole constructeur ; la pneumatique n'est pas simulée.
 - Référence et calibration de la ceinture respiratoire ; l'entrée analogique et
   l'estimation sont présentes, mais aucune ceinture physique n'a été validée.
 - Câblage, niveaux logiques, alimentation, placement, cellule de charge, seuils

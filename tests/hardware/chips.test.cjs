@@ -17,7 +17,7 @@ async function model(name) {
   i2cInit:p=>{state.i2cs.push({ud:mem().getUint32(p,true),addr:mem().getUint32(p+4,true),connect:mem().getUint32(p+16,true),read:mem().getUint32(p+20,true),write:mem().getUint32(p+24,true)});return state.i2cs.length;},
   timerInit:p=>{state.timers.push({ud:mem().getUint32(p,true),fn:mem().getUint32(p+4,true)});return state.timers.length;},
   timerStart:(id,us,repeat)=>Object.assign(state.timers[id-1],{us,repeat}),
-  uartInit:p=>{state.uart.push({baud:mem().getUint32(p+12,true)});return state.uart.length;},
+  uartInit:p=>{state.uart.push({ud:mem().getUint32(p,true),baud:mem().getUint32(p+12,true),rx:mem().getUint32(p+16,true)});return state.uart.length;},
   uartWrite:(id,p,n)=>{state.tx.push(Buffer.from(bytes().slice(p,p+n)));return 1;},
  };
  const wasi={fd_close:()=>0,fd_seek:()=>0,fd_write:()=>0,proc_exit:code=>{throw Error('WASM exit '+code);}};
@@ -28,6 +28,7 @@ async function model(name) {
  state.write=(data,index=0)=>{const b=state.i2cs[index];if(!call(b.connect,b.ud,b.addr,0))return false;for(const v of data)assert.equal(call(b.write,b.ud,v),1);return true;};
  state.read=(n,index=0)=>{const b=state.i2cs[index];if(!call(b.connect,b.ud,b.addr,1))return null;return Array.from({length:n},()=>call(b.read,b.ud));};
  state.tick=(ms=1000)=>{state.now+=ms*1e6;for(const t of state.timers)call(t.fn,t.ud);};
+ state.receive=data=>{for(const b of data)call(state.uart[0].rx,state.uart[0].ud,b);};
  state.newInstance=()=>instance.exports.chipInit();return state;
 }
 const crc=p=>{let c=255;for(const b of p){c^=b;for(let i=0;i<8;i++)c=((c&128)?(c<<1)^0x31:c<<1)&255;}return c;};
@@ -57,8 +58,15 @@ test('ZE07CO manufacturer frame, checksum and corruption',async()=>{
 test('NMEA fix, coordinates and checksum',async()=>{
  const m=await model('gps-nmea');m.tick();const line=m.tx[0].toString();assert.match(line,/GPRMC,120000.00,A,4851/);const [body,checksum]=line.slice(1).trim().split('*');let c=0;for(const b of Buffer.from(body))c^=b;assert.equal(c,parseInt(checksum,16));m.set('fix',0);m.tick();assert.match(m.tx[1].toString(),/120000.00,V,/);
 });
-test('project NIBP gateway frame (not a manufacturer cuff)',async()=>{
- const m=await model('nibp-fixture');m.tick();const b=m.tx[0];assert.deepEqual([...b.slice(0,7)],[165,90,1,0,120,0,75]);assert.equal(crc([...b.slice(0,7)]),b[7]);
+test('PAR NIBP command/checksum, measurement completion, status and fault',async()=>{
+ const m=await model('par-nibp');assert.equal(m.uart[0].baud,4800);m.tick();assert.match(m.tx.at(-1).toString(),/S5;A0;C00;M10/);
+ const command=s=>m.receive(Buffer.from('\x02'+s+'\x03'));
+ command('01;;00');m.tick(6000);assert.equal(m.tx.length,1);
+ command('01;;D7');m.tick(5000);assert.equal(m.tx.at(-1).toString(),'\x02'+'999\x03\r');
+ command('18;;DF');const b=m.tx.at(-1);assert.match(b.toString(),/S1;A0;C00;M00;P120075090;R060/);
+ assert.equal(b.length,42);assert.equal(b.subarray(1,38).reduce((a,v)=>(a+v)&255,0),parseInt(b.subarray(38,40).toString(),16));
+ m.set('error',7);command('18;;DF');assert.match(m.tx.at(-1).toString(),/S2;A0;C00;M07/);
+ m.receive(Buffer.from('X'));command('18;;DF');assert.match(m.tx.at(-1).toString(),/P---------/);
 });
 test('analog, radar GPIO, sound-level transfer and BLE fixture',async()=>{
  const a=await model('analog-signal');a.set('amplitude',0);a.set('leadsOff',1);a.tick();assert.ok(Math.abs(a.outputs.get('OUT')-1.65)<.0001);assert.equal(a.outputs.get('LOP'),1);

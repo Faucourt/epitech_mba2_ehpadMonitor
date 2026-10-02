@@ -1,0 +1,8 @@
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":false,"sample_age_ms":4294967295,"values":{}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":2,"uptime_ms":4000,"available":false,"sample_age_ms":4294967295,"values":{}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":363,"values":{"tag_uid":"01020304"}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":2363,"values":{"tag_uid":"01020304"}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":5,"uptime_ms":10000,"available":true,"sample_age_ms":4363,"values":{"tag_uid":"01020304"}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":6,"uptime_ms":12000,"available":true,"sample_age_ms":6363,"values":{"tag_uid":"01020304"}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":7,"uptime_ms":14000,"available":true,"sample_age_ms":8363,"values":{"tag_uid":"01020304"}}
+{"schema":1,"device_id":"entree-rfid-rfid","entity_id":"entree","kind":"rfid","source":"wokwi","boot":"e75f9f0f","seq":8,"uptime_ms":16000,"available":false,"sample_age_ms":10363,"values":{}}

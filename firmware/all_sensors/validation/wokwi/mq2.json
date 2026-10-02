@@ -1,0 +1,49 @@
+{
+  "kind": "mq2",
+  "device_id": "entree-fumee-mq2",
+  "firmware_sha256": "7c12b3b5c64541d8f9e1bfdc7893865a0c8706a5a11e0a42ded273abeb3a55ea",
+  "started": "2026-10-02T18:34:49.595Z",
+  "url": "https://wokwi.com/projects/476795116182973441",
+  "cases": [
+    {
+      "name": "gas baseline",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-fumee-mq2",
+        "entity_id": "entree",
+        "kind": "mq2",
+        "source": "wokwi",
+        "boot": "f0824c43",
+        "seq": 3,
+        "uptime_ms": 6140,
+        "available": true,
+        "sample_age_ms": 0,
+        "values": {
+          "gas_adc": 2865
+        }
+      }
+    },
+    {
+      "name": "gas signal changed",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-fumee-mq2",
+        "entity_id": "entree",
+        "kind": "mq2",
+        "source": "wokwi",
+        "boot": "f0824c43",
+        "seq": 4,
+        "uptime_ms": 8140,
+        "available": true,
+        "sample_age_ms": 0,
+        "values": {
+          "gas_adc": 2574
+        }
+      }
+    }
+  ]
+}

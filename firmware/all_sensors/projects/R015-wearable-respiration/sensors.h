@@ -25,7 +25,17 @@ bool sensorReady=false;
 uint32_t lastSensor=0, lastValid=0, lastOptical=0;
 uint32_t redSamples[100], irSamples[100];
 unsigned sampleCount=0;
+#include "nibp.h"
 bool kind(const char *s) { return strcmp(SENSOR_KIND,s)==0; }
+uint32_t adcMillivolts(uint8_t pin) {
+#if WOKWI_BUILD
+  // Wokwi Analog API uses a 5 V reference for every virtual ADC.
+  // https://docs.wokwi.com/chips-api/analog
+  return (uint32_t(analogRead(pin))*5000u+2047u)/4095u;
+#else
+  return analogReadMilliVolts(pin); // Real ESP32 factory calibration.
+#endif
+}
 bool regRead(uint8_t addr,uint8_t reg,uint8_t *out,uint8_t n) {
   Wire.beginTransmission(addr); Wire.write(reg);
   if(Wire.endTransmission(false)!=0) return false;
@@ -50,7 +60,8 @@ void sensorBegin() {
   pinMode(27,INPUT_PULLUP); pinMode(32,INPUT_PULLDOWN); pinMode(33,INPUT_PULLDOWN);
   if(kind("pir") || kind("radar"))pinMode(27,INPUT_PULLDOWN);
   analogReadResolution(12); analogSetPinAttenuation(34,ADC_11db);
-  Serial2.begin(9600,SERIAL_8N1,16,17);
+  Serial2.begin(kind("nibp")?4800:9600,SERIAL_8N1,16,17);
+  if(kind("nibp"))pinMode(26,INPUT_PULLUP);
   if(kind("mpu6050")) sensorReady=regWrite(0x68,0x6b,0) && regWrite(0x68,0x1c,0) && regWrite(0x68,0x1b,0);
   else if(kind("max30102")) {sensorReady=optical.begin(Wire,I2C_SPEED_FAST); if(sensorReady) optical.setup(60,4,2,100,411,4096);}
   else if(kind("tmp117")) {uint8_t b[2]; sensorReady=regRead(0x48,0x0f,b,2) && b[0]==1 && b[1]==0x17;}
@@ -97,7 +108,6 @@ void readSerialSensor() {
     if(count==length) {
       float a,c;
       if(kind("ze07co") && ze07Frame(frame,a)) {values["co_ppm"]=a;lastValid=millis();}
-      if(kind("nibp") && nibpFrame(frame,a,c)) {values["blood_pressure_sys"]=a;values["blood_pressure_dia"]=c;lastValid=millis();}
       // Resume scanning the next frame; never publish an invalid checksum.
       count=0;
     }
@@ -113,6 +123,7 @@ void readSerialSensor() {
 void sensorTick() {
   uint32_t now=millis();
   static uint32_t retried=0;
+  if(kind("nibp")){readNibp();return;}
   if(now-lastValid>10000 && now-retried>15000){retried=now;sensorBegin();}
   if(kind("max30102")) {readOptical();return;}
   if(kind("gps") || kind("ze07co") || kind("nibp")) {readSerialSensor();return;}
@@ -153,10 +164,10 @@ void sensorTick() {
   } else if(kind("pir") || kind("radar")) {values[kind("pir")?"motion":"presence"]=bool(digitalRead(27));ok=true;
   } else if(kind("mq2")) {values["gas_adc"]=analogRead(34);ok=true;
   } else if(kind("sound")) {
-    int mv=analogReadMilliVolts(34);values["sound_mv"]=mv;ok=mv>=600 && mv<=2600;if(ok)values["sound_db"]=mv/20.f;
-  } else if(kind("ecg")) {bool off=digitalRead(32)||digitalRead(33);values["leads_off"]=off;if(off)values["ecg_mv"]=nullptr;else values["ecg_mv"]=analogReadMilliVolts(34);ok=true;
+    int mv=adcMillivolts(34);values["sound_mv"]=mv;ok=mv>=600 && mv<=2600;if(ok)values["sound_db"]=mv/20.f;
+  } else if(kind("ecg")) {bool off=digitalRead(32)||digitalRead(33);values["leads_off"]=off;if(off)values["ecg_mv"]=nullptr;else values["ecg_mv"]=adcMillivolts(34);ok=true;
   } else if(kind("respiration")) {
-    int mv=analogReadMilliVolts(34);values["respiration_mv"]=mv;
+    int mv=adcMillivolts(34);values["respiration_mv"]=mv;
     static bool high=false;static uint32_t peak=0;
     if(!high && mv>1800){high=true;uint32_t period=now-peak;if(peak && period>=1000 && period<=15000)values["respiratory_rate"]=60000.f/period;peak=now;}
     if(mv<1500)high=false;if(!peak || now-peak>15000)values["respiratory_rate"]=nullptr;ok=true;

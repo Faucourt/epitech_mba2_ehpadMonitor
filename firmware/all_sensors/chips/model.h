@@ -10,8 +10,32 @@ typedef struct {
   uint8_t regs[256], fifo[32][6], reg, pos, wp, rp, bytepos;
   uint8_t response[192], tx[256]; unsigned response_len, readpos, writes;
   uint16_t command; bool running; double measurement_at;
+  uint8_t rx[8], rxlen; bool initialized, measured; double rx_at;
   uint32_t a,b,c,d,connected,corrupt; pin_t out,lop,lom;uart_dev_t uart;
 } model_t;
+#if MODEL == 11
+static void par_status(model_t *m,bool boot) {
+  unsigned error=boot?10:(unsigned)attr_read_float(m->c);
+  char pressure[10]="---------";if(m->measured)snprintf(pressure,sizeof(pressure),"%03u%03u%03u",(unsigned)attr_read_float(m->a),(unsigned)attr_read_float(m->b),(unsigned)((attr_read_float(m->a)+2*attr_read_float(m->b))/3));
+  int n=snprintf((char*)m->tx,sizeof(m->tx),"\x02S%u;A0;C00;M%02u;P%s;R%s;T    ;;",boot?5:error?2:1,error,pressure,m->measured?"060":"---");
+  uint8_t sum=0;for(int i=1;i<n;i++)sum+=m->tx[i];if(attr_read(m->corrupt))sum^=1;
+  n+=snprintf((char*)m->tx+n,sizeof(m->tx)-n,"%02X\x03\r",sum);uart_write(m->uart,m->tx,n);
+}
+static void par_rx(void *u,uint8_t b) {
+  model_t *m=u;if(!attr_read(m->connected))return;
+  if(b=='X'){m->running=false;m->measured=false;m->rxlen=0;memcpy(m->tx,"\x02" "999\x03\r",6);uart_write(m->uart,m->tx,6);return;}
+  double now=get_sim_nanos_d();if(m->rxlen&&now-m->rx_at>1e7)m->rxlen=0;m->rx_at=now;
+  if(b==2)m->rxlen=0;else if(!m->rxlen)return;
+  m->rx[m->rxlen++]=b;if(m->rxlen<8)return;m->rxlen=0;
+  if(m->rx[0]!=2||m->rx[3]!=';'||m->rx[4]!=';'||m->rx[7]!=3)return;
+  uint8_t sum=m->rx[1]+m->rx[2]+m->rx[3]+m->rx[4];char check[3];snprintf(check,3,"%02X",sum);
+  if(m->rx[5]!=check[0]||m->rx[6]!=check[1])return;
+  unsigned cmd=(m->rx[1]-'0')*10+m->rx[2]-'0';
+  if(cmd==1){m->running=true;m->measured=false;m->measurement_at=now;}
+  else if(cmd==18&&!m->running)par_status(m,false);
+  // 24 (adult) and 03 (manual) select the implemented default mode.
+}
+#endif
 static uint8_t crc8(const uint8_t *p,unsigned n) {uint8_t crc=255;while(n--){crc^=*p++;for(int i=0;i<8;i++)crc=crc&128?(crc<<1)^0x31:crc<<1;}return crc;}
 static void word(model_t *m,unsigned i,uint16_t v) {m->response[i]=v>>8;m->response[i+1]=v;m->response[i+2]=crc8(m->response+i,2) ^ (attr_read(m->corrupt)?1:0);}
 static bool connect_i2c(void *u,uint32_t address,bool read) {
@@ -95,7 +119,8 @@ static void tick(void *u) {
   uint8_t crc=0;for(unsigned i=0;body[i];i++)crc^=body[i];if(attr_read(m->corrupt))crc^=1;
   int n=snprintf((char*)m->tx,sizeof(m->tx),"$%s*%02X\r\n",body,crc);uart_write(m->uart,m->tx,n);
 #elif MODEL == 11
-  uint16_t sys=attr_read_float(m->a),dia=attr_read_float(m->b);uint8_t frame[8]={0xa5,0x5a,1,sys>>8,sys&255,dia>>8,dia&255,0};frame[7]=crc8(frame,7)^(attr_read(m->corrupt)?1:0);memcpy(m->tx,frame,8);uart_write(m->uart,m->tx,8);
+  if(!m->initialized){m->initialized=true;par_status(m,true);}
+  else if(m->running){if(get_sim_nanos_d()-m->measurement_at>=5e9){m->running=false;m->measured=true;memcpy(m->tx,"\x02" "999\x03\r",6);uart_write(m->uart,m->tx,6);}else{memcpy(m->tx,"\x02" "080C3S3\x03\r",10);uart_write(m->uart,m->tx,10);}}
 #elif MODEL == 13
   pin_dac_write(m->out,attr_read_float(m->a)/50.f);
 #endif
@@ -112,7 +137,11 @@ void chip_init(void) {
 #elif MODEL == 13
   m->out=pin_init("OUT",ANALOG);
 #else
-  uart_config_t uart={.rx=pin_init("RX",INPUT),.tx=pin_init("TX",OUTPUT_HIGH),.baud_rate=9600,.user_data=m};m->uart=uart_init(&uart);
+  uart_config_t uart={.rx=pin_init("RX",INPUT),.tx=pin_init("TX",OUTPUT_HIGH),.baud_rate=MODEL==11?4800:9600,.user_data=m};
+#if MODEL == 11
+  uart.rx_data=par_rx;
+#endif
+  m->uart=uart_init(&uart);
 #endif
   timer_config_t timer={.callback=tick,.user_data=m};timer_t t=timer_init(&timer);timer_start(t,MODEL>=9?1000000:10000,true);
 }

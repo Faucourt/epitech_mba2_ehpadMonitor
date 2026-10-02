@@ -13,7 +13,7 @@ MODELS = [
  ('analog-signal',8,0,[('amplitude',.4,0,1.5),('offset',1.65,0,3.3),('frequency',1.2,.05,1000),('leadsOff',0,0,1)]),
  ('ze07co',9,0,[('co',2,0,500)]),
  ('gps-nmea',10,0,[('latitude',48.8566,-90,90),('longitude',2.3522,-180,180),('fix',1,0,1)]),
- ('nibp-fixture',11,0,[('systolic',120,40,300),('diastolic',75,20,200)]),
+ ('par-nibp',11,0,[('systolic',120,40,300),('diastolic',75,20,200),('error',0,0,15)]),
  ('sgp40',12,0x59,[('vocRaw',25000,10000,50000)]),
  ('sound-level',13,0,[('decibels',45,30,130)]),
 ]

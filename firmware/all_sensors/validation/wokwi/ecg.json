@@ -1,0 +1,51 @@
+{
+  "kind": "ecg",
+  "device_id": "R001-wearable-ecg",
+  "firmware_sha256": "4657550555f86751d1c457ad963ee615a3704d2c94169c7af5690b40646b46d7",
+  "started": "2026-10-02T18:15:45.618Z",
+  "url": "https://wokwi.com/projects/476793911048984577",
+  "cases": [
+    {
+      "name": "raw ECG signal",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-ecg",
+        "entity_id": "R001",
+        "kind": "ecg",
+        "source": "wokwi",
+        "boot": "7628a391",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 2,
+        "values": {
+          "leads_off": false,
+          "ecg_mv": 1261
+        }
+      }
+    },
+    {
+      "name": "electrode disconnected",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-ecg",
+        "entity_id": "R001",
+        "kind": "ecg",
+        "source": "wokwi",
+        "boot": "7628a391",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 9,
+        "values": {
+          "leads_off": true,
+          "ecg_mv": null
+        }
+      }
+    }
+  ]
+}

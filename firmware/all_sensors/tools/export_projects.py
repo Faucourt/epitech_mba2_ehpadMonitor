@@ -38,7 +38,7 @@ def inventory():
  assert len({d['id'] for d in devices})==len(devices)
  return {'schema':1,'origin':'https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD','entities':entities,'devices':devices,'catalog':CATALOG,'software_functions':sorted(SOFTWARE)}
 
-def diagram(kind):
+def diagram(kind,hardware=False):
  item=CATALOG[kind];part=item.get('native') or 'chip-'+item['chip']
  if kind=='rfid':part='board-mfrc522'
  parts=[{'type':'board-esp32-devkit-c-v4','id':'esp','top':0,'left':0,'attrs':{}},{'type':part,'id':'sensor','top':-20,'left':270,'attrs':{}}]
@@ -53,9 +53,14 @@ def diagram(kind):
  elif kind=='dht22':pins=[('VCC','3V3'),('GND','GND.1'),('SDA','27')]
  elif kind=='hx711':pins=[('VCC','3V3'),('GND','GND.1'),('DT','26'),('SCK','25')];parts[1]['attrs']={'type':'50kg'}
  elif kind=='mq2':
-  # Divider: 10k + 20k prevents a real 5V module exceeding ESP32 ADC input.
+  # Wokwi does not solve resistor divider voltages. Its virtual ADC uses 5V.
+  # Real hardware requires 10k/18k attenuation (5V -> 3.21V); never wire AO directly.
   pins=[('VCC','5V'),('GND','GND.1')]
-  parts += [{'type':'wokwi-resistor','id':'r1','top':160,'left':200,'attrs':{'value':'10000'}},{'type':'wokwi-resistor','id':'r2','top':220,'left':200,'attrs':{'value':'20000'}}]
+  if hardware:
+   parts += [{'type':'wokwi-resistor','id':'r1','top':160,'left':200,'attrs':{'value':'10000'}},{'type':'wokwi-resistor','id':'r2','top':220,'left':200,'attrs':{'value':'18000'}}]
+  else:
+   pins.append(('AO','34'))
+   parts.append({'type':'wokwi-text','id':'adc_note','top':180,'left':200,'attrs':{'text':'SIMULATION ONLY: virtual ADC 5V.\nHardware: AO -> 10k -> GPIO34 -> 18k -> GND.'}})
  elif kind in {'ecg','sound','respiration'}:
   pins=[('VCC','3V3'),('GND','GND.1'),('OUT','34')]
   if kind=='sound':pins[0]=('VCC','5V')
@@ -65,7 +70,11 @@ def diagram(kind):
  else:raise ValueError(kind)
  connections=[['esp:TX','$serialMonitor:RX','',[]],['esp:RX','$serialMonitor:TX','',[]]]
  connections += [[f'sensor:{a}',f'esp:{b}','black' if b.startswith('GND') else 'red' if b in {'3V3','5V'} else 'green',[]] for a,b in pins]
- if kind=='mq2':connections += [['sensor:AO','r1:1','green',[]],['r1:2','esp:34','green',[]],['r1:2','r2:1','green',[]],['r2:2','esp:GND.1','black',[]]]
+ if kind=='mq2' and hardware:connections += [['sensor:AO','r1:1','green',[]],['r1:2','esp:34','green',[]],['r1:2','r2:1','green',[]],['r2:2','esp:GND.1','black',[]]]
+ if kind=='nibp':
+  for name,pin,color in [('start',27,'green'),('stop',26,'red')]:
+   parts.append({'type':'wokwi-pushbutton','id':name,'top':160,'left':270 if name=='start' else 370,'attrs':{'color':color,'label':name.upper()}})
+   connections += [[name+':1.l','esp:'+str(pin),'green',[]],[name+':2.l','esp:GND.1','black',[]]]
  return {'version':1,'author':'EHPAD — banc matériel','editor':'wokwi','parts':parts,'connections':connections,'dependencies':{}}
 
 def export(device,out,hardware=False):
@@ -77,7 +86,7 @@ def export(device,out,hardware=False):
   'MQTT_USER':device['id'] if hardware else '','MQTT_PASSWORD':'','WIFI_SSID':'CHANGE_ME' if hardware else 'Wokwi-GUEST','WIFI_PASSWORD':'',
   'WOKWI_BUILD':0 if hardware else 1,'LOAD_SCALE':0 if hardware else 420,'LOAD_OFFSET':0}
  (out/'device_config.h').write_text('#pragma once\n'+''.join(f'#define {k} {json.dumps(v)}\n' for k,v in config.items()),encoding='utf-8')
- (out/'diagram.json').write_text(json.dumps(diagram(device['kind']),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ (out/'diagram.json').write_text(json.dumps(diagram(device['kind'],hardware),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  (out/'libraries.txt').write_text('PubSubClient@2.8\nArduinoJson@7.4.2\nDHT sensor library@1.4.6\nAdafruit Unified Sensor@1.1.15\nSparkFun MAX3010x Pulse and Proximity Sensor Library@1.1.2\nMFRC522@1.4.12\nTinyGPSPlus@1.0.3\nHX711 Arduino Library@0.7.5\nSensirion Gas Index Algorithm@3.2.3\n',encoding='utf-8')
  chip=CATALOG[device['kind']].get('chip')
  if chip:

@@ -1,0 +1,5 @@
+{"schema":1,"device_id":"R001-wearable-sos","entity_id":"R001","kind":"sos","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":0,"values":{"sos_pressed":false}}
+{"schema":1,"device_id":"R001-wearable-sos","entity_id":"R001","kind":"sos","source":"wokwi","boot":"37394a4a","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":8,"values":{"sos_pressed":false}}
+{"schema":1,"device_id":"R001-wearable-sos","entity_id":"R001","kind":"sos","source":"wokwi","boot":"37394a4a","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":0,"values":{"sos_pressed":true}}
+{"schema":1,"device_id":"R001-wearable-sos","entity_id":"R001","kind":"sos","source":"wokwi","boot":"37394a4a","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":19,"values":{"sos_pressed":true}}
+{"schema":1,"device_id":"R001-wearable-sos","entity_id":"R001","kind":"sos","source":"wokwi","boot":"37394a4a","seq":5,"uptime_ms":10000,"available":true,"sample_age_ms":19,"values":{"sos_pressed":false}}

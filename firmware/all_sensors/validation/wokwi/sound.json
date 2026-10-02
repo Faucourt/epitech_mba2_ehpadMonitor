@@ -1,0 +1,51 @@
+{
+  "kind": "sound",
+  "device_id": "entree-son-sound",
+  "firmware_sha256": "6a2d9e3f19db218e62721cba06ed6999523bf582e8baab8ec589881ad9dd3888",
+  "started": "2026-10-02T18:22:11.525Z",
+  "url": "https://wokwi.com/projects/476794319373004801",
+  "cases": [
+    {
+      "name": "nominal dBA",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-son-sound",
+        "entity_id": "entree",
+        "kind": "sound",
+        "source": "wokwi",
+        "boot": "eb7285ae",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 361,
+        "values": {
+          "sound_mv": 900,
+          "sound_db": 45
+        }
+      }
+    },
+    {
+      "name": "sound changed",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-son-sound",
+        "entity_id": "entree",
+        "kind": "sound",
+        "source": "wokwi",
+        "boot": "eb7285ae",
+        "seq": 4,
+        "uptime_ms": 8000,
+        "available": true,
+        "sample_age_ms": 361,
+        "values": {
+          "sound_mv": 1600,
+          "sound_db": 80
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "kind": "rfid",
+  "device_id": "entree-rfid-rfid",
+  "firmware_sha256": "32a1cfad6fdb624d783bc94330616b7f65e7edc1eb9951e4cd51a83dd23cddd4",
+  "started": "2026-10-02T18:35:58.566Z",
+  "url": "https://wokwi.com/projects/476795205305687041",
+  "cases": [
+    {
+      "name": "no tag",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-rfid-rfid",
+        "entity_id": "entree",
+        "kind": "rfid",
+        "source": "wokwi",
+        "boot": "e75f9f0f",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": false,
+        "sample_age_ms": 4294967295,
+        "values": {}
+      }
+    },
+    {
+      "name": "blue card held",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-rfid-rfid",
+        "entity_id": "entree",
+        "kind": "rfid",
+        "source": "wokwi",
+        "boot": "e75f9f0f",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 363,
+        "values": {
+          "tag_uid": "01020304"
+        }
+      }
+    },
+    {
+      "name": "tag expires",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-rfid-rfid",
+        "entity_id": "entree",
+        "kind": "rfid",
+        "source": "wokwi",
+        "boot": "e75f9f0f",
+        "seq": 8,
+        "uptime_ms": 16000,
+        "available": false,
+        "sample_age_ms": 10363,
+        "values": {}
+      }
+    }
+  ]
+}

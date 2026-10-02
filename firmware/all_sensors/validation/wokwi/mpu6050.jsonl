@@ -1,0 +1,5 @@
+{"schema":1,"device_id":"R001-wearable-mpu6050","entity_id":"R001","kind":"mpu6050","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":19,"values":{"accel_g":1,"gyro_dps":0,"impact":false}}
+{"schema":1,"device_id":"R001-wearable-mpu6050","entity_id":"R001","kind":"mpu6050","source":"wokwi","boot":"5a38abc1","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":17,"values":{"accel_g":1,"gyro_dps":0,"impact":false}}
+{"schema":1,"device_id":"R001-wearable-mpu6050","entity_id":"R001","kind":"mpu6050","source":"wokwi","boot":"5a38abc1","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":19,"values":{"accel_g":2.734943,"gyro_dps":0,"impact":true}}
+{"schema":1,"device_id":"R001-wearable-mpu6050","entity_id":"R001","kind":"mpu6050","source":"wokwi","boot":"5a38abc1","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":19,"values":{"accel_g":1,"gyro_dps":0,"impact":true}}
+{"schema":1,"device_id":"R001-wearable-mpu6050","entity_id":"R001","kind":"mpu6050","source":"wokwi","boot":"5a38abc1","seq":5,"uptime_ms":10000,"available":true,"sample_age_ms":19,"values":{"accel_g":1,"gyro_dps":0,"impact":false}}

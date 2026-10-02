@@ -1,0 +1,72 @@
+{
+  "kind": "respiration",
+  "device_id": "R001-wearable-respiration",
+  "firmware_sha256": "94b805a5f3db12b862f6f40453150d96b0fca7d32ea7648ea7673f40dc4ac3b9",
+  "started": "2026-10-02T18:11:55.273Z",
+  "url": "https://wokwi.com/projects/476793774682694657",
+  "cases": [
+    {
+      "name": "15 respirations par minute",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-respiration",
+        "entity_id": "R001",
+        "kind": "respiration",
+        "source": "wokwi",
+        "boot": "72cec2d7",
+        "seq": 5,
+        "uptime_ms": 10000,
+        "available": true,
+        "sample_age_ms": 8,
+        "values": {
+          "respiration_mv": 1656,
+          "respiratory_rate": 14.99625
+        }
+      }
+    },
+    {
+      "name": "30 respirations par minute",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-respiration",
+        "entity_id": "R001",
+        "kind": "respiration",
+        "source": "wokwi",
+        "boot": "72cec2d7",
+        "seq": 22,
+        "uptime_ms": 44000,
+        "available": true,
+        "sample_age_ms": 8,
+        "values": {
+          "respiration_mv": 1637,
+          "respiratory_rate": 30
+        }
+      }
+    },
+    {
+      "name": "signal plat sans frequence inventee",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-respiration",
+        "entity_id": "R001",
+        "kind": "respiration",
+        "source": "wokwi",
+        "boot": "72cec2d7",
+        "seq": 30,
+        "uptime_ms": 60000,
+        "available": true,
+        "sample_age_ms": 8,
+        "values": {
+          "respiration_mv": 1650,
+          "respiratory_rate": null
+        }
+      }
+    }
+  ]
+}

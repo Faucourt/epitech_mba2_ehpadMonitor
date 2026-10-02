@@ -1,0 +1,9 @@
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"","seq":1,"uptime_ms":2000,"available":true,"sample_age_ms":437,"values":{"contact_temperature_c":36.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":2,"uptime_ms":4000,"available":true,"sample_age_ms":327,"values":{"contact_temperature_c":36.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":3,"uptime_ms":6000,"available":true,"sample_age_ms":327,"values":{"contact_temperature_c":-10.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":4,"uptime_ms":8000,"available":true,"sample_age_ms":827,"values":{"contact_temperature_c":-10.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":5,"uptime_ms":10000,"available":true,"sample_age_ms":2827,"values":{"contact_temperature_c":-10.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":6,"uptime_ms":12000,"available":true,"sample_age_ms":4827,"values":{"contact_temperature_c":-10.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":7,"uptime_ms":14000,"available":true,"sample_age_ms":6827,"values":{"contact_temperature_c":-10.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":8,"uptime_ms":16000,"available":true,"sample_age_ms":8827,"values":{"contact_temperature_c":-10.5}}
+{"schema":1,"device_id":"R001-wearable-tmp117","entity_id":"R001","kind":"tmp117","source":"wokwi","boot":"a5a0713f","seq":9,"uptime_ms":18000,"available":false,"sample_age_ms":10827,"values":{}}

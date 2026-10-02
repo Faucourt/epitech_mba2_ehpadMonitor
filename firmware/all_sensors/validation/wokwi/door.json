@@ -1,0 +1,69 @@
+{
+  "kind": "door",
+  "device_id": "R001-porte-door",
+  "firmware_sha256": "4666788b8ee1f901ea9b317c717314a7474c63f324110d795d316a54dfec6535",
+  "started": "2026-10-02T18:21:30.606Z",
+  "url": "https://wokwi.com/projects/476794275606473729",
+  "cases": [
+    {
+      "name": "initial contact",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-porte-door",
+        "entity_id": "R001",
+        "kind": "door",
+        "source": "wokwi",
+        "boot": "593d591a",
+        "seq": 2,
+        "uptime_ms": 4000,
+        "available": true,
+        "sample_age_ms": 278,
+        "values": {
+          "door_open": false
+        }
+      }
+    },
+    {
+      "name": "contact changed",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-porte-door",
+        "entity_id": "R001",
+        "kind": "door",
+        "source": "wokwi",
+        "boot": "593d591a",
+        "seq": 3,
+        "uptime_ms": 6000,
+        "available": true,
+        "sample_age_ms": 278,
+        "values": {
+          "door_open": true
+        }
+      }
+    },
+    {
+      "name": "contact restored",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-porte-door",
+        "entity_id": "R001",
+        "kind": "door",
+        "source": "wokwi",
+        "boot": "593d591a",
+        "seq": 4,
+        "uptime_ms": 8000,
+        "available": true,
+        "sample_age_ms": 278,
+        "values": {
+          "door_open": false
+        }
+      }
+    }
+  ]
+}

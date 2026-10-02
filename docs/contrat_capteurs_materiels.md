@@ -72,7 +72,7 @@ provenance. Les identités R001–R025 sont conservées, sans patient artificiel
 | Champs du simulateur | Acquisition / traitement |
 |---|---|
 | `heart_rate`, `spo2` | calcul SparkFun/Maxim sur FIFO MAX30102 ; null sans doigt ou fenêtre valide |
-| `blood_pressure_sys`, `blood_pressure_dia` | fixture UART du contrat ; protocole de brassard non spécifié dans le dépôt |
+| `blood_pressure_sys`, `blood_pressure_dia` | pilote PAR NIBP2010 / NIBP2020 UP sans SpO2 ; résultat valide d'un cycle demandé |
 | `temperature` | null : le TMP117 fournit `contact_temperature_c`, pas automatiquement une température centrale |
 | `respiratory_rate` | estimation sur le signal d'une ceinture analogique, seuils à calibrer |
 | `ecg_rhythm` | null : signal AD8232 brut ne suffit pas à annoncer sinus ou fibrillation |
@@ -104,16 +104,34 @@ Les fonctions `dashboard`, `alertes_5_niveaux`, `dashboard_central`,
 `surveillance_etage`, `alerte_fugue` sont répertoriées comme fonctions logicielles,
 pas comme composants électroniques.
 
-## Tensiomètre : contrat provisoire explicitement limité
+## Tensiomètre : protocole constructeur PAR
 
-Le dépôt d'origine génère la tension avec du bruit autour d'une valeur de profil ;
-il ne nomme aucun module de brassard ni protocole de communication.
-Le custom `nibp-fixture` sert à tester l'intégration en attendant ce choix :
-UART 9600, trame 8 octets `A5 5A 01 SYS_H SYS_L DIA_H DIA_L CRC8`, entiers mmHg,
-CRC8 polynôme0x31, initialisation 0xFF, sur les 7 premiers octets.
-Ce protocole est celui d'une future passerelle du projet. **Aucun fabricant n'est
-présenté comme compatible avec cette trame.** Il faudra écrire l'adaptateur du
-tensiomètre retenu ou la passerelle correspondante pour porter ce cas sur matériel.
+Référence choisie : **PAR NIBP2010 / NIBP2020 UP sans SpO2**, protocole standard de
+la [documentation constructeur, révision 2.12, sections 10–13](https://www.par-berlin.com/fileadmin/documents/produktdatenblaetter/NIBP_module-Tech.Descr._Doc.-Rev._2.12_-signed.pdf).
+UART 4800 transporte des trames ASCII STX/ETX avec une somme modulo 256 en
+hexadécimal. Les réponses se terminent par CR. Les commandes 24, 03, 01 et 18
+sélectionnent adulte, manuel, démarrage, puis lecture du résultat. `X` annule.
+Un intervalle supérieur à une seconde sépare les commandes ordinaires.
+
+L'exemple chiffré de la section 13.5 affiche `D2`, mais la somme des octets de
+cette trame selon la section 11.3 vaut `40`. Le pilote applique la règle de somme ;
+le test C++ vérifie aussi l'exemple d'erreur de la section 13.6, dont `FC` est cohérent.
+
+Le pilote attend la fin de cycle `999` avant de demander le résultat. Il contrôle
+longueur, structure, somme, état, erreur et cohérence des pressions. Il refuse les
+anciennes valeurs présentes dans une réponse d'erreur. Un nouveau démarrage
+efface les constantes précédentes. Les valeurs périmées restent dans l'historique,
+jamais présentées comme fraîches.
+
+START (GPIO27) déclenche un cycle, STOP (GPIO26) l'annule. Le custom `par-nibp`
+expose des curseurs systolique, diastolique, erreur, déconnexion et corruption de
+somme. Il termine un cycle pédagogique en cinq secondes, sans modéliser la
+pneumatique. Le code ESP32 est commun à Wokwi et au matériel.
+
+La variante TTL du module utilise 5 V : adapter les niveaux vers l'ESP32 3,3 V.
+La variante RS232 nécessite un transceiver. Aucune commande de calibration, de
+manomètre ou de garrot n'est implémentée. Vérifier module, alimentation, brassard
+et câblage physiques lors de l'intégration sur table.
 
 ## BLE et identification
 

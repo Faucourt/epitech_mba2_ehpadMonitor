@@ -1,0 +1,71 @@
+{
+  "kind": "scd41",
+  "device_id": "entree-co2-scd41",
+  "firmware_sha256": "bd293f743771e35eeda57ed106693fab3f5ff5963ac0747af493fce55b3d762d",
+  "started": "2026-10-02T18:18:32.937Z",
+  "url": "https://wokwi.com/projects/476794116085505025",
+  "cases": [
+    {
+      "name": "nominal",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-co2-scd41",
+        "entity_id": "entree",
+        "kind": "scd41",
+        "source": "wokwi",
+        "boot": "905450e3",
+        "seq": 4,
+        "uptime_ms": 8062,
+        "available": true,
+        "sample_age_ms": 907,
+        "values": {
+          "co2_ppm": 600,
+          "temperature_c": 21.99855,
+          "humidity_pct": 44.99886
+        }
+      }
+    },
+    {
+      "name": "high CO2",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-co2-scd41",
+        "entity_id": "entree",
+        "kind": "scd41",
+        "source": "wokwi",
+        "boot": "905450e3",
+        "seq": 7,
+        "uptime_ms": 14062,
+        "available": true,
+        "sample_age_ms": 1407,
+        "values": {
+          "co2_ppm": 2000,
+          "temperature_c": 21.99855,
+          "humidity_pct": 44.99886
+        }
+      }
+    },
+    {
+      "name": "invalid CRC expires",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "entree-co2-scd41",
+        "entity_id": "entree",
+        "kind": "scd41",
+        "source": "wokwi",
+        "boot": "905450e3",
+        "seq": 12,
+        "uptime_ms": 24062,
+        "available": false,
+        "sample_age_ms": 11407,
+        "values": {}
+      }
+    }
+  ]
+}

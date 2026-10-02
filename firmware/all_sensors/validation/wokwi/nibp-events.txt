@@ -1,0 +1,21 @@
+NIBP command 18
+NIBP command 24
+NIBP command 03
+NIBP command 01
+NIBP command 18
+NIBP command 24
+NIBP command 03
+NIBP command 01
+NIBP command 18
+NIBP command 24
+NIBP command 03
+NIBP command 01
+NIBP command 18
+NIBP rejected status S2 M07
+NIBP command 24
+NIBP command 03
+NIBP command 01
+NIBP command 18
+NIBP command 24
+NIBP command 03
+NIBP cancelled

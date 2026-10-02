@@ -1,0 +1,123 @@
+{
+  "kind": "nibp",
+  "device_id": "R001-wearable-nibp",
+  "firmware_sha256": "86f04ca1d5cc76de8a221150b0046f6d937c00fc7246fa4f1ea95147756eae00",
+  "started": "2026-10-02T18:47:04.479Z",
+  "url": "https://wokwi.com/projects/476796015218635777",
+  "cases": [
+    {
+      "name": "no inflation at boot",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-nibp",
+        "entity_id": "R001",
+        "kind": "nibp",
+        "source": "wokwi",
+        "boot": "783a15ba",
+        "seq": 4,
+        "uptime_ms": 8000,
+        "available": false,
+        "sample_age_ms": 4294967295,
+        "values": {}
+      }
+    },
+    {
+      "name": "PAR measurement 120/75",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-nibp",
+        "entity_id": "R001",
+        "kind": "nibp",
+        "source": "wokwi",
+        "boot": "783a15ba",
+        "seq": 9,
+        "uptime_ms": 18000,
+        "available": true,
+        "sample_age_ms": 883,
+        "values": {
+          "blood_pressure_sys": 120,
+          "blood_pressure_dia": 75
+        }
+      }
+    },
+    {
+      "name": "PAR measurement 150/95",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-nibp",
+        "entity_id": "R001",
+        "kind": "nibp",
+        "source": "wokwi",
+        "boot": "783a15ba",
+        "seq": 15,
+        "uptime_ms": 30000,
+        "available": true,
+        "sample_age_ms": 1874,
+        "values": {
+          "blood_pressure_sys": 150,
+          "blood_pressure_dia": 95
+        }
+      }
+    },
+    {
+      "name": "leak error rejected",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-nibp",
+        "entity_id": "R001",
+        "kind": "nibp",
+        "source": "wokwi",
+        "boot": "783a15ba",
+        "seq": 20,
+        "uptime_ms": 40000,
+        "available": false,
+        "sample_age_ms": 4294967295,
+        "values": {}
+      }
+    },
+    {
+      "name": "invalid checksum rejected",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-nibp",
+        "entity_id": "R001",
+        "kind": "nibp",
+        "source": "wokwi",
+        "boot": "783a15ba",
+        "seq": 30,
+        "uptime_ms": 60000,
+        "available": false,
+        "sample_age_ms": 4294967295,
+        "values": {}
+      }
+    },
+    {
+      "name": "cancelled cycle remains unavailable",
+      "result": "pass",
+      "mqtt_received": true,
+      "sample": {
+        "schema": 1,
+        "device_id": "R001-wearable-nibp",
+        "entity_id": "R001",
+        "kind": "nibp",
+        "source": "wokwi",
+        "boot": "783a15ba",
+        "seq": 38,
+        "uptime_ms": 76000,
+        "available": false,
+        "sample_age_ms": 4294967295,
+        "values": {}
+      }
+    }
+  ]
+}
