@@ -1,4 +1,4 @@
-﻿# TP M1 — ESP32 Wokwi → MQTT → EHPAD
+# TP M1 — ESP32 Wokwi → MQTT → EHPAD
 
 Firmware adapté du TP fourni, avec une seule bibliothèque externe `PubSubClient@2.8`. Identifiants fictifs : équipe `lebretyves-ehpad-m1`, patient `P001`, device `esp32-01`.
 
@@ -31,7 +31,7 @@ Déposer la vidéo finale dans `livrables/` ou comme fichier de release GitHub s
 Le contrat exact est dans [docs/contrat_mqtt.md](../../docs/contrat_mqtt.md).
 
 - Fichiers du TP extraits, identifiants adaptés, montage JSON vérifié.
-- Compilation et exécution Wokwi : à valider dans le simulateur.
+- Compilation locale ESP32 réussie : [preuve](livrables/compilation.md). Exécution Wokwi à valider dans le simulateur.
 - Vidéo finale : pas encore enregistrée.
 
 ## Passage au matériel
@@ -46,5 +46,4 @@ GPIO : MPU SDA 21 / SCL 22 ; bouton SOS 18 vers GND ; buzzer 19 ; potentiomètre
 - Connexion réelle WSS HiveMQ et SUBACK QoS 1 sur les trois topics du contrat, sans aucune publication de données artificielles.
 - Sauvegarde du dashboard existant dans `backup_avant_m1/` (exclue de Git), empreinte de la page d'origine inchangée.
 
-Limites : aucune compilation ESP32 ni simulation Wokwi validée dans cette session. Contrôle navigateur indisponible (erreur ACL de l'environnement) ; pas de capture visuelle ni de vidéo finale. La pile historique Docker du projet source a été rétablie après sauvegarde et réparation de Redis ; elle ne fait pas partie de cette copie autonome.
-
+Limites : compilation ESP32 locale validée le 2 octobre 2026 ; simulation Wokwi encore à valider. Contrôle navigateur indisponible (erreur ACL de l'environnement) ; pas de capture visuelle ni de vidéo finale. La pile historique Docker du projet source a été rétablie après sauvegarde et réparation de Redis ; elle ne fait pas partie de cette copie autonome.
