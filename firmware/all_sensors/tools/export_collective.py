@@ -201,16 +201,17 @@ def export_entity(entity, devices, dest, hardware=False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--entity')
-    parser.add_argument('--out', type=Path, default=OUT)
+    parser.add_argument('--out', type=Path)
     parser.add_argument('--hardware', action='store_true')
     args = parser.parse_args()
+    output = args.out or (BASE / 'hardware-private/collective' if args.hardware else OUT)
     inv = inventory()
     entities = [e for e in inv['entities'] if not args.entity or e['id'] == args.entity]
     if not entities:
         parser.error('Unknown entity')
-    records = [export_entity(e, [d for d in inv['devices'] if d['entity_id'] == e['id']], args.out / e['id'], args.hardware) for e in entities]
+    records = [export_entity(e, [d for d in inv['devices'] if d['entity_id'] == e['id']], output / e['id'], args.hardware) for e in entities]
     manifest = {'schema': 1, 'source': 'hardware' if args.hardware else 'wokwi', 'groups': records, 'device_count': sum(len(r['devices']) for r in records), 'driver_sha256': hashlib.sha256((BASE / 'src/sensors.h').read_bytes() + (BASE / 'src/nibp.h').read_bytes()).hexdigest()}
-    (args.out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+    (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print(f'{len(records)} ESP32 groups / {manifest["device_count"]} independently acquired endpoints')
 
 

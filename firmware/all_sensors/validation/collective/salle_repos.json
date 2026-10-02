@@ -1,0 +1,164 @@
+{
+  "entity": "salle_repos",
+  "url": "https://wokwi.com/projects/476813391206425601",
+  "finished_at": "2026-10-02T23:27:18.438Z",
+  "firmware_sha256": "c83bf17972b5cbe41e3dc910c3a797ac3f753c90907ba2c82754dcd23b749db9",
+  "diagram_sha256": "47f4a7404a744e4f9a9011e53eb994346be0a8a4fb120e50e4cebf98958b4d67",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 96.955,
+  "endpoint_ids": [
+    "salle_repos-pir-pir",
+    "salle_repos-co2-scd41",
+    "salle_repos-son-sound",
+    "salle_repos-porte-door",
+    "salle_repos-ambiant-dht22",
+    "salle_repos-ambiant-sgp40",
+    "salle_repos-co-ze07co",
+    "salle_repos-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49994,
+  "fields": {
+    "salle_repos-pir-pir": [
+      "motion"
+    ],
+    "salle_repos-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "salle_repos-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "salle_repos-porte-door": [
+      "door_open"
+    ],
+    "salle_repos-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "salle_repos-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "salle_repos-co-ze07co": [
+      "co_ppm"
+    ],
+    "salle_repos-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "salle_repos-pir-pir",
+    "salle_repos-co2-scd41",
+    "salle_repos-son-sound",
+    "salle_repos-porte-door",
+    "salle_repos-ambiant-dht22",
+    "salle_repos-ambiant-sgp40",
+    "salle_repos-co-ze07co",
+    "salle_repos-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "salle_repos-pir-pir",
+    "salle_repos-co2-scd41",
+    "salle_repos-son-sound",
+    "salle_repos-porte-door",
+    "salle_repos-ambiant-dht22",
+    "salle_repos-ambiant-sgp40",
+    "salle_repos-co-ze07co",
+    "salle_repos-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "salle_repos-pir-pir",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 25,
+      "received_at": 1790983636.437353,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "salle_repos-co2-scd41",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983634.3693094,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "salle_repos-son-sound",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983634.369411,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "salle_repos-porte-door",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983634.3694575,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "salle_repos-ambiant-dht22",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983636.434758,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "salle_repos-ambiant-sgp40",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983636.4364638,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "salle_repos-co-ze07co",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983636.436615,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "salle_repos-fumee-mq2",
+      "status": "live",
+      "boot": "3f3631d0",
+      "seq": 24,
+      "received_at": 1790983636.4371119,
+      "values": {
+        "gas_adc": 1675
+      }
+    }
+  ],
+  "diagram_text_sha256": "0c76138e11b442461f93fed911167c5d9ede9d43a5dcc47f06c45da59200cabe",
+  "source_text_sha256": "4e3c1d1db9946b0acd9546fad0d96065d181ad4fd77978c4d14bbaedd8e7c706"
+}

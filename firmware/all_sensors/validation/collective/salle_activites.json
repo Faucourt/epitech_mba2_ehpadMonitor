@@ -1,0 +1,165 @@
+{
+  "entity": "salle_activites",
+  "url": "https://wokwi.com/projects/476812311646939137",
+  "finished_at": "2026-10-02T23:45:50.160Z",
+  "firmware_sha256": "b67cc25a3012bbaa9c6e2351c19a5da5464e305cc4d0d0d4ebda796068b4ee8e",
+  "diagram_sha256": "b4fc39284424f07d5b59b188c853551e70b973a4a56cff4aa03116cd6c1ba50b",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 90.503,
+  "endpoint_ids": [
+    "salle_activites-pir-pir",
+    "salle_activites-ambiant-dht22",
+    "salle_activites-ambiant-sgp40",
+    "salle_activites-porte-door",
+    "salle_activites-co2-scd41",
+    "salle_activites-son-sound",
+    "salle_activites-co-ze07co",
+    "salle_activites-fumee-mq2"
+  ],
+  "latest_uptime_ms": 48742,
+  "fields": {
+    "salle_activites-pir-pir": [
+      "motion"
+    ],
+    "salle_activites-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "salle_activites-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "salle_activites-porte-door": [
+      "door_open"
+    ],
+    "salle_activites-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "salle_activites-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "salle_activites-co-ze07co": [
+      "co_ppm"
+    ],
+    "salle_activites-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "salle_activites-pir-pir",
+    "salle_activites-ambiant-dht22",
+    "salle_activites-ambiant-sgp40",
+    "salle_activites-porte-door",
+    "salle_activites-co2-scd41",
+    "salle_activites-son-sound",
+    "salle_activites-co-ze07co",
+    "salle_activites-fumee-mq2"
+  ],
+  "backend_snapshot_at": 1790984750.4884112,
+  "backend_current_boot_ids": [
+    "salle_activites-pir-pir",
+    "salle_activites-ambiant-dht22",
+    "salle_activites-ambiant-sgp40",
+    "salle_activites-porte-door",
+    "salle_activites-co2-scd41",
+    "salle_activites-son-sound",
+    "salle_activites-co-ze07co",
+    "salle_activites-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "salle_activites-pir-pir",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 24,
+      "received_at": 1790984748.1493132,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "salle_activites-ambiant-dht22",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 24,
+      "received_at": 1790984748.1494281,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "salle_activites-ambiant-sgp40",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 24,
+      "received_at": 1790984748.1494799,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "salle_activites-porte-door",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 24,
+      "received_at": 1790984748.1495135,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "salle_activites-co2-scd41",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 23,
+      "received_at": 1790984746.1168995,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "salle_activites-son-sound",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 23,
+      "received_at": 1790984746.1170065,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "salle_activites-co-ze07co",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 23,
+      "received_at": 1790984746.1170535,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "salle_activites-fumee-mq2",
+      "status": "live",
+      "boot": "e73ffc28",
+      "seq": 23,
+      "received_at": 1790984748.1474082,
+      "values": {
+        "gas_adc": 1865
+      }
+    }
+  ],
+  "diagram_text_sha256": "e1e9971ae75fdcb97ea10dcc513f6d12c21628a0a7bae9b42b0a26e997f3018a",
+  "source_text_sha256": "9ca5aeb69f901e2f7737ec7955a58b4f6114ce42537b9d2b6ff29a0d0a549948"
+}

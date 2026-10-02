@@ -57,6 +57,21 @@ arrêt, les mesures expirent ; ce comportement est attendu.
 
 ## Essais ESP32 réels dans Wokwi / Firefox
 
+### Trois résidents complets et tout l'environnement
+
+**23 projets collectifs / 214 capteurs**, correspondant à R001, R002, R003 et aux
+20 zones : tous les champs prévus ont été observés dans les trames UART Wokwi,
+avec réception des identifiants vérifiée dans le backend. Les essais de zones
+ont été successifs. Les [comptes rendus, traces et liens des 23 projets](validation/collective/README.md)
+sont contrôlés par `tools/summarize_collective_validation.py`.
+
+Une observation distincte a vérifié les 42 capteurs des trois résidents et de
+l'entrée pendant environ deux minutes ensemble. Le fonctionnement continu des
+23 cartes simultanées reste à tester avec Wokwi CLI et un jeton disponible.
+Les 22 autres résidents ne sont pas couverts par ces essais collectifs.
+
+### Bancs individuels par famille
+
 **21 familles et 62 scénarios réussis**, avec publication du firmware ESP32
 simulé, réception MQTT vérifiée dans le backend et sauvegarde des projets.
 La [liste des 21 bancs Wokwi](validation/WOKWI.md) donne les liens exécutables.

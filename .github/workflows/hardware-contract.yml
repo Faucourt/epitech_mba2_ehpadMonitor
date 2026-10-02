@@ -25,4 +25,5 @@ jobs:
       - run: node --check dashboard/public/hardware.js
       - run: node --check dashboard/public/acquisition-dashboard.js
       - run: python firmware/all_sensors/tools/summarize_validation.py
+      - run: python firmware/all_sensors/tools/summarize_collective_validation.py
       - run: python -m compileall -q backend/hardware_telemetry.py backend/hardware_routes.py backend/main.py

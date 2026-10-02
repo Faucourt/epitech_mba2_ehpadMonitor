@@ -1,0 +1,148 @@
+{
+  "entity": "infirmerie_rdc",
+  "url": "https://wokwi.com/projects/476811645982496769",
+  "finished_at": "2026-10-02T23:35:10.075Z",
+  "firmware_sha256": "222d354a5fa295d1b9ea92e84cdabf5ff641d27a4fc2a184cfafcb43e198d733",
+  "diagram_sha256": "a6006afd11c85e7de19699b8b5614325fbbe49ef4e8ac48cb0974a1fe11e0b0e",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 92.742,
+  "endpoint_ids": [
+    "infirmerie_rdc-porte-door",
+    "infirmerie_rdc-ambiant-dht22",
+    "infirmerie_rdc-ambiant-sgp40",
+    "infirmerie_rdc-co2-scd41",
+    "infirmerie_rdc-son-sound",
+    "infirmerie_rdc-co-ze07co",
+    "infirmerie_rdc-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49693,
+  "fields": {
+    "infirmerie_rdc-porte-door": [
+      "door_open"
+    ],
+    "infirmerie_rdc-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "infirmerie_rdc-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "infirmerie_rdc-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "infirmerie_rdc-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "infirmerie_rdc-co-ze07co": [
+      "co_ppm"
+    ],
+    "infirmerie_rdc-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "infirmerie_rdc-porte-door",
+    "infirmerie_rdc-ambiant-dht22",
+    "infirmerie_rdc-ambiant-sgp40",
+    "infirmerie_rdc-co2-scd41",
+    "infirmerie_rdc-son-sound",
+    "infirmerie_rdc-co-ze07co",
+    "infirmerie_rdc-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "infirmerie_rdc-porte-door",
+    "infirmerie_rdc-ambiant-dht22",
+    "infirmerie_rdc-ambiant-sgp40",
+    "infirmerie_rdc-co2-scd41",
+    "infirmerie_rdc-son-sound",
+    "infirmerie_rdc-co-ze07co",
+    "infirmerie_rdc-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "infirmerie_rdc-porte-door",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984105.9883485,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "infirmerie_rdc-ambiant-dht22",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984105.9884958,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "infirmerie_rdc-ambiant-sgp40",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984108.060672,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "infirmerie_rdc-co2-scd41",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984108.0618112,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "infirmerie_rdc-son-sound",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984108.0619264,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "infirmerie_rdc-co-ze07co",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984108.06198,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "infirmerie_rdc-fumee-mq2",
+      "status": "live",
+      "boot": "c0873f1a",
+      "seq": 24,
+      "received_at": 1790984108.0620196,
+      "values": {
+        "gas_adc": 2216
+      }
+    }
+  ],
+  "diagram_text_sha256": "ce7e6f88c23706f6cf301acb19fd60914e75aecf008b04f048b7fa208c89459b",
+  "source_text_sha256": "40029a99ef8974761c0b7e20d2bafbbda3790c3f30a3542f90b8138f41653712"
+}

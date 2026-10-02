@@ -1,0 +1,180 @@
+{
+  "entity": "ascenseur",
+  "url": "https://wokwi.com/projects/476812886454362113",
+  "finished_at": "2026-10-02T23:19:22.267Z",
+  "firmware_sha256": "b1456ee13bcfc38986d6dad980a5d64d78258ef02c0676229e86f1c4d74faa43",
+  "diagram_sha256": "7c074e5eb69ae4734f80eea28282af581ccbe987718ebb16205a42d8af6debd2",
+  "actual_wokwi_browser": true,
+  "actions": [
+    "rfid-hold-ascenseur-badge-rfid"
+  ],
+  "wall_seconds": 103.077,
+  "endpoint_ids": [
+    "ascenseur-badge-rfid",
+    "ascenseur-pir-pir",
+    "ascenseur-porte-door",
+    "ascenseur-ambiant-dht22",
+    "ascenseur-ambiant-sgp40",
+    "ascenseur-co2-scd41",
+    "ascenseur-son-sound",
+    "ascenseur-co-ze07co",
+    "ascenseur-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49662,
+  "fields": {
+    "ascenseur-badge-rfid": [
+      "tag_uid"
+    ],
+    "ascenseur-pir-pir": [
+      "motion"
+    ],
+    "ascenseur-porte-door": [
+      "door_open"
+    ],
+    "ascenseur-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "ascenseur-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "ascenseur-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "ascenseur-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "ascenseur-co-ze07co": [
+      "co_ppm"
+    ],
+    "ascenseur-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "ascenseur-badge-rfid",
+    "ascenseur-pir-pir",
+    "ascenseur-porte-door",
+    "ascenseur-ambiant-dht22",
+    "ascenseur-ambiant-sgp40",
+    "ascenseur-co2-scd41",
+    "ascenseur-son-sound",
+    "ascenseur-co-ze07co",
+    "ascenseur-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "ascenseur-badge-rfid",
+    "ascenseur-pir-pir",
+    "ascenseur-porte-door",
+    "ascenseur-ambiant-dht22",
+    "ascenseur-ambiant-sgp40",
+    "ascenseur-co2-scd41",
+    "ascenseur-son-sound",
+    "ascenseur-co-ze07co",
+    "ascenseur-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "ascenseur-badge-rfid",
+      "status": "unavailable",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983158.207157,
+      "values": {}
+    },
+    {
+      "id": "ascenseur-pir-pir",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983158.2072384,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "ascenseur-porte-door",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983158.2076204,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "ascenseur-ambiant-dht22",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983160.2648194,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "ascenseur-ambiant-sgp40",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983160.266695,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "ascenseur-co2-scd41",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983160.2668219,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "ascenseur-son-sound",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983160.2670152,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "ascenseur-co-ze07co",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 24,
+      "received_at": 1790983160.2671373,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "ascenseur-fumee-mq2",
+      "status": "live",
+      "boot": "f07d0c32",
+      "seq": 23,
+      "received_at": 1790983158.2049375,
+      "values": {
+        "gas_adc": 1711
+      }
+    }
+  ],
+  "diagram_text_sha256": "5456ac5f9417a611e073fa1b09d64f65828c93a50680fadac3a98ddb71e0a382",
+  "source_text_sha256": "4b30d2d7be100c4cf11c63c3e6d6c57b203c93435a5c62d30a8c583ec5f86107"
+}

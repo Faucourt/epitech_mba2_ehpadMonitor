@@ -1,0 +1,268 @@
+{
+  "entity": "jardin",
+  "url": "https://wokwi.com/projects/476812205238482945",
+  "finished_at": "2026-10-02T23:44:12.169Z",
+  "firmware_sha256": "5d3290506be78da6cdccd66ea9060a8607365ad9893c6bbe859b5476625839a4",
+  "diagram_sha256": "b3c9531d0cbaa62ea5bf276ca9092f442cdd722096d5240c9beff6a11e6d4b6c",
+  "actual_wokwi_browser": true,
+  "actions": [
+    "rfid-hold-jardin-rfid_sortie-rfid"
+  ],
+  "wall_seconds": 91.261,
+  "endpoint_ids": [
+    "jardin-gps_bracelet-gps",
+    "jardin-rfid_sortie-rfid",
+    "jardin-camera_thermique-amg8833",
+    "jardin-pir-pir",
+    "jardin-ambiant-dht22",
+    "jardin-ambiant-sgp40",
+    "jardin-co2-scd41",
+    "jardin-son-sound",
+    "jardin-co-ze07co",
+    "jardin-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49561,
+  "fields": {
+    "jardin-gps_bracelet-gps": [
+      "gps_fix",
+      "latitude",
+      "longitude"
+    ],
+    "jardin-rfid_sortie-rfid": [
+      "tag_uid"
+    ],
+    "jardin-camera_thermique-amg8833": [
+      "thermal_pixels_c",
+      "thermal_max_c"
+    ],
+    "jardin-pir-pir": [
+      "motion"
+    ],
+    "jardin-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "jardin-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "jardin-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "jardin-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "jardin-co-ze07co": [
+      "co_ppm"
+    ],
+    "jardin-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "jardin-gps_bracelet-gps",
+    "jardin-rfid_sortie-rfid",
+    "jardin-camera_thermique-amg8833",
+    "jardin-pir-pir",
+    "jardin-ambiant-dht22",
+    "jardin-ambiant-sgp40",
+    "jardin-co2-scd41",
+    "jardin-son-sound",
+    "jardin-co-ze07co",
+    "jardin-fumee-mq2"
+  ],
+  "backend_snapshot_at": 1790984652.4957113,
+  "backend_current_boot_ids": [
+    "jardin-gps_bracelet-gps",
+    "jardin-rfid_sortie-rfid",
+    "jardin-camera_thermique-amg8833",
+    "jardin-pir-pir",
+    "jardin-ambiant-dht22",
+    "jardin-ambiant-sgp40",
+    "jardin-co2-scd41",
+    "jardin-son-sound",
+    "jardin-co-ze07co",
+    "jardin-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "jardin-gps_bracelet-gps",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984648.0958595,
+      "values": {
+        "gps_fix": true,
+        "latitude": 48.85660167,
+        "longitude": 2.3522
+      }
+    },
+    {
+      "id": "jardin-rfid_sortie-rfid",
+      "status": "unavailable",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984648.0958962,
+      "values": {}
+    },
+    {
+      "id": "jardin-camera_thermique-amg8833",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984650.1628675,
+      "values": {
+        "thermal_pixels_c": [
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          34,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22,
+          22
+        ],
+        "thermal_max_c": 34
+      }
+    },
+    {
+      "id": "jardin-pir-pir",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984650.165571,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "jardin-ambiant-dht22",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984650.166082,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "jardin-ambiant-sgp40",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984650.166333,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "jardin-co2-scd41",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984650.1671784,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "jardin-son-sound",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 24,
+      "received_at": 1790984650.1674056,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "jardin-co-ze07co",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 23,
+      "received_at": 1790984648.0957794,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "jardin-fumee-mq2",
+      "status": "live",
+      "boot": "d5fb61fb",
+      "seq": 23,
+      "received_at": 1790984648.0958219,
+      "values": {
+        "gas_adc": 1909
+      }
+    }
+  ],
+  "diagram_text_sha256": "49011d5a1da8b973ddd12dcdd8d8613755ad61d822da57e46d7c58d21e1785f2",
+  "source_text_sha256": "ff316c877ee64fd2c2e600cfbc3572c8f8383959ef84fcba40ab3d391e26e866"
+}

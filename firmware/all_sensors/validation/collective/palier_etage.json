@@ -1,0 +1,197 @@
+{
+  "entity": "palier_etage",
+  "url": "https://wokwi.com/projects/476815009189781505",
+  "finished_at": "2026-10-02T23:52:56.174Z",
+  "firmware_sha256": "3b940e0e717108200314f5fc68e0b6be7cc9b125e0bdfabedac8563fd62fbacf",
+  "diagram_sha256": "c6a56dd9a930781dd0e0c3d9b692491786d9731bdf5129a91f64115d9dee3846",
+  "actual_wokwi_browser": true,
+  "actions": [
+    "rfid-hold-palier_etage-badge-rfid"
+  ],
+  "wall_seconds": 91.195,
+  "endpoint_ids": [
+    "palier_etage-pir-pir",
+    "palier_etage-badge-rfid",
+    "palier_etage-radar_mmwave-radar",
+    "palier_etage-porte-door",
+    "palier_etage-ambiant-dht22",
+    "palier_etage-ambiant-sgp40",
+    "palier_etage-co2-scd41",
+    "palier_etage-son-sound",
+    "palier_etage-co-ze07co",
+    "palier_etage-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49524,
+  "fields": {
+    "palier_etage-pir-pir": [
+      "motion"
+    ],
+    "palier_etage-badge-rfid": [
+      "tag_uid"
+    ],
+    "palier_etage-radar_mmwave-radar": [
+      "presence"
+    ],
+    "palier_etage-porte-door": [
+      "door_open"
+    ],
+    "palier_etage-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "palier_etage-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "palier_etage-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "palier_etage-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "palier_etage-co-ze07co": [
+      "co_ppm"
+    ],
+    "palier_etage-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "palier_etage-pir-pir",
+    "palier_etage-badge-rfid",
+    "palier_etage-radar_mmwave-radar",
+    "palier_etage-porte-door",
+    "palier_etage-ambiant-dht22",
+    "palier_etage-ambiant-sgp40",
+    "palier_etage-co2-scd41",
+    "palier_etage-son-sound",
+    "palier_etage-co-ze07co",
+    "palier_etage-fumee-mq2"
+  ],
+  "backend_snapshot_at": 1790985176.4959958,
+  "backend_current_boot_ids": [
+    "palier_etage-pir-pir",
+    "palier_etage-badge-rfid",
+    "palier_etage-radar_mmwave-radar",
+    "palier_etage-porte-door",
+    "palier_etage-ambiant-dht22",
+    "palier_etage-ambiant-sgp40",
+    "palier_etage-co2-scd41",
+    "palier_etage-son-sound",
+    "palier_etage-co-ze07co",
+    "palier_etage-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "palier_etage-pir-pir",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985172.088271,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "palier_etage-badge-rfid",
+      "status": "unavailable",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985172.0883267,
+      "values": {}
+    },
+    {
+      "id": "palier_etage-radar_mmwave-radar",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985174.1722617,
+      "values": {
+        "presence": false
+      }
+    },
+    {
+      "id": "palier_etage-porte-door",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985174.1742628,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "palier_etage-ambiant-dht22",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985174.174356,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "palier_etage-ambiant-sgp40",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985174.174412,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "palier_etage-co2-scd41",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985174.1744545,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "palier_etage-son-sound",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 24,
+      "received_at": 1790985174.1744914,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "palier_etage-co-ze07co",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 23,
+      "received_at": 1790985172.0880089,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "palier_etage-fumee-mq2",
+      "status": "live",
+      "boot": "f5ac571e",
+      "seq": 23,
+      "received_at": 1790985172.088175,
+      "values": {
+        "gas_adc": 1849
+      }
+    }
+  ],
+  "diagram_text_sha256": "b8a9e3134b52330a9b625c5c9c5bd7c63908b3987b12563379fc127d98633cf9",
+  "source_text_sha256": "bb8bad6b0adc67e686a363d695b574aebaf961c6f75bfb341300bbf2c58966c9"
+}

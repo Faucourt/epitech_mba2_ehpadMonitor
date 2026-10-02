@@ -1,0 +1,185 @@
+{
+  "entity": "couloir_aile_rdc",
+  "url": "https://wokwi.com/projects/476812638260579329",
+  "finished_at": "2026-10-02T23:51:02.659Z",
+  "firmware_sha256": "94fb5e656708da2a55beb8e21e0359660bf123c62e8961a1b5937983eba3442e",
+  "diagram_sha256": "e59b3d4a0e17794ef128d10694a17ea919a5975a8b3116212077156ecf12890c",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 94.528,
+  "endpoint_ids": [
+    "couloir_aile_rdc-ble_beacon-ble",
+    "couloir_aile_rdc-pir-pir",
+    "couloir_aile_rdc-sol_intelligent-hx711",
+    "couloir_aile_rdc-ambiant-dht22",
+    "couloir_aile_rdc-ambiant-sgp40",
+    "couloir_aile_rdc-co2-scd41",
+    "couloir_aile_rdc-son-sound",
+    "couloir_aile_rdc-co-ze07co",
+    "couloir_aile_rdc-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49562,
+  "fields": {
+    "couloir_aile_rdc-ble_beacon-ble": [
+      "ble_address",
+      "ble_rssi_dbm"
+    ],
+    "couloir_aile_rdc-pir-pir": [
+      "motion"
+    ],
+    "couloir_aile_rdc-sol_intelligent-hx711": [
+      "load_raw",
+      "load_kg"
+    ],
+    "couloir_aile_rdc-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "couloir_aile_rdc-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "couloir_aile_rdc-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "couloir_aile_rdc-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "couloir_aile_rdc-co-ze07co": [
+      "co_ppm"
+    ],
+    "couloir_aile_rdc-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "couloir_aile_rdc-ble_beacon-ble",
+    "couloir_aile_rdc-pir-pir",
+    "couloir_aile_rdc-sol_intelligent-hx711",
+    "couloir_aile_rdc-ambiant-dht22",
+    "couloir_aile_rdc-ambiant-sgp40",
+    "couloir_aile_rdc-co2-scd41",
+    "couloir_aile_rdc-son-sound",
+    "couloir_aile_rdc-co-ze07co",
+    "couloir_aile_rdc-fumee-mq2"
+  ],
+  "backend_snapshot_at": 1790985062.994719,
+  "backend_current_boot_ids": [
+    "couloir_aile_rdc-ble_beacon-ble",
+    "couloir_aile_rdc-pir-pir",
+    "couloir_aile_rdc-sol_intelligent-hx711",
+    "couloir_aile_rdc-ambiant-dht22",
+    "couloir_aile_rdc-ambiant-sgp40",
+    "couloir_aile_rdc-co2-scd41",
+    "couloir_aile_rdc-son-sound",
+    "couloir_aile_rdc-co-ze07co",
+    "couloir_aile_rdc-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "couloir_aile_rdc-ble_beacon-ble",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985058.6108713,
+      "values": {
+        "ble_address": "02:00:00:00:00:01",
+        "ble_rssi_dbm": -55
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-pir-pir",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985058.6109138,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-sol_intelligent-hx711",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985060.6497555,
+      "values": {
+        "load_raw": 0,
+        "load_kg": 0
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-ambiant-dht22",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985060.6517193,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-ambiant-sgp40",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985060.6518288,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-co2-scd41",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985060.6519885,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-son-sound",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985060.6520479,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-co-ze07co",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 24,
+      "received_at": 1790985060.652085,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-fumee-mq2",
+      "status": "live",
+      "boot": "1c34f0ae",
+      "seq": 23,
+      "received_at": 1790985058.6108274,
+      "values": {
+        "gas_adc": 1738
+      }
+    }
+  ],
+  "diagram_text_sha256": "bf4c0b8c37e62d01d8edc956b99d9a103ae11bc9d07d7b27966854d8fa30c548",
+  "source_text_sha256": "a4ab546a50cca3c7f0506b9e1db63ee7796b47d4c61adc406927f3c5c7d74b51"
+}

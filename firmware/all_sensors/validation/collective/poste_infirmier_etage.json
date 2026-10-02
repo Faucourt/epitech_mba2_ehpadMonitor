@@ -1,0 +1,148 @@
+{
+  "entity": "poste_infirmier_etage",
+  "url": "https://wokwi.com/projects/476813021704952833",
+  "finished_at": "2026-10-02T23:21:16.987Z",
+  "firmware_sha256": "3762364245d26a28eb2eec91417450db0b3e07a45812a8cbc0f0c71b21a60915",
+  "diagram_sha256": "a6006afd11c85e7de19699b8b5614325fbbe49ef4e8ac48cb0974a1fe11e0b0e",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 88.612,
+  "endpoint_ids": [
+    "poste_infirmier_etage-porte-door",
+    "poste_infirmier_etage-ambiant-dht22",
+    "poste_infirmier_etage-ambiant-sgp40",
+    "poste_infirmier_etage-co2-scd41",
+    "poste_infirmier_etage-son-sound",
+    "poste_infirmier_etage-co-ze07co",
+    "poste_infirmier_etage-fumee-mq2"
+  ],
+  "latest_uptime_ms": 48553,
+  "fields": {
+    "poste_infirmier_etage-porte-door": [
+      "door_open"
+    ],
+    "poste_infirmier_etage-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "poste_infirmier_etage-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "poste_infirmier_etage-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "poste_infirmier_etage-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "poste_infirmier_etage-co-ze07co": [
+      "co_ppm"
+    ],
+    "poste_infirmier_etage-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "poste_infirmier_etage-porte-door",
+    "poste_infirmier_etage-ambiant-dht22",
+    "poste_infirmier_etage-ambiant-sgp40",
+    "poste_infirmier_etage-co2-scd41",
+    "poste_infirmier_etage-son-sound",
+    "poste_infirmier_etage-co-ze07co",
+    "poste_infirmier_etage-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "poste_infirmier_etage-porte-door",
+    "poste_infirmier_etage-ambiant-dht22",
+    "poste_infirmier_etage-ambiant-sgp40",
+    "poste_infirmier_etage-co2-scd41",
+    "poste_infirmier_etage-son-sound",
+    "poste_infirmier_etage-co-ze07co",
+    "poste_infirmier_etage-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "poste_infirmier_etage-porte-door",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 24,
+      "received_at": 1790983274.985476,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-ambiant-dht22",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 24,
+      "received_at": 1790983274.985576,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-ambiant-sgp40",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 24,
+      "received_at": 1790983274.9856553,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-co2-scd41",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 23,
+      "received_at": 1790983272.9536953,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-son-sound",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 23,
+      "received_at": 1790983272.9538543,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-co-ze07co",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 23,
+      "received_at": 1790983272.953966,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-fumee-mq2",
+      "status": "live",
+      "boot": "66c70250",
+      "seq": 23,
+      "received_at": 1790983274.983869,
+      "values": {
+        "gas_adc": 1887
+      }
+    }
+  ],
+  "diagram_text_sha256": "ce7e6f88c23706f6cf301acb19fd60914e75aecf008b04f048b7fa208c89459b",
+  "source_text_sha256": "24fe4fc3c5b1b4381c25ec20a5508505def1514b6a6af4f413373caf585dd28d"
+}

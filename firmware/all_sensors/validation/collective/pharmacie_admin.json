@@ -1,0 +1,148 @@
+{
+  "entity": "pharmacie_admin",
+  "url": "https://wokwi.com/projects/476811754112711681",
+  "finished_at": "2026-10-02T23:36:46.406Z",
+  "firmware_sha256": "dc96f18b7dd6f7f8f1e016166184519e2937b2af129a91e0d1e1084fc292ed18",
+  "diagram_sha256": "a6006afd11c85e7de19699b8b5614325fbbe49ef4e8ac48cb0974a1fe11e0b0e",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 90.389,
+  "endpoint_ids": [
+    "pharmacie_admin-porte-door",
+    "pharmacie_admin-ambiant-dht22",
+    "pharmacie_admin-ambiant-sgp40",
+    "pharmacie_admin-co2-scd41",
+    "pharmacie_admin-son-sound",
+    "pharmacie_admin-co-ze07co",
+    "pharmacie_admin-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49408,
+  "fields": {
+    "pharmacie_admin-porte-door": [
+      "door_open"
+    ],
+    "pharmacie_admin-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "pharmacie_admin-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "pharmacie_admin-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "pharmacie_admin-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "pharmacie_admin-co-ze07co": [
+      "co_ppm"
+    ],
+    "pharmacie_admin-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "pharmacie_admin-porte-door",
+    "pharmacie_admin-ambiant-dht22",
+    "pharmacie_admin-ambiant-sgp40",
+    "pharmacie_admin-co2-scd41",
+    "pharmacie_admin-son-sound",
+    "pharmacie_admin-co-ze07co",
+    "pharmacie_admin-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "pharmacie_admin-porte-door",
+    "pharmacie_admin-ambiant-dht22",
+    "pharmacie_admin-ambiant-sgp40",
+    "pharmacie_admin-co2-scd41",
+    "pharmacie_admin-son-sound",
+    "pharmacie_admin-co-ze07co",
+    "pharmacie_admin-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "pharmacie_admin-porte-door",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 24,
+      "received_at": 1790984202.3398476,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "pharmacie_admin-ambiant-dht22",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 24,
+      "received_at": 1790984202.3398924,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "pharmacie_admin-ambiant-sgp40",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 24,
+      "received_at": 1790984204.396489,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "pharmacie_admin-co2-scd41",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 24,
+      "received_at": 1790984204.397722,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "pharmacie_admin-son-sound",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 24,
+      "received_at": 1790984204.3978176,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "pharmacie_admin-co-ze07co",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 24,
+      "received_at": 1790984204.3978539,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "pharmacie_admin-fumee-mq2",
+      "status": "live",
+      "boot": "5eccab78",
+      "seq": 23,
+      "received_at": 1790984202.3397417,
+      "values": {
+        "gas_adc": 2051
+      }
+    }
+  ],
+  "diagram_text_sha256": "ce7e6f88c23706f6cf301acb19fd60914e75aecf008b04f048b7fa208c89459b",
+  "source_text_sha256": "c213e802e768c084eba6021476c6fc4828ca936b4d216ab2a4289f9d3be26883"
+}

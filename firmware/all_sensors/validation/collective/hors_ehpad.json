@@ -1,0 +1,168 @@
+{
+  "entity": "hors_ehpad",
+  "url": "https://wokwi.com/projects/476811536858225665",
+  "finished_at": "2026-10-02T23:33:31.457Z",
+  "firmware_sha256": "e0009975f63ec2c1d3754be964753ba420b03bf4a5a55870a938a1f7a04b62bf",
+  "diagram_sha256": "9a1377848b62571b4c7876eec5899aeb1a5575f91d5ab61373f85f7e1befe60b",
+  "actual_wokwi_browser": true,
+  "actions": [
+    "rfid-hold-hors_ehpad-rfid_sortie-rfid"
+  ],
+  "wall_seconds": 87.194,
+  "endpoint_ids": [
+    "hors_ehpad-gps_bracelet-gps",
+    "hors_ehpad-rfid_sortie-rfid",
+    "hors_ehpad-ambiant-dht22",
+    "hors_ehpad-ambiant-sgp40",
+    "hors_ehpad-co2-scd41",
+    "hors_ehpad-son-sound",
+    "hors_ehpad-co-ze07co",
+    "hors_ehpad-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49160,
+  "fields": {
+    "hors_ehpad-gps_bracelet-gps": [
+      "gps_fix",
+      "latitude",
+      "longitude"
+    ],
+    "hors_ehpad-rfid_sortie-rfid": [
+      "tag_uid"
+    ],
+    "hors_ehpad-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "hors_ehpad-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "hors_ehpad-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "hors_ehpad-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "hors_ehpad-co-ze07co": [
+      "co_ppm"
+    ],
+    "hors_ehpad-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "hors_ehpad-gps_bracelet-gps",
+    "hors_ehpad-rfid_sortie-rfid",
+    "hors_ehpad-ambiant-dht22",
+    "hors_ehpad-ambiant-sgp40",
+    "hors_ehpad-co2-scd41",
+    "hors_ehpad-son-sound",
+    "hors_ehpad-co-ze07co",
+    "hors_ehpad-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "hors_ehpad-gps_bracelet-gps",
+    "hors_ehpad-rfid_sortie-rfid",
+    "hors_ehpad-ambiant-dht22",
+    "hors_ehpad-ambiant-sgp40",
+    "hors_ehpad-co2-scd41",
+    "hors_ehpad-son-sound",
+    "hors_ehpad-co-ze07co",
+    "hors_ehpad-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "hors_ehpad-gps_bracelet-gps",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 24,
+      "received_at": 1790984007.3736548,
+      "values": {
+        "gps_fix": true,
+        "latitude": 48.85660167,
+        "longitude": 2.3522
+      }
+    },
+    {
+      "id": "hors_ehpad-rfid_sortie-rfid",
+      "status": "unavailable",
+      "boot": "9a1084d8",
+      "seq": 24,
+      "received_at": 1790984009.4562974,
+      "values": {}
+    },
+    {
+      "id": "hors_ehpad-ambiant-dht22",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 24,
+      "received_at": 1790984009.4602382,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "hors_ehpad-ambiant-sgp40",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 24,
+      "received_at": 1790984009.4603994,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "hors_ehpad-co2-scd41",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 24,
+      "received_at": 1790984009.460484,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "hors_ehpad-son-sound",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 23,
+      "received_at": 1790984007.373335,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "hors_ehpad-co-ze07co",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 23,
+      "received_at": 1790984007.3735054,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "hors_ehpad-fumee-mq2",
+      "status": "live",
+      "boot": "9a1084d8",
+      "seq": 23,
+      "received_at": 1790984007.3735893,
+      "values": {
+        "gas_adc": 2162
+      }
+    }
+  ],
+  "diagram_text_sha256": "353b3afec0c86ae34d8f8854fbc913028bc7dc2a76e4433c1db78d0e74d31ee3",
+  "source_text_sha256": "b968543cfa8cfe4bdd382548282a0e9aaa46020204444a0651b5adcd40ad258f"
+}

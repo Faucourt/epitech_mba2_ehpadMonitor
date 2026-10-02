@@ -1,0 +1,309 @@
+{
+  "entity": "kinesitherapie",
+  "url": "https://wokwi.com/projects/476813146364931073",
+  "finished_at": "2026-10-02T23:25:21.933Z",
+  "firmware_sha256": "18ea95b41cfc3c80bdbb72ee239975be40a653a308001603227258788da6c2ee",
+  "diagram_sha256": "ac60b32f8d299be42b2a70e69664176072c2b5245db905a81ab9687811b0e27d",
+  "actual_wokwi_browser": true,
+  "actions": [
+    "zone-nibp-start"
+  ],
+  "wall_seconds": 214.296,
+  "endpoint_ids": [
+    "kinesitherapie-pir-pir",
+    "kinesitherapie-sol-hx711",
+    "kinesitherapie-wearable-mpu6050",
+    "kinesitherapie-wearable-max30102",
+    "kinesitherapie-wearable-tmp117",
+    "kinesitherapie-wearable-sos",
+    "kinesitherapie-wearable-ecg",
+    "kinesitherapie-wearable-respiration",
+    "kinesitherapie-wearable-nibp",
+    "kinesitherapie-porte-door",
+    "kinesitherapie-ambiant-dht22",
+    "kinesitherapie-ambiant-sgp40",
+    "kinesitherapie-co2-scd41",
+    "kinesitherapie-son-sound",
+    "kinesitherapie-co-ze07co",
+    "kinesitherapie-fumee-mq2"
+  ],
+  "latest_uptime_ms": 50016,
+  "fields": {
+    "kinesitherapie-pir-pir": [
+      "motion"
+    ],
+    "kinesitherapie-sol-hx711": [
+      "load_raw",
+      "load_kg"
+    ],
+    "kinesitherapie-wearable-mpu6050": [
+      "accel_g",
+      "gyro_dps",
+      "impact"
+    ],
+    "kinesitherapie-wearable-max30102": [
+      "red_raw",
+      "ir_raw",
+      "heart_rate",
+      "spo2"
+    ],
+    "kinesitherapie-wearable-tmp117": [
+      "contact_temperature_c"
+    ],
+    "kinesitherapie-wearable-sos": [
+      "sos_pressed"
+    ],
+    "kinesitherapie-wearable-ecg": [
+      "leads_off",
+      "ecg_mv"
+    ],
+    "kinesitherapie-wearable-respiration": [
+      "respiration_mv",
+      "respiratory_rate"
+    ],
+    "kinesitherapie-wearable-nibp": [
+      "blood_pressure_sys",
+      "blood_pressure_dia"
+    ],
+    "kinesitherapie-porte-door": [
+      "door_open"
+    ],
+    "kinesitherapie-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "kinesitherapie-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "kinesitherapie-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "kinesitherapie-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "kinesitherapie-co-ze07co": [
+      "co_ppm"
+    ],
+    "kinesitherapie-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "kinesitherapie-pir-pir",
+    "kinesitherapie-sol-hx711",
+    "kinesitherapie-wearable-mpu6050",
+    "kinesitherapie-wearable-max30102",
+    "kinesitherapie-wearable-tmp117",
+    "kinesitherapie-wearable-sos",
+    "kinesitherapie-wearable-ecg",
+    "kinesitherapie-wearable-respiration",
+    "kinesitherapie-wearable-nibp",
+    "kinesitherapie-porte-door",
+    "kinesitherapie-ambiant-dht22",
+    "kinesitherapie-ambiant-sgp40",
+    "kinesitherapie-co2-scd41",
+    "kinesitherapie-son-sound",
+    "kinesitherapie-co-ze07co",
+    "kinesitherapie-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "kinesitherapie-pir-pir",
+    "kinesitherapie-sol-hx711",
+    "kinesitherapie-wearable-mpu6050",
+    "kinesitherapie-wearable-max30102",
+    "kinesitherapie-wearable-tmp117",
+    "kinesitherapie-wearable-sos",
+    "kinesitherapie-wearable-ecg",
+    "kinesitherapie-wearable-respiration",
+    "kinesitherapie-wearable-nibp",
+    "kinesitherapie-porte-door",
+    "kinesitherapie-ambiant-dht22",
+    "kinesitherapie-ambiant-sgp40",
+    "kinesitherapie-co2-scd41",
+    "kinesitherapie-son-sound",
+    "kinesitherapie-co-ze07co",
+    "kinesitherapie-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "kinesitherapie-pir-pir",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983513.5401137,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "kinesitherapie-sol-hx711",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983513.5401602,
+      "values": {
+        "load_raw": 0,
+        "load_kg": 0
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-mpu6050",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983515.6265774,
+      "values": {
+        "accel_g": 1,
+        "gyro_dps": 0,
+        "impact": false
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-max30102",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983515.6317594,
+      "values": {
+        "heart_rate": 75,
+        "spo2": 93,
+        "red_raw": 53391,
+        "ir_raw": 57525
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-tmp117",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983515.631954,
+      "values": {
+        "contact_temperature_c": 36.5
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-sos",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983515.632072,
+      "values": {
+        "sos_pressed": false
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-ecg",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983517.8228416,
+      "values": {
+        "leads_off": false,
+        "ecg_mv": 1541
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-respiration",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983517.8641927,
+      "values": {
+        "respiration_mv": 2020,
+        "respiratory_rate": 15.11716
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-nibp",
+      "status": "unavailable",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983517.864346,
+      "values": {}
+    },
+    {
+      "id": "kinesitherapie-porte-door",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983517.8644226,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "kinesitherapie-ambiant-dht22",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983519.93089,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "kinesitherapie-ambiant-sgp40",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983519.9348948,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "kinesitherapie-co2-scd41",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983519.9354346,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "kinesitherapie-son-sound",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 24,
+      "received_at": 1790983519.9360287,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "kinesitherapie-co-ze07co",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 23,
+      "received_at": 1790983513.537744,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "kinesitherapie-fumee-mq2",
+      "status": "live",
+      "boot": "bfdce014",
+      "seq": 23,
+      "received_at": 1790983513.5400202,
+      "values": {
+        "gas_adc": 1608
+      }
+    }
+  ],
+  "diagram_text_sha256": "18e58f9035bb368b91a615edb5c4f1a170c42b060c49b06a3799f7589be3ee0d",
+  "source_text_sha256": "f15ea400e7f18c1381b7f3f782ba2acd7ae73cf003637d22d6b0548977bccc5e"
+}

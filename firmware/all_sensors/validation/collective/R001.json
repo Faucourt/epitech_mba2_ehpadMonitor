@@ -1,0 +1,303 @@
+{
+  "entity": "R001",
+  "url": "https://wokwi.com/projects/476811018920338433",
+  "finished_at": "2026-10-02T23:36:45.396636+00:00",
+  "firmware_sha256": "84f7fb5372c273b7e9b2c2fcb5df48b97e4a566043d51e482df8c190dd78b5ef",
+  "diagram_sha256": "d35f9aee8da4c79577b8fb3edd762039ef4c46007bfc0aed08a744900de85299",
+  "actual_wokwi_browser": true,
+  "scope": "All fields observed in real UART samples during this run; communication checked in backend; not all fields measured simultaneously",
+  "expected_ids": [
+    "R001-matelas-hx711",
+    "R001-pir-pir",
+    "R001-porte-door",
+    "R001-sdb_pir-pir",
+    "R001-wearable-ecg",
+    "R001-wearable-max30102",
+    "R001-wearable-mpu6050",
+    "R001-wearable-nibp",
+    "R001-wearable-respiration",
+    "R001-wearable-sos",
+    "R001-wearable-tmp117"
+  ],
+  "endpoint_ids": [
+    "R001-matelas-hx711",
+    "R001-pir-pir",
+    "R001-porte-door",
+    "R001-sdb_pir-pir",
+    "R001-wearable-ecg",
+    "R001-wearable-max30102",
+    "R001-wearable-mpu6050",
+    "R001-wearable-nibp",
+    "R001-wearable-respiration",
+    "R001-wearable-sos",
+    "R001-wearable-tmp117"
+  ],
+  "fields": {
+    "R001-wearable-mpu6050": [
+      "accel_g",
+      "gyro_dps",
+      "impact"
+    ],
+    "R001-wearable-max30102": [
+      "heart_rate",
+      "ir_raw",
+      "red_raw",
+      "spo2"
+    ],
+    "R001-wearable-tmp117": [
+      "contact_temperature_c"
+    ],
+    "R001-wearable-sos": [
+      "sos_pressed"
+    ],
+    "R001-wearable-ecg": [
+      "ecg_mv",
+      "leads_off"
+    ],
+    "R001-wearable-respiration": [
+      "respiration_mv",
+      "respiratory_rate"
+    ],
+    "R001-wearable-nibp": [
+      "blood_pressure_dia",
+      "blood_pressure_sys"
+    ],
+    "R001-pir-pir": [
+      "motion"
+    ],
+    "R001-matelas-hx711": [
+      "load_kg",
+      "load_raw"
+    ],
+    "R001-porte-door": [
+      "door_open"
+    ],
+    "R001-sdb_pir-pir": [
+      "motion"
+    ]
+  },
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend_current_boot_ids": [
+    "R001-wearable-mpu6050",
+    "R001-wearable-max30102",
+    "R001-wearable-tmp117",
+    "R001-wearable-sos",
+    "R001-wearable-ecg",
+    "R001-wearable-respiration",
+    "R001-wearable-nibp",
+    "R001-pir-pir",
+    "R001-matelas-hx711",
+    "R001-porte-door",
+    "R001-sdb_pir-pir"
+  ],
+  "complete_communication": true,
+  "backend_snapshot_at": 1790984205.3614862,
+  "backend": [
+    {
+      "id": "R001-wearable-mpu6050",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      },
+      "status": "live",
+      "values": {
+        "accel_g": 1,
+        "gyro_dps": 0,
+        "impact": false
+      },
+      "received_at": 1790984200.9374952,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-wearable-max30102",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      },
+      "status": "live",
+      "values": {
+        "heart_rate": 75,
+        "spo2": 93,
+        "red_raw": 53967,
+        "ir_raw": 58411
+      },
+      "received_at": 1790984200.9430962,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-wearable-tmp117",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      },
+      "status": "live",
+      "values": {
+        "contact_temperature_c": 36.5
+      },
+      "received_at": 1790984200.9432437,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-wearable-sos",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      },
+      "status": "live",
+      "values": {
+        "sos_pressed": false
+      },
+      "received_at": 1790984203.059673,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-wearable-ecg",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      },
+      "status": "live",
+      "values": {
+        "leads_off": false,
+        "ecg_mv": 1932
+      },
+      "received_at": 1790984203.0624745,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-wearable-respiration",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      },
+      "status": "live",
+      "values": {
+        "respiration_mv": 1905,
+        "respiratory_rate": 15.0263
+      },
+      "received_at": 1790984205.2135954,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-wearable-nibp",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      },
+      "status": "unavailable",
+      "values": {},
+      "received_at": 1790984205.215288,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-pir-pir",
+      "entity_id": "R001",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      },
+      "status": "live",
+      "values": {
+        "motion": false
+      },
+      "received_at": 1790984205.2153738,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 22
+    },
+    {
+      "id": "R001-matelas-hx711",
+      "entity_id": "R001",
+      "role": "matelas",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      },
+      "status": "live",
+      "values": {
+        "load_raw": 0,
+        "load_kg": 0
+      },
+      "received_at": 1790984198.7676318,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 21
+    },
+    {
+      "id": "R001-porte-door",
+      "entity_id": "R001",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      },
+      "status": "live",
+      "values": {
+        "door_open": false
+      },
+      "received_at": 1790984198.7702925,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 21
+    },
+    {
+      "id": "R001-sdb_pir-pir",
+      "entity_id": "R001",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      },
+      "status": "live",
+      "values": {
+        "motion": false
+      },
+      "received_at": 1790984198.7704794,
+      "communicating": true,
+      "boot": "b991a841",
+      "seq": 21
+    }
+  ],
+  "browser_restarts_observed": 0,
+  "diagram_text_sha256": "601ce9fb3416969766c92bc0eec578a0589d78d7f79df613608e94572a010c75",
+  "source_text_sha256": "c232b8704c8298d6a886d9ddb1025590e40fcce995b190744e368b62c8392a24"
+}

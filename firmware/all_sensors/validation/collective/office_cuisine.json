@@ -1,0 +1,167 @@
+{
+  "entity": "office_cuisine",
+  "url": "https://wokwi.com/projects/476812525602607105",
+  "finished_at": "2026-10-02T23:49:20.561Z",
+  "firmware_sha256": "8b4f9a84a660d2914704dbdc26e4d08631befde6190f4b716e5bce76fa8e1faf",
+  "diagram_sha256": "fceb332ce8bc1b265c39cff4848283586124816907544319431580e59d5a50c9",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 96.946,
+  "endpoint_ids": [
+    "office_cuisine-fumee-mq2",
+    "office_cuisine-temperature-dht22",
+    "office_cuisine-co-ze07co",
+    "office_cuisine-porte-door",
+    "office_cuisine-ambiant-dht22",
+    "office_cuisine-ambiant-sgp40",
+    "office_cuisine-co2-scd41",
+    "office_cuisine-son-sound"
+  ],
+  "latest_uptime_ms": 50242,
+  "fields": {
+    "office_cuisine-fumee-mq2": [
+      "gas_adc"
+    ],
+    "office_cuisine-temperature-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "office_cuisine-co-ze07co": [
+      "co_ppm"
+    ],
+    "office_cuisine-porte-door": [
+      "door_open"
+    ],
+    "office_cuisine-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "office_cuisine-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "office_cuisine-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "office_cuisine-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ]
+  },
+  "expected_ids": [
+    "office_cuisine-fumee-mq2",
+    "office_cuisine-temperature-dht22",
+    "office_cuisine-co-ze07co",
+    "office_cuisine-porte-door",
+    "office_cuisine-ambiant-dht22",
+    "office_cuisine-ambiant-sgp40",
+    "office_cuisine-co2-scd41",
+    "office_cuisine-son-sound"
+  ],
+  "backend_snapshot_at": 1790984960.9005237,
+  "backend_current_boot_ids": [
+    "office_cuisine-fumee-mq2",
+    "office_cuisine-temperature-dht22",
+    "office_cuisine-co-ze07co",
+    "office_cuisine-porte-door",
+    "office_cuisine-ambiant-dht22",
+    "office_cuisine-ambiant-sgp40",
+    "office_cuisine-co2-scd41",
+    "office_cuisine-son-sound"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "office_cuisine-fumee-mq2",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 25,
+      "received_at": 1790984958.5491412,
+      "values": {
+        "gas_adc": 1906
+      }
+    },
+    {
+      "id": "office_cuisine-temperature-dht22",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 25,
+      "received_at": 1790984958.5491707,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "office_cuisine-co-ze07co",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 24,
+      "received_at": 1790984956.4843633,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "office_cuisine-porte-door",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 24,
+      "received_at": 1790984956.4844987,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "office_cuisine-ambiant-dht22",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 24,
+      "received_at": 1790984956.4845634,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "office_cuisine-ambiant-sgp40",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 24,
+      "received_at": 1790984958.547362,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "office_cuisine-co2-scd41",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 24,
+      "received_at": 1790984958.5490084,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "office_cuisine-son-sound",
+      "status": "live",
+      "boot": "b2a83744",
+      "seq": 24,
+      "received_at": 1790984958.5491078,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    }
+  ],
+  "diagram_text_sha256": "d91b3a25ea37ff09a4779924ea22f336f9f793d174944d58f738300b234d3613",
+  "source_text_sha256": "e254955066ce47dba6b5645e071cf3a59ffdc411cab20fb9a638e3f33e6d1530"
+}

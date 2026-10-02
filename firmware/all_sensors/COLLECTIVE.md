@@ -11,6 +11,11 @@ Priorité de validation : **R001, R002 et R003 complets, plus les 20 zones**,
 soit **23 ESP32 / 214 points d'acquisition**. Le mode `-Pilot` sélectionne
 exactement ce périmètre, sans publier à la place des 22 autres résidents.
 
+Les [projets et traces des essais collectifs](validation/collective/README.md)
+séparent les essais successifs de chaque zone de l'observation simultanée limitée
+aux trois résidents et à l'entrée. Une validation successive ne signifie pas
+que les vingt zones sont actuellement actives ensemble.
+
 ```powershell
 python firmware/all_sensors/tools/build_collective.py --pilot --cli arduino-cli
 python firmware/all_sensors/tools/run_collective.py --pilot --check
@@ -56,6 +61,13 @@ rejoue aucune trace. La communication réseau ne bloque ainsi pas l'acquisition
 dans le microcontrôleur simulé. Le backend écoute le broker Docker `mqtt`.
 
 Le code exporté avec `--hardware` conserve le transport WiFi/MQTT direct.
+L'export matériel utilise par défaut `hardware-private/collective/`, exclu de Git,
+et laisse les projets Wokwi existants en place :
+
+```powershell
+python firmware/all_sensors/tools/export_collective.py --hardware --entity R001
+```
+
 Le contrôle des valeurs finies du DHT22 utilise les bits IEEE-754 du `float`
 ESP32 pour éviter l'instruction `ULT.S` non prise en charge dans le moteur web
 observé. Le HX711 réinitialise son horloge par `power_down` / `power_up` lors de

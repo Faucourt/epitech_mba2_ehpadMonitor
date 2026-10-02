@@ -1,0 +1,180 @@
+{
+  "entity": "escalier",
+  "url": "https://wokwi.com/projects/476812746600517633",
+  "finished_at": "2026-10-02T23:17:19.323Z",
+  "firmware_sha256": "f171df8dd5988956e055308bc50cb97470091ad054699c3649e2b16ba84ddc68",
+  "diagram_sha256": "291037a6caf646785768476f56fa630929b5b24eb54d4e9a663b11153976e065",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 113.49,
+  "endpoint_ids": [
+    "escalier-pir-pir",
+    "escalier-radar_mmwave-radar",
+    "escalier-porte-door",
+    "escalier-ambiant-dht22",
+    "escalier-ambiant-sgp40",
+    "escalier-co2-scd41",
+    "escalier-son-sound",
+    "escalier-co-ze07co",
+    "escalier-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49778,
+  "fields": {
+    "escalier-pir-pir": [
+      "motion"
+    ],
+    "escalier-radar_mmwave-radar": [
+      "presence"
+    ],
+    "escalier-porte-door": [
+      "door_open"
+    ],
+    "escalier-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "escalier-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "escalier-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "escalier-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "escalier-co-ze07co": [
+      "co_ppm"
+    ],
+    "escalier-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "escalier-pir-pir",
+    "escalier-radar_mmwave-radar",
+    "escalier-porte-door",
+    "escalier-ambiant-dht22",
+    "escalier-ambiant-sgp40",
+    "escalier-co2-scd41",
+    "escalier-son-sound",
+    "escalier-co-ze07co",
+    "escalier-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "escalier-pir-pir",
+    "escalier-radar_mmwave-radar",
+    "escalier-porte-door",
+    "escalier-ambiant-dht22",
+    "escalier-ambiant-sgp40",
+    "escalier-co2-scd41",
+    "escalier-son-sound",
+    "escalier-co-ze07co",
+    "escalier-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "escalier-pir-pir",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983035.228706,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "escalier-radar_mmwave-radar",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983035.22881,
+      "values": {
+        "presence": false
+      }
+    },
+    {
+      "id": "escalier-porte-door",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983035.2288523,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "escalier-ambiant-dht22",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983035.228905,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "escalier-ambiant-sgp40",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983037.306727,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "escalier-co2-scd41",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983037.3086448,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "escalier-son-sound",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983037.3087845,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "escalier-co-ze07co",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983037.3088427,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "escalier-fumee-mq2",
+      "status": "live",
+      "boot": "dcf8da35",
+      "seq": 24,
+      "received_at": 1790983037.3088875,
+      "values": {
+        "gas_adc": 1852
+      }
+    }
+  ],
+  "diagram_text_sha256": "adbe6d78d3dacbb4bd2805ad84d14936b9902e1f043055447ce689e961b8ad7c",
+  "source_text_sha256": "ca65e6ef5e405d04728b5da3756886dde7857d8bdaaff16bcc5a8f6613ef7b8a"
+}

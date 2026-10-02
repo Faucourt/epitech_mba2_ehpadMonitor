@@ -1,0 +1,269 @@
+{
+  "entity": "entree",
+  "url": "https://wokwi.com/projects/476813411149295617",
+  "finished_at": "2026-10-02T23:30:46.365685+00:00",
+  "firmware_sha256": "57ca23bd7622ee4b1121818de3ee2e08e28e5f086077f4cb986d9eafa3244f07",
+  "diagram_sha256": "d2e438431e24f84a2896e8640c2408672be69d583d432ca0ae895690d624513d",
+  "actual_wokwi_browser": true,
+  "scope": "All fields observed in real UART samples during this run; communication checked in backend; not all fields measured simultaneously",
+  "expected_ids": [
+    "entree-ambiant-dht22",
+    "entree-ambiant-sgp40",
+    "entree-badge-rfid",
+    "entree-co-ze07co",
+    "entree-co2-scd41",
+    "entree-fumee-mq2",
+    "entree-ir-pir",
+    "entree-porte-door",
+    "entree-rfid-rfid",
+    "entree-son-sound"
+  ],
+  "endpoint_ids": [
+    "entree-ambiant-dht22",
+    "entree-ambiant-sgp40",
+    "entree-badge-rfid",
+    "entree-co-ze07co",
+    "entree-co2-scd41",
+    "entree-fumee-mq2",
+    "entree-ir-pir",
+    "entree-porte-door",
+    "entree-rfid-rfid",
+    "entree-son-sound"
+  ],
+  "fields": {
+    "entree-rfid-rfid": [
+      "tag_uid"
+    ],
+    "entree-badge-rfid": [
+      "tag_uid"
+    ],
+    "entree-ir-pir": [
+      "motion"
+    ],
+    "entree-porte-door": [
+      "door_open"
+    ],
+    "entree-ambiant-dht22": [
+      "humidity_pct",
+      "temperature_c"
+    ],
+    "entree-ambiant-sgp40": [
+      "voc_index",
+      "voc_raw"
+    ],
+    "entree-co2-scd41": [
+      "co2_ppm",
+      "humidity_pct",
+      "temperature_c"
+    ],
+    "entree-son-sound": [
+      "sound_db",
+      "sound_mv"
+    ],
+    "entree-co-ze07co": [
+      "co_ppm"
+    ],
+    "entree-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend_current_boot_ids": [
+    "entree-rfid-rfid",
+    "entree-badge-rfid",
+    "entree-ir-pir",
+    "entree-porte-door",
+    "entree-ambiant-dht22",
+    "entree-ambiant-sgp40",
+    "entree-co2-scd41",
+    "entree-son-sound",
+    "entree-co-ze07co",
+    "entree-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "backend_snapshot_at": 1790983846.3280685,
+  "backend": [
+    {
+      "id": "entree-rfid-rfid",
+      "entity_id": "entree",
+      "role": "rfid",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      },
+      "status": "live",
+      "values": {
+        "tag_uid": "01020304"
+      },
+      "received_at": 1790983845.8344254,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 67
+    },
+    {
+      "id": "entree-badge-rfid",
+      "entity_id": "entree",
+      "role": "badge",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      },
+      "status": "unavailable",
+      "values": {},
+      "received_at": 1790983843.7776911,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-ir-pir",
+      "entity_id": "entree",
+      "role": "ir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      },
+      "status": "live",
+      "values": {
+        "motion": false
+      },
+      "received_at": 1790983843.7803454,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-porte-door",
+      "entity_id": "entree",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      },
+      "status": "live",
+      "values": {
+        "door_open": false
+      },
+      "received_at": 1790983843.7804856,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-ambiant-dht22",
+      "entity_id": "entree",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      },
+      "status": "live",
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      },
+      "received_at": 1790983843.780563,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-ambiant-sgp40",
+      "entity_id": "entree",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      },
+      "status": "live",
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 98
+      },
+      "received_at": 1790983843.7806065,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-co2-scd41",
+      "entity_id": "entree",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      },
+      "status": "live",
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      },
+      "received_at": 1790983845.8309143,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-son-sound",
+      "entity_id": "entree",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      },
+      "status": "live",
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      },
+      "received_at": 1790983845.8340657,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-co-ze07co",
+      "entity_id": "entree",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      },
+      "status": "live",
+      "values": {
+        "co_ppm": 2
+      },
+      "received_at": 1790983845.8342614,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    },
+    {
+      "id": "entree-fumee-mq2",
+      "entity_id": "entree",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      },
+      "status": "live",
+      "values": {
+        "gas_adc": 1553
+      },
+      "received_at": 1790983845.83436,
+      "communicating": true,
+      "boot": "a48d8949",
+      "seq": 66
+    }
+  ],
+  "browser_restarts_observed": 0,
+  "diagram_text_sha256": "38a800e4036a8dd240d3c75e1902f441856bb44363484252b68c3b43f0b7b05e",
+  "source_text_sha256": "1e2153f0a70349c136e126363d713d5051f3e6776de29eb276356463367418e6"
+}

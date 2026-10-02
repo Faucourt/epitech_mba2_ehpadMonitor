@@ -1,0 +1,183 @@
+{
+  "entity": "salle_manger",
+  "url": "https://wokwi.com/projects/476812418387794945",
+  "finished_at": "2026-10-02T23:47:36.407Z",
+  "firmware_sha256": "ac52ece2809b349b49b44a8a6068c8d448e67aa3ca00aeabdcd7b53fddd52b06",
+  "diagram_sha256": "25fab97b02314a940a60a22475f5b8a13c38c9c44cb6c07a14016eee035ef5c8",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 98.72,
+  "endpoint_ids": [
+    "salle_manger-presence-pir",
+    "salle_manger-sol_capteur-hx711",
+    "salle_manger-porte-door",
+    "salle_manger-ambiant-dht22",
+    "salle_manger-ambiant-sgp40",
+    "salle_manger-co2-scd41",
+    "salle_manger-son-sound",
+    "salle_manger-co-ze07co",
+    "salle_manger-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49335,
+  "fields": {
+    "salle_manger-presence-pir": [
+      "motion"
+    ],
+    "salle_manger-sol_capteur-hx711": [
+      "load_raw",
+      "load_kg"
+    ],
+    "salle_manger-porte-door": [
+      "door_open"
+    ],
+    "salle_manger-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "salle_manger-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "salle_manger-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "salle_manger-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "salle_manger-co-ze07co": [
+      "co_ppm"
+    ],
+    "salle_manger-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "salle_manger-presence-pir",
+    "salle_manger-sol_capteur-hx711",
+    "salle_manger-porte-door",
+    "salle_manger-ambiant-dht22",
+    "salle_manger-ambiant-sgp40",
+    "salle_manger-co2-scd41",
+    "salle_manger-son-sound",
+    "salle_manger-co-ze07co",
+    "salle_manger-fumee-mq2"
+  ],
+  "backend_snapshot_at": 1790984856.7298403,
+  "backend_current_boot_ids": [
+    "salle_manger-presence-pir",
+    "salle_manger-sol_capteur-hx711",
+    "salle_manger-porte-door",
+    "salle_manger-ambiant-dht22",
+    "salle_manger-ambiant-sgp40",
+    "salle_manger-co2-scd41",
+    "salle_manger-son-sound",
+    "salle_manger-co-ze07co",
+    "salle_manger-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "salle_manger-presence-pir",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984852.3221796,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "salle_manger-sol_capteur-hx711",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984852.3222914,
+      "values": {
+        "load_raw": 0,
+        "load_kg": 0
+      }
+    },
+    {
+      "id": "salle_manger-porte-door",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984852.3224037,
+      "values": {
+        "door_open": false
+      }
+    },
+    {
+      "id": "salle_manger-ambiant-dht22",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984854.3909268,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "salle_manger-ambiant-sgp40",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984854.3930209,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "salle_manger-co2-scd41",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984854.3931408,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "salle_manger-son-sound",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 24,
+      "received_at": 1790984854.393184,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "salle_manger-co-ze07co",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 23,
+      "received_at": 1790984852.3206363,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "salle_manger-fumee-mq2",
+      "status": "live",
+      "boot": "a743cfb6",
+      "seq": 23,
+      "received_at": 1790984852.3219392,
+      "values": {
+        "gas_adc": 1752
+      }
+    }
+  ],
+  "diagram_text_sha256": "5157f61b0e3364a5285cf767440c44c63cc734facf80bef78c7a392bc3fa5587",
+  "source_text_sha256": "43d496cb6a0fae1d9d0ddd831c1f7dccc90c17b8ece8336286026710b2460b21"
+}

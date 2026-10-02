@@ -1,0 +1,182 @@
+{
+  "entity": "couloir_aile_b_etage",
+  "url": "https://wokwi.com/projects/476813650362019841",
+  "finished_at": "2026-10-02T23:31:30.148Z",
+  "firmware_sha256": "847328d68b66a21128669b76e8eeadaf93d0ed35faadffe77668c0371556570e",
+  "diagram_sha256": "264e927daecc4ae10ee55580cdc5794f492387d685674c3b003685fe58828212",
+  "actual_wokwi_browser": true,
+  "actions": [],
+  "wall_seconds": 101.176,
+  "endpoint_ids": [
+    "couloir_aile_b_etage-pir-pir",
+    "couloir_aile_b_etage-ble_beacon-ble",
+    "couloir_aile_b_etage-radar_mmwave-radar",
+    "couloir_aile_b_etage-ambiant-dht22",
+    "couloir_aile_b_etage-ambiant-sgp40",
+    "couloir_aile_b_etage-co2-scd41",
+    "couloir_aile_b_etage-son-sound",
+    "couloir_aile_b_etage-co-ze07co",
+    "couloir_aile_b_etage-fumee-mq2"
+  ],
+  "latest_uptime_ms": 49120,
+  "fields": {
+    "couloir_aile_b_etage-pir-pir": [
+      "motion"
+    ],
+    "couloir_aile_b_etage-ble_beacon-ble": [
+      "ble_address",
+      "ble_rssi_dbm"
+    ],
+    "couloir_aile_b_etage-radar_mmwave-radar": [
+      "presence"
+    ],
+    "couloir_aile_b_etage-ambiant-dht22": [
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "couloir_aile_b_etage-ambiant-sgp40": [
+      "voc_raw",
+      "voc_index"
+    ],
+    "couloir_aile_b_etage-co2-scd41": [
+      "co2_ppm",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "couloir_aile_b_etage-son-sound": [
+      "sound_mv",
+      "sound_db"
+    ],
+    "couloir_aile_b_etage-co-ze07co": [
+      "co_ppm"
+    ],
+    "couloir_aile_b_etage-fumee-mq2": [
+      "gas_adc"
+    ]
+  },
+  "expected_ids": [
+    "couloir_aile_b_etage-pir-pir",
+    "couloir_aile_b_etage-ble_beacon-ble",
+    "couloir_aile_b_etage-radar_mmwave-radar",
+    "couloir_aile_b_etage-ambiant-dht22",
+    "couloir_aile_b_etage-ambiant-sgp40",
+    "couloir_aile_b_etage-co2-scd41",
+    "couloir_aile_b_etage-son-sound",
+    "couloir_aile_b_etage-co-ze07co",
+    "couloir_aile_b_etage-fumee-mq2"
+  ],
+  "backend_current_boot_ids": [
+    "couloir_aile_b_etage-pir-pir",
+    "couloir_aile_b_etage-ble_beacon-ble",
+    "couloir_aile_b_etage-radar_mmwave-radar",
+    "couloir_aile_b_etage-ambiant-dht22",
+    "couloir_aile_b_etage-ambiant-sgp40",
+    "couloir_aile_b_etage-co2-scd41",
+    "couloir_aile_b_etage-son-sound",
+    "couloir_aile_b_etage-co-ze07co",
+    "couloir_aile_b_etage-fumee-mq2"
+  ],
+  "complete_communication": true,
+  "missing_fields": {},
+  "all_fields_observed": true,
+  "backend": [
+    {
+      "id": "couloir_aile_b_etage-pir-pir",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 24,
+      "received_at": 1790983886.0994709,
+      "values": {
+        "motion": false
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-ble_beacon-ble",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 24,
+      "received_at": 1790983888.1365044,
+      "values": {
+        "ble_address": "02:00:00:00:00:01",
+        "ble_rssi_dbm": -55
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-radar_mmwave-radar",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 24,
+      "received_at": 1790983888.1380913,
+      "values": {
+        "presence": false
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-ambiant-dht22",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 24,
+      "received_at": 1790983888.138239,
+      "values": {
+        "temperature_c": 24,
+        "humidity_pct": 40
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-ambiant-sgp40",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 24,
+      "received_at": 1790983888.1383536,
+      "values": {
+        "voc_raw": 25000,
+        "voc_index": 1
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-co2-scd41",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 24,
+      "received_at": 1790983888.1384397,
+      "values": {
+        "co2_ppm": 600,
+        "temperature_c": 21.99855,
+        "humidity_pct": 44.99886
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-son-sound",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 23,
+      "received_at": 1790983886.0992308,
+      "values": {
+        "sound_mv": 900,
+        "sound_db": 45
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-co-ze07co",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 23,
+      "received_at": 1790983886.099368,
+      "values": {
+        "co_ppm": 2
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-fumee-mq2",
+      "status": "live",
+      "boot": "36be766e",
+      "seq": 23,
+      "received_at": 1790983886.0994277,
+      "values": {
+        "gas_adc": 1844
+      }
+    }
+  ],
+  "diagram_text_sha256": "d771feca95218670f47f96acc813f76b2c98963d8452dfd18d6c85ac3f327ebd",
+  "source_text_sha256": "38e6370a37c5622a2118ea9dca03719e411ce715cdc049f8240c96e814e391c3"
+}
