@@ -6,7 +6,7 @@ Projet enregistré : https://wokwi.com/projects/476777815517850625
 
 Le flux est désormais intégré à la grille et à la fiche P001 du dashboard principal (/). La vérification réelle affiche 25 résidents historiques et P001, soit 26 fiches. FC, niveaux warning/danger, SOS, chute à 2,83 g et état offline ont été testés. Une reconnexion du backend conserve la fiche et ses événements.
 
-[Nouvelle vidéo : dashboard Digi4 + Wokwi, 59 s](livrables/demo-digi4-wokwi-firefox.webm) · [Capture des alertes](livrables/dashboard-digi4-alertes.png) · [Capture hors ligne](livrables/dashboard-digi4-offline.png).
+[Nouvelle vidéo : dashboard Digi4 + Wokwi, 59 s](livrables/video/demo-digi4-wokwi-firefox.webm) · [Capture des alertes](livrables/dashboard-digi4-alertes.png) · [Capture hors ligne](livrables/dashboard-digi4-offline.png).
 
 Le backend historique doit être actif pour afficher les 25 résidents ; Wokwi rejoint le frontend en MQTT over WebSocket. Ses mesures et événements restent dans la session navigateur et ne déclenchent pas le moteur clinique. Les mesures non disponibles restent nulles. La FC disparaît après 15 secondes sans mesure ou dès une déconnexion/offline.
 
@@ -21,7 +21,7 @@ Le backend historique doit être actif pour afficher les 25 résidents ; Wokwi r
 
 ## Livrables
 
-[Archive de la page de diagnostic M1 — 1 min 50 s](livrables/demo-wokwi-firefox.webm) : captures réelles des deux vues Firefox côte à côte, échantillonnées à 1 image/s et encodées en WebM, sans son. Les pauses entre opérations sont coupées ; ce n'est pas une capture continue du bureau. Aucune publication MQTT artificielle n'a été ajoutée : les mesures viennent du firmware exécuté dans Wokwi.
+[Archive de la page de diagnostic M1 — 1 min 50 s](livrables/video/demo-wokwi-firefox.webm) : captures réelles des deux vues Firefox côte à côte, échantillonnées à 1 image/s et encodées en WebM, sans son. Les pauses entre opérations sont coupées ; ce n'est pas une capture continue du bureau. Aucune publication MQTT artificielle n'a été ajoutée : les mesures viennent du firmware exécuté dans Wokwi.
 
 - [Dashboard et alertes](livrables/dashboard-alertes.png)
 - [Wokwi et messages MQTT](livrables/wokwi-mqtt.png)

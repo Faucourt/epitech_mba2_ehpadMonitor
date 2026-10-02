@@ -115,7 +115,7 @@
     "frontendPageErrors": [],
     "targetRepositorySmokeTest": "http://localhost:3004/ : 26 fiches, mqtt disponible",
     "video": {
-      "file": "demo-digi4-wokwi-firefox.webm",
+      "file": "video/demo-digi4-wokwi-firefox.webm",
       "seconds": 59,
       "width": 1980,
       "height": 900,

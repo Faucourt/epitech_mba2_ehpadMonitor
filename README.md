@@ -8,7 +8,7 @@ Ce dépôt reprend le frontend du [projet complet Détection de malaise en EHPAD
 
 Le **dashboard principal** (/, dashboard/public/index.html) affiche les 25 résidents historiques fournis par le backend et **P001 Wokwi** dans la même grille. Cliquer sur la carte P001 ou le bouton Wokwi ouvre sa fiche : fréquence cardiaque, courbe, SOS, chute et état du dispositif. La page /m1.html reste disponible pour le diagnostic ; elle n'est plus le livrable principal.
 
-- [Nouvelle vidéo du dashboard Digi4 + Wokwi — 59 secondes](firmware/m1_wokwi/livrables/demo-digi4-wokwi-firefox.webm)
+- [Nouvelle vidéo du dashboard Digi4 + Wokwi — 59 secondes](firmware/m1_wokwi/livrables/video/demo-digi4-wokwi-firefox.webm)
 - [Capture du dashboard principal et des alertes](firmware/m1_wokwi/livrables/dashboard-digi4-alertes.png)
 - [Capture après arrêt du dispositif](firmware/m1_wokwi/livrables/dashboard-digi4-offline.png)
 - [Validation de session](firmware/m1_wokwi/livrables/validation-digi4.json)

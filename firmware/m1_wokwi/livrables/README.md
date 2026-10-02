@@ -1,10 +1,12 @@
 # Livrables M1
 
-Démonstration principale : **demo-digi4-wokwi-firefox.webm**, 59 secondes, 1980 × 900, sans son. Elle montre le dashboard Digi4 historique (25 résidents) avec P001 Wokwi dans la même grille et sa fiche. Captures : dashboard-digi4-alertes.png et dashboard-digi4-offline.png. Résultats : validation-digi4.json.
+Les vidéos sont regroupées dans le dossier **[video](video/README.md)**.
+
+Démonstration principale : **[demo-digi4-wokwi-firefox.webm](video/demo-digi4-wokwi-firefox.webm)**, 59 secondes, 1980 × 900, sans son. Elle montre le dashboard Digi4 historique (25 résidents) avec P001 Wokwi dans la même grille et sa fiche. Captures : dashboard-digi4-alertes.png et dashboard-digi4-offline.png. Résultats : validation-digi4.json.
 
 La vidéo ci-dessous est l’archive de la première démonstration sur la page M1 dédiée.
 
-Vidéo : demo-wokwi-firefox.webm — 1 min 50 s, 1700 × 900, sans audio. Captures réelles des vues Firefox à 1 image/s, côte à côte ; pauses entre opérations coupées.
+Vidéo : [demo-wokwi-firefox.webm](video/demo-wokwi-firefox.webm) — 1 min 50 s, 1700 × 900, sans audio. Captures réelles des vues Firefox à 1 image/s, côte à côte ; pauses entre opérations coupées.
 
 Preuves : dashboard-alertes.png, wokwi-mqtt.png, dashboard-offline.png, moniteur-serie.txt, etat-final.txt.
 
