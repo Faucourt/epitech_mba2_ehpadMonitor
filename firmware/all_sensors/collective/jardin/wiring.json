@@ -1,0 +1,105 @@
+{
+  "id": "jardin",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "jardin-gps_bracelet-gps",
+      "kind": "gps",
+      "part": "s0_sensor",
+      "pins": {
+        "16": 4,
+        "17": 13
+      },
+      "uart": 1
+    },
+    {
+      "id": "jardin-rfid_sortie-rfid",
+      "kind": "rfid",
+      "part": "s1_sensor",
+      "pins": {
+        "5": 14,
+        "22": 16,
+        "18": 18,
+        "19": 19,
+        "23": 23
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-camera_thermique-amg8833",
+      "kind": "amg8833",
+      "part": "s2_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-pir-pir",
+      "kind": "pir",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 17
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s4_sensor",
+      "pins": {
+        "27": 25
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-co2-scd41",
+      "kind": "scd41",
+      "part": "s6_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-son-sound",
+      "kind": "sound",
+      "part": "s7_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "jardin-co-ze07co",
+      "kind": "ze07co",
+      "part": "s8_sensor",
+      "pins": {
+        "16": 26,
+        "17": 27
+      },
+      "uart": 2
+    },
+    {
+      "id": "jardin-fumee-mq2",
+      "kind": "mq2",
+      "part": "s9_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

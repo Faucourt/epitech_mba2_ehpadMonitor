@@ -1,0 +1,20 @@
+[wokwi]
+version = 1
+firmware = "build/sketch.ino.bin"
+elf = "build/sketch.ino.elf"
+
+[[chip]]
+name = "analog-signal"
+binary = "analog-signal.chip.wasm"
+
+[[chip]]
+name = "max30102"
+binary = "max30102.chip.wasm"
+
+[[chip]]
+name = "par-nibp"
+binary = "par-nibp.chip.wasm"
+
+[[chip]]
+name = "tmp117"
+binary = "tmp117.chip.wasm"

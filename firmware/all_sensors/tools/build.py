@@ -16,7 +16,7 @@ def main():
     dest=sketch/f.name
     if not dest.exists() or dest.read_bytes()!=f.read_bytes():shutil.copyfile(f,dest)
   compiled=workspace/'compiled' if args.reuse_build else out
-  subprocess.run([args.cli,'compile','--fqbn','esp32:esp32:esp32:PartitionScheme=huge_app','--build-path',str(compiled),str(sketch)],check=True)
+  subprocess.run([args.cli,'compile','--jobs','2','--fqbn','esp32:esp32:esp32:PartitionScheme=huge_app','--build-path',str(compiled),str(sketch)],check=True)
   if args.reuse_build:
    for f in compiled.glob('sketch.ino.*'):
     if f.is_file():shutil.copyfile(f,out/f.name)

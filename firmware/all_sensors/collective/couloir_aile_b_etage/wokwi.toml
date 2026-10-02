@@ -1,0 +1,28 @@
+[wokwi]
+version = 1
+firmware = "build/sketch.ino.bin"
+elf = "build/sketch.ino.elf"
+
+[[chip]]
+name = "ble-fixture"
+binary = "ble-fixture.chip.wasm"
+
+[[chip]]
+name = "digital-presence"
+binary = "digital-presence.chip.wasm"
+
+[[chip]]
+name = "scd41"
+binary = "scd41.chip.wasm"
+
+[[chip]]
+name = "sgp40"
+binary = "sgp40.chip.wasm"
+
+[[chip]]
+name = "sound-level"
+binary = "sound-level.chip.wasm"
+
+[[chip]]
+name = "ze07co"
+binary = "ze07co.chip.wasm"

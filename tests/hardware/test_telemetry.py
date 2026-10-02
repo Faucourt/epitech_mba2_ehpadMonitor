@@ -59,6 +59,16 @@ class TelemetryTests(unittest.TestCase):
  def test_unavailable_clears_value(self):
   self.ingest(self.message(values={'heart_rate':80}));self.ingest(self.message(seq=2,available=False,values={'heart_rate':80}))
   self.assertIsNone(self.store.snapshot()['entities'][0]['contract']['vitals']['heart_rate'])
+ def test_communication_is_not_a_valid_measurement(self):
+  self.ingest(self.message(available=False,values={}))
+  snap=self.store.snapshot()
+  self.assertEqual(1,snap['communicating_devices'])
+  self.assertEqual(0,snap['live_devices'])
+  device=snap['entities'][0]['devices'][1]
+  self.assertEqual('boot1',device['boot'])
+  self.assertEqual(1,device['seq'])
+  self.now+=16
+  self.assertEqual(0,self.store.snapshot()['communicating_devices'])
  def test_no_false_clinical_temperature_or_fall(self):
   d=self.store.devices['R001-wearable-tmp117'];self.ingest(self.message(d,values={'contact_temperature_c':36.5}))
   d=self.store.devices['R001-wearable-mpu6050'];self.ingest(self.message(d,values={'impact':True,'accel_g':2.9}))

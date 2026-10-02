@@ -7,9 +7,14 @@ de `simulator/profiles.py`, ainsi que les canaux émis par `simulator/main.py`.
 Elle fournit **437 bancs logiques indépendants**, générés à partir de 21 familles de
 pilotes actives. Un banc associe un ESP32 et un capteur afin de tester son interface
 sans conflit de broches. Ce nombre décrit les points d'acquisition du prototype,
-pas une recommandation d'achat de 437 microcontrôleurs. Le regroupement de plusieurs
-capteurs sur une carte, l'alimentation d'un bracelet et son autonomie relèvent du
-dimensionnement du matériel final.
+pas une recommandation d'achat de 437 microcontrôleurs. L'export collectif regroupe
+ces composants sur 45 ESP32, un par résident ou zone, avec des broches et états
+indépendants. L'alimentation d'un bracelet et son autonomie restent à dimensionner.
+
+Pour la priorité **trois résidents complets + vingt zones**, suivre
+[le lancement collectif](COLLECTIVE.md) : 23 cartes et 214 points d'acquisition.
+Le script utilise le broker local ; la commande ci-dessous avec le broker public
+concerne les anciens bancs individuels.
 
 Le firmware ne boucle pas sur 25 résidents pour leur inventer des constantes :
 chaque banc lit ses broches/bus, publie sous son propre identifiant et alimente
@@ -172,9 +177,11 @@ le signal brut doit être calibré sur le montage final.
 Voir les [limites des résistances Wokwi](https://docs.wokwi.com/parts/wokwi-resistor).
 
 **Compteur du dashboard :** 437 est le nombre de configurations disponibles.
-Seules les simulations Wokwi démarrées publient des mesures. Ouvrir le dashboard
-ne lance pas ces simulations. Un arrêt entraîne l'expiration des mesures après
-15 secondes ; `0 / 437` signifie donc aucune mesure actuelle, pas 437 tests échoués.
+Le compteur principal indique les capteurs qui publient ; le compteur de mesures
+récentes exclut notamment un tensiomètre en attente de START ou un RFID sans badge.
+Ouvrir le dashboard ne lance pas les simulations. Un arrêt entraîne l'expiration
+de la communication après 15 secondes ; `0 / 437` signifie aucune communication
+actuelle, pas 437 tests échoués.
 
 1. Choisir la référence matérielle, puis lire son protocole constructeur.
 2. Déclarer ses broches et ses curseurs dans `nom.chip.json`.

@@ -1,0 +1,91 @@
+{
+  "id": "couloir_aile_b_etage",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "couloir_aile_b_etage-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-ble_beacon-ble",
+      "kind": "ble",
+      "part": "s1_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-radar_mmwave-radar",
+      "kind": "radar",
+      "part": "s2_sensor",
+      "pins": {
+        "27": 13
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 14
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s4_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-co2-scd41",
+      "kind": "scd41",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-son-sound",
+      "kind": "sound",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_b_etage-co-ze07co",
+      "kind": "ze07co",
+      "part": "s7_sensor",
+      "pins": {
+        "16": 16,
+        "17": 17
+      },
+      "uart": 1
+    },
+    {
+      "id": "couloir_aile_b_etage-fumee-mq2",
+      "kind": "mq2",
+      "part": "s8_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

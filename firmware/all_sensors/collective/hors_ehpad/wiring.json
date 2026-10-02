@@ -1,0 +1,86 @@
+{
+  "id": "hors_ehpad",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "hors_ehpad-gps_bracelet-gps",
+      "kind": "gps",
+      "part": "s0_sensor",
+      "pins": {
+        "16": 4,
+        "17": 13
+      },
+      "uart": 1
+    },
+    {
+      "id": "hors_ehpad-rfid_sortie-rfid",
+      "kind": "rfid",
+      "part": "s1_sensor",
+      "pins": {
+        "5": 14,
+        "22": 16,
+        "18": 18,
+        "19": 19,
+        "23": 23
+      },
+      "uart": null
+    },
+    {
+      "id": "hors_ehpad-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s2_sensor",
+      "pins": {
+        "27": 17
+      },
+      "uart": null
+    },
+    {
+      "id": "hors_ehpad-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s3_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "hors_ehpad-co2-scd41",
+      "kind": "scd41",
+      "part": "s4_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "hors_ehpad-son-sound",
+      "kind": "sound",
+      "part": "s5_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "hors_ehpad-co-ze07co",
+      "kind": "ze07co",
+      "part": "s6_sensor",
+      "pins": {
+        "16": 25,
+        "17": 26
+      },
+      "uart": 2
+    },
+    {
+      "id": "hors_ehpad-fumee-mq2",
+      "kind": "mq2",
+      "part": "s7_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

@@ -6,13 +6,20 @@ MQTT et simulation ESP32. Aucun essai sur capteurs physiques et aucune vidéo n'
 
 ## Vérifications réalisées
 
-- **13 tests Python** : couverture des 25 résidents et 20 zones, chaque rôle du
+- **25 tests Python** : couverture des 25 résidents et 20 zones, chaque rôle du
   simulateur, 437 identifiants distincts, correspondance des exports, refus des
   identités incohérentes, NaN, champs inconnus, messages retained/rejoués,
   redémarrage, péremption, LWT et absence de fausses valeurs normales.
+  Ils contrôlent aussi les 45 regroupements ESP32, les broches, le périmètre pilote,
+  la distinction communication/mesure et le superviseur (processus simulés pour
+  ces tests unitaires : ils ne constituent pas des exécutions Wokwi).
 - **10 tests Node/WebAssembly** sur les 13 modèles custom compilés : transactions
   I²C, registres, température négative, FIFO MAX30102, cycle SCD41, CRC, trames
   ZE07‑CO/NMEA/PAR NIBP, 64 pixels AMG8833, GPIO et signaux analogiques.
+- **8 tests Node de la grille d'acquisition** : affectation des résidents et zones,
+  absence de valeurs par défaut, expiration locale et isolement des sources.
+- **C++** : parseur PAR sur trames documentées et rejet de NaN/infinis dans le
+  contrôle de valeurs DHT22 compatible avec le moteur ESP32 web observé.
 - **MQTT → backend réel** dans une stack Docker isolée : 437 messages synthétiques
   répartis sur 45 entités, réception vérifiée, affectation de chaque résident,
   champ absent conservé à null, identité falsifiée refusée et accès au mode
@@ -31,7 +38,7 @@ Commandes de contrôle :
 
 ```powershell
 python -m unittest discover -s tests/hardware -p 'test_*.py' -v
-node --test tests/hardware/chips.test.cjs
+node --test tests/hardware/*.test.cjs
 node --check dashboard/public/hardware.js
 python -m compileall -q backend/hardware_telemetry.py backend/hardware_routes.py backend/main.py
 python firmware/all_sensors/tools/build_matrix.py

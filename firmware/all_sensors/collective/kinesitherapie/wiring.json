@@ -1,0 +1,162 @@
+{
+  "id": "kinesitherapie",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "kinesitherapie-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-sol-hx711",
+      "kind": "hx711",
+      "part": "s1_sensor",
+      "pins": {
+        "26": 13,
+        "25": 14
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-mpu6050",
+      "kind": "mpu6050",
+      "part": "s2_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-max30102",
+      "kind": "max30102",
+      "part": "s3_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-tmp117",
+      "kind": "tmp117",
+      "part": "s4_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-sos",
+      "kind": "sos",
+      "part": "s5_sensor",
+      "pins": {
+        "27": 16
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-ecg",
+      "kind": "ecg",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 34,
+        "32": 17,
+        "33": 18
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-respiration",
+      "kind": "respiration",
+      "part": "s7_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-wearable-nibp",
+      "kind": "nibp",
+      "part": "s8_sensor",
+      "pins": {
+        "16": 19,
+        "17": 23,
+        "27": 25,
+        "26": 26
+      },
+      "uart": 1
+    },
+    {
+      "id": "kinesitherapie-porte-door",
+      "kind": "door",
+      "part": "s9_sensor",
+      "pins": {
+        "27": 27
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s10_sensor",
+      "pins": {
+        "27": 32
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s11_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-co2-scd41",
+      "kind": "scd41",
+      "part": "s12_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-son-sound",
+      "kind": "sound",
+      "part": "s13_sensor",
+      "pins": {
+        "34": 36
+      },
+      "uart": null
+    },
+    {
+      "id": "kinesitherapie-co-ze07co",
+      "kind": "ze07co",
+      "part": "s14_sensor",
+      "pins": {
+        "16": 33,
+        "17": 5
+      },
+      "uart": 2
+    },
+    {
+      "id": "kinesitherapie-fumee-mq2",
+      "kind": "mq2",
+      "part": "s15_sensor",
+      "pins": {
+        "34": 39
+      },
+      "uart": null
+    }
+  ]
+}

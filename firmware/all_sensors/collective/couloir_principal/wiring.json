@@ -1,0 +1,91 @@
+{
+  "id": "couloir_principal",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "couloir_principal-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-radar_mmwave-radar",
+      "kind": "radar",
+      "part": "s1_sensor",
+      "pins": {
+        "27": 13
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-sol_intelligent-hx711",
+      "kind": "hx711",
+      "part": "s2_sensor",
+      "pins": {
+        "26": 14,
+        "25": 16
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 17
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s4_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-co2-scd41",
+      "kind": "scd41",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-son-sound",
+      "kind": "sound",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_principal-co-ze07co",
+      "kind": "ze07co",
+      "part": "s7_sensor",
+      "pins": {
+        "16": 18,
+        "17": 19
+      },
+      "uart": 1
+    },
+    {
+      "id": "couloir_principal-fumee-mq2",
+      "kind": "mq2",
+      "part": "s8_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

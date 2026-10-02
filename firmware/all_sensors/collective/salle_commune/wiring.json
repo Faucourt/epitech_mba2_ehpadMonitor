@@ -1,0 +1,81 @@
+{
+  "id": "salle_commune",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "salle_commune-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "salle_commune-co2-scd41",
+      "kind": "scd41",
+      "part": "s1_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "salle_commune-son-sound",
+      "kind": "sound",
+      "part": "s2_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "salle_commune-porte-door",
+      "kind": "door",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 13
+      },
+      "uart": null
+    },
+    {
+      "id": "salle_commune-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s4_sensor",
+      "pins": {
+        "27": 14
+      },
+      "uart": null
+    },
+    {
+      "id": "salle_commune-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "salle_commune-co-ze07co",
+      "kind": "ze07co",
+      "part": "s6_sensor",
+      "pins": {
+        "16": 16,
+        "17": 17
+      },
+      "uart": 1
+    },
+    {
+      "id": "salle_commune-fumee-mq2",
+      "kind": "mq2",
+      "part": "s7_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

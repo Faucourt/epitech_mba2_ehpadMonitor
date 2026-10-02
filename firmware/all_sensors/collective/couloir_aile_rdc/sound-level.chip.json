@@ -1,0 +1,35 @@
+{
+  "name": "sound-level (modèle pédagogique)",
+  "author": "EHPAD contributors",
+  "pins": [
+    "VCC",
+    "GND",
+    "OUT"
+  ],
+  "controls": [
+    {
+      "id": "decibels",
+      "label": "decibels",
+      "type": "range",
+      "min": 30,
+      "max": 130,
+      "step": 0.01
+    },
+    {
+      "id": "connected",
+      "label": "connected",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    {
+      "id": "corrupt",
+      "label": "corrupt",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  ]
+}

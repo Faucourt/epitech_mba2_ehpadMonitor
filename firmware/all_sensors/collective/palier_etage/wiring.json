@@ -1,0 +1,103 @@
+{
+  "id": "palier_etage",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "palier_etage-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-badge-rfid",
+      "kind": "rfid",
+      "part": "s1_sensor",
+      "pins": {
+        "5": 13,
+        "22": 14,
+        "18": 18,
+        "19": 19,
+        "23": 23
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-radar_mmwave-radar",
+      "kind": "radar",
+      "part": "s2_sensor",
+      "pins": {
+        "27": 16
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-porte-door",
+      "kind": "door",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 17
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s4_sensor",
+      "pins": {
+        "27": 25
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-co2-scd41",
+      "kind": "scd41",
+      "part": "s6_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-son-sound",
+      "kind": "sound",
+      "part": "s7_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "palier_etage-co-ze07co",
+      "kind": "ze07co",
+      "part": "s8_sensor",
+      "pins": {
+        "16": 26,
+        "17": 27
+      },
+      "uart": 1
+    },
+    {
+      "id": "palier_etage-fumee-mq2",
+      "kind": "mq2",
+      "part": "s9_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

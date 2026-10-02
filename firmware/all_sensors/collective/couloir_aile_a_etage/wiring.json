@@ -1,0 +1,92 @@
+{
+  "id": "couloir_aile_a_etage",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "couloir_aile_a_etage-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-ble_beacon-ble",
+      "kind": "ble",
+      "part": "s1_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-sol_intelligent-hx711",
+      "kind": "hx711",
+      "part": "s2_sensor",
+      "pins": {
+        "26": 13,
+        "25": 14
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 16
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s4_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-co2-scd41",
+      "kind": "scd41",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-son-sound",
+      "kind": "sound",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "couloir_aile_a_etage-co-ze07co",
+      "kind": "ze07co",
+      "part": "s7_sensor",
+      "pins": {
+        "16": 17,
+        "17": 18
+      },
+      "uart": 1
+    },
+    {
+      "id": "couloir_aile_a_etage-fumee-mq2",
+      "kind": "mq2",
+      "part": "s8_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

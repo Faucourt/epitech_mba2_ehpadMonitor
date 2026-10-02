@@ -1,0 +1,4526 @@
+{
+  "schema": 1,
+  "source": "wokwi",
+  "groups": [
+    {
+      "id": "R001",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R001-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R001-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-matelas-hx711",
+          "kind": "hx711",
+          "part": "s8_sensor",
+          "pins": {
+            "26": 25,
+            "25": 26
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-porte-door",
+          "kind": "door",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "R001-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s10_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R002",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R002-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R002-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R002-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R003",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R003-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R003-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-matelas-hx711",
+          "kind": "hx711",
+          "part": "s8_sensor",
+          "pins": {
+            "26": 25,
+            "25": 26
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-porte-door",
+          "kind": "door",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "R003-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s10_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R004",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R004-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R004-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R004-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R005",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R005-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R005-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-matelas-hx711",
+          "kind": "hx711",
+          "part": "s8_sensor",
+          "pins": {
+            "26": 25,
+            "25": 26
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-porte-door",
+          "kind": "door",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "R005-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s10_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R006",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R006-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R006-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R006-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R007",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R007-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R007-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-matelas-hx711",
+          "kind": "hx711",
+          "part": "s8_sensor",
+          "pins": {
+            "26": 25,
+            "25": 26
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-porte-door",
+          "kind": "door",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "R007-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s10_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R008",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R008-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R008-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R008-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R009",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R009-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R009-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R009-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R010",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R010-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R010-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R010-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R011",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R011-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R011-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R011-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R012",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R012-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R012-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R012-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R013",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R013-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R013-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R013-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R014",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R014-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R014-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R014-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R015",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R015-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R015-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R015-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R016",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R016-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R016-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R016-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R017",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R017-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R017-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R017-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R018",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R018-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R018-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R018-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R019",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R019-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R019-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R019-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R020",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R020-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R020-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R020-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R021",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R021-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R021-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R021-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R022",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R022-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R022-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R022-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R023",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R023-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R023-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R023-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R024",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R024-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R024-radar-radar",
+          "kind": "radar",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-porte-door",
+          "kind": "door",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "R024-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "R025",
+      "entity_type": "resident",
+      "devices": [
+        {
+          "id": "R025-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-wearable-max30102",
+          "kind": "max30102",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-wearable-sos",
+          "kind": "sos",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-wearable-ecg",
+          "kind": "ecg",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34,
+            "32": 13,
+            "33": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-wearable-respiration",
+          "kind": "respiration",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-wearable-nibp",
+          "kind": "nibp",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17,
+            "27": 18,
+            "26": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "R025-pir-pir",
+          "kind": "pir",
+          "part": "s7_sensor",
+          "pins": {
+            "27": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-matelas-hx711",
+          "kind": "hx711",
+          "part": "s8_sensor",
+          "pins": {
+            "26": 25,
+            "25": 26
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-porte-door",
+          "kind": "door",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "R025-sdb_pir-pir",
+          "kind": "pir",
+          "part": "s10_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "entree",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "entree-rfid-rfid",
+          "kind": "rfid",
+          "part": "s0_sensor",
+          "pins": {
+            "5": 4,
+            "22": 13,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-badge-rfid",
+          "kind": "rfid",
+          "part": "s1_sensor",
+          "pins": {
+            "5": 14,
+            "22": 16,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-ir-pir",
+          "kind": "pir",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-porte-door",
+          "kind": "door",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s4_sensor",
+          "pins": {
+            "27": 26
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-co2-scd41",
+          "kind": "scd41",
+          "part": "s6_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-son-sound",
+          "kind": "sound",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "entree-co-ze07co",
+          "kind": "ze07co",
+          "part": "s8_sensor",
+          "pins": {
+            "16": 27,
+            "17": 32
+          },
+          "uart": 1
+        },
+        {
+          "id": "entree-fumee-mq2",
+          "kind": "mq2",
+          "part": "s9_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "hors_ehpad",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "hors_ehpad-gps_bracelet-gps",
+          "kind": "gps",
+          "part": "s0_sensor",
+          "pins": {
+            "16": 4,
+            "17": 13
+          },
+          "uart": 1
+        },
+        {
+          "id": "hors_ehpad-rfid_sortie-rfid",
+          "kind": "rfid",
+          "part": "s1_sensor",
+          "pins": {
+            "5": 14,
+            "22": 16,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "hors_ehpad-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "hors_ehpad-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s3_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "hors_ehpad-co2-scd41",
+          "kind": "scd41",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "hors_ehpad-son-sound",
+          "kind": "sound",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "hors_ehpad-co-ze07co",
+          "kind": "ze07co",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 25,
+            "17": 26
+          },
+          "uart": 2
+        },
+        {
+          "id": "hors_ehpad-fumee-mq2",
+          "kind": "mq2",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "infirmerie_rdc",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "infirmerie_rdc-porte-door",
+          "kind": "door",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "infirmerie_rdc-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "infirmerie_rdc-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "infirmerie_rdc-co2-scd41",
+          "kind": "scd41",
+          "part": "s3_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "infirmerie_rdc-son-sound",
+          "kind": "sound",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "infirmerie_rdc-co-ze07co",
+          "kind": "ze07co",
+          "part": "s5_sensor",
+          "pins": {
+            "16": 14,
+            "17": 16
+          },
+          "uart": 1
+        },
+        {
+          "id": "infirmerie_rdc-fumee-mq2",
+          "kind": "mq2",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "pharmacie_admin",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "pharmacie_admin-porte-door",
+          "kind": "door",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "pharmacie_admin-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "pharmacie_admin-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "pharmacie_admin-co2-scd41",
+          "kind": "scd41",
+          "part": "s3_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "pharmacie_admin-son-sound",
+          "kind": "sound",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "pharmacie_admin-co-ze07co",
+          "kind": "ze07co",
+          "part": "s5_sensor",
+          "pins": {
+            "16": 14,
+            "17": 16
+          },
+          "uart": 1
+        },
+        {
+          "id": "pharmacie_admin-fumee-mq2",
+          "kind": "mq2",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "couloir_principal",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "couloir_principal-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-radar_mmwave-radar",
+          "kind": "radar",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-sol_intelligent-hx711",
+          "kind": "hx711",
+          "part": "s2_sensor",
+          "pins": {
+            "26": 14,
+            "25": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_principal-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 18,
+            "17": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "couloir_principal-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "salle_commune",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "salle_commune-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_commune-co2-scd41",
+          "kind": "scd41",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_commune-son-sound",
+          "kind": "sound",
+          "part": "s2_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_commune-porte-door",
+          "kind": "door",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_commune-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s4_sensor",
+          "pins": {
+            "27": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_commune-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_commune-co-ze07co",
+          "kind": "ze07co",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17
+          },
+          "uart": 1
+        },
+        {
+          "id": "salle_commune-fumee-mq2",
+          "kind": "mq2",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "patio",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "patio-gps_bracelet-gps",
+          "kind": "gps",
+          "part": "s0_sensor",
+          "pins": {
+            "16": 4,
+            "17": 13
+          },
+          "uart": 1
+        },
+        {
+          "id": "patio-rfid_sortie-rfid",
+          "kind": "rfid",
+          "part": "s1_sensor",
+          "pins": {
+            "5": 14,
+            "22": 16,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-pir-pir",
+          "kind": "pir",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-radar_mmwave-radar",
+          "kind": "radar",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-sol_intelligent-hx711",
+          "kind": "hx711",
+          "part": "s4_sensor",
+          "pins": {
+            "26": 26,
+            "25": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-camera_thermique-amg8833",
+          "kind": "amg8833",
+          "part": "s7_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s8_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s9_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "patio-co-ze07co",
+          "kind": "ze07co",
+          "part": "s10_sensor",
+          "pins": {
+            "16": 33,
+            "17": 5
+          },
+          "uart": 2
+        },
+        {
+          "id": "patio-fumee-mq2",
+          "kind": "mq2",
+          "part": "s11_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "jardin",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "jardin-gps_bracelet-gps",
+          "kind": "gps",
+          "part": "s0_sensor",
+          "pins": {
+            "16": 4,
+            "17": 13
+          },
+          "uart": 1
+        },
+        {
+          "id": "jardin-rfid_sortie-rfid",
+          "kind": "rfid",
+          "part": "s1_sensor",
+          "pins": {
+            "5": 14,
+            "22": 16,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-camera_thermique-amg8833",
+          "kind": "amg8833",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-pir-pir",
+          "kind": "pir",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s4_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-co2-scd41",
+          "kind": "scd41",
+          "part": "s6_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-son-sound",
+          "kind": "sound",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "jardin-co-ze07co",
+          "kind": "ze07co",
+          "part": "s8_sensor",
+          "pins": {
+            "16": 26,
+            "17": 27
+          },
+          "uart": 2
+        },
+        {
+          "id": "jardin-fumee-mq2",
+          "kind": "mq2",
+          "part": "s9_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "salle_activites",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "salle_activites-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_activites-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_activites-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_activites-porte-door",
+          "kind": "door",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_activites-co2-scd41",
+          "kind": "scd41",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_activites-son-sound",
+          "kind": "sound",
+          "part": "s5_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_activites-co-ze07co",
+          "kind": "ze07co",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17
+          },
+          "uart": 1
+        },
+        {
+          "id": "salle_activites-fumee-mq2",
+          "kind": "mq2",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "salle_manger",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "salle_manger-presence-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-sol_capteur-hx711",
+          "kind": "hx711",
+          "part": "s1_sensor",
+          "pins": {
+            "26": 13,
+            "25": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-porte-door",
+          "kind": "door",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_manger-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 18,
+            "17": 19
+          },
+          "uart": 1
+        },
+        {
+          "id": "salle_manger-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "office_cuisine",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "office_cuisine-fumee-mq2",
+          "kind": "mq2",
+          "part": "s0_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "office_cuisine-temperature-dht22",
+          "kind": "dht22",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "office_cuisine-co-ze07co",
+          "kind": "ze07co",
+          "part": "s2_sensor",
+          "pins": {
+            "16": 13,
+            "17": 14
+          },
+          "uart": 1
+        },
+        {
+          "id": "office_cuisine-porte-door",
+          "kind": "door",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "office_cuisine-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s4_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "office_cuisine-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "office_cuisine-co2-scd41",
+          "kind": "scd41",
+          "part": "s6_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "office_cuisine-son-sound",
+          "kind": "sound",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "couloir_aile_rdc",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "couloir_aile_rdc-ble_beacon-ble",
+          "kind": "ble",
+          "part": "s0_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-pir-pir",
+          "kind": "pir",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-sol_intelligent-hx711",
+          "kind": "hx711",
+          "part": "s2_sensor",
+          "pins": {
+            "26": 13,
+            "25": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_rdc-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 17,
+            "17": 18
+          },
+          "uart": 1
+        },
+        {
+          "id": "couloir_aile_rdc-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "escalier",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "escalier-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-radar_mmwave-radar",
+          "kind": "radar",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-porte-door",
+          "kind": "door",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "escalier-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 17,
+            "17": 18
+          },
+          "uart": 1
+        },
+        {
+          "id": "escalier-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "ascenseur",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "ascenseur-badge-rfid",
+          "kind": "rfid",
+          "part": "s0_sensor",
+          "pins": {
+            "5": 4,
+            "22": 13,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-pir-pir",
+          "kind": "pir",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-porte-door",
+          "kind": "door",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "ascenseur-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 25,
+            "17": 26
+          },
+          "uart": 1
+        },
+        {
+          "id": "ascenseur-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "poste_infirmier_etage",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "poste_infirmier_etage-porte-door",
+          "kind": "door",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "poste_infirmier_etage-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s1_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "poste_infirmier_etage-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "poste_infirmier_etage-co2-scd41",
+          "kind": "scd41",
+          "part": "s3_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "poste_infirmier_etage-son-sound",
+          "kind": "sound",
+          "part": "s4_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "poste_infirmier_etage-co-ze07co",
+          "kind": "ze07co",
+          "part": "s5_sensor",
+          "pins": {
+            "16": 14,
+            "17": 16
+          },
+          "uart": 1
+        },
+        {
+          "id": "poste_infirmier_etage-fumee-mq2",
+          "kind": "mq2",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "kinesitherapie",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "kinesitherapie-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-sol-hx711",
+          "kind": "hx711",
+          "part": "s1_sensor",
+          "pins": {
+            "26": 13,
+            "25": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-mpu6050",
+          "kind": "mpu6050",
+          "part": "s2_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-max30102",
+          "kind": "max30102",
+          "part": "s3_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-tmp117",
+          "kind": "tmp117",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-sos",
+          "kind": "sos",
+          "part": "s5_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-ecg",
+          "kind": "ecg",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34,
+            "32": 17,
+            "33": 18
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-respiration",
+          "kind": "respiration",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-wearable-nibp",
+          "kind": "nibp",
+          "part": "s8_sensor",
+          "pins": {
+            "16": 19,
+            "17": 23,
+            "27": 25,
+            "26": 26
+          },
+          "uart": 1
+        },
+        {
+          "id": "kinesitherapie-porte-door",
+          "kind": "door",
+          "part": "s9_sensor",
+          "pins": {
+            "27": 27
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s10_sensor",
+          "pins": {
+            "27": 32
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s11_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-co2-scd41",
+          "kind": "scd41",
+          "part": "s12_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-son-sound",
+          "kind": "sound",
+          "part": "s13_sensor",
+          "pins": {
+            "34": 36
+          },
+          "uart": null
+        },
+        {
+          "id": "kinesitherapie-co-ze07co",
+          "kind": "ze07co",
+          "part": "s14_sensor",
+          "pins": {
+            "16": 33,
+            "17": 5
+          },
+          "uart": 2
+        },
+        {
+          "id": "kinesitherapie-fumee-mq2",
+          "kind": "mq2",
+          "part": "s15_sensor",
+          "pins": {
+            "34": 39
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "salle_repos",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "salle_repos-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_repos-co2-scd41",
+          "kind": "scd41",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_repos-son-sound",
+          "kind": "sound",
+          "part": "s2_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_repos-porte-door",
+          "kind": "door",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_repos-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s4_sensor",
+          "pins": {
+            "27": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_repos-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "salle_repos-co-ze07co",
+          "kind": "ze07co",
+          "part": "s6_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17
+          },
+          "uart": 1
+        },
+        {
+          "id": "salle_repos-fumee-mq2",
+          "kind": "mq2",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "couloir_aile_a_etage",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "couloir_aile_a_etage-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-ble_beacon-ble",
+          "kind": "ble",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-sol_intelligent-hx711",
+          "kind": "hx711",
+          "part": "s2_sensor",
+          "pins": {
+            "26": 13,
+            "25": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_a_etage-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 17,
+            "17": 18
+          },
+          "uart": 1
+        },
+        {
+          "id": "couloir_aile_a_etage-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "couloir_aile_b_etage",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "couloir_aile_b_etage-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-ble_beacon-ble",
+          "kind": "ble",
+          "part": "s1_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-radar_mmwave-radar",
+          "kind": "radar",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 13
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 14
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s4_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-co2-scd41",
+          "kind": "scd41",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-son-sound",
+          "kind": "sound",
+          "part": "s6_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "couloir_aile_b_etage-co-ze07co",
+          "kind": "ze07co",
+          "part": "s7_sensor",
+          "pins": {
+            "16": 16,
+            "17": 17
+          },
+          "uart": 1
+        },
+        {
+          "id": "couloir_aile_b_etage-fumee-mq2",
+          "kind": "mq2",
+          "part": "s8_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    },
+    {
+      "id": "palier_etage",
+      "entity_type": "zone",
+      "devices": [
+        {
+          "id": "palier_etage-pir-pir",
+          "kind": "pir",
+          "part": "s0_sensor",
+          "pins": {
+            "27": 4
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-badge-rfid",
+          "kind": "rfid",
+          "part": "s1_sensor",
+          "pins": {
+            "5": 13,
+            "22": 14,
+            "18": 18,
+            "19": 19,
+            "23": 23
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-radar_mmwave-radar",
+          "kind": "radar",
+          "part": "s2_sensor",
+          "pins": {
+            "27": 16
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-porte-door",
+          "kind": "door",
+          "part": "s3_sensor",
+          "pins": {
+            "27": 17
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-ambiant-dht22",
+          "kind": "dht22",
+          "part": "s4_sensor",
+          "pins": {
+            "27": 25
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-ambiant-sgp40",
+          "kind": "sgp40",
+          "part": "s5_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-co2-scd41",
+          "kind": "scd41",
+          "part": "s6_sensor",
+          "pins": {
+            "21": 21,
+            "22": 22
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-son-sound",
+          "kind": "sound",
+          "part": "s7_sensor",
+          "pins": {
+            "34": 34
+          },
+          "uart": null
+        },
+        {
+          "id": "palier_etage-co-ze07co",
+          "kind": "ze07co",
+          "part": "s8_sensor",
+          "pins": {
+            "16": 26,
+            "17": 27
+          },
+          "uart": 1
+        },
+        {
+          "id": "palier_etage-fumee-mq2",
+          "kind": "mq2",
+          "part": "s9_sensor",
+          "pins": {
+            "34": 35
+          },
+          "uart": null
+        }
+      ]
+    }
+  ],
+  "device_count": 437,
+  "driver_sha256": "d11984206c78ce58c32350b8d9e7c144a1eb7cef16e5bc39262460bb388bd8df"
+}

@@ -1,0 +1,81 @@
+{
+  "id": "office_cuisine",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "office_cuisine-fumee-mq2",
+      "kind": "mq2",
+      "part": "s0_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "office_cuisine-temperature-dht22",
+      "kind": "dht22",
+      "part": "s1_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "office_cuisine-co-ze07co",
+      "kind": "ze07co",
+      "part": "s2_sensor",
+      "pins": {
+        "16": 13,
+        "17": 14
+      },
+      "uart": 1
+    },
+    {
+      "id": "office_cuisine-porte-door",
+      "kind": "door",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 16
+      },
+      "uart": null
+    },
+    {
+      "id": "office_cuisine-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s4_sensor",
+      "pins": {
+        "27": 17
+      },
+      "uart": null
+    },
+    {
+      "id": "office_cuisine-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "office_cuisine-co2-scd41",
+      "kind": "scd41",
+      "part": "s6_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "office_cuisine-son-sound",
+      "kind": "sound",
+      "part": "s7_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

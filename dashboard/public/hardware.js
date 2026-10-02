@@ -82,11 +82,13 @@
     const entities=effectiveEntities();
     const count=t=>entities.filter(e=>e.type===t).length;
     const allDevices=entities.flatMap(e=>e.devices||[]),live=allDevices.filter(d=>currentStatus(d)==='live').length;
+    const communicating=failed?0:allDevices.filter(d=>d.communicating===true).length;
     const expected=snapshot?.expected_devices??inventory?.devices?.length;
     $('live-help').hidden=source!=='wokwi';
     $('live-count').textContent=entities.length?live:'—';$('expected-count').textContent=` / ${expected??'—'}`;
+    $('communicating-count').textContent=entities.length?communicating:'—';
     $('missing-count').textContent=expected===undefined?'—':Math.max(0,expected-live);
-    $('coverage-progress').max=expected||1;$('coverage-progress').value=live;
+    $('coverage-progress').max=expected||1;$('coverage-progress').value=communicating;
     for(const t of ['resident','zone']){$(`${t}-count`).textContent=entities.length?count(t):'—';$(`${t}-tab-count`).textContent=entities.length?count(t):'';}
     const query=$('search').value.trim().toLocaleLowerCase('fr'),filter=$('filter').value;
     const filtered=entities.filter(e=>{

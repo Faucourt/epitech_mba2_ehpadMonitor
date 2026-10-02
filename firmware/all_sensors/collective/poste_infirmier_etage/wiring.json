@@ -1,0 +1,72 @@
+{
+  "id": "poste_infirmier_etage",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "poste_infirmier_etage-porte-door",
+      "kind": "door",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "poste_infirmier_etage-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s1_sensor",
+      "pins": {
+        "27": 13
+      },
+      "uart": null
+    },
+    {
+      "id": "poste_infirmier_etage-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s2_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "poste_infirmier_etage-co2-scd41",
+      "kind": "scd41",
+      "part": "s3_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "poste_infirmier_etage-son-sound",
+      "kind": "sound",
+      "part": "s4_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "poste_infirmier_etage-co-ze07co",
+      "kind": "ze07co",
+      "part": "s5_sensor",
+      "pins": {
+        "16": 14,
+        "17": 16
+      },
+      "uart": 1
+    },
+    {
+      "id": "poste_infirmier_etage-fumee-mq2",
+      "kind": "mq2",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

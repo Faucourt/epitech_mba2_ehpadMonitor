@@ -20,6 +20,8 @@ jobs:
       - run: |
           g++ -std=c++11 tests/hardware/par_protocol.cpp -o /tmp/par-protocol
           /tmp/par-protocol
+          g++ -std=c++11 tests/hardware/finite_float.cpp -o /tmp/finite-float
+          /tmp/finite-float
       - run: node --check dashboard/public/hardware.js
       - run: node --check dashboard/public/acquisition-dashboard.js
       - run: python firmware/all_sensors/tools/summarize_validation.py

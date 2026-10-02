@@ -1,0 +1,124 @@
+{
+  "id": "patio",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "patio-gps_bracelet-gps",
+      "kind": "gps",
+      "part": "s0_sensor",
+      "pins": {
+        "16": 4,
+        "17": 13
+      },
+      "uart": 1
+    },
+    {
+      "id": "patio-rfid_sortie-rfid",
+      "kind": "rfid",
+      "part": "s1_sensor",
+      "pins": {
+        "5": 14,
+        "22": 16,
+        "18": 18,
+        "19": 19,
+        "23": 23
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-pir-pir",
+      "kind": "pir",
+      "part": "s2_sensor",
+      "pins": {
+        "27": 17
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-radar_mmwave-radar",
+      "kind": "radar",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 25
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-sol_intelligent-hx711",
+      "kind": "hx711",
+      "part": "s4_sensor",
+      "pins": {
+        "26": 26,
+        "25": 27
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-co2-scd41",
+      "kind": "scd41",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-son-sound",
+      "kind": "sound",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-camera_thermique-amg8833",
+      "kind": "amg8833",
+      "part": "s7_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s8_sensor",
+      "pins": {
+        "27": 32
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s9_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "patio-co-ze07co",
+      "kind": "ze07co",
+      "part": "s10_sensor",
+      "pins": {
+        "16": 33,
+        "17": 5
+      },
+      "uart": 2
+    },
+    {
+      "id": "patio-fumee-mq2",
+      "kind": "mq2",
+      "part": "s11_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}

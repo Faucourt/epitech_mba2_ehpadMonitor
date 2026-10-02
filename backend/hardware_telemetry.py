@@ -92,7 +92,9 @@ class TelemetryStore:
      if not self.status.get(key,False):status='offline'
      elif not state['available']:status='unavailable'
     vals=copy.deepcopy(state['values']) if status=='live' else {}
-    item={**device,'status':status,'values':vals,'received_at':state['received_at'] if state else None}
+    communicating=bool(state and self.status.get(key,False) and now-state['received_at']<=15)
+    item={**device,'status':status,'values':vals,'received_at':state['received_at'] if state else None,
+      'communicating':communicating,'boot':state['boot'] if state else None,'seq':state['seq'] if state else None}
     entity=entities[device['entity_id']];entity['devices'].append(item)
     for field,label in [('sos_pressed','Bouton SOS activé'),('impact','Impact détecté — chute à vérifier')]:
      if vals.get(field) is True:entity['alerts'].append({'device_id':device_id,'field':field,'label':label})
@@ -101,7 +103,9 @@ class TelemetryStore:
     if vals.get('co2_ppm',0)>1500:entity['alerts'].append({'device_id':device_id,'field':'co2_ppm','label':'CO₂ au-dessus du seuil de démonstration (1500 ppm)'})
     if vals.get('co_ppm',0)>10:entity['alerts'].append({'device_id':device_id,'field':'co_ppm','label':'CO au-dessus du seuil de démonstration (10 ppm)'})
    for entity in entities.values():entity['contract']=self.legacy_contract(entity)
-   return {'source':source,'received_at':now,'entities':list(entities.values()),'live_devices':sum(d['status']=='live' for e in entities.values() for d in e['devices']),'expected_devices':len(self.devices)}
+   return {'source':source,'received_at':now,'entities':list(entities.values()),
+     'communicating_devices':sum(d['communicating'] for e in entities.values() for d in e['devices']),
+     'live_devices':sum(d['status']=='live' for e in entities.values() for d in e['devices']),'expected_devices':len(self.devices)}
 
  @staticmethod
  def legacy_contract(entity):

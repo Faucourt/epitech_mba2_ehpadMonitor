@@ -1,0 +1,36 @@
+[wokwi]
+version = 1
+firmware = "build/sketch.ino.bin"
+elf = "build/sketch.ino.elf"
+
+[[chip]]
+name = "analog-signal"
+binary = "analog-signal.chip.wasm"
+
+[[chip]]
+name = "max30102"
+binary = "max30102.chip.wasm"
+
+[[chip]]
+name = "par-nibp"
+binary = "par-nibp.chip.wasm"
+
+[[chip]]
+name = "scd41"
+binary = "scd41.chip.wasm"
+
+[[chip]]
+name = "sgp40"
+binary = "sgp40.chip.wasm"
+
+[[chip]]
+name = "sound-level"
+binary = "sound-level.chip.wasm"
+
+[[chip]]
+name = "tmp117"
+binary = "tmp117.chip.wasm"
+
+[[chip]]
+name = "ze07co"
+binary = "ze07co.chip.wasm"

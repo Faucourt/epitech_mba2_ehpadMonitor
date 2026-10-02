@@ -1,0 +1,104 @@
+{
+  "id": "R006",
+  "entity_type": "resident",
+  "devices": [
+    {
+      "id": "R006-wearable-mpu6050",
+      "kind": "mpu6050",
+      "part": "s0_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-wearable-max30102",
+      "kind": "max30102",
+      "part": "s1_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-wearable-tmp117",
+      "kind": "tmp117",
+      "part": "s2_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-wearable-sos",
+      "kind": "sos",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-wearable-ecg",
+      "kind": "ecg",
+      "part": "s4_sensor",
+      "pins": {
+        "34": 34,
+        "32": 13,
+        "33": 14
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-wearable-respiration",
+      "kind": "respiration",
+      "part": "s5_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-wearable-nibp",
+      "kind": "nibp",
+      "part": "s6_sensor",
+      "pins": {
+        "16": 16,
+        "17": 17,
+        "27": 18,
+        "26": 19
+      },
+      "uart": 1
+    },
+    {
+      "id": "R006-radar-radar",
+      "kind": "radar",
+      "part": "s7_sensor",
+      "pins": {
+        "27": 23
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-porte-door",
+      "kind": "door",
+      "part": "s8_sensor",
+      "pins": {
+        "27": 25
+      },
+      "uart": null
+    },
+    {
+      "id": "R006-sdb_pir-pir",
+      "kind": "pir",
+      "part": "s9_sensor",
+      "pins": {
+        "27": 26
+      },
+      "uart": null
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "escalier",
+  "entity_type": "zone",
+  "devices": [
+    {
+      "id": "escalier-pir-pir",
+      "kind": "pir",
+      "part": "s0_sensor",
+      "pins": {
+        "27": 4
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-radar_mmwave-radar",
+      "kind": "radar",
+      "part": "s1_sensor",
+      "pins": {
+        "27": 13
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-porte-door",
+      "kind": "door",
+      "part": "s2_sensor",
+      "pins": {
+        "27": 14
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-ambiant-dht22",
+      "kind": "dht22",
+      "part": "s3_sensor",
+      "pins": {
+        "27": 16
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-ambiant-sgp40",
+      "kind": "sgp40",
+      "part": "s4_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-co2-scd41",
+      "kind": "scd41",
+      "part": "s5_sensor",
+      "pins": {
+        "21": 21,
+        "22": 22
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-son-sound",
+      "kind": "sound",
+      "part": "s6_sensor",
+      "pins": {
+        "34": 34
+      },
+      "uart": null
+    },
+    {
+      "id": "escalier-co-ze07co",
+      "kind": "ze07co",
+      "part": "s7_sensor",
+      "pins": {
+        "16": 17,
+        "17": 18
+      },
+      "uart": 1
+    },
+    {
+      "id": "escalier-fumee-mq2",
+      "kind": "mq2",
+      "part": "s8_sensor",
+      "pins": {
+        "34": 35
+      },
+      "uart": null
+    }
+  ]
+}
