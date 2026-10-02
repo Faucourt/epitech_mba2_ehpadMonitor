@@ -22,4 +22,4 @@ Sketch uses 791241 bytes (60%) of program storage space. Maximum is 1310720 byte
 Global variables use 46968 bytes (14%) of dynamic memory, leaving 280712 bytes for local variables. Maximum is 327680 bytes.
 ```
 
-Cette vérification prouve la compilation locale ; elle ne prouve pas l'exécution dans Wokwi. Restent à fournir : lien du projet Wokwi enregistré, tests des capteurs et alertes dans le simulateur, vidéo réelle du dashboard à gauche et Wokwi à droite.
+Cette preuve porte sur la compilation locale. L'exécution dans Wokwi a ensuite été vérifiée avec le binaire complet local, les serveurs de compilation étant saturés. Le [README](../README.md) donne le lien du projet, les résultats des essais et la vidéo des vues Firefox côte à côte.

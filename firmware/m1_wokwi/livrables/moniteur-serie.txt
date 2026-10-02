@@ -1,0 +1,99 @@
+ 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:1344
+load:0x40078000,len:13964
+load:0x40080400,len:3600
+entry 0x400805f0
+MPU-6050 détecté (0x68)
+Wi-Fi : connexion à Wokwi-GUEST.
+Wi-Fi OK, IP = 10.10.0.2
+MQTT : connexion à broker.hivemq.com:1883 (client digi5-lebretyves-ehpad-m1-esp32-01-cf3e)... OK
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":0,"timestamp":"","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":1,"timestamp":"2026-10-02T14:05:07Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":2,"timestamp":"2026-10-02T14:05:09Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":3,"timestamp":"2026-10-02T14:05:11Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":4,"timestamp":"2026-10-02T14:05:13Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":5,"timestamp":"2026-10-02T14:05:15Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":6,"timestamp":"2026-10-02T14:05:17Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":7,"timestamp":"2026-10-02T14:05:19Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":8,"timestamp":"2026-10-02T14:05:21Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":9,"timestamp":"2026-10-02T14:05:23Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":10,"timestamp":"2026-10-02T14:05:25Z","heart_rate":120,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"hr_out_of_range","level":"warning","value":120.00,"timestamp":"2026-10-02T14:05:25Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":11,"timestamp":"2026-10-02T14:05:27Z","heart_rate":122,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":12,"timestamp":"2026-10-02T14:05:29Z","heart_rate":119,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":13,"timestamp":"2026-10-02T14:05:31Z","heart_rate":118,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":14,"timestamp":"2026-10-02T14:05:33Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"hr_out_of_range","level":"danger","value":153.00,"timestamp":"2026-10-02T14:05:33Z"}
+E (46640) ledc: ledc_get_duty(745): LEDC is not initialized
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":15,"timestamp":"2026-10-02T14:05:35Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":16,"timestamp":"2026-10-02T14:05:37Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":17,"timestamp":"2026-10-02T14:05:39Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"sos","level":"danger","value":1.00,"timestamp":"2026-10-02T14:05:41Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":18,"timestamp":"2026-10-02T14:05:41Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":19,"timestamp":"2026-10-02T14:05:43Z","heart_rate":152,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":20,"timestamp":"2026-10-02T14:05:45Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":21,"timestamp":"2026-10-02T14:05:47Z","heart_rate":154,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":22,"timestamp":"2026-10-02T14:05:49Z","heart_rate":155,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"fall_suspected","level":"danger","value":2.83,"timestamp":"2026-10-02T14:05:49Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":23,"timestamp":"2026-10-02T14:05:51Z","heart_rate":155,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":24,"timestamp":"2026-10-02T14:05:53Z","heart_rate":153,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":25,"timestamp":"2026-10-02T14:05:55Z","heart_rate":152,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":26,"timestamp":"2026-10-02T14:05:57Z","heart_rate":155,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":27,"timestamp":"2026-10-02T14:05:59Z","heart_rate":156,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"fall_suspected","level":"danger","value":2.83,"timestamp":"2026-10-02T14:05:59Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":28,"timestamp":"2026-10-02T14:06:01Z","heart_rate":155,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":29,"timestamp":"2026-10-02T14:06:03Z","heart_rate":156,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":30,"timestamp":"2026-10-02T14:06:05Z","heart_rate":154,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":31,"timestamp":"2026-10-02T14:06:07Z","heart_rate":154,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":32,"timestamp":"2026-10-02T14:06:09Z","heart_rate":153,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"fall_suspected","level":"danger","value":2.83,"timestamp":"2026-10-02T14:06:09Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":33,"timestamp":"2026-10-02T14:06:11Z","heart_rate":155,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":34,"timestamp":"2026-10-02T14:06:13Z","heart_rate":155,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":35,"timestamp":"2026-10-02T14:06:15Z","heart_rate":152,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":36,"timestamp":"2026-10-02T14:06:17Z","heart_rate":154,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":37,"timestamp":"2026-10-02T14:06:19Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":38,"timestamp":"2026-10-02T14:06:21Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":39,"timestamp":"2026-10-02T14:06:23Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":40,"timestamp":"2026-10-02T14:06:25Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":41,"timestamp":"2026-10-02T14:06:27Z","heart_rate":87,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":42,"timestamp":"2026-10-02T14:06:29Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":43,"timestamp":"2026-10-02T14:06:31Z","heart_rate":87,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":44,"timestamp":"2026-10-02T14:06:33Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":45,"timestamp":"2026-10-02T14:06:35Z","heart_rate":122,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"hr_out_of_range","level":"warning","value":122.00,"timestamp":"2026-10-02T14:06:35Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":46,"timestamp":"2026-10-02T14:06:37Z","heart_rate":121,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":47,"timestamp":"2026-10-02T14:06:39Z","heart_rate":122,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":48,"timestamp":"2026-10-02T14:06:41Z","heart_rate":120,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":49,"timestamp":"2026-10-02T14:06:43Z","heart_rate":121,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"warning"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":50,"timestamp":"2026-10-02T14:06:45Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"hr_out_of_range","level":"danger","value":156.00,"timestamp":"2026-10-02T14:06:45Z"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"sos","level":"danger","value":1.00,"timestamp":"2026-10-02T14:06:46Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":51,"timestamp":"2026-10-02T14:06:47Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":52,"timestamp":"2026-10-02T14:06:49Z","heart_rate":152,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":53,"timestamp":"2026-10-02T14:06:51Z","heart_rate":155,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":54,"timestamp":"2026-10-02T14:06:53Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":55,"timestamp":"2026-10-02T14:06:55Z","heart_rate":155,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":56,"timestamp":"2026-10-02T14:06:57Z","heart_rate":155,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":57,"timestamp":"2026-10-02T14:06:59Z","heart_rate":155,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":58,"timestamp":"2026-10-02T14:07:01Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":59,"timestamp":"2026-10-02T14:07:03Z","heart_rate":154,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":60,"timestamp":"2026-10-02T14:07:05Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":61,"timestamp":"2026-10-02T14:07:07Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":62,"timestamp":"2026-10-02T14:07:09Z","heart_rate":154,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":63,"timestamp":"2026-10-02T14:07:11Z","heart_rate":152,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":64,"timestamp":"2026-10-02T14:07:13Z","heart_rate":152,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":65,"timestamp":"2026-10-02T14:07:15Z","heart_rate":154,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":66,"timestamp":"2026-10-02T14:07:17Z","heart_rate":153,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":67,"timestamp":"2026-10-02T14:07:19Z","heart_rate":156,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"danger"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"fall_suspected","level":"danger","value":2.83,"timestamp":"2026-10-02T14:07:20Z"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":68,"timestamp":"2026-10-02T14:07:21Z","heart_rate":152,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":69,"timestamp":"2026-10-02T14:07:23Z","heart_rate":153,"accel_g":{"x":2.00,"y":0.00,"z":2.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"danger"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":70,"timestamp":"2026-10-02T14:07:25Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":2.83,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":71,"timestamp":"2026-10-02T14:07:27Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":72,"timestamp":"2026-10-02T14:07:29Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":73,"timestamp":"2026-10-02T14:07:31Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
