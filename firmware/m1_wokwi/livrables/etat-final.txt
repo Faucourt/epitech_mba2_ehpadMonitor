@@ -1,0 +1,54 @@
+EPicare Palace
+LABORATOIRE CONNECTÉ
+M1 / WOKWI
+
+SUPERVISION EN DIRECT
+
+Chaque signal compte.
+MQTT connecté
+01
+Résident P001
+
+Dispositif esp32-01 · équipe lebretyves-ehpad-m1
+
+Appareil hors ligne
+Fréquence cardiaque
+Mesure périmée
+—
+bpm
+Niveau normal
+♡
+60 dernières mesures · échelle 30–220 bpm
+Reçue il y a 92 s
+Horodatage 16:07:45
+Séquence 80
+Source esp32
+Accélération maximale
+1.00 g
+Capteur inertiel
+Opérationnel
+SpO₂ / température
+Non mesuré
+Journal des événements
+4 événements
+Alerte
+Chute suspectée · 2.83
+16:07:20
+Alerte
+Appel SOS · 1
+16:06:46
+Alerte
+Fréquence hors plage · 156
+16:06:45
+Vigilance
+Fréquence hors plage · 122
+16:06:35
+Inspecter le dernier message MQTT
+Données brutes & normalisées
+Prêt pour la démonstration
+
+Dashboard à gauche, Wokwi à droite. Sélectionnez l’écran entier.
+
+● Enregistrer l’écran
+EPicare Palace · Travaux pratiques M1
+Mesures du simulateur · usage pédagogique
