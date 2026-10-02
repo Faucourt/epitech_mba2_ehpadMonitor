@@ -14,3 +14,6 @@ mosquitto_logs/
 dashboard/certs/
 dashboard/public/rootCA.crt
 dashboard/public/rootCA.pem
+
+# Copie locale avant le TP M1 (peut contenir des fichiers locaux)
+backup_avant_m1/
