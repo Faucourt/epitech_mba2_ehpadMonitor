@@ -1,0 +1,9 @@
+PubSubClient@2.8
+ArduinoJson@7.4.2
+DHT sensor library@1.4.6
+Adafruit Unified Sensor@1.1.15
+SparkFun MAX3010x Pulse and Proximity Sensor Library@1.1.2
+MFRC522@1.4.12
+TinyGPSPlus@1.0.3
+HX711 Arduino Library@0.7.5
+Sensirion Gas Index Algorithm@3.2.3

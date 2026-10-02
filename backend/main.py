@@ -63,6 +63,8 @@ from ml_model import MalaisePredictor
 from a2a_agents import agent_card
 from reports import DailyReportService
 from routine_engine import update_and_detect, get_routine_summary
+from hardware_telemetry import TelemetryStore, PREFIXES
+from hardware_routes import register_hardware_routes
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [BACKEND] %(message)s')
 log = logging.getLogger(__name__)
@@ -120,6 +122,7 @@ import auth as auth_module
 # --- Init ---
 limiter = create_limiter()
 app = FastAPI(title="EHPAD API", version="1.0.0")
+hardware_store = TelemetryStore()
 setup_middlewares(app, limiter)
 register_routers(app)
 
@@ -145,6 +148,7 @@ push_service = PushService(
     vapid_private_key=VAPID_PRIVATE_KEY,
     vapid_claims_email=VAPID_CLAIMS_EMAIL,
 )
+register_hardware_routes(app, hardware_store, security_service.require_staff_session)
 
 # InfluxDB
 
@@ -296,6 +300,8 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("ehpad/+/ambient/env", qos=0)
     client.subscribe("ehpad/+/door/ambient", qos=1)
     client.subscribe("ehpad/summary", qos=0)
+    client.subscribe(PREFIXES['hardware'] + "/+/telemetry", qos=1)
+    client.subscribe(PREFIXES['hardware'] + "/+/status", qos=1)
 
 
 def on_message(client, userdata, msg):
@@ -311,7 +317,9 @@ def on_message(client, userdata, msg):
             _mqtt_ambient_count += 1
         payload = json.loads(msg.payload.decode())
         topic = msg.topic
-        if topic == "ehpad/summary":
+        if topic.startswith(PREFIXES['hardware'] + '/'):
+            hardware_store.ingest(topic, payload, bool(msg.retain), source='hardware')
+        elif topic == "ehpad/summary":
             _handle_summary(payload)
         elif topic.endswith("/vitals"):
             _handle_vitals(payload)
@@ -1011,6 +1019,15 @@ async def startup():
 
     threading.Thread(target=mqtt_thread, daemon=True).start()
 
+    # Optional public Wokwi DEMO input. Cannot populate hardware or clinical state.
+    if os.getenv('WOKWI_LAB_ENABLED', 'false').lower() == 'true':
+        lab = mqtt.Client(client_id=f"ehpad_wokwi_lab_{os.urandom(8).hex()}")
+        lab.on_connect = lambda client, userdata, flags, rc: client.subscribe(PREFIXES['wokwi'] + '/#', qos=1)
+        lab.on_message = lambda client, userdata, msg: hardware_store.ingest(msg.topic, msg.payload, bool(msg.retain), source='wokwi')
+        lab.connect_async(os.getenv('WOKWI_LAB_HOST', 'test.mosquitto.org'), int(os.getenv('WOKWI_LAB_PORT', '1883')), 30)
+        lab.loop_start()
+        app.state.wokwi_lab_client = lab
+
     # Injection historique InfluxDB (une seule fois, en arrière-plan)
     def _history_injection_thread():
         try:
@@ -1035,9 +1052,6 @@ async def startup():
     threading.Thread(target=daily_llm_report_loop, daemon=True).start()
 
     log.info("Backend EHPAD démarré OK")
-
-
-
 
 
 

@@ -106,6 +106,9 @@ services:
       influxdb:
         condition: service_healthy
     environment:
+      - WOKWI_LAB_ENABLED=${WOKWI_LAB_ENABLED:-false}
+      - WOKWI_LAB_HOST=${WOKWI_LAB_HOST:-test.mosquitto.org}
+      - WOKWI_LAB_PORT=${WOKWI_LAB_PORT:-1883}
       - MQTT_HOST=mosquitto
       - MQTT_PORT=1883
       - MQTT_USERNAME=backend

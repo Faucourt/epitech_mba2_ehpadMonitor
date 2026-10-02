@@ -1,0 +1,47 @@
+# Isolated development stack. No resident simulator: missing devices stay missing.
+# Bind all ports to loopback. Anonymous MQTT here is for local synthetic tests only.
+services:
+  mqtt:
+    image: eclipse-mosquitto:2.0
+    ports: ["127.0.0.1:1887:1883"]
+    volumes: ["./tests/hardware/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"]
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--requirepass", "hardware_lab_only"]
+  influx:
+    image: influxdb:2.7-alpine
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: lab
+      DOCKER_INFLUXDB_INIT_PASSWORD: hardware_lab_only
+      DOCKER_INFLUXDB_INIT_ORG: ehpad
+      DOCKER_INFLUXDB_INIT_BUCKET: residents
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: hardware_lab_only_token
+  backend:
+    build: ./backend
+    ports: ["127.0.0.1:8005:8000"]
+    depends_on: [mqtt,redis,influx]
+    environment:
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+      MQTT_USERNAME: ""
+      MQTT_PASSWORD: ""
+      REDIS_HOST: redis
+      REDIS_PASSWORD: hardware_lab_only
+      INFLUX_HOST: http://influx:8086
+      INFLUX_TOKEN: hardware_lab_only_token
+      INFLUX_ORG: ehpad
+      INFLUX_BUCKET: residents
+      SESSION_SECRET: hardware-lab-isolated-demo-session-secret
+      WOKWI_LAB_ENABLED: "true"
+      WOKWI_LAB_HOST: ${WOKWI_LAB_HOST:-mqtt}
+      WOKWI_LAB_PORT: ${WOKWI_LAB_PORT:-1883}
+      LLM_DAILY_AUTO_ENABLED: "false"
+      ALLOWED_ORIGINS: http://localhost:3005,http://127.0.0.1:3005
+      PATIENT_DATA_DIR: /tmp/lab-patients
+  dashboard:
+    build: ./dashboard
+    ports: ["127.0.0.1:3005:3000"]
+    depends_on: [backend]
+    environment:
+      BACKEND_URL: http://backend:8000

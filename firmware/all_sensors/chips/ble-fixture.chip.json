@@ -1,0 +1,36 @@
+{
+  "name": "ble-fixture (modèle pédagogique)",
+  "author": "EHPAD contributors",
+  "pins": [
+    "VCC",
+    "GND",
+    "SDA",
+    "SCL"
+  ],
+  "controls": [
+    {
+      "id": "rssi",
+      "label": "rssi",
+      "type": "range",
+      "min": -100,
+      "max": -20,
+      "step": 0.01
+    },
+    {
+      "id": "connected",
+      "label": "connected",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    {
+      "id": "corrupt",
+      "label": "corrupt",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  ]
+}

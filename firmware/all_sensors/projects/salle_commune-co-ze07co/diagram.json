@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "author": "EHPAD — banc matériel",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "chip-ze07co",
+      "id": "sensor",
+      "top": -20,
+      "left": 270,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "sensor:VCC",
+      "esp:5V",
+      "red",
+      []
+    ],
+    [
+      "sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "sensor:TX",
+      "esp:16",
+      "green",
+      []
+    ],
+    [
+      "sensor:RX",
+      "esp:17",
+      "green",
+      []
+    ]
+  ],
+  "dependencies": {}
+}

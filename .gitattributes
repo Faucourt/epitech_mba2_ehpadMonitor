@@ -1,1 +1,4 @@
 *.py text eol=lf
+firmware/all_sensors/projects/** linguist-generated=true
+backend/hardware_inventory.json linguist-generated=true
+dashboard/public/hardware-inventory.json linguist-generated=true

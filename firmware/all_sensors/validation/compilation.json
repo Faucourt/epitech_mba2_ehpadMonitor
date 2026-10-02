@@ -1,0 +1,200 @@
+[
+  {
+    "kind": "mpu6050",
+    "device_id": "R001-wearable-mpu6050",
+    "exit_code": 0,
+    "seconds": 78.4,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "ce91f00c87144acc338d2786b7a89bd93adc0d6c58298ec0888167a8e6023d94"
+  },
+  {
+    "kind": "max30102",
+    "device_id": "R001-wearable-max30102",
+    "exit_code": 0,
+    "seconds": 78.7,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "ded9e8b3d097c03d5d787c5da2d748acb918c1613a663b3eee4af6d9b58717ee"
+  },
+  {
+    "kind": "tmp117",
+    "device_id": "R001-wearable-tmp117",
+    "exit_code": 0,
+    "seconds": 78.9,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "854cd61740fb2de75bf938e2b2ceff4070339622e3309e4c550666521b73b530"
+  },
+  {
+    "kind": "sos",
+    "device_id": "R001-wearable-sos",
+    "exit_code": 0,
+    "seconds": 87.6,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "dcdd7a2c2688a28f73e2674b4b8ef69399945098a2ec0a41ceeaf0cede75e943"
+  },
+  {
+    "kind": "ecg",
+    "device_id": "R001-wearable-ecg",
+    "exit_code": 0,
+    "seconds": 88.0,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "31afd2efd0da54ad096a7ba23dba2edb763ef4162f13030968a892397f744538"
+  },
+  {
+    "kind": "respiration",
+    "device_id": "R001-wearable-respiration",
+    "exit_code": 0,
+    "seconds": 86.4,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "8750b97beb2e36266f16092d6b5a6c8fb06e4a953fec23ee4eb3a8e30940e178"
+  },
+  {
+    "kind": "nibp",
+    "device_id": "R001-wearable-nibp",
+    "exit_code": 0,
+    "seconds": 87.5,
+    "compiler_output": "Sketch uses 790825 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "d73b56fc65c14e924fe64c670b3e011e4d5e250191034471e2e52c2bc98d8add"
+  },
+  {
+    "kind": "pir",
+    "device_id": "R001-pir-pir",
+    "exit_code": 0,
+    "seconds": 83.9,
+    "compiler_output": "Sketch uses 790773 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "7121f84fdbb067a0bc24a62869cf63321580f120d84d3b37df73f42946eacb67"
+  },
+  {
+    "kind": "hx711",
+    "device_id": "R001-matelas-hx711",
+    "exit_code": 0,
+    "seconds": 76.9,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "ddc7453879a31e43d9ad12413c0f36cd4c7dfa8eb9099d9658c646f1742aef2b"
+  },
+  {
+    "kind": "door",
+    "device_id": "R001-porte-door",
+    "exit_code": 0,
+    "seconds": 79.2,
+    "compiler_output": "Sketch uses 790809 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "c05f348067e929696977c0b39a382795aa80e70976020ab969f049324499adf9"
+  },
+  {
+    "kind": "radar",
+    "device_id": "R002-radar-radar",
+    "exit_code": 0,
+    "seconds": 77.8,
+    "compiler_output": "Sketch uses 790773 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "ea659ed469a8f78f617ee235cafb2d758ceedc97aee78c4ba78ec911156cc62b"
+  },
+  {
+    "kind": "rfid",
+    "device_id": "entree-rfid-rfid",
+    "exit_code": 0,
+    "seconds": 76.6,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "ae20c9a5ca7951867b3cc703932d37f5e1f052defdb9773428a47980ad2da374"
+  },
+  {
+    "kind": "dht22",
+    "device_id": "entree-ambiant-dht22",
+    "exit_code": 0,
+    "seconds": 76.8,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "20bdd54f409bd0166ef2ee6e178a8f4d98202daf188590d2748dbeeb66aa272e"
+  },
+  {
+    "kind": "sgp40",
+    "device_id": "entree-ambiant-sgp40",
+    "exit_code": 0,
+    "seconds": 76.3,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "b48e546e76d4b3202caaff3a4c0652413eec771537f6eda10b23caf4affa31ab"
+  },
+  {
+    "kind": "scd41",
+    "device_id": "entree-co2-scd41",
+    "exit_code": 0,
+    "seconds": 77.4,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "37a02545b5d5cd49d993538eada91798dca53008ff4f21df8d4ff26c55aa09dc"
+  },
+  {
+    "kind": "sound",
+    "device_id": "entree-son-sound",
+    "exit_code": 0,
+    "seconds": 82.9,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "7bc5e321b5d368d8efb024f15c17365d454f689b6fffd1ac47e6aa1782e3d671"
+  },
+  {
+    "kind": "ze07co",
+    "device_id": "entree-co-ze07co",
+    "exit_code": 0,
+    "seconds": 87.8,
+    "compiler_output": "Sketch uses 790825 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "26f537ca096684a374a25bb887d41331ed1c20da8750ac541d1a3c4a1e2226e0"
+  },
+  {
+    "kind": "mq2",
+    "device_id": "entree-fumee-mq2",
+    "exit_code": 0,
+    "seconds": 91.4,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "1da838247fded4364f1de6ca3809d98476d2e5bcacd58b150ee95fa1b10df661"
+  },
+  {
+    "kind": "gps",
+    "device_id": "hors_ehpad-gps_bracelet-gps",
+    "exit_code": 0,
+    "seconds": 92.3,
+    "compiler_output": "Sketch uses 790805 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "c009ecf4e9e543071256696e77536e530677d259c721b2ad6b2c8ab607402b6c"
+  },
+  {
+    "kind": "amg8833",
+    "device_id": "patio-camera_thermique-amg8833",
+    "exit_code": 0,
+    "seconds": 87.5,
+    "compiler_output": "Sketch uses 790789 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "0ba726c10b61899b53e821e107c202e8c9a2cc6f3058e7f36e798e4804f97421"
+  },
+  {
+    "kind": "ble",
+    "device_id": "couloir_aile_rdc-ble_beacon-ble",
+    "exit_code": 0,
+    "seconds": 87.2,
+    "compiler_output": "Sketch uses 790821 bytes (25%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 47436 bytes (14%) of dynamic memory, leaving 280244 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "aa11321e7612c6926ec4a36650bf9ad53cd5ae6a2f9a8c3cfa2fcda61b169c2d"
+  },
+  {
+    "kind": "ble-hardware",
+    "device_id": "couloir_aile_rdc-ble_beacon-ble",
+    "exit_code": 0,
+    "seconds": 114.9,
+    "compiler_output": "Sketch uses 1573693 bytes (50%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60292 bytes (18%) of dynamic memory, leaving 267388 bytes for local variables. Maximum is 327680 bytes.\n",
+    "compiler_errors": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "8f1b8c8457b00003f6b05281b4169cb9d5b533df23f8279304665e8497f1ce8b"
+  }
+]

@@ -1,5 +1,23 @@
 # EHPAD Monitor - Detection et prediction de malaise
 
+## Branche acquisition Wokwi / ESP32 — tous les résidents
+
+Origine du projet : [lebretyves/D-tection-de-malaise-en-EHPAD](https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD).
+Cette branche conserve l'application d'origine et ajoute les pilotes, customs Wokwi,
+configurations et écran d'acquisition pour les **25 résidents, leurs chambres et les 20 zones**.
+Le code des simulateurs existants sert de référence au contrat ; les données absentes
+ne sont jamais remplacées par les valeurs normales du simulateur.
+
+- [Démarrer les bancs et le tableau de bord](firmware/all_sensors/README.md)
+- [Inventaire complet, modèles et unités](firmware/all_sensors/inventory.json)
+- [Correspondance avec les messages des simulateurs](docs/contrat_capteurs_materiels.md)
+- [Validation et limites de portage](firmware/all_sensors/VALIDATION.md)
+
+L'écran **Capteurs · 25 résidents + environnement**, accessible depuis le dashboard,
+présente les sources Wokwi et matérielles séparément. Les prototypes de tensiomètre
+et de radio BLE comportent des limites explicites : ils ne sont pas présentés comme
+des capteurs physiques validés. Aucun nouvel enregistrement vidéo.
+
 Projet MBA1 Epitech de monitoring EHPAD connecte.
 
 Le projet simule un etablissement EHPAD avec 25 residents, des constantes vitales,

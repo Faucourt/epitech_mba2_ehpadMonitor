@@ -1,0 +1,21 @@
+name: Sensor contracts and custom chips
+on:
+  push:
+    branches: [feat/wokwi-all-sensors]
+  pull_request:
+    paths: ['firmware/all_sensors/**', 'backend/hardware*', 'tests/hardware/**', 'dashboard/public/hardware*']
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: python -m unittest discover -s tests/hardware -p 'test_*.py' -v
+      - run: node --test tests/hardware/chips.test.cjs
+      - run: node --check dashboard/public/hardware.js
+      - run: python -m compileall -q backend/hardware_telemetry.py backend/hardware_routes.py backend/main.py

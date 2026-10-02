@@ -1,0 +1,8 @@
+[wokwi]
+version = 1
+firmware = "build/sketch.ino.bin"
+elf = "build/sketch.ino.elf"
+
+[[chip]]
+name = "sound-level"
+binary = "sound-level.chip.wasm"

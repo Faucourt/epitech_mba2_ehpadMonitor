@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Acquisition des capteurs · EPicare Palace</title>
+  <link rel="stylesheet" href="/hardware.css">
+  <script src="/hardware.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">EPicare <span>Palace</span></a>
+    <a class="back" href="/">← Tableau de bord</a>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">Supervision · Acquisition</p><h1 id="page-title">Chaque capteur, chaque mesure.</h1><p class="subtitle">Résidents, chambres et environnement — une lecture traçable des données reçues.</p></div>
+      <label class="source-label" for="source">Source des mesures<select id="source"><option value="wokwi">Simulation Wokwi</option><option value="hardware">Matériel réel</option></select></label>
+    </section>
+    <div class="connection" role="status" aria-live="polite"><span id="connection-light" class="light"></span><span id="connection-text">Chargement de l’acquisition…</span><a id="signin" href="/soignant" hidden>Se connecter à l’espace soignant</a><span id="last-update"></span></div>
+    <section class="coverage" aria-label="Couverture de l’acquisition">
+      <div class="coverage-main"><span class="metric-label">Capteurs en direct</span><p><strong id="live-count">—</strong><span id="expected-count"> / —</span></p><progress id="coverage-progress" value="0" max="1" aria-label="Part des capteurs en direct"></progress></div>
+      <div><strong id="resident-count">—</strong><span class="metric-label">résidents suivis</span></div>
+      <div><strong id="zone-count">—</strong><span class="metric-label">zones environnementales</span></div>
+      <div><strong id="missing-count">—</strong><span class="metric-label">capteurs sans mesure actuelle</span></div>
+    </section>
+    <p class="measurement-note" id="source-note">Simulation Wokwi : valeurs produites par les composants simulés. Les champs absents restent « non mesuré ».</p>
+    <p id="catalog-error" class="limit" role="status" hidden>Le catalogue des modèles est indisponible. Les mesures restent consultables, mais leurs interfaces et limites ne peuvent pas être affichées. Rechargez la page pour réessayer.</p>
+    <section aria-label="Inventaire des capteurs">
+      <div class="tools">
+        <div class="tabs" role="tablist" aria-label="Périmètre"><button id="tab-resident" role="tab" aria-selected="true" aria-controls="entities" data-type="resident">Résidents & chambres <span id="resident-tab-count"></span></button><button id="tab-zone" role="tab" aria-selected="false" aria-controls="entities" data-type="zone" tabindex="-1">Environnement <span id="zone-tab-count"></span></button></div>
+        <div class="filters"><label for="search">Rechercher<input id="search" type="search" placeholder="Nom, chambre, zone ou capteur…"></label><label for="filter">Afficher<select id="filter"><option value="all">Tous les équipements</option><option value="live">Avec des mesures en direct</option><option value="missing">Avec des capteurs manquants</option><option value="alert">Avec un signal à vérifier</option></select></label></div>
+      </div>
+      <div class="list-heading"><span id="results-count">Chargement…</span><span>Ouvrir une ligne pour consulter les mesures et leur provenance</span></div>
+      <div id="entities" role="tabpanel" aria-labelledby="tab-resident"></div>
+      <p id="empty" class="empty" hidden>Aucun résultat pour ces filtres.</p>
+    </section>
+    <footer>La présence d’une mesure ne constitue pas une validation clinique. Les limites de chaque modèle figurent dans son détail. Actualisation toutes les 2 secondes.</footer>
+  </main>
+</body>
+</html>

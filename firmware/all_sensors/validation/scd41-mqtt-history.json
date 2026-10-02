@@ -1,0 +1,490 @@
+﻿{
+    "device_id":  "salle_commune-co2-scd41",
+    "source":  "wokwi",
+    "history":  [
+                    {
+                        "at":  1790957567.443756,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957570.4196286,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957573.6995056,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957576.7397842,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957579.6540446,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957582.6929266,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957585.9496615,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957588.911338,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957592.0134656,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957597.6748202,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957601.7401435,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957605.1110275,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957608.1676624,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957611.6397867,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957615.6358428,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957618.733706,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957622.0484068,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957625.417872,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957628.573923,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957631.7766569,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957637.5433526,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957640.7772088,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957644.2006493,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957647.3676283,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957650.3643303,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957653.5254078,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957656.4508681,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957659.3379674,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957662.311245,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957665.618234,
+                        "values":  {
+                                       "co2_ppm":  600,
+                                       "temperature_c":  21.99855,
+                                       "humidity_pct":  44.99886
+                                   }
+                    },
+                    {
+                        "at":  1790957668.6233282,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957671.6361713,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957674.8262055,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957677.6776574,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957681.7644582,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957686.3888857,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957690.5614614,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957693.9091973,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957696.9382758,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957700.970191,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957704.4492493,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957707.4663284,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957710.5502782,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957714.2218952,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957717.2337232,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957720.9749887,
+                        "values":  {
+                                       "co2_ppm":  2000,
+                                       "temperature_c":  29.99886,
+                                       "humidity_pct":  69.99924
+                                   }
+                    },
+                    {
+                        "at":  1790957725.8504744,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957729.0617988,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957732.0861228,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957735.3918257,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957738.3119721,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957741.402256,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957744.5395715,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957747.2805605,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957750.174481,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957753.3425395,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957756.3503368,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957759.3164003,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957762.6210217,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957765.898827,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957770.9310253,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957774.4749246,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957778.2965014,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957781.316783,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957784.4559855,
+                        "values":  {
+
+                                   }
+                    },
+                    {
+                        "at":  1790957788.8063972,
+                        "values":  {
+
+                                   }
+                    }
+                ]
+}

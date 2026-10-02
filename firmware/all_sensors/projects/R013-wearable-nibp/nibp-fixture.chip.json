@@ -1,0 +1,44 @@
+{
+  "name": "nibp-fixture (modèle pédagogique)",
+  "author": "EHPAD contributors",
+  "pins": [
+    "VCC",
+    "GND",
+    "TX",
+    "RX"
+  ],
+  "controls": [
+    {
+      "id": "systolic",
+      "label": "systolic",
+      "type": "range",
+      "min": 40,
+      "max": 300,
+      "step": 0.01
+    },
+    {
+      "id": "diastolic",
+      "label": "diastolic",
+      "type": "range",
+      "min": 20,
+      "max": 200,
+      "step": 0.01
+    },
+    {
+      "id": "connected",
+      "label": "connected",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    {
+      "id": "corrupt",
+      "label": "corrupt",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  ]
+}

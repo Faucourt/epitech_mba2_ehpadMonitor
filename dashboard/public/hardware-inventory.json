@@ -1,0 +1,5266 @@
+{
+  "schema": 1,
+  "origin": "https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD",
+  "entities": [
+    {
+      "id": "R001",
+      "name": "Marie Curie",
+      "type": "resident",
+      "room": "101",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "pir",
+        "matelas",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R002",
+      "name": "Louis Pasteur",
+      "type": "resident",
+      "room": "102",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R003",
+      "name": "Simone Veil",
+      "type": "resident",
+      "room": "103",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "pir",
+        "matelas",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R004",
+      "name": "Pierre de Coubertin",
+      "type": "resident",
+      "room": "104",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R005",
+      "name": "Edith Piaf",
+      "type": "resident",
+      "room": "105",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "pir",
+        "matelas",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R006",
+      "name": "Jean Gabin",
+      "type": "resident",
+      "room": "106",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R007",
+      "name": "Annie Girardot",
+      "type": "resident",
+      "room": "107",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "pir",
+        "matelas",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R008",
+      "name": "Bourvil",
+      "type": "resident",
+      "room": "108",
+      "floor": 0,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R009",
+      "name": "Coco Chanel",
+      "type": "resident",
+      "room": "201",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R010",
+      "name": "Yves Montand",
+      "type": "resident",
+      "room": "202",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R011",
+      "name": "Jeanne Moreau",
+      "type": "resident",
+      "room": "203",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R012",
+      "name": "Charles Aznavour",
+      "type": "resident",
+      "room": "204",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R013",
+      "name": "Brigitte Bardot",
+      "type": "resident",
+      "room": "208",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R014",
+      "name": "Gerard Depardieu",
+      "type": "resident",
+      "room": "209",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R015",
+      "name": "Mireille Mathieu",
+      "type": "resident",
+      "room": "210",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R016",
+      "name": "Claude Francois",
+      "type": "resident",
+      "room": "211",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R017",
+      "name": "Josephine Baker",
+      "type": "resident",
+      "room": "212",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R018",
+      "name": "Fernandel",
+      "type": "resident",
+      "room": "213",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R019",
+      "name": "Dalida",
+      "type": "resident",
+      "room": "214",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R020",
+      "name": "Lino Ventura",
+      "type": "resident",
+      "room": "215",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R021",
+      "name": "Romy Schneider",
+      "type": "resident",
+      "room": "216",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R022",
+      "name": "Jean-Paul Belmondo",
+      "type": "resident",
+      "room": "217",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R023",
+      "name": "Sophie Marceau",
+      "type": "resident",
+      "room": "218",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R024",
+      "name": "Michel Sardou",
+      "type": "resident",
+      "room": "219",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "radar",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "R025",
+      "name": "Isabelle Adjani",
+      "type": "resident",
+      "room": "220",
+      "floor": 1,
+      "sensors": [
+        "wearable",
+        "pir",
+        "matelas",
+        "porte",
+        "sdb_pir"
+      ]
+    },
+    {
+      "id": "entree",
+      "name": "Entree / Accueil",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "rfid",
+        "badge",
+        "ir",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "rfid",
+        "badge",
+        "ir",
+        "porte"
+      ],
+      "zone_type": "entree"
+    },
+    {
+      "id": "hors_ehpad",
+      "name": "Sortie hors EHPAD",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "gps_bracelet",
+        "rfid_sortie",
+        "alerte_fugue",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "gps_bracelet",
+        "rfid_sortie",
+        "alerte_fugue"
+      ],
+      "zone_type": "exterieur_hors_site"
+    },
+    {
+      "id": "infirmerie_rdc",
+      "name": "Infirmerie",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "dashboard",
+        "alertes_5_niveaux",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "dashboard",
+        "alertes_5_niveaux",
+        "porte"
+      ],
+      "zone_type": "infirmerie"
+    },
+    {
+      "id": "pharmacie_admin",
+      "name": "Pharmacie / Admin",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "dashboard_central",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "dashboard_central",
+        "porte"
+      ],
+      "zone_type": "admin"
+    },
+    {
+      "id": "couloir_principal",
+      "name": "Couloir principal",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "radar_mmwave",
+        "sol_intelligent",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "radar_mmwave",
+        "sol_intelligent"
+      ],
+      "zone_type": "couloir"
+    },
+    {
+      "id": "salle_commune",
+      "name": "Salle commune / TV",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "co2",
+        "son",
+        "porte",
+        "ambiant",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "co2",
+        "son",
+        "porte"
+      ],
+      "zone_type": "salle_commune"
+    },
+    {
+      "id": "patio",
+      "name": "Patio couvert",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "gps_bracelet",
+        "rfid_sortie",
+        "pir",
+        "radar_mmwave",
+        "sol_intelligent",
+        "co2",
+        "son",
+        "camera_thermique",
+        "ambiant",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "gps_bracelet",
+        "rfid_sortie",
+        "pir",
+        "radar_mmwave",
+        "sol_intelligent",
+        "co2",
+        "son",
+        "camera_thermique"
+      ],
+      "zone_type": "exterieur"
+    },
+    {
+      "id": "jardin",
+      "name": "Jardin therapeutique",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "gps_bracelet",
+        "rfid_sortie",
+        "camera_thermique",
+        "pir",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "gps_bracelet",
+        "rfid_sortie",
+        "camera_thermique",
+        "pir"
+      ],
+      "zone_type": "exterieur"
+    },
+    {
+      "id": "salle_activites",
+      "name": "Salle d'activites",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "ambiant",
+        "porte",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "ambiant",
+        "porte"
+      ],
+      "zone_type": "therapie"
+    },
+    {
+      "id": "salle_manger",
+      "name": "Salle a manger",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "presence",
+        "sol_capteur",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "presence",
+        "sol_capteur",
+        "porte"
+      ],
+      "zone_type": "restaurant"
+    },
+    {
+      "id": "office_cuisine",
+      "name": "Office / Cuisine",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "fumee",
+        "temperature",
+        "co",
+        "porte",
+        "ambiant",
+        "co2",
+        "son"
+      ],
+      "declared_sensors": [
+        "fumee",
+        "temperature",
+        "co",
+        "porte"
+      ],
+      "zone_type": "cuisine"
+    },
+    {
+      "id": "couloir_aile_rdc",
+      "name": "Couloir Aile RDC",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "ble_beacon",
+        "pir",
+        "sol_intelligent",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "ble_beacon",
+        "pir",
+        "sol_intelligent"
+      ],
+      "zone_type": "couloir"
+    },
+    {
+      "id": "escalier",
+      "name": "Escalier securise",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "radar_mmwave",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "radar_mmwave",
+        "porte"
+      ],
+      "zone_type": "circulation"
+    },
+    {
+      "id": "ascenseur",
+      "name": "Ascenseur",
+      "floor": 0,
+      "type": "zone",
+      "sensors": [
+        "badge",
+        "pir",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "badge",
+        "pir",
+        "porte"
+      ],
+      "zone_type": "circulation"
+    },
+    {
+      "id": "poste_infirmier_etage",
+      "name": "Poste infirmier",
+      "floor": 1,
+      "type": "zone",
+      "sensors": [
+        "surveillance_etage",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "surveillance_etage",
+        "porte"
+      ],
+      "zone_type": "infirmerie"
+    },
+    {
+      "id": "kinesitherapie",
+      "name": "Kinesitherapie",
+      "floor": 1,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "sol",
+        "wearable",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "sol",
+        "wearable",
+        "porte"
+      ],
+      "zone_type": "therapie"
+    },
+    {
+      "id": "salle_repos",
+      "name": "Salle de repos",
+      "floor": 1,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "co2",
+        "son",
+        "porte",
+        "ambiant",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "co2",
+        "son",
+        "porte"
+      ],
+      "zone_type": "salle_commune"
+    },
+    {
+      "id": "couloir_aile_a_etage",
+      "name": "Couloir Aile A",
+      "floor": 1,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "ble_beacon",
+        "sol_intelligent",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "ble_beacon",
+        "sol_intelligent"
+      ],
+      "zone_type": "couloir"
+    },
+    {
+      "id": "couloir_aile_b_etage",
+      "name": "Couloir Aile B",
+      "floor": 1,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "ble_beacon",
+        "radar_mmwave",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "ble_beacon",
+        "radar_mmwave"
+      ],
+      "zone_type": "couloir"
+    },
+    {
+      "id": "palier_etage",
+      "name": "Palier escalier / ascenseur",
+      "floor": 1,
+      "type": "zone",
+      "sensors": [
+        "pir",
+        "badge",
+        "radar_mmwave",
+        "porte",
+        "ambiant",
+        "co2",
+        "son",
+        "co",
+        "fumee"
+      ],
+      "declared_sensors": [
+        "pir",
+        "badge",
+        "radar_mmwave",
+        "porte"
+      ],
+      "zone_type": "circulation"
+    }
+  ],
+  "devices": [
+    {
+      "id": "R001-wearable-mpu6050",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R001-wearable-max30102",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R001-wearable-tmp117",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R001-wearable-sos",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R001-wearable-ecg",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R001-wearable-respiration",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R001-wearable-nibp",
+      "entity_id": "R001",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R001-pir-pir",
+      "entity_id": "R001",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R001-matelas-hx711",
+      "entity_id": "R001",
+      "role": "matelas",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "R001-porte-door",
+      "entity_id": "R001",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R001-sdb_pir-pir",
+      "entity_id": "R001",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R002-wearable-mpu6050",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R002-wearable-max30102",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R002-wearable-tmp117",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R002-wearable-sos",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R002-wearable-ecg",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R002-wearable-respiration",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R002-wearable-nibp",
+      "entity_id": "R002",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R002-radar-radar",
+      "entity_id": "R002",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R002-porte-door",
+      "entity_id": "R002",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R002-sdb_pir-pir",
+      "entity_id": "R002",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R003-wearable-mpu6050",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R003-wearable-max30102",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R003-wearable-tmp117",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R003-wearable-sos",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R003-wearable-ecg",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R003-wearable-respiration",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R003-wearable-nibp",
+      "entity_id": "R003",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R003-pir-pir",
+      "entity_id": "R003",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R003-matelas-hx711",
+      "entity_id": "R003",
+      "role": "matelas",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "R003-porte-door",
+      "entity_id": "R003",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R003-sdb_pir-pir",
+      "entity_id": "R003",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R004-wearable-mpu6050",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R004-wearable-max30102",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R004-wearable-tmp117",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R004-wearable-sos",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R004-wearable-ecg",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R004-wearable-respiration",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R004-wearable-nibp",
+      "entity_id": "R004",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R004-radar-radar",
+      "entity_id": "R004",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R004-porte-door",
+      "entity_id": "R004",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R004-sdb_pir-pir",
+      "entity_id": "R004",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R005-wearable-mpu6050",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R005-wearable-max30102",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R005-wearable-tmp117",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R005-wearable-sos",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R005-wearable-ecg",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R005-wearable-respiration",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R005-wearable-nibp",
+      "entity_id": "R005",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R005-pir-pir",
+      "entity_id": "R005",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R005-matelas-hx711",
+      "entity_id": "R005",
+      "role": "matelas",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "R005-porte-door",
+      "entity_id": "R005",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R005-sdb_pir-pir",
+      "entity_id": "R005",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R006-wearable-mpu6050",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R006-wearable-max30102",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R006-wearable-tmp117",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R006-wearable-sos",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R006-wearable-ecg",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R006-wearable-respiration",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R006-wearable-nibp",
+      "entity_id": "R006",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R006-radar-radar",
+      "entity_id": "R006",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R006-porte-door",
+      "entity_id": "R006",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R006-sdb_pir-pir",
+      "entity_id": "R006",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R007-wearable-mpu6050",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R007-wearable-max30102",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R007-wearable-tmp117",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R007-wearable-sos",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R007-wearable-ecg",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R007-wearable-respiration",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R007-wearable-nibp",
+      "entity_id": "R007",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R007-pir-pir",
+      "entity_id": "R007",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R007-matelas-hx711",
+      "entity_id": "R007",
+      "role": "matelas",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "R007-porte-door",
+      "entity_id": "R007",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R007-sdb_pir-pir",
+      "entity_id": "R007",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R008-wearable-mpu6050",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R008-wearable-max30102",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R008-wearable-tmp117",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R008-wearable-sos",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R008-wearable-ecg",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R008-wearable-respiration",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R008-wearable-nibp",
+      "entity_id": "R008",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R008-radar-radar",
+      "entity_id": "R008",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R008-porte-door",
+      "entity_id": "R008",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R008-sdb_pir-pir",
+      "entity_id": "R008",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R009-wearable-mpu6050",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R009-wearable-max30102",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R009-wearable-tmp117",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R009-wearable-sos",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R009-wearable-ecg",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R009-wearable-respiration",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R009-wearable-nibp",
+      "entity_id": "R009",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R009-pir-pir",
+      "entity_id": "R009",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R009-porte-door",
+      "entity_id": "R009",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R009-sdb_pir-pir",
+      "entity_id": "R009",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R010-wearable-mpu6050",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R010-wearable-max30102",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R010-wearable-tmp117",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R010-wearable-sos",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R010-wearable-ecg",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R010-wearable-respiration",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R010-wearable-nibp",
+      "entity_id": "R010",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R010-radar-radar",
+      "entity_id": "R010",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R010-porte-door",
+      "entity_id": "R010",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R010-sdb_pir-pir",
+      "entity_id": "R010",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R011-wearable-mpu6050",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R011-wearable-max30102",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R011-wearable-tmp117",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R011-wearable-sos",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R011-wearable-ecg",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R011-wearable-respiration",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R011-wearable-nibp",
+      "entity_id": "R011",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R011-pir-pir",
+      "entity_id": "R011",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R011-porte-door",
+      "entity_id": "R011",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R011-sdb_pir-pir",
+      "entity_id": "R011",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R012-wearable-mpu6050",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R012-wearable-max30102",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R012-wearable-tmp117",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R012-wearable-sos",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R012-wearable-ecg",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R012-wearable-respiration",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R012-wearable-nibp",
+      "entity_id": "R012",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R012-radar-radar",
+      "entity_id": "R012",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R012-porte-door",
+      "entity_id": "R012",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R012-sdb_pir-pir",
+      "entity_id": "R012",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R013-wearable-mpu6050",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R013-wearable-max30102",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R013-wearable-tmp117",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R013-wearable-sos",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R013-wearable-ecg",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R013-wearable-respiration",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R013-wearable-nibp",
+      "entity_id": "R013",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R013-pir-pir",
+      "entity_id": "R013",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R013-porte-door",
+      "entity_id": "R013",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R013-sdb_pir-pir",
+      "entity_id": "R013",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R014-wearable-mpu6050",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R014-wearable-max30102",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R014-wearable-tmp117",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R014-wearable-sos",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R014-wearable-ecg",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R014-wearable-respiration",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R014-wearable-nibp",
+      "entity_id": "R014",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R014-radar-radar",
+      "entity_id": "R014",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R014-porte-door",
+      "entity_id": "R014",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R014-sdb_pir-pir",
+      "entity_id": "R014",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R015-wearable-mpu6050",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R015-wearable-max30102",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R015-wearable-tmp117",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R015-wearable-sos",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R015-wearable-ecg",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R015-wearable-respiration",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R015-wearable-nibp",
+      "entity_id": "R015",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R015-pir-pir",
+      "entity_id": "R015",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R015-porte-door",
+      "entity_id": "R015",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R015-sdb_pir-pir",
+      "entity_id": "R015",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R016-wearable-mpu6050",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R016-wearable-max30102",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R016-wearable-tmp117",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R016-wearable-sos",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R016-wearable-ecg",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R016-wearable-respiration",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R016-wearable-nibp",
+      "entity_id": "R016",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R016-radar-radar",
+      "entity_id": "R016",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R016-porte-door",
+      "entity_id": "R016",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R016-sdb_pir-pir",
+      "entity_id": "R016",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R017-wearable-mpu6050",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R017-wearable-max30102",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R017-wearable-tmp117",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R017-wearable-sos",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R017-wearable-ecg",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R017-wearable-respiration",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R017-wearable-nibp",
+      "entity_id": "R017",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R017-pir-pir",
+      "entity_id": "R017",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R017-porte-door",
+      "entity_id": "R017",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R017-sdb_pir-pir",
+      "entity_id": "R017",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R018-wearable-mpu6050",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R018-wearable-max30102",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R018-wearable-tmp117",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R018-wearable-sos",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R018-wearable-ecg",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R018-wearable-respiration",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R018-wearable-nibp",
+      "entity_id": "R018",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R018-radar-radar",
+      "entity_id": "R018",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R018-porte-door",
+      "entity_id": "R018",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R018-sdb_pir-pir",
+      "entity_id": "R018",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R019-wearable-mpu6050",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R019-wearable-max30102",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R019-wearable-tmp117",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R019-wearable-sos",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R019-wearable-ecg",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R019-wearable-respiration",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R019-wearable-nibp",
+      "entity_id": "R019",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R019-pir-pir",
+      "entity_id": "R019",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R019-porte-door",
+      "entity_id": "R019",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R019-sdb_pir-pir",
+      "entity_id": "R019",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R020-wearable-mpu6050",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R020-wearable-max30102",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R020-wearable-tmp117",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R020-wearable-sos",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R020-wearable-ecg",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R020-wearable-respiration",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R020-wearable-nibp",
+      "entity_id": "R020",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R020-radar-radar",
+      "entity_id": "R020",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R020-porte-door",
+      "entity_id": "R020",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R020-sdb_pir-pir",
+      "entity_id": "R020",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R021-wearable-mpu6050",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R021-wearable-max30102",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R021-wearable-tmp117",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R021-wearable-sos",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R021-wearable-ecg",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R021-wearable-respiration",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R021-wearable-nibp",
+      "entity_id": "R021",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R021-pir-pir",
+      "entity_id": "R021",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R021-porte-door",
+      "entity_id": "R021",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R021-sdb_pir-pir",
+      "entity_id": "R021",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R022-wearable-mpu6050",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R022-wearable-max30102",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R022-wearable-tmp117",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R022-wearable-sos",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R022-wearable-ecg",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R022-wearable-respiration",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R022-wearable-nibp",
+      "entity_id": "R022",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R022-radar-radar",
+      "entity_id": "R022",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R022-porte-door",
+      "entity_id": "R022",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R022-sdb_pir-pir",
+      "entity_id": "R022",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R023-wearable-mpu6050",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R023-wearable-max30102",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R023-wearable-tmp117",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R023-wearable-sos",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R023-wearable-ecg",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R023-wearable-respiration",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R023-wearable-nibp",
+      "entity_id": "R023",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R023-pir-pir",
+      "entity_id": "R023",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R023-porte-door",
+      "entity_id": "R023",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R023-sdb_pir-pir",
+      "entity_id": "R023",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R024-wearable-mpu6050",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R024-wearable-max30102",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R024-wearable-tmp117",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R024-wearable-sos",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R024-wearable-ecg",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R024-wearable-respiration",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R024-wearable-nibp",
+      "entity_id": "R024",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R024-radar-radar",
+      "entity_id": "R024",
+      "role": "radar",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "R024-porte-door",
+      "entity_id": "R024",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R024-sdb_pir-pir",
+      "entity_id": "R024",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R025-wearable-mpu6050",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "R025-wearable-max30102",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "R025-wearable-tmp117",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "R025-wearable-sos",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "R025-wearable-ecg",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "R025-wearable-respiration",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "R025-wearable-nibp",
+      "entity_id": "R025",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "R025-pir-pir",
+      "entity_id": "R025",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "R025-matelas-hx711",
+      "entity_id": "R025",
+      "role": "matelas",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "R025-porte-door",
+      "entity_id": "R025",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "R025-sdb_pir-pir",
+      "entity_id": "R025",
+      "role": "sdb_pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "entree-rfid-rfid",
+      "entity_id": "entree",
+      "role": "rfid",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "entree-badge-rfid",
+      "entity_id": "entree",
+      "role": "badge",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "entree-ir-pir",
+      "entity_id": "entree",
+      "role": "ir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "entree-porte-door",
+      "entity_id": "entree",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "entree-ambiant-dht22",
+      "entity_id": "entree",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "entree-ambiant-sgp40",
+      "entity_id": "entree",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "entree-co2-scd41",
+      "entity_id": "entree",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "entree-son-sound",
+      "entity_id": "entree",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "entree-co-ze07co",
+      "entity_id": "entree",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "entree-fumee-mq2",
+      "entity_id": "entree",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "hors_ehpad-gps_bracelet-gps",
+      "entity_id": "hors_ehpad",
+      "role": "gps_bracelet",
+      "kind": "gps",
+      "fields": {
+        "latitude": "deg",
+        "longitude": "deg",
+        "gps_fix": "bool"
+      }
+    },
+    {
+      "id": "hors_ehpad-rfid_sortie-rfid",
+      "entity_id": "hors_ehpad",
+      "role": "rfid_sortie",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "hors_ehpad-ambiant-dht22",
+      "entity_id": "hors_ehpad",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "hors_ehpad-ambiant-sgp40",
+      "entity_id": "hors_ehpad",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "hors_ehpad-co2-scd41",
+      "entity_id": "hors_ehpad",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "hors_ehpad-son-sound",
+      "entity_id": "hors_ehpad",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "hors_ehpad-co-ze07co",
+      "entity_id": "hors_ehpad",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "hors_ehpad-fumee-mq2",
+      "entity_id": "hors_ehpad",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-porte-door",
+      "entity_id": "infirmerie_rdc",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-ambiant-dht22",
+      "entity_id": "infirmerie_rdc",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-ambiant-sgp40",
+      "entity_id": "infirmerie_rdc",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-co2-scd41",
+      "entity_id": "infirmerie_rdc",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-son-sound",
+      "entity_id": "infirmerie_rdc",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-co-ze07co",
+      "entity_id": "infirmerie_rdc",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "infirmerie_rdc-fumee-mq2",
+      "entity_id": "infirmerie_rdc",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "pharmacie_admin-porte-door",
+      "entity_id": "pharmacie_admin",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "pharmacie_admin-ambiant-dht22",
+      "entity_id": "pharmacie_admin",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "pharmacie_admin-ambiant-sgp40",
+      "entity_id": "pharmacie_admin",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "pharmacie_admin-co2-scd41",
+      "entity_id": "pharmacie_admin",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "pharmacie_admin-son-sound",
+      "entity_id": "pharmacie_admin",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "pharmacie_admin-co-ze07co",
+      "entity_id": "pharmacie_admin",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "pharmacie_admin-fumee-mq2",
+      "entity_id": "pharmacie_admin",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "couloir_principal-pir-pir",
+      "entity_id": "couloir_principal",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "couloir_principal-radar_mmwave-radar",
+      "entity_id": "couloir_principal",
+      "role": "radar_mmwave",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "couloir_principal-sol_intelligent-hx711",
+      "entity_id": "couloir_principal",
+      "role": "sol_intelligent",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "couloir_principal-ambiant-dht22",
+      "entity_id": "couloir_principal",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_principal-ambiant-sgp40",
+      "entity_id": "couloir_principal",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "couloir_principal-co2-scd41",
+      "entity_id": "couloir_principal",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_principal-son-sound",
+      "entity_id": "couloir_principal",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "couloir_principal-co-ze07co",
+      "entity_id": "couloir_principal",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "couloir_principal-fumee-mq2",
+      "entity_id": "couloir_principal",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "salle_commune-pir-pir",
+      "entity_id": "salle_commune",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "salle_commune-co2-scd41",
+      "entity_id": "salle_commune",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_commune-son-sound",
+      "entity_id": "salle_commune",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "salle_commune-porte-door",
+      "entity_id": "salle_commune",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "salle_commune-ambiant-dht22",
+      "entity_id": "salle_commune",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_commune-ambiant-sgp40",
+      "entity_id": "salle_commune",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "salle_commune-co-ze07co",
+      "entity_id": "salle_commune",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "salle_commune-fumee-mq2",
+      "entity_id": "salle_commune",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "patio-gps_bracelet-gps",
+      "entity_id": "patio",
+      "role": "gps_bracelet",
+      "kind": "gps",
+      "fields": {
+        "latitude": "deg",
+        "longitude": "deg",
+        "gps_fix": "bool"
+      }
+    },
+    {
+      "id": "patio-rfid_sortie-rfid",
+      "entity_id": "patio",
+      "role": "rfid_sortie",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "patio-pir-pir",
+      "entity_id": "patio",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "patio-radar_mmwave-radar",
+      "entity_id": "patio",
+      "role": "radar_mmwave",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "patio-sol_intelligent-hx711",
+      "entity_id": "patio",
+      "role": "sol_intelligent",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "patio-co2-scd41",
+      "entity_id": "patio",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "patio-son-sound",
+      "entity_id": "patio",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "patio-camera_thermique-amg8833",
+      "entity_id": "patio",
+      "role": "camera_thermique",
+      "kind": "amg8833",
+      "fields": {
+        "thermal_pixels_c": "°C[64]",
+        "thermal_max_c": "°C"
+      }
+    },
+    {
+      "id": "patio-ambiant-dht22",
+      "entity_id": "patio",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "patio-ambiant-sgp40",
+      "entity_id": "patio",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "patio-co-ze07co",
+      "entity_id": "patio",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "patio-fumee-mq2",
+      "entity_id": "patio",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "jardin-gps_bracelet-gps",
+      "entity_id": "jardin",
+      "role": "gps_bracelet",
+      "kind": "gps",
+      "fields": {
+        "latitude": "deg",
+        "longitude": "deg",
+        "gps_fix": "bool"
+      }
+    },
+    {
+      "id": "jardin-rfid_sortie-rfid",
+      "entity_id": "jardin",
+      "role": "rfid_sortie",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "jardin-camera_thermique-amg8833",
+      "entity_id": "jardin",
+      "role": "camera_thermique",
+      "kind": "amg8833",
+      "fields": {
+        "thermal_pixels_c": "°C[64]",
+        "thermal_max_c": "°C"
+      }
+    },
+    {
+      "id": "jardin-pir-pir",
+      "entity_id": "jardin",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "jardin-ambiant-dht22",
+      "entity_id": "jardin",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "jardin-ambiant-sgp40",
+      "entity_id": "jardin",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "jardin-co2-scd41",
+      "entity_id": "jardin",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "jardin-son-sound",
+      "entity_id": "jardin",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "jardin-co-ze07co",
+      "entity_id": "jardin",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "jardin-fumee-mq2",
+      "entity_id": "jardin",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "salle_activites-pir-pir",
+      "entity_id": "salle_activites",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "salle_activites-ambiant-dht22",
+      "entity_id": "salle_activites",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_activites-ambiant-sgp40",
+      "entity_id": "salle_activites",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "salle_activites-porte-door",
+      "entity_id": "salle_activites",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "salle_activites-co2-scd41",
+      "entity_id": "salle_activites",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_activites-son-sound",
+      "entity_id": "salle_activites",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "salle_activites-co-ze07co",
+      "entity_id": "salle_activites",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "salle_activites-fumee-mq2",
+      "entity_id": "salle_activites",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "salle_manger-presence-pir",
+      "entity_id": "salle_manger",
+      "role": "presence",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "salle_manger-sol_capteur-hx711",
+      "entity_id": "salle_manger",
+      "role": "sol_capteur",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "salle_manger-porte-door",
+      "entity_id": "salle_manger",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "salle_manger-ambiant-dht22",
+      "entity_id": "salle_manger",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_manger-ambiant-sgp40",
+      "entity_id": "salle_manger",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "salle_manger-co2-scd41",
+      "entity_id": "salle_manger",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_manger-son-sound",
+      "entity_id": "salle_manger",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "salle_manger-co-ze07co",
+      "entity_id": "salle_manger",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "salle_manger-fumee-mq2",
+      "entity_id": "salle_manger",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "office_cuisine-fumee-mq2",
+      "entity_id": "office_cuisine",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "office_cuisine-temperature-dht22",
+      "entity_id": "office_cuisine",
+      "role": "temperature",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "office_cuisine-co-ze07co",
+      "entity_id": "office_cuisine",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "office_cuisine-porte-door",
+      "entity_id": "office_cuisine",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "office_cuisine-ambiant-dht22",
+      "entity_id": "office_cuisine",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "office_cuisine-ambiant-sgp40",
+      "entity_id": "office_cuisine",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "office_cuisine-co2-scd41",
+      "entity_id": "office_cuisine",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "office_cuisine-son-sound",
+      "entity_id": "office_cuisine",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-ble_beacon-ble",
+      "entity_id": "couloir_aile_rdc",
+      "role": "ble_beacon",
+      "kind": "ble",
+      "fields": {
+        "ble_address": "MAC",
+        "ble_rssi_dbm": "dBm"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-pir-pir",
+      "entity_id": "couloir_aile_rdc",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-sol_intelligent-hx711",
+      "entity_id": "couloir_aile_rdc",
+      "role": "sol_intelligent",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-ambiant-dht22",
+      "entity_id": "couloir_aile_rdc",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-ambiant-sgp40",
+      "entity_id": "couloir_aile_rdc",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-co2-scd41",
+      "entity_id": "couloir_aile_rdc",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-son-sound",
+      "entity_id": "couloir_aile_rdc",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-co-ze07co",
+      "entity_id": "couloir_aile_rdc",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "couloir_aile_rdc-fumee-mq2",
+      "entity_id": "couloir_aile_rdc",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "escalier-pir-pir",
+      "entity_id": "escalier",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "escalier-radar_mmwave-radar",
+      "entity_id": "escalier",
+      "role": "radar_mmwave",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "escalier-porte-door",
+      "entity_id": "escalier",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "escalier-ambiant-dht22",
+      "entity_id": "escalier",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "escalier-ambiant-sgp40",
+      "entity_id": "escalier",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "escalier-co2-scd41",
+      "entity_id": "escalier",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "escalier-son-sound",
+      "entity_id": "escalier",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "escalier-co-ze07co",
+      "entity_id": "escalier",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "escalier-fumee-mq2",
+      "entity_id": "escalier",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "ascenseur-badge-rfid",
+      "entity_id": "ascenseur",
+      "role": "badge",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "ascenseur-pir-pir",
+      "entity_id": "ascenseur",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "ascenseur-porte-door",
+      "entity_id": "ascenseur",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "ascenseur-ambiant-dht22",
+      "entity_id": "ascenseur",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "ascenseur-ambiant-sgp40",
+      "entity_id": "ascenseur",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "ascenseur-co2-scd41",
+      "entity_id": "ascenseur",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "ascenseur-son-sound",
+      "entity_id": "ascenseur",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "ascenseur-co-ze07co",
+      "entity_id": "ascenseur",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "ascenseur-fumee-mq2",
+      "entity_id": "ascenseur",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-porte-door",
+      "entity_id": "poste_infirmier_etage",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-ambiant-dht22",
+      "entity_id": "poste_infirmier_etage",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-ambiant-sgp40",
+      "entity_id": "poste_infirmier_etage",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-co2-scd41",
+      "entity_id": "poste_infirmier_etage",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-son-sound",
+      "entity_id": "poste_infirmier_etage",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-co-ze07co",
+      "entity_id": "poste_infirmier_etage",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "poste_infirmier_etage-fumee-mq2",
+      "entity_id": "poste_infirmier_etage",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "kinesitherapie-pir-pir",
+      "entity_id": "kinesitherapie",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "kinesitherapie-sol-hx711",
+      "entity_id": "kinesitherapie",
+      "role": "sol",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-mpu6050",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-max30102",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-tmp117",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-sos",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "sos",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-ecg",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "ecg",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-respiration",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "respiration",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      }
+    },
+    {
+      "id": "kinesitherapie-wearable-nibp",
+      "entity_id": "kinesitherapie",
+      "role": "wearable",
+      "kind": "nibp",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      }
+    },
+    {
+      "id": "kinesitherapie-porte-door",
+      "entity_id": "kinesitherapie",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "kinesitherapie-ambiant-dht22",
+      "entity_id": "kinesitherapie",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "kinesitherapie-ambiant-sgp40",
+      "entity_id": "kinesitherapie",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "kinesitherapie-co2-scd41",
+      "entity_id": "kinesitherapie",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "kinesitherapie-son-sound",
+      "entity_id": "kinesitherapie",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "kinesitherapie-co-ze07co",
+      "entity_id": "kinesitherapie",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "kinesitherapie-fumee-mq2",
+      "entity_id": "kinesitherapie",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "salle_repos-pir-pir",
+      "entity_id": "salle_repos",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "salle_repos-co2-scd41",
+      "entity_id": "salle_repos",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_repos-son-sound",
+      "entity_id": "salle_repos",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "salle_repos-porte-door",
+      "entity_id": "salle_repos",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "salle_repos-ambiant-dht22",
+      "entity_id": "salle_repos",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "salle_repos-ambiant-sgp40",
+      "entity_id": "salle_repos",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "salle_repos-co-ze07co",
+      "entity_id": "salle_repos",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "salle_repos-fumee-mq2",
+      "entity_id": "salle_repos",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-pir-pir",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-ble_beacon-ble",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "ble_beacon",
+      "kind": "ble",
+      "fields": {
+        "ble_address": "MAC",
+        "ble_rssi_dbm": "dBm"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-sol_intelligent-hx711",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "sol_intelligent",
+      "kind": "hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-ambiant-dht22",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-ambiant-sgp40",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-co2-scd41",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-son-sound",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-co-ze07co",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "couloir_aile_a_etage-fumee-mq2",
+      "entity_id": "couloir_aile_a_etage",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-pir-pir",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-ble_beacon-ble",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "ble_beacon",
+      "kind": "ble",
+      "fields": {
+        "ble_address": "MAC",
+        "ble_rssi_dbm": "dBm"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-radar_mmwave-radar",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "radar_mmwave",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-ambiant-dht22",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-ambiant-sgp40",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-co2-scd41",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-son-sound",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-co-ze07co",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "couloir_aile_b_etage-fumee-mq2",
+      "entity_id": "couloir_aile_b_etage",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    },
+    {
+      "id": "palier_etage-pir-pir",
+      "entity_id": "palier_etage",
+      "role": "pir",
+      "kind": "pir",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    {
+      "id": "palier_etage-badge-rfid",
+      "entity_id": "palier_etage",
+      "role": "badge",
+      "kind": "rfid",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    {
+      "id": "palier_etage-radar_mmwave-radar",
+      "entity_id": "palier_etage",
+      "role": "radar_mmwave",
+      "kind": "radar",
+      "fields": {
+        "presence": "bool"
+      }
+    },
+    {
+      "id": "palier_etage-porte-door",
+      "entity_id": "palier_etage",
+      "role": "porte",
+      "kind": "door",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    {
+      "id": "palier_etage-ambiant-dht22",
+      "entity_id": "palier_etage",
+      "role": "ambiant",
+      "kind": "dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "palier_etage-ambiant-sgp40",
+      "entity_id": "palier_etage",
+      "role": "ambiant",
+      "kind": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      }
+    },
+    {
+      "id": "palier_etage-co2-scd41",
+      "entity_id": "palier_etage",
+      "role": "co2",
+      "kind": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    {
+      "id": "palier_etage-son-sound",
+      "entity_id": "palier_etage",
+      "role": "son",
+      "kind": "sound",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      }
+    },
+    {
+      "id": "palier_etage-co-ze07co",
+      "entity_id": "palier_etage",
+      "role": "co",
+      "kind": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    {
+      "id": "palier_etage-fumee-mq2",
+      "entity_id": "palier_etage",
+      "role": "fumee",
+      "kind": "mq2",
+      "fields": {
+        "gas_adc": "count"
+      }
+    }
+  ],
+  "catalog": {
+    "mpu6050": {
+      "model": "MPU-6050",
+      "bus": "I2C 0x68",
+      "native": "wokwi-mpu6050",
+      "fields": {
+        "accel_g": "g",
+        "gyro_dps": "deg/s",
+        "impact": "bool"
+      }
+    },
+    "max30102": {
+      "model": "MAX30102",
+      "bus": "I2C 0x57",
+      "chip": "max30102",
+      "fields": {
+        "heart_rate": "bpm",
+        "spo2": "%",
+        "ir_raw": "count",
+        "red_raw": "count"
+      }
+    },
+    "tmp117": {
+      "model": "TMP117",
+      "bus": "I2C 0x48",
+      "chip": "tmp117",
+      "fields": {
+        "contact_temperature_c": "°C"
+      }
+    },
+    "sos": {
+      "model": "Bouton SOS NO",
+      "bus": "GPIO 27 pull-up",
+      "native": "wokwi-pushbutton",
+      "fields": {
+        "sos_pressed": "bool"
+      }
+    },
+    "pir": {
+      "model": "HC-SR501",
+      "bus": "GPIO 27",
+      "native": "wokwi-pir-motion-sensor",
+      "fields": {
+        "motion": "bool"
+      }
+    },
+    "door": {
+      "model": "Contact sec NC / reed",
+      "bus": "GPIO 27 pull-up",
+      "native": "wokwi-slide-switch",
+      "fields": {
+        "door_open": "bool"
+      }
+    },
+    "hx711": {
+      "model": "HX711 + cellule de charge",
+      "bus": "DOUT 26 / SCK 25",
+      "native": "wokwi-hx711",
+      "fields": {
+        "load_raw": "count",
+        "load_kg": "kg"
+      }
+    },
+    "radar": {
+      "model": "HLK-LD2410 OUT",
+      "bus": "GPIO 27",
+      "chip": "digital-presence",
+      "fields": {
+        "presence": "bool"
+      },
+      "limit": "Sortie présence seulement : ne prouve ni chute ni immobilité au sol."
+    },
+    "scd41": {
+      "model": "SCD41",
+      "bus": "I2C 0x62",
+      "chip": "scd41",
+      "fields": {
+        "co2_ppm": "ppm",
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    "dht22": {
+      "model": "DHT22",
+      "bus": "GPIO 27",
+      "native": "wokwi-dht22",
+      "fields": {
+        "temperature_c": "°C",
+        "humidity_pct": "%"
+      }
+    },
+    "sgp30": {
+      "model": "SGP30",
+      "bus": "I2C 0x58",
+      "chip": "sgp30",
+      "fields": {
+        "tvoc_ppb": "ppb",
+        "eco2_ppm": "ppm"
+      },
+      "limit": "eCO2 estimé distinct du CO2 mesuré ; aucun VOC index inventé."
+    },
+    "mq2": {
+      "model": "MQ-2",
+      "bus": "ADC1 GPIO 34",
+      "native": "wokwi-gas-sensor",
+      "fields": {
+        "gas_adc": "count"
+      },
+      "limit": "Signal brut, préchauffage et calibration requis ; ni fumée ppm ni CO ppm déduits."
+    },
+    "ze07co": {
+      "model": "ZE07-CO",
+      "bus": "UART RX16 TX17 9600",
+      "chip": "ze07co",
+      "fields": {
+        "co_ppm": "ppm"
+      }
+    },
+    "sound": {
+      "model": "DFRobot SEN0232",
+      "bus": "ADC1 GPIO 34",
+      "chip": "sound-level",
+      "fields": {
+        "sound_db": "dBA",
+        "sound_mv": "mV"
+      },
+      "limit": "Conversion constructeur 50 dBA/V ; vérifier référence ADC et étalonnage."
+    },
+    "sgp40": {
+      "model": "SGP40 + algorithme Sensirion",
+      "bus": "I2C 0x59",
+      "chip": "sgp40",
+      "fields": {
+        "voc_raw": "ticks",
+        "voc_index": "index"
+      },
+      "limit": "Apprentissage à 1 Hz ; index indisponible pendant le démarrage. Compensation nominale 25 °C / 50 % HR."
+    },
+    "ecg": {
+      "model": "AD8232",
+      "bus": "ADC1 GPIO34, LO+32 LO-33",
+      "chip": "analog-signal",
+      "fields": {
+        "ecg_mv": "mV",
+        "leads_off": "bool"
+      },
+      "limit": "Échantillon brut seulement ; aucune classification sinus/FA."
+    },
+    "respiration": {
+      "model": "Ceinture analogique conditionnée 0–3,3 V",
+      "bus": "ADC1 GPIO 34",
+      "chip": "analog-signal",
+      "fields": {
+        "respiration_mv": "mV",
+        "respiratory_rate": "breaths/min"
+      },
+      "limit": "Estimation par franchissements avec hystérésis ; capteur et seuils à calibrer."
+    },
+    "amg8833": {
+      "model": "AMG8833",
+      "bus": "I2C 0x69",
+      "chip": "amg8833",
+      "fields": {
+        "thermal_pixels_c": "°C[64]",
+        "thermal_max_c": "°C"
+      }
+    },
+    "gps": {
+      "model": "GNSS NMEA 0183 (NEO-6M)",
+      "bus": "UART RX16 TX17 9600",
+      "chip": "gps-nmea",
+      "fields": {
+        "latitude": "deg",
+        "longitude": "deg",
+        "gps_fix": "bool"
+      }
+    },
+    "rfid": {
+      "model": "MFRC522",
+      "bus": "SPI SCK18 MISO19 MOSI23 SS5 RST22",
+      "native": "wokwi-mfrc522",
+      "fields": {
+        "tag_uid": "hex"
+      }
+    },
+    "ble": {
+      "model": "ESP32 BLE scanner",
+      "bus": "Radio BLE / injection I2C Wokwi",
+      "chip": "ble-fixture",
+      "fields": {
+        "ble_address": "MAC",
+        "ble_rssi_dbm": "dBm"
+      },
+      "limit": "Wokwi ne simule pas la radio BLE. Adaptateur de test I2C ; compilation matérielle utilise BLEDevice."
+    },
+    "nibp": {
+      "model": "Passerelle tensiomètre (contrat de projet)",
+      "bus": "UART RX16 TX17 9600",
+      "chip": "nibp-fixture",
+      "fields": {
+        "blood_pressure_sys": "mmHg",
+        "blood_pressure_dia": "mmHg"
+      },
+      "limit": "Contrat de passerelle testé, PAS un pilote de brassard identifié. Choix du tensiomètre et adaptation de son protocole restent requis."
+    }
+  },
+  "software_functions": [
+    "alerte_fugue",
+    "alertes_5_niveaux",
+    "dashboard",
+    "dashboard_central",
+    "surveillance_etage"
+  ]
+}

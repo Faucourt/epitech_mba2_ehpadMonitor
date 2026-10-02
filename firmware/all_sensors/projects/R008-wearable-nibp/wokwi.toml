@@ -1,0 +1,8 @@
+[wokwi]
+version = 1
+firmware = "build/sketch.ino.bin"
+elf = "build/sketch.ino.elf"
+
+[[chip]]
+name = "nibp-fixture"
+binary = "nibp-fixture.chip.wasm"

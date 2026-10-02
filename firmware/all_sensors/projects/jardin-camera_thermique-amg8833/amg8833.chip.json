@@ -1,0 +1,52 @@
+{
+  "name": "amg8833 (modèle pédagogique)",
+  "author": "EHPAD contributors",
+  "pins": [
+    "VCC",
+    "GND",
+    "SDA",
+    "SCL"
+  ],
+  "controls": [
+    {
+      "id": "ambient",
+      "label": "ambient",
+      "type": "range",
+      "min": -20,
+      "max": 80,
+      "step": 0.01
+    },
+    {
+      "id": "hotspot",
+      "label": "hotspot",
+      "type": "range",
+      "min": -20,
+      "max": 80,
+      "step": 0.01
+    },
+    {
+      "id": "pixel",
+      "label": "pixel",
+      "type": "range",
+      "min": 0,
+      "max": 63,
+      "step": 1
+    },
+    {
+      "id": "connected",
+      "label": "connected",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    {
+      "id": "corrupt",
+      "label": "corrupt",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  ]
+}

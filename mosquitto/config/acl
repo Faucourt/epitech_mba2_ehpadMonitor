@@ -1,6 +1,11 @@
 # Comptes MQTT de demonstration.
 # Objectif: eviter qu'un client anonyme puisse publier de faux vitaux.
 
+# Hardware accounts must be named exactly like inventory device IDs.
+# Provision each password separately; this pattern grants only its own endpoint.
+pattern write ehpad/hardware/v1/%u/telemetry
+pattern write ehpad/hardware/v1/%u/status
+
 user simulator
 topic read ehpad/control/#
 topic write ehpad/residents/#
