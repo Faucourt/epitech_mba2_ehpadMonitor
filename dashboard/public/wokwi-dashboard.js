@@ -24,6 +24,7 @@ function renderWokwiDetail(r) {
   document.getElementById('dp-content').innerHTML = `<div class="section-sub">${wokwiStatus(r)}</div><div style="font-size:48px;font-weight:800;color:${w.fresh ? wokwiColors[w.level] : '#94a3b8'}">${r.vitals.heart_rate ?? '—'} <small style="font-size:20px">bpm</small></div><div style="margin-bottom:12px">${w.fresh ? {info:'Niveau normal',warning:'Vigilance',danger:'Alerte élevée'}[w.level] : 'Aucune mesure actuelle'}</div>${wokwiChart(w.points)}<div class="vital-row"><span>Dernière mesure</span><span>${w.timestamp ? new Date(w.timestamp).toLocaleTimeString('fr-FR') : 'Horloge non synchronisée'}</span></div><div class="vital-row"><span>Séquence / origine</span><span>${w.seq ?? '—'} / esp32-01</span></div><div class="vital-row"><span>Pic accélération (dernière mesure)</span><span>${w.peak === null ? '—' : w.peak.toFixed(2)} g</span></div><div class="vital-row"><span>MPU-6050 (dernier état)</span><span>${w.imu === null ? 'Inconnu' : w.imu ? 'Détecté' : 'Indisponible'}</span></div><div class="section-sub">Mesures absentes</div><p>SpO₂, température, pression artérielle et respiration : non mesurées. Score médical et prédiction IA : non évalués.</p><div class="section-sub">Événements du firmware (${w.events.length})</div><div id="wokwi-events">${w.events.map(e=>`<div style="padding:9px 0;border-bottom:1px solid var(--border)"><strong style="color:${wokwiColors[e.level]}">${e.name} · ${e.value}</strong><div style="font-size:12px;color:var(--text2)">${new Date(e.time).toLocaleTimeString('fr-FR')} · ${e.level}</div></div>`).join('') || 'Aucun événement reçu'}</div><p style="font-size:11px;color:var(--text2);margin-top:15px">Flux direct MQTT over WebSocket · données fictives. Historique de cette session navigateur. Les niveaux du TP ne constituent pas une évaluation clinique.</p>`;
 }
 function syncWokwiResident() {
+  if (ACQUISITION_MODE) return;
   liveResidents.P001 = wokwiFeed.resident();
   if (replayOffsetMinutes > 0 || historyOffsetDays > 0) return;
   residents.P001 = cloneState(liveResidents.P001);
@@ -32,7 +33,7 @@ function syncWokwiResident() {
   if (badge) badge.textContent = `Wokwi · ${wokwiStatus(residents.P001)}`;
 }
 function focusWokwi() { showTab('grid'); applyLiveState(); openDetail('P001'); }
-if (typeof mqtt !== 'undefined') {
+if (!ACQUISITION_MODE && typeof mqtt !== 'undefined') {
   const client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {clientId: `digi4-wokwi-${Math.random().toString(16).slice(2)}`, reconnectPeriod: 3000, connectTimeout: 15000});
   client.on('connect', () => client.subscribe(Object.values(WokwiFeed.TOPICS), {qos: 1}, (err, grants) => {
     wokwiFeed.connected = !err && grants?.length === 3 && grants.every(g=>g.qos !== 128); syncWokwiResident();

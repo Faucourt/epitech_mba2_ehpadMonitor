@@ -423,6 +423,12 @@
   Alertes <span class="alert-toggle-count" id="alert-toggle-count">0</span>
 </button>
 
+<div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+  <strong id="acquisition-mode-label">Source : simulateur historique</strong>
+  <a class="filter-btn" href="/?source=wokwi" style="margin-left:12px">Capteurs Wokwi · 25 résidents</a>
+  <a class="filter-btn" href="/?source=simulator" style="margin-left:8px">Simulateur historique</a>
+  <p id="acquisition-note" style="font-size:12px;color:var(--text2);margin:8px 0 0">Les valeurs de cette vue proviennent du simulateur historique.</p>
+</div>
 <div class="main">
   <!-- Sidebar alertes -->
   <div class="sidebar" id="alert-sidebar">
@@ -640,6 +646,7 @@
 <div id="toast-container"></div>
 
 <script>
+const ACQUISITION_MODE = new URLSearchParams(location.search).get('source') !== 'simulator';
 const USE_SAME_ORIGIN_API = location.protocol === 'https:' || location.port === '3443';
 const BACKEND_HTTP = USE_SAME_ORIGIN_API ? '' : `http://${location.hostname}:8001`;
 const BACKEND_WS = USE_SAME_ORIGIN_API ? null : `ws://${location.hostname}:8001/ws`;
@@ -1004,7 +1011,7 @@ function renderGrid() {
   const grid = document.getElementById('resident-grid');
   const all = Object.values(residents);
   const filtered = all.filter(r => {
-    if (currentFilter === 'alert') return getAlertLevel(r.id) > 0;
+    if (currentFilter === 'alert') return ACQUISITION_MODE ? r.acquisition.alerts.length > 0 : getAlertLevel(r.id) > 0;
     if (currentFilter === 'risk') return (r.ml_risk || 0) > 0.5;
     if (currentFilter === 'demo') return r.id === 'R005';
     return true;
@@ -1079,6 +1086,7 @@ function renderNightBlock(r) {
 }
 
 function renderCard(card, r) {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.renderCard(card, r);
   if (r.source === 'wokwi') return renderWokwiCard(card, r);
   const level = getAlertLevel(r.id);
   card.className = `resident-card ${level > 0 ? 'alert-' + level : ''}`;
@@ -1148,13 +1156,14 @@ function updateResidentCard(rid) {
   const card = document.getElementById(`card-${rid}`);
   if (card) renderCard(card, r);
   else if (currentFilter === 'all' || currentFilter === 'demo') renderGrid();
-  if (rid === 'R005') updateDemoBanner();
+  if (rid === 'R005' && !ACQUISITION_MODE) updateDemoBanner();
   if (currentDetailResident === rid && document.getElementById('detail-panel').classList.contains('open')) {
     openDetail(rid);
   }
 }
 
 function updateStats() {
+  if (ACQUISITION_MODE) return AcquisitionDashboard.updateStats();
   const all = Object.values(residents);
   const alertCount = Object.values(activeAlerts).filter(isPendingAlert).length;
   const mlHigh = all.filter(r => (r.ml_risk || 0) > 0.5).length;
@@ -3101,6 +3110,11 @@ function openDetail(rid) {
   if (!r) return;
 
   currentDetailResident = rid;
+  if (ACQUISITION_MODE) {
+    document.getElementById('dp-llm-btn').hidden = true;
+    document.getElementById('dp-fullscreen-btn').hidden = true;
+    return AcquisitionDashboard.renderDetail(r);
+  }
   document.getElementById('dp-llm-btn').hidden = r.source === 'wokwi';
   document.getElementById('dp-fullscreen-btn').hidden = r.source === 'wokwi';
   if (r.source === 'wokwi') return renderWokwiDetail(r);
@@ -3702,6 +3716,7 @@ function showToast(alert) {
 // UI helpers
 // ============================================================
 function showTab(name) {
+  if (ACQUISITION_MODE && name !== 'grid') return;
   document.querySelectorAll('.tab').forEach((t, i) => {
     const names = ['grid', 'plan', 'model3d', 'night', 'reports', 'staff', 'validation', 'history'];
     t.classList.toggle('active', names[i] === name);
@@ -4401,6 +4416,7 @@ function animateEHPAD3D() {
 // ============================================================
 // Init
 // ============================================================
+if (!ACQUISITION_MODE) {
 connect();
 loadSimulatorSpeed();
 updateWallClock();
@@ -4437,9 +4453,15 @@ setInterval(() => {
     }
   });
 }, 10000);
+} else {
+  updateWallClock();
+  setInterval(updateWallClock, 1000);
+}
 </script>
 <script src="/node_modules/mqtt/dist/mqtt.min.js"></script>
 <script src="/wokwi-feed.js"></script>
 <script src="/wokwi-dashboard.js"></script>
+<script src="/resident-acquisition.js"></script>
+<script src="/acquisition-dashboard.js"></script>
 </body>
 </html>

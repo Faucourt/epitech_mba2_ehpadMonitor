@@ -20,6 +20,13 @@ le protocole constructeur PAR NIBP2010 / NIBP2020 UP ; le modèle Wokwi simule s
 interface série. La radio BLE, le câblage physique et la pneumatique restent des
 validations matérielles distinctes. Aucun nouvel enregistrement vidéo.
 
+La grille principale ouvre désormais le mode Wokwi : **http://localhost:3005/**.
+Les fiches R001–R025 lisent le même flux d'acquisition que la page des capteurs,
+sans ajouter P001 et sans reprendre les constantes de l'ancien simulateur.
+Une absence de mesure récente affiche « déconnecté / non mesuré » ; la présence
+des fiches ne signifie pas que les 437 capteurs tournent simultanément.
+Le simulateur historique reste accessible via **http://localhost:3005/?source=simulator**.
+
 Projet MBA1 Epitech de monitoring EHPAD connecte.
 
 Le projet simule un etablissement EHPAD avec 25 residents, des constantes vitales,

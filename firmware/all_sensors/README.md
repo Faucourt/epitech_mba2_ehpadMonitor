@@ -25,7 +25,14 @@ $env:WOKWI_LAB_HOST = 'test.mosquitto.org'
 docker compose -p ehpad-hardware -f docker-compose.hardware-lab.yml up -d --build
 ```
 
-Ouvrir http://localhost:3005/hardware.html. Les 25 résidents et 20 zones sont présents
+Ouvrir **http://localhost:3005/** pour les fiches des 25 résidents raccordées à
+leurs capteurs Wokwi. Cliquer sur une fiche pour consulter ses propres appareils.
+Les valeurs manquantes restent « non mesuré », sans constantes du simulateur ni
+score clinique par défaut. Les messages de R001 ne remplissent jamais R002.
+Le mode historique reste accessible par le lien « Simulateur historique ».
+
+Ouvrir http://localhost:3005/hardware.html pour le détail de l'acquisition et les
+capteurs environnementaux. Les 25 résidents et 20 zones sont présents
 même sans simulation active. Le backend est sur http://localhost:8005.
 Le service de simulation Python n'est pas lancé dans cette configuration.
 Le dashboard historique reste accessible ; ses fonctions de simulation clinique
