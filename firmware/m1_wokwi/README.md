@@ -13,7 +13,7 @@ Projet enregistré : https://wokwi.com/projects/476777815517850625
 
 ## Livrables
 
-[Vidéo Firefox — 1 min 50 s](livrables/demo-wokwi-firefox.webm) : captures réelles des deux vues Firefox côte à côte, échantillonnées à 1 image/s et encodées en WebM, sans son. Les pauses entre opérations sont coupées ; ce n'est pas une capture continue du bureau. Aucune publication MQTT artificielle n'a été ajoutée : les mesures viennent du firmware exécuté dans Wokwi.
+[Vidéo Firefox — 1 min 50 s](livrables/video/demo-wokwi-firefox.webm) : captures réelles des deux vues Firefox côte à côte, échantillonnées à 1 image/s et encodées en WebM, sans son. Les pauses entre opérations sont coupées ; ce n'est pas une capture continue du bureau. Aucune publication MQTT artificielle n'a été ajoutée : les mesures viennent du firmware exécuté dans Wokwi.
 
 - [Dashboard et alertes](livrables/dashboard-alertes.png)
 - [Wokwi et messages MQTT](livrables/wokwi-mqtt.png)

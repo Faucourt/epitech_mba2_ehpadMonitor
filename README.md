@@ -19,7 +19,7 @@ Ouvrir http://localhost:3003/m1.html. Si le port est occupé, définir `PORT` av
 - [Firmware ESP32, câblage et guide vidéo](firmware/m1_wokwi/README.md)
 - [Contrat MQTT](docs/contrat_mqtt.md)
 - [Projet Wokwi réalisé](https://wokwi.com/projects/476777815517850625)
-- [Vidéo Firefox — 1 min 50 s](firmware/m1_wokwi/livrables/demo-wokwi-firefox.webm)
+- [Vidéo Firefox — 1 min 50 s](firmware/m1_wokwi/livrables/video/demo-wokwi-firefox.webm)
 
 Les fichiers sont déjà chargés dans le projet Wokwi. La page reçoit les publications du firmware via HiveMQ ; aucune donnée ne s'affiche avant de lancer le simulateur. Si les serveurs Wokwi affichent « Build Servers Busy », charger [m1-full.bin](firmware/m1_wokwi/livrables/m1-full.bin) depuis l'éditeur avec F1 → Upload Firmware and Start Simulation.
 

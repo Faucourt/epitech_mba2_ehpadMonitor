@@ -1,6 +1,8 @@
 # Livrables M1
 
-Vidéo : demo-wokwi-firefox.webm — 1 min 50 s, 1700 × 900, sans audio. Captures réelles des vues Firefox à 1 image/s, côte à côte ; pauses entre opérations coupées.
+Les vidéos sont regroupées dans le dossier **[video](video/README.md)**.
+
+Vidéo : [demo-wokwi-firefox.webm](video/demo-wokwi-firefox.webm) — 1 min 50 s, 1700 × 900, sans audio. Captures réelles des vues Firefox à 1 image/s, côte à côte ; pauses entre opérations coupées.
 
 Preuves : dashboard-alertes.png, wokwi-mqtt.png, dashboard-offline.png, moniteur-serie.txt, etat-final.txt.
 
