@@ -481,6 +481,7 @@
           <div class="no-alerts" style="padding:6px;text-align:left">Aucun événement récent</div>
         </div>
       </div>
+      <button class="filter-btn" id="wokwi-connection" onclick="focusWokwi()" style="margin:0 0 12px">Wokwi · Connexion MQTT…</button>
       <div class="resident-grid" id="resident-grid"></div>
     </div>
 
@@ -797,6 +798,7 @@ function connect() {
       liveActiveAlerts = {};
       msg.data.residents.forEach(r => liveResidents[r.id] = r);
       (msg.data.alerts || []).forEach(a => liveActiveAlerts[a.resident_id] = a);
+      if (typeof syncWokwiResident === 'function') syncWokwiResident();
       captureTimelineSnapshot(true);
       if (replayOffsetMinutes > 0) applyTimelineOffset(replayOffsetMinutes);
       else {
@@ -848,7 +850,7 @@ function bufferHistory(rid, vitals) {
   const ts = Date.now();
   const cutoff = ts - 30 * 60 * 1000;
   const push = (arr, val) => {
-    if (Number.isFinite(Number(val))) arr.push({ t: ts, v: Number(val) });
+    if (val !== null && val !== undefined && val !== '' && Number.isFinite(Number(val))) arr.push({ t: ts, v: Number(val) });
     while (arr.length && arr[0].t < cutoff) arr.shift();
   };
   push(b.hr, vitals.heart_rate);
@@ -968,7 +970,7 @@ function updateWallClock() {
 }
 
 function getReferenceResident() {
-  const all = Object.values(residents);
+  const all = Object.values(residents).filter(r => r.source !== 'wokwi');
   return all.find(r => r.id === currentDetailResident) || all.find(r => r.time_label) || all[0] || {};
 }
 
@@ -1017,7 +1019,8 @@ function renderGrid() {
       card.id = `card-${r.id}`;
       card.className = 'resident-card';
       card.onclick = () => openDetail(r.id);
-      grid.appendChild(card);
+      if (r.source === 'wokwi') grid.prepend(card);
+      else grid.appendChild(card);
     }
     renderCard(card, r);
   });
@@ -1075,6 +1078,7 @@ function renderNightBlock(r) {
 }
 
 function renderCard(card, r) {
+  if (r.source === 'wokwi') return renderWokwiCard(card, r);
   const level = getAlertLevel(r.id);
   card.className = `resident-card ${level > 0 ? 'alert-' + level : ''}`;
   const v = r.vitals || {};
@@ -1153,7 +1157,7 @@ function updateStats() {
   const all = Object.values(residents);
   const alertCount = Object.values(activeAlerts).filter(isPendingAlert).length;
   const mlHigh = all.filter(r => (r.ml_risk || 0) > 0.5).length;
-  const ok = all.filter(r => getAlertLevel(r.id) === 0 && (r.ml_risk || 0) < 0.5).length;
+  const ok = all.filter(r => r.source !== 'wokwi' && getAlertLevel(r.id) === 0 && (r.ml_risk || 0) < 0.5).length;
 
   document.getElementById('stat-total').textContent = all.length;
   document.getElementById('stat-alerts').textContent = alertCount;
@@ -1670,7 +1674,7 @@ function getNightStatus(r) {
 function renderNightView() {
   const grid = document.getElementById('night-grid');
   if (!grid) return;
-  const all = Object.values(residents).sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
+  const all = Object.values(residents).filter(r => r.source !== 'wokwi').sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
   const states = all.map(r => ({ r, s: getNightStatus(r) }));
   const filtered = states.filter(({ s }) => {
     if (currentNightFilter === 'bed') return s.bed;
@@ -1730,10 +1734,10 @@ function updateSimulatedHistorySelect() {
   const select = document.getElementById('sim-history-resident');
   if (!select) return;
   const current = select.value;
-  const all = Object.values(residents).sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
+  const all = Object.values(residents).filter(r => r.source !== 'wokwi').sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
   if (!all.length) return;
   select.innerHTML = all.map(r => `<option value="${r.id}">Ch. ${r.room} - ${r.name || r.id}</option>`).join('');
-  select.value = all.some(r => r.id === current) ? current : (currentDetailResident || all[0].id);
+  select.value = all.some(r => r.id === current) ? current : (all.some(r => r.id === currentDetailResident) ? currentDetailResident : all[0].id);
 }
 
 function renderHistoryRowsTable(rows, levelNames) {
@@ -1839,10 +1843,10 @@ function updateReportResidentSelect() {
   if (dateInput && !dateInput.value) dateInput.value = todayIsoDate();
   if (!select) return;
   const current = select.value;
-  const all = Object.values(residents).sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
+  const all = Object.values(residents).filter(r => r.source !== 'wokwi').sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }));
   if (!all.length) return;
   select.innerHTML = all.map(r => `<option value="${r.id}">Ch. ${r.room} - ${r.name || r.id}</option>`).join('');
-  select.value = all.some(r => r.id === current) ? current : (currentDetailResident || all[0].id);
+  select.value = all.some(r => r.id === current) ? current : (all.some(r => r.id === currentDetailResident) ? currentDetailResident : all[0].id);
 }
 
 async function loadDailyReport() {
@@ -1966,6 +1970,7 @@ function renderStaff(data) {
   if (!panel) return;
   const staff = data.staff || [];
   const residentOptions = Object.values(residents)
+    .filter(r => r.source !== 'wokwi')
     .sort((a, b) => String(a.room).localeCompare(String(b.room), 'fr', { numeric: true }))
     .map(r => `<option value="${r.id}">Ch. ${r.room} - ${r.name || r.id}</option>`)
     .join('');
@@ -2962,7 +2967,7 @@ function planCoordsFromLivePosition(r, floor, layout) {
 }
 
 function renderPlanLiveDots(floor, layout) {
-  const people = Object.values(residents).filter(r => Number(r.position?.floor ?? zoneFloorForPlan(r.current_zone, r.floor)) === floor);
+  const people = Object.values(residents).filter(r => r.source !== 'wokwi').filter(r => Number(r.position?.floor ?? zoneFloorForPlan(r.current_zone, r.floor)) === floor);
   const grouped = new Map();
   people.forEach((r) => {
     const coords = planCoordsFromLivePosition(r, floor, layout) || planCoordsForZone(r.current_zone, floor, layout);
@@ -3095,6 +3100,9 @@ function openDetail(rid) {
   if (!r) return;
 
   currentDetailResident = rid;
+  document.getElementById('dp-llm-btn').hidden = r.source === 'wokwi';
+  document.getElementById('dp-fullscreen-btn').hidden = r.source === 'wokwi';
+  if (r.source === 'wokwi') return renderWokwiDetail(r);
   ensureThirtyMinuteHistory(rid);
   document.getElementById('detail-panel').classList.add('open');
   document.getElementById('dp-name').textContent = r.name || rid;
@@ -4400,7 +4408,7 @@ setInterval(updateTimeRibbon, 1000);
 
 // Fetch initial data via REST aussi (en cas de WS lent)
 setTimeout(() => {
-  if (Object.keys(residents).length === 0) {
+  if (Object.values(residents).every(r => r.source === 'wokwi')) {
     fetch(`${BACKEND_HTTP}/api/residents`)
       .then(r => r.json())
       .then(d => {
@@ -4429,5 +4437,8 @@ setInterval(() => {
   });
 }, 10000);
 </script>
+<script src="/node_modules/mqtt/dist/mqtt.min.js"></script>
+<script src="/wokwi-feed.js"></script>
+<script src="/wokwi-dashboard.js"></script>
 </body>
 </html>
