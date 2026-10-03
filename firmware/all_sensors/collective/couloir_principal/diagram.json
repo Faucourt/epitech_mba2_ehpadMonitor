@@ -279,7 +279,7 @@
       []
     ],
     [
-      "s8_sensor:AO",
+      "s8_sensor:AOUT",
       "esp:35",
       "green",
       []

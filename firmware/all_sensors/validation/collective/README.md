@@ -1,5 +1,15 @@
 # Essais collectifs Wokwi — trois résidents et vingt zones
 
+## Mise à jour du 3 octobre 2026
+
+Un essai CLI ultérieur a vérifié les 23 cartes simultanément : 214 capteurs
+communicants, dont 203 avec une mesure récente, pendant 60,9 secondes de
+couverture complète. Voir [la preuve CLI](cli-recovery-2026-10-03.json).
+Les mentions ci-dessous d'un jeton absent et d'un essai CLI restant à faire
+décrivent la livraison initiale. Le quota CI a ensuite été épuisé : cette preuve
+ne garantit pas une acquisition actuelle. Le mode navigateur couvre seulement
+R001–R003 et l'entrée. Voir [le fonctionnement actuel](../../COLLECTIVE.md).
+
 **23 projets ESP32 / 214 capteurs indépendants.** Tous les champs prévus ont été
 observés dans les trames UART de ces projets, avec réception des identifiants
 vérifiée dans le backend local. Les zones ont été testées successivement.

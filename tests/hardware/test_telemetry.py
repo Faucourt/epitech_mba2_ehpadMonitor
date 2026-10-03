@@ -82,8 +82,8 @@ class TelemetryTests(unittest.TestCase):
  def test_mq2_simulation_and_physical_wiring(self):
   simulated=exporter.diagram('mq2')
   physical=exporter.diagram('mq2',hardware=True)
-  self.assertTrue(any(c[:2]==['sensor:AO','esp:34'] for c in simulated['connections']))
-  self.assertFalse(any(c[:2]==['sensor:AO','esp:34'] for c in physical['connections']))
+  self.assertTrue(any(c[:2]==['sensor:AOUT','esp:34'] for c in simulated['connections']))
+  self.assertFalse(any(c[:2]==['sensor:AOUT','esp:34'] for c in physical['connections']))
   resistors={p['id']:p['attrs']['value'] for p in physical['parts'] if p['type']=='wokwi-resistor'}
   self.assertEqual({'r1':'10000','r2':'18000'},resistors)
   self.assertTrue(any(c[:2]==['r2:2','esp:GND.1'] for c in physical['connections']))

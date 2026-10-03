@@ -7,6 +7,45 @@ n'est recopiée chez un autre.
 
 ## Exécution
 
+Le 3 octobre 2026, le lancement Wokwi CLI des **23 cartes / 214 capteurs** a
+été vérifié simultanément pendant au moins 30 secondes, avec réception MQTT
+dans le backend : [preuve enregistrée](validation/collective/cli-recovery-2026-10-03.json).
+Cette preuve est datée ; l'état actuel se lit dans `build/collective-runtime/status.json`.
+La communication ne garantit pas une mesure pour les appareils attendant une
+action (par exemple START du tensiomètre ou présentation d'un badge).
+
+Le lanceur Windows exporte les autorités racines déjà approuvées pour TLS dans
+`build/collective-runtime/windows-ca.pem`, puis les fournit au CLI via
+`NODE_EXTRA_CA_CERTS`. La vérification TLS reste activée. Une configuration
+`NODE_EXTRA_CA_CERTS` existante est conservée. Le démarrage cloud dispose de
+300 secondes avant la première trame ; ensuite le délai série habituel s'applique.
+
+Depuis la racine, `./Start-Wokwi.ps1` démarre une acquisition continue. Avec le
+jeton Wokwi CI configuré, il utilise les 23 cartes du pilote. Sans jeton, il
+ouvre quatre simulations Chromium : R001, R002, R003 et l'entrée (42 capteurs).
+**Ce mode navigateur ne lance pas les 19 autres zones.** Le dashboard est
+http://localhost:3005/?source=wokwi ; l'environnement est visible dans
+http://localhost:3005/hardware.html, onglet Environnement.
+
+`./Start-Wokwi.ps1 -Check` vérifie les prérequis compilés sans lancer de
+simulation. `-Full` exige le jeton avant le lancement des 23 cartes. Le mode
+navigateur installe Playwright 1.58.2 dans `build/browser-deps` si nécessaire,
+utilise Python/paho pour transmettre les trames UART courantes et conserve son
+état dans `build/browser-pilot/status.json`. Garder son processus et Chromium
+ouverts ; fermer les simulations arrête les mesures. Les boutons START des
+tensiomètres et la présentation des badges sont actionnés une fois au démarrage.
+Les valeurs restent celles des composants Wokwi. Une erreur de lecture est
+signalée, sans rejeu des anciennes trames. Une page bloquée est recréée, avec
+arrêt après trois échecs consécutifs. Les pages sont renouvelées toutes les
+30 minutes pour libérer la mémoire de la simulation et du moniteur série ;
+les mesures peuvent être brièvement indisponibles pendant leur redémarrage.
+
+`./Start-Wokwi.ps1 -Browser` force ce mode limité même si un jeton est enregistré,
+notamment quand Wokwi refuse le lancement CI pour quota mensuel épuisé. Ce refus
+arrête les tentatives automatiques ; les 19 autres zones restent hors ligne.
+La preuve CLI ci-dessus décrit un essai antérieur, pas une disponibilité permanente.
+Le lanceur complet démarre Docker Desktop si son moteur est arrêté.
+
 Priorité de validation : **R001, R002 et R003 complets, plus les 20 zones**,
 soit **23 ESP32 / 214 points d'acquisition**. Le mode `-Pilot` sélectionne
 exactement ce périmètre, sans publier à la place des 22 autres résidents.

@@ -529,7 +529,7 @@
       []
     ],
     [
-      "s15_sensor:AO",
+      "s15_sensor:AOUT",
       "esp:VN",
       "green",
       []

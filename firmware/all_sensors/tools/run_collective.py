@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import shutil
 import signal
+import ssl
 import time
 import urllib.request
 from build_collective import source_hash
@@ -37,6 +38,20 @@ def redact(text, secret=''):
     if secret:
         text = text.replace(secret, '[REDACTED]')
     return re.sub(r'wok_[A-Za-z0-9_-]+', '[REDACTED]', text)
+
+
+def cli_environment(secret, output):
+    env = dict(os.environ, WOKWI_CLI_TOKEN=secret)
+    if os.name == 'nt' and not env.get('NODE_EXTRA_CA_CERTS'):
+        # Trust the same server-authentication roots as Windows, without disabling TLS.
+        roots = [ssl.DER_cert_to_PEM_cert(cert) for cert, encoding, trust
+                 in ssl.enum_certificates('ROOT')
+                 if encoding == 'x509_asn' and
+                 (trust is True or ssl.Purpose.SERVER_AUTH.oid in trust)]
+        bundle = output / 'windows-ca.pem'
+        bundle.write_text(''.join(roots), encoding='ascii')
+        env['NODE_EXTRA_CA_CERTS'] = str(bundle.resolve())
+    return env
 
 
 def read_snapshot(api):
@@ -83,6 +98,7 @@ class Fleet:
         self.error = None
         self.mqtt = None
         self.args.output.mkdir(parents=True, exist_ok=True)
+        self.cli_env = cli_environment(secret, self.args.output)
 
     async def pause(self, seconds):
         try:
@@ -105,7 +121,7 @@ class Fleet:
                 state.update(state='starting', boot=None, last_serial_at=None)
                 for device in allowed:
                     self.boots.pop(device, None)
-                env = dict(os.environ, WOKWI_CLI_TOKEN=self.secret)
+                env = self.cli_env
                 command = [self.args.cli, str(self.args.projects / ident), '--timeout', str(self.args.session_seconds * 1000), '--timeout-exit-code', '0']
                 try:
                     process = await asyncio.create_subprocess_exec(*command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT, env=env)
@@ -119,7 +135,8 @@ class Fleet:
                 last_serial = time.monotonic()
                 fatal = False
                 while not self.stop.is_set():
-                    if time.monotonic() - last_serial > self.args.serial_timeout:
+                    timeout = self.args.serial_timeout if state['last_serial_at'] else 300
+                    if time.monotonic() - last_serial > timeout:
                         state['error'] = 'No valid sensor frame; restarting simulator'
                         break
                     try:
@@ -133,7 +150,11 @@ class Fleet:
                     line = redact(line.decode('utf-8', errors='replace').strip(), self.secret)
                     logger.info(line)
                     lowered = line.lower()
-                    if any(term in lowered for term in ['invalid token', 'unauthorized', 'quota exceeded', 'out of simulation', 'no simulation time', 'insufficient simulation', 'payment required']):
+                    if 'unable to verify the first certificate' in lowered:
+                        self.error = 'Wokwi TLS trust failed; check Windows roots or NODE_EXTRA_CA_CERTS'
+                        fatal = True
+                        self.stop.set()
+                    if any(term in lowered for term in ['invalid token', 'unauthorized', 'quota exceeded', 'monthly ci minute quota', 'out of simulation', 'no simulation time', 'insufficient simulation', 'payment required']):
                         self.error = 'Wokwi access or simulation quota refused; automatic retries stopped'
                         fatal = True
                         self.stop.set()
@@ -258,6 +279,13 @@ class Fleet:
             await asyncio.gather(*(p.wait() for p in self.processes.values()), return_exceptions=True)
             self.mqtt.disconnect()
             self.mqtt.loop_stop()
+            status_path = self.args.output / 'status.json'
+            report = json.loads(status_path.read_text(encoding='utf-8')) if status_path.exists() else {}
+            report.update(updated_at=time.time(), stopped_at=time.time(),
+                          error=self.error, groups=self.states, state='stopped',
+                          connected_devices=0, devices_with_recent_measurement=0,
+                          missing_devices=sorted(self.expected))
+            atomic_json(status_path, report)
         if self.error:
             raise RuntimeError(self.error)
         if self.args.verify_seconds and not (self.args.output / 'verification.json').exists():

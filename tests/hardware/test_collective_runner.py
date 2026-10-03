@@ -81,14 +81,47 @@ class SupervisorTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(self.fleet.stop.is_set())
         self.assertEqual('failed', self.fleet.states['R001']['state'])
 
+    async def test_actual_monthly_quota_message_stops_without_retry(self):
+        proc = FakeProcess(['API Error: You have used up your Free plan monthly CI minute quota. Please upgrade to a paid plan.'], code=1)
+        with patch('run_collective.asyncio.create_subprocess_exec', AsyncMock(return_value=proc)) as spawn:
+            await self.fleet.worker(self.group, asyncio.Semaphore(1))
+        self.assertEqual(1, spawn.await_count)
+        self.assertTrue(self.fleet.stop.is_set())
+        self.assertIn('quota refused', self.fleet.error)
+        self.assertEqual([], self.fleet.mqtt.sent)
+
     async def test_serial_watchdog_restarts_a_silent_process(self):
         proc = FakeProcess([], code=None)
         self.fleet.pause = self.stop_at_restart
         # Override only the supervisor's clock, not asyncio's shared clock.
-        clock = SimpleNamespace(time=lambda: 1000, monotonic=iter([0, 61]).__next__)
+        clock = SimpleNamespace(time=lambda: 1000, monotonic=iter([0, 301]).__next__)
         with patch('run_collective.time', clock), patch('run_collective.asyncio.create_subprocess_exec', AsyncMock(return_value=proc)):
             await self.fleet.worker(self.group, asyncio.Semaphore(1))
         self.assertEqual(-1, proc.returncode)
         self.assertEqual(1, self.fleet.states['R001']['restarts'])
         self.assertIn('No valid sensor frame', self.fleet.states['R001']['error'])
         self.assertEqual([], self.fleet.mqtt.sent)
+
+    async def test_cloud_startup_can_take_more_than_serial_timeout(self):
+        good = {'source': 'wokwi', 'entity_id': 'R001', 'device_id': 'R001-sensor', 'boot': 'current'}
+        self.fleet.pause = self.stop_at_restart
+        clock = SimpleNamespace(time=lambda: 1000, monotonic=iter([0, 120, 120, 181]).__next__)
+        proc = FakeProcess(['SAMPLE ' + json.dumps(good)], code=None)
+        with patch('run_collective.time', clock), patch('run_collective.asyncio.create_subprocess_exec', AsyncMock(return_value=proc)):
+            await self.fleet.worker(self.group, asyncio.Semaphore(1))
+        self.assertEqual(1, len(self.fleet.mqtt.sent))
+        self.assertIn('No valid sensor frame', self.fleet.states['R001']['error'])
+
+    async def test_tls_error_stops_without_repeated_connection_attempts(self):
+        proc = FakeProcess(['unable to verify the first certificate'], code=1)
+        with patch('run_collective.asyncio.create_subprocess_exec', AsyncMock(return_value=proc)) as spawn:
+            await self.fleet.worker(self.group, asyncio.Semaphore(1))
+        self.assertEqual(1, spawn.await_count)
+        self.assertIn('TLS trust failed', self.fleet.error)
+
+    async def test_free_plan_monthly_quota_stops_without_retry(self):
+        proc = FakeProcess(['API Error: You have used up your Free plan monthly CI minute quota.'], code=1)
+        with patch('run_collective.asyncio.create_subprocess_exec', AsyncMock(return_value=proc)) as spawn:
+            await self.fleet.worker(self.group, asyncio.Semaphore(1))
+        self.assertEqual(1, spawn.await_count)
+        self.assertTrue(self.fleet.stop.is_set())

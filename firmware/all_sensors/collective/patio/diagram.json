@@ -390,7 +390,7 @@
       []
     ],
     [
-      "s11_sensor:AO",
+      "s11_sensor:AOUT",
       "esp:35",
       "green",
       []

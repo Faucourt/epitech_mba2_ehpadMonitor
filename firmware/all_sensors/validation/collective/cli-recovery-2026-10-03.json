@@ -1,0 +1,203 @@
+{
+  "source": "real-wokwi-cli",
+  "started_at": 1791053920.3863156,
+  "updated_at": 1791054001.8107505,
+  "expected_groups": 23,
+  "expected_devices": 214,
+  "connected_devices": 214,
+  "devices_with_recent_measurement": 203,
+  "missing_devices": [],
+  "best_connected": 214,
+  "last_complete_at": 1791054001.8107505,
+  "complete_for_seconds": 60.9,
+  "api_error": null,
+  "error": null,
+  "groups": {
+    "R001": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "7daa57e1",
+      "last_serial_at": 1791054003.7910428,
+      "pid": 49324,
+      "started_at": 1791053920.8267822
+    },
+    "R002": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "fc647e",
+      "last_serial_at": 1791054003.6855037,
+      "pid": 48484,
+      "started_at": 1791053920.8268354
+    },
+    "R003": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "4397ca86",
+      "last_serial_at": 1791054003.419669,
+      "pid": 44116,
+      "started_at": 1791053920.8268569
+    },
+    "entree": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "66cd8767",
+      "last_serial_at": 1791054003.8171103,
+      "pid": 60724,
+      "started_at": 1791053920.826869
+    },
+    "hors_ehpad": {
+      "state": "running",
+      "restarts": 1,
+      "boot": "cea1cf59",
+      "last_serial_at": 1791054003.5447114,
+      "pid": 21348,
+      "started_at": 1791053926.8059368,
+      "exit_code": 1
+    },
+    "infirmerie_rdc": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "5f6ae10b",
+      "last_serial_at": 1791054003.542102,
+      "pid": 35784,
+      "started_at": 1791053920.826888
+    },
+    "pharmacie_admin": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "30782e2a",
+      "last_serial_at": 1791054003.7920706,
+      "pid": 62076,
+      "started_at": 1791053920.8268971
+    },
+    "couloir_principal": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "b9dcf6a4",
+      "last_serial_at": 1791054003.8220816,
+      "pid": 31056,
+      "started_at": 1791053920.8269053
+    },
+    "salle_commune": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "2424129",
+      "last_serial_at": 1791054003.5364456,
+      "pid": 46168,
+      "started_at": 1791053920.8269155
+    },
+    "patio": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "d05e5732",
+      "last_serial_at": 1791054003.8372595,
+      "pid": 61300,
+      "started_at": 1791053920.826924
+    },
+    "jardin": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "445d9269",
+      "last_serial_at": 1791054003.5041206,
+      "pid": 8620,
+      "started_at": 1791053920.8269322
+    },
+    "salle_activites": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "11daae02",
+      "last_serial_at": 1791054003.7928956,
+      "pid": 56540,
+      "started_at": 1791053920.826941
+    },
+    "salle_manger": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "ce84a93d",
+      "last_serial_at": 1791054003.7900505,
+      "pid": 59464,
+      "started_at": 1791053920.8269491
+    },
+    "office_cuisine": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "3d792d42",
+      "last_serial_at": 1791054003.6792688,
+      "pid": 37504,
+      "started_at": 1791053920.8269582
+    },
+    "couloir_aile_rdc": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "2d0599b4",
+      "last_serial_at": 1791054003.5690804,
+      "pid": 47420,
+      "started_at": 1791053920.8269672
+    },
+    "escalier": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "f69ae365",
+      "last_serial_at": 1791054003.8222547,
+      "pid": 40952,
+      "started_at": 1791053920.8269749
+    },
+    "ascenseur": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "5030ed82",
+      "last_serial_at": 1791054003.8149395,
+      "pid": 37584,
+      "started_at": 1791053920.8269837
+    },
+    "poste_infirmier_etage": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "91b53d3e",
+      "last_serial_at": 1791054003.6818337,
+      "pid": 47492,
+      "started_at": 1791053920.8269928
+    },
+    "kinesitherapie": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "41b13e16",
+      "last_serial_at": 1791054003.567604,
+      "pid": 37308,
+      "started_at": 1791053920.8270006
+    },
+    "salle_repos": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "2505d056",
+      "last_serial_at": 1791054003.6223953,
+      "pid": 8608,
+      "started_at": 1791053920.8270087
+    },
+    "couloir_aile_a_etage": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "4cb1a9ea",
+      "last_serial_at": 1791054003.8148239,
+      "pid": 58860,
+      "started_at": 1791053920.8270166
+    },
+    "couloir_aile_b_etage": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "c162d01e",
+      "last_serial_at": 1791054003.8533494,
+      "pid": 63256,
+      "started_at": 1791053920.827029
+    },
+    "palier_etage": {
+      "state": "running",
+      "restarts": 0,
+      "boot": "ef85cd4",
+      "last_serial_at": 1791054003.6721244,
+      "pid": 60656,
+      "started_at": 1791053920.8270388
+    }
+  },
+  "result": "passed"
+}

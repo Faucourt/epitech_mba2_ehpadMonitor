@@ -53,7 +53,7 @@
       []
     ],
     [
-      "sensor:AO",
+      "sensor:AOUT",
       "esp:34",
       "green",
       []

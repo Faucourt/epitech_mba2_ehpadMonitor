@@ -102,7 +102,7 @@
       []
     ],
     [
-      "s0_sensor:AO",
+      "s0_sensor:AOUT",
       "esp:34",
       "green",
       []

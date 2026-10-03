@@ -15,6 +15,23 @@ try {
     if ($Pilot) { $selectionArgs += '--pilot' }
     foreach ($name in $Entity) { $selectionArgs += @('--entity',$name) }
     $env:WOKWI_LAB_HOST = 'mqtt'
+    function Test-DockerEngine {
+        try {
+            docker info --format '{{.ServerVersion}}' 2>$null | Out-Null
+            return ($LASTEXITCODE -eq 0)
+        } catch { return $false }
+    }
+    if (-not (Test-DockerEngine)) {
+        Write-Host 'Demarrage de Docker Desktop...'
+        docker desktop start
+        if ($LASTEXITCODE -ne 0) { throw 'Docker Desktop na pas pu demarrer.' }
+        $dockerReady = $false
+        for ($attempt = 0; $attempt -lt 30; $attempt++) {
+            if (Test-DockerEngine) { $dockerReady = $true; break }
+            Start-Sleep -Seconds 2
+        }
+        if (-not $dockerReady) { throw 'Docker Desktop ne repond pas apres son demarrage.' }
+    }
     docker compose -p ehpad-hardware -f docker-compose.hardware-lab.yml up -d --build
     if ($LASTEXITCODE -ne 0) { throw 'Docker startup failed.' }
     if ($Build) {

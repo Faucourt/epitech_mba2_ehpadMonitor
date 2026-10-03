@@ -59,7 +59,7 @@ def diagram(kind,hardware=False):
   if hardware:
    parts += [{'type':'wokwi-resistor','id':'r1','top':160,'left':200,'attrs':{'value':'10000'}},{'type':'wokwi-resistor','id':'r2','top':220,'left':200,'attrs':{'value':'18000'}}]
   else:
-   pins.append(('AO','34'))
+   pins.append(('AOUT','34'))
    parts.append({'type':'wokwi-text','id':'adc_note','top':180,'left':200,'attrs':{'text':'SIMULATION ONLY: virtual ADC 5V.\nHardware: AO -> 10k -> GPIO34 -> 18k -> GND.'}})
  elif kind in {'ecg','sound','respiration'}:
   pins=[('VCC','3V3'),('GND','GND.1'),('OUT','34')]
@@ -70,7 +70,7 @@ def diagram(kind,hardware=False):
  else:raise ValueError(kind)
  connections=[['esp:TX','$serialMonitor:RX','',[]],['esp:RX','$serialMonitor:TX','',[]]]
  connections += [[f'sensor:{a}',f'esp:{b}','black' if b.startswith('GND') else 'red' if b in {'3V3','5V'} else 'green',[]] for a,b in pins]
- if kind=='mq2' and hardware:connections += [['sensor:AO','r1:1','green',[]],['r1:2','esp:34','green',[]],['r1:2','r2:1','green',[]],['r2:2','esp:GND.1','black',[]]]
+ if kind=='mq2' and hardware:connections += [['sensor:AOUT','r1:1','green',[]],['r1:2','esp:34','green',[]],['r1:2','r2:1','green',[]],['r2:2','esp:GND.1','black',[]]]
  if kind=='nibp':
   for name,pin,color in [('start',27,'green'),('stop',26,'red')]:
    parts.append({'type':'wokwi-pushbutton','id':name,'top':160,'left':270 if name=='start' else 370,'attrs':{'color':color,'label':name.upper()}})

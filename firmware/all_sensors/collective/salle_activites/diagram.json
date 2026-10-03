@@ -240,7 +240,7 @@
       []
     ],
     [
-      "s7_sensor:AO",
+      "s7_sensor:AOUT",
       "esp:35",
       "green",
       []

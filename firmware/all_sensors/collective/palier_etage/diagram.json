@@ -314,7 +314,7 @@
       []
     ],
     [
-      "s9_sensor:AO",
+      "s9_sensor:AOUT",
       "esp:35",
       "green",
       []
