@@ -70,6 +70,9 @@ lors de cette livraison : l’essai CLI simultané des 23 cartes reste à faire.
 
 ## Périmètre restant
 
+Voir les [limites observées pendant les essais prolongés](LIMITES_EXECUTION.md),
+notamment les interruptions de Firefox et une anomalie de lecture optique R001.
+
 - 27/45 cartes collectives compilées localement, dont les 23 du pilote.
 - Les 22 autres résidents ne sont pas inclus dans ces essais collectifs.
 - Le fonctionnement continu des vingt zones ensemble reste à vérifier avec le lanceur.

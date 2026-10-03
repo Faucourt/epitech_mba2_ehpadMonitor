@@ -69,6 +69,9 @@ Une observation distincte a vérifié les 42 capteurs des trois résidents et de
 l'entrée pendant environ deux minutes ensemble. Le fonctionnement continu des
 23 cartes simultanées reste à tester avec Wokwi CLI et un jeton disponible.
 Les 22 autres résidents ne sont pas couverts par ces essais collectifs.
+Les [limites des essais prolongés](validation/collective/LIMITES_EXECUTION.md)
+signalent les plantages par manque de mémoire et une lecture optique R001 à
+investiguer. Les résultats nominaux ne valident pas cette stabilité à long terme.
 
 ### Bancs individuels par famille
 
