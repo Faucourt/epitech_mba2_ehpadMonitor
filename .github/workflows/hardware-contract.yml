@@ -27,5 +27,14 @@ jobs:
       - run: node --check dashboard/public/hardware.js
       - run: node --check dashboard/public/acquisition-dashboard.js
       - run: python firmware/all_sensors/tools/summarize_validation.py
-      - run: python firmware/all_sensors/tools/summarize_collective_validation.py
+      # These browser/backend receipts predate the optical and wiring fixes.
+      # Validate them against their archived sources, not the current firmware.
+      # Current publication is checked by verify_wokwi_publication.py above.
+      - name: Checkout sources of historical collective observations
+        uses: actions/checkout@v4
+        with:
+          ref: 3b3c8771ff181ad057c25feafefd9828878a748e
+          path: .historical-wokwi
+      - name: Verify historical collective observations (23 projects)
+        run: python .historical-wokwi/firmware/all_sensors/tools/summarize_collective_validation.py
       - run: python -m compileall -q backend/hardware_telemetry.py backend/hardware_routes.py backend/main.py
