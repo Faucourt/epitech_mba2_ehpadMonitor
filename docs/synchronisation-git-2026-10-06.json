@@ -53,7 +53,7 @@
       "remote": "delivery",
       "branch": "validation-compilation-m1",
       "before": "e09cf97c65fcb9567965b1e6fc46e191fbe2ce78",
-      "history_preserved": false
+      "history_preserved": true
     },
     {
       "remote": "faucourt",
@@ -101,7 +101,7 @@
       "remote": "faucourt",
       "branch": "validation-compilation-m1",
       "before": "e09cf97c65fcb9567965b1e6fc46e191fbe2ce78",
-      "history_preserved": false
+      "history_preserved": true
     },
     {
       "remote": "origin",
@@ -149,7 +149,32 @@
       "remote": "origin",
       "branch": "validation-compilation-m1",
       "before": "e09cf97c65fcb9567965b1e6fc46e191fbe2ce78",
-      "history_preserved": false
+      "history_preserved": true
     }
-  ]
+  ],
+  "validation": {
+    "python_hardware": {
+      "passed": 29,
+      "skipped_windows_compiler": 1
+    },
+    "node_tests_passed": 24,
+    "cpp_linux": "6 optical cases and PAR protocol/finite-float executables passed",
+    "wokwi_publication": {
+      "projects": 45,
+      "source_files": 733,
+      "backup_integrity": "passed"
+    },
+    "dashboard": {
+      "npm_ci": "passed",
+      "npm_audit_vulnerabilities": 0,
+      "http_smoke_routes": 6,
+      "dependency_updates": [
+        "body-parser 1.20.8",
+        "proxy-addr 2.0.8",
+        "qs override ^6.16.0 (Express pins an older minor version)"
+      ]
+    },
+    "secret_scan": "gitleaks: no leaks found",
+    "compose_config": "main and hardware lab passed"
+  }
 }
