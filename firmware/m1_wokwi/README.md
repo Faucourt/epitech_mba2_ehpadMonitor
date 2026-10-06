@@ -1,49 +1,49 @@
 # TP M1 — ESP32 Wokwi → MQTT → EHPAD
 
-Firmware adapté du TP fourni, avec une seule bibliothèque externe `PubSubClient@2.8`. Identifiants fictifs : équipe `lebretyves-ehpad-m1`, patient `P001`, device `esp32-01`.
+Projet enregistré : https://wokwi.com/projects/476777815517850625
 
-## Démarrage
+## Intégration au dashboard Digi4 principal
 
-1. Depuis la racine : `cd dashboard`, `npm ci`, puis en PowerShell `$env:PORT=3003; npm start`.
-2. Ouvrir http://localhost:3003/m1.html à gauche de l'écran.
-3. Créer un projet https://wokwi.com/projects/new/esp32 et copier les trois fichiers de ce dossier dans les onglets correspondants : `sketch.ino`, `diagram.json`, `libraries.txt`.
-4. Enregistrer avec un compte Wokwi, puis démarrer la simulation à droite de l'écran.
-5. Attendre `MPU-6050 détecté`, `Wi-Fi OK`, `MQTT ... OK`, puis les publications et la courbe de FC.
+Le flux est désormais intégré à la grille et à la fiche P001 du dashboard principal (/). La vérification réelle affiche 25 résidents historiques et P001, soit 26 fiches. FC, niveaux warning/danger, SOS, chute à 2,83 g et état offline ont été testés. Une reconnexion du backend conserve la fiche et ses événements.
 
-**Lien Wokwi enregistré : à renseigner après création dans Wokwi.** Le lien ci-dessus ouvre un nouveau projet vierge, pas le projet réalisé.
+[Nouvelle vidéo : dashboard Digi4 + Wokwi, 59 s](livrables/demo-digi4-wokwi-firefox.webm) · [Capture des alertes](livrables/dashboard-digi4-alertes.png) · [Capture hors ligne](livrables/dashboard-digi4-offline.png).
 
-## Livrable demandé : vidéo de l'écran
+Le backend historique doit être actif pour afficher les 25 résidents ; Wokwi rejoint le frontend en MQTT over WebSocket. Ses mesures et événements restent dans la session navigateur et ne déclenchent pas le moteur clinique. Les mesures non disponibles restent nulles. La FC disparaît après 15 secondes sans mesure ou dès une déconnexion/offline.
 
-Le dashboard doit être à gauche, le simulateur Wokwi à droite, simultanément visibles. Utiliser le bouton d'enregistrement du dashboard, choisir l'écran entier (et non seulement l'onglet), puis arrêter et télécharger le fichier `.webm`. La sélection d'écran exige un geste et une autorisation du navigateur.
+## Résultat vérifié le 2 octobre 2026
 
-Scénario conseillé (environ 90 s) :
+- Firmware, montage et bibliothèque PubSubClient@2.8 chargés dans Firefox.
+- Compilation ESP32 locale réussie : 791 241 octets de flash (60 %), 46 968 octets de RAM (14 %). Le source compilé correspond exactement au sketch actuel (SHA-256 : 5CC9CF7907BD7EFF00F5B6DDADA3FD0063AC977F7056BDADBCF19D7B2FD126BC).
+- MPU-6050 détecté, Wi-Fi connecté et MQTT connecté à broker.hivemq.com.
+- Dashboard : FC normale 83–86 bpm, vigilance vers 120 bpm, danger vers 153–156 bpm ; SOS et chute à 2,83 g reçus.
+- Après arrêt : ancienne mesure masquée, puis état offline reçu du broker.
+- Page locale et syntaxe JavaScript vérifiées. Nouvelle vidéo relue dans Firefox : 59 s, 1980 × 900, aucune erreur de décodage.
 
-- 0–15 s : connexions et FC de repos, publications toutes les 2 s.
-- 15–35 s : tourner le potentiomètre, dépasser 110 puis 130 bpm ; montrer courbe et alertes.
-- 35–45 s : appuyer sur SOS et montrer l'événement reçu.
-- 45–60 s : régler deux axes du MPU-6050 à 2 g (norme >2,5 g), montrer l'alerte de chute.
-- Arrêter Wokwi et attendre jusqu'à 45 s pour montrer le Last Will offline.
+## Livrables
 
-Déposer la vidéo finale dans `livrables/` ou comme fichier de release GitHub si elle est volumineuse. Une capture artificielle ou un flux injecté de test ne remplace pas la preuve Wokwi.
+[Archive de la page de diagnostic M1 — 1 min 50 s](livrables/demo-wokwi-firefox.webm) : captures réelles des deux vues Firefox côte à côte, échantillonnées à 1 image/s et encodées en WebM, sans son. Les pauses entre opérations sont coupées ; ce n'est pas une capture continue du bureau. Aucune publication MQTT artificielle n'a été ajoutée : les mesures viennent du firmware exécuté dans Wokwi.
 
-## Validation et état
+- [Dashboard et alertes](livrables/dashboard-alertes.png)
+- [Wokwi et messages MQTT](livrables/wokwi-mqtt.png)
+- [État hors ligne](livrables/dashboard-offline.png)
+- [Journal série](livrables/moniteur-serie.txt)
+- [État final du dashboard](livrables/etat-final.txt)
+- [Firmware complet compilé](livrables/m1-full.bin)
+- [Contrat MQTT](../../docs/contrat_mqtt.md)
 
-Le contrat exact est dans [docs/contrat_mqtt.md](../../docs/contrat_mqtt.md).
+## Relancer dans Firefox
 
-- Fichiers du TP extraits, identifiants adaptés, montage JSON vérifié.
-- Compilation et exécution Wokwi : à valider dans le simulateur.
-- Vidéo finale : pas encore enregistrée.
+1. Depuis la racine, ouvrir le dossier dashboard et lancer npm start avec PORT=3003 (la page était déjà disponible pendant la vérification).
+2. Ouvrir http://localhost:3003/ et le projet Wokwi ci-dessus.
+3. Démarrer la simulation. Si Wokwi affiche « Build Servers Busy », placer le focus dans l'éditeur, appuyer sur F1, rechercher « Upload Firmware and Start Simulation… », puis sélectionner livrables/m1-full.bin.
+4. Attendre MPU-6050 détecté, Wi-Fi OK et MQTT OK, puis manipuler le potentiomètre, SOS et les axes du MPU-6050.
 
-## Passage au matériel
+La simulation vérifiée utilise le binaire local : les serveurs gratuits Wokwi ont refusé la compilation pour saturation. Le binaire complet a été assemblé avec esptool (bootloader, partitions, boot_app0, sketch). Il doit être chargé à nouveau lors d'une nouvelle session si la compilation en ligne reste indisponible. Méthode : [documentation officielle Wokwi](https://docs.wokwi.com/guides/esp32).
 
-GPIO : MPU SDA 21 / SCL 22 ; bouton SOS 18 vers GND ; buzzer 19 ; potentiomètre ADC1 34. Alimentation capteurs 3,3 V. Sur la carte réelle : changer le Wi-Fi (canal 0), remplacer le potentiomètre par le MAX30102 et son traitement PPG, sortir les secrets dans un fichier ignoré par Git. Détection de chute par seuil pédagogique, sans finalité diagnostique.
+## Limites et matériel
 
-### Vérifications exécutées le 2 octobre 2026
+Le dashboard principal et sa pile Docker ont été vérifiés en fonctionnement ; la page M1 dédiée reste un outil de diagnostic. Le journal série contient un avertissement LEDC lors de la première alarme ; le son du buzzer n'a pas été validé, et la vidéo est muette. Les mesures arrivent toutes les 2 secondes du temps simulé ; la simulation tournait moins vite que le temps réel.
 
-- Page `/m1.html`, JS, CSS et MQTT.js : HTTP 200 sur `localhost:3003`.
-- Syntaxe `node --check dashboard/public/m1.js` valide.
-- Tests isolés des handlers : normalisation, absence de mesures non disponibles, rejet JSON/identifiants invalides, SOS, statut offline, mesure périmée et masquage après 7 s.
-- Connexion réelle WSS HiveMQ et SUBACK QoS 1 sur les trois topics du contrat, sans aucune publication de données artificielles.
-- Sauvegarde du dashboard existant dans `backup_avant_m1/` (exclue de Git), empreinte de la page d'origine inchangée.
+Identifiants fictifs : équipe lebretyves-ehpad-m1, patient P001, device esp32-01. Aucun secret réel dans le firmware. SpO2 et température restent non mesurées.
 
-Limites : aucune compilation ESP32 ni simulation Wokwi validée dans cette session. Contrôle navigateur indisponible (erreur ACL de l'environnement) ; pas de capture visuelle ni de vidéo finale. La pile historique Docker a un backend bloqué par un ancien fichier Redis corrompu ; la page M1 utilise MQTT directement et n'en dépend pas.
+GPIO : MPU SDA 21 / SCL 22 ; SOS 18 vers GND ; buzzer 19 ; potentiomètre ADC1 34. Alimentation 3,3 V. Sur le matériel réel : adapter le Wi-Fi, remplacer le potentiomètre par le MAX30102 et son traitement PPG, isoler les secrets hors Git. Détection de chute pédagogique, sans finalité diagnostique.

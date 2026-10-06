@@ -1,6 +1,8 @@
 ﻿# Contrat MQTT — EHPAD / Digi5 M1
 
-Option B : une page dédiée `/m1.html` normalise le flux Digi5. Le dashboard historique reste alimenté par son backend ; les mesures Wokwi ne sont pas injectées dans son moteur clinique.
+Option B : le dashboard Digi4 principal (`/`, `dashboard/public/index.html`) reçoit directement le flux Digi5 en MQTT over WebSocket via `wokwi-feed.js` et `wokwi-dashboard.js`. P001 rejoint la grille multi-résidents et son panneau de détail affiche la FC, la courbe, SOS, chute et l'état du dispositif. Les 25 résidents historiques restent alimentés par leur backend. La page `/m1.html` est conservée comme outil de diagnostic.
+
+P001 est un patient fictif distinct de R001 : aucune donnée des résidents historiques n'est écrasée. Les événements pédagogiques restent dans sa fiche, avec leurs niveaux `info` / `warning` / `danger` ; ils ne déclenchent pas le moteur clinique, les notifications soignants ni un score IA. La FC courante est masquée dès la déconnexion du broker, l'état offline, ou après 15 secondes sans mesure. La courbe et les événements sont conservés en mémoire pendant la session navigateur. Le bouton Wokwi dans la grille ouvre la fiche P001.
 
 | Élément | Digi4 existant | Digi5 M1 retenu |
 |---|---|---|
@@ -13,7 +15,7 @@ Option B : une page dédiée `/m1.html` normalise le flux Digi5. Le dashboard hi
 | Horodatage | `timestamp` / `timestamp_real` | `timestamp`, ISO 8601 UTC ; vide avant NTP, heure de réception utilisée pour l'affichage |
 | Alertes | moteur 1 info, 2 attention, 3 alerte, 4 urgence, 5 danger vital | `info`, `warning`, `danger`, conservés comme niveaux pédagogiques ; pas d'équivalence clinique automatique |
 | Broker | variables MQTT_HOST / MQTT_PORT, défaut localhost:1883, Mosquitto dans Compose | `broker.hivemq.com:1883`, TCP public sans authentification pour ESP32 |
-| Navigateur | API/backend existant | `wss://broker.hivemq.com:8884/mqtt`, MQTT.js |
+| Navigateur | API/backend existant | MQTT.js sur `wss://broker.hivemq.com:8884/mqtt`, intégré au dashboard principal en parallèle du backend |
 
 ## Messages
 
