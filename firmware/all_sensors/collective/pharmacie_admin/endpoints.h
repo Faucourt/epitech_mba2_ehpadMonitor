@@ -133,12 +133,32 @@ pinMode(4,INPUT_PULLUP);
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -150,7 +170,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;
@@ -360,12 +380,32 @@ void sensorBegin() {
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -377,7 +417,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;
@@ -587,12 +627,32 @@ void sensorBegin() {
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -604,7 +664,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;
@@ -814,12 +874,32 @@ void sensorBegin() {
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -831,7 +911,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;
@@ -1041,12 +1121,32 @@ analogSetPinAttenuation(34,ADC_11db);
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -1058,7 +1158,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;
@@ -1268,12 +1368,32 @@ collectiveSerial1.begin(9600,SERIAL_8N1,14,16);
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -1285,7 +1405,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;
@@ -1495,12 +1615,32 @@ analogSetPinAttenuation(35,ADC_11db);
 }
 void readOptical() {
   if(!sensorReady) return;
-  uint16_t queued=optical.check();
-  // SparkFun's software FIFO stores 4 slots. A network stall must not make a
-  // discontinuous window look like a continuous 25Hz recording.
-  if(queued>=4) {sampleCount=0;values["heart_rate"]=nullptr;values["spo2"]=nullptr;}
-  while(optical.available()) {
-    uint32_t r=optical.getFIFORed(), ir=optical.getFIFOIR(); optical.nextSample();
+  // SparkFun configures the real device; acquire complete RED/IR pairs directly
+  // to check I2C byte counts and avoid its four-slot software FIFO losing data.
+  // Same registers and acquisition path on hardware and in Wokwi (100Hz / 4).
+  uint8_t pointers[3];
+  bool ok=regRead(0x57,0x04,pointers,3);
+  unsigned queued=ok ? ((pointers[0]-pointers[2])&31) : 0;
+  // 32 samples can make WR_PTR == RD_PTR. Also discard after a polling gap
+  // long enough to fill the FIFO, even if a counter/read masks that situation.
+  if(!ok || pointers[1] || (lastOptical && millis()-lastOptical>=1200)) {
+    values.clear();sampleCount=0;lastValid=lastOptical=0;
+    if(!ok) {sensorReady=false;return;}
+    bool reset=regWrite(0x57,0x04,0);
+    reset=regWrite(0x57,0x05,0) && reset;
+    reset=regWrite(0x57,0x06,0) && reset;
+    if(!reset)sensorReady=false;
+    return;
+  }
+  for(unsigned sample=0;sample<queued;sample++) {
+    uint8_t pair[6];
+    if(!regRead(0x57,0x07,pair,6)) {
+      // A partial transfer can leave FIFO_DATA mid-sample. Reinitialization
+      // on the existing retry path resets both pointers before reacquisition.
+      values.clear();sampleCount=0;lastValid=lastOptical=0;sensorReady=false;return;
+    }
+    uint32_t r=((uint32_t(pair[0])<<16)|(uint32_t(pair[1])<<8)|pair[2])&0x3ffff;
+    uint32_t ir=((uint32_t(pair[3])<<16)|(uint32_t(pair[4])<<8)|pair[5])&0x3ffff;
     values["red_raw"]=r; values["ir_raw"]=ir; lastValid=millis(); lastOptical=millis();
     if(ir<5000) {sampleCount=0; values["heart_rate"]=nullptr; values["spo2"]=nullptr; continue;}
     redSamples[sampleCount]=r; irSamples[sampleCount++]=ir;
@@ -1512,7 +1652,7 @@ void readOptical() {
       memmove(irSamples,irSamples+25,75*sizeof(uint32_t)); memmove(redSamples,redSamples+25,75*sizeof(uint32_t)); sampleCount=75;
     }
   }
-  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;}
+  if(millis()-lastOptical>3000) {values.clear();sampleCount=0;lastValid=0;}
 }
 void readSerialSensor() {
   static uint8_t frame[9]; static unsigned count=0;

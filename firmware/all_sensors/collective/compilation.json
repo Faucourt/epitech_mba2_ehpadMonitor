@@ -1,218 +1,362 @@
 {
   "R001": {
-    "source_sha256": "45fe57e9a76aaf155fab6d7d0ecc288ee966940c699a4c3fe0d94f0d6967e668",
+    "source_sha256": "3d4b2fe52aa6fc336aaffd2af32bd29f518d7053c9320c5a481397070ccec573",
     "exit_code": 0,
-    "seconds": 108.3,
-    "stdout": "Sketch uses 841693 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 91.4,
+    "stdout": "Sketch uses 842973 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "84f7fb5372c273b7e9b2c2fcb5df48b97e4a566043d51e482df8c190dd78b5ef"
+    "firmware_sha256": "1ea98e8690d6afc24064503fc8ef7fdd576f96778f26e5771821a8b02ae22a6e"
   },
   "entree": {
-    "source_sha256": "583570052b4350e444df64ed3312756ccf2f358587bdca1aac0a85589fd35921",
+    "source_sha256": "903ea5a5892006c55614a1a66c711a057891a0227e73a940444bbcc9da5984eb",
     "exit_code": 0,
-    "seconds": 48.9,
-    "stdout": "Sketch uses 837201 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60308 bytes (18%) of dynamic memory, leaving 267372 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.4,
+    "stdout": "Sketch uses 838189 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60308 bytes (18%) of dynamic memory, leaving 267372 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "57ca23bd7622ee4b1121818de3ee2e08e28e5f086077f4cb986d9eafa3244f07"
+    "firmware_sha256": "e36dd41fd930aa9df47234d3c7fe339af19826d2feb293392ea75fd122d58817"
   },
   "patio": {
-    "source_sha256": "e9865a1c650fb789a122baa24aaac5f236c336ba695784cadb8ce862006527cd",
+    "source_sha256": "f2e8424d990d14382b2c9049e4022bbf9007b649c6592aec29ee236f4a945440",
     "exit_code": 0,
-    "seconds": 70.2,
-    "stdout": "Sketch uses 848817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 63116 bytes (19%) of dynamic memory, leaving 264564 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 32.5,
+    "stdout": "Sketch uses 850081 bytes (27%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 63116 bytes (19%) of dynamic memory, leaving 264564 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "b57567cde9a86a7ef5687ca31e1268a1dad855d24498f4de2114fa25158b1217"
+    "firmware_sha256": "34dc12036f4325bafbc530df8f7cf97a8af71b7bb6c2c672cddbf209e69b9ecb"
   },
   "kinesitherapie": {
-    "source_sha256": "d668609aaa6e3b6f0dd2df7d12d00424eb45ffe514294321634d894f615e01a5",
+    "source_sha256": "52adbcbd96566b59d05ea6c6541995b4b09fca874cd7ed005441158119b784c1",
     "exit_code": 0,
-    "seconds": 77.1,
-    "stdout": "Sketch uses 870513 bytes (27%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 68668 bytes (20%) of dynamic memory, leaving 259012 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 35.4,
+    "stdout": "Sketch uses 872469 bytes (27%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 68668 bytes (20%) of dynamic memory, leaving 259012 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "18ea95b41cfc3c80bdbb72ee239975be40a653a308001603227258788da6c2ee"
+    "firmware_sha256": "f95d544e860bf66666a1db4fc57338f16a21a117af2b96690b7fa848467aa99f"
   },
   "R002": {
-    "source_sha256": "743b007b0750b1424db1a885a558b66ee750cb0c46b2e2be3fac82c7ef2d5287",
+    "source_sha256": "2ba4b92a744b7d4edf8733fb713d09185917a84a2ff4e913be4f4ce044bf4755",
     "exit_code": 0,
-    "seconds": 31.1,
-    "stdout": "Sketch uses 835885 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.2,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "ac1ee5cbac88332bce62584a8c7d9bd757f4c03b5571909fa29a528bf30839de"
+    "firmware_sha256": "ebbb5f873a7e547acf22c280526c6719841a8d26abfbd224d76c5c648b9e39a5"
   },
   "R003": {
-    "source_sha256": "bc6a08161ffa80b63b5dfd1faae8bad174bec71acfe4149f40fcafe63408f968",
+    "source_sha256": "d07203554638f079eb80fcad0e7f43448fb2e25d417ed65514e0d7888d1b4067",
     "exit_code": 0,
-    "seconds": 25.5,
-    "stdout": "Sketch uses 841693 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.3,
+    "stdout": "Sketch uses 842973 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "2263d5665455c62f614a87b34a0ba842e4317e6a7be2a15828407427a2e670b7"
+    "firmware_sha256": "10539c70bb4442d264a45342290ae5d187a3abf6c1135d70cfdd8469e60ca2b6"
   },
   "hors_ehpad": {
-    "source_sha256": "453afdbb013ead2c424ed2bd1d2a95d3484360f639c27368bd3bfb16ad161214",
+    "source_sha256": "7301a1729581329c31b8a9d62a4f59be1c46bcc6d463f49d4d6e5c63d04453d1",
     "exit_code": 0,
-    "seconds": 55.2,
-    "stdout": "Sketch uses 826121 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57516 bytes (17%) of dynamic memory, leaving 270164 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 30.9,
+    "stdout": "Sketch uses 826769 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57516 bytes (17%) of dynamic memory, leaving 270164 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "e0009975f63ec2c1d3754be964753ba420b03bf4a5a55870a938a1f7a04b62bf"
+    "firmware_sha256": "e15aa1cdb3f373a3050f0fe46d82b2a35c3d08f05e580dd04dd201889441dbc5"
   },
   "infirmerie_rdc": {
-    "source_sha256": "cfb442a1471765d26f9676be90f71030001b89333512581412066305ba31db57",
+    "source_sha256": "253c8bbc04c7774598d9d1ae51e40a8f1993654ec4b4aca93df01283eab5acd6",
     "exit_code": 0,
-    "seconds": 52.3,
-    "stdout": "Sketch uses 819073 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 56060 bytes (17%) of dynamic memory, leaving 271620 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 30.6,
+    "stdout": "Sketch uses 819625 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 56060 bytes (17%) of dynamic memory, leaving 271620 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "222d354a5fa295d1b9ea92e84cdabf5ff641d27a4fc2a184cfafcb43e198d733"
+    "firmware_sha256": "3390c6fd91b59f3b1bdc6e5002269f3f8a7d1ae03b76e5e2853417bb71950319"
   },
   "pharmacie_admin": {
-    "source_sha256": "2e6d992de5f9a635df5fde2196d7c2f428250b39b6e2c6c8f15f12a611ff877c",
+    "source_sha256": "ee4b735a6a1c52cd61c6587b71d440437dbb441185dc7d1d0cf130a8f460245c",
     "exit_code": 0,
-    "seconds": 72.9,
-    "stdout": "Sketch uses 819089 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 56060 bytes (17%) of dynamic memory, leaving 271620 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 30.9,
+    "stdout": "Sketch uses 819641 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 56060 bytes (17%) of dynamic memory, leaving 271620 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "dc96f18b7dd6f7f8f1e016166184519e2937b2af129a91e0d1e1084fc292ed18"
+    "firmware_sha256": "f4f4735717d9b868e22b5611e7668cea9d65b20594a0b81b52e9248f5632a959"
   },
   "couloir_principal": {
-    "source_sha256": "b8fc814aeeb337b2c9b67a311c6609a5aab42587d455adfd459c9d1234e1c0c9",
+    "source_sha256": "a1792c881925608042cae7df2f4e8e24cfd60cbd8f4dbd253411f964b01ca8d5",
     "exit_code": 0,
-    "seconds": 59.5,
-    "stdout": "Sketch uses 830385 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.2,
+    "stdout": "Sketch uses 831253 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "f94f4ad49db600b3eb5e118c8db6b3088c0254e63952f67e5dc7d0a6bb055204"
+    "firmware_sha256": "42e723efc29202b76115c362fdd37e55638445850826bf1b7011125ca3de6989"
   },
   "salle_commune": {
-    "source_sha256": "c0caa2a38518ac8fc74d81f8504cbe79336cf61ad0c0ca00d76fd73fe4c39929",
+    "source_sha256": "700bb74c485ac1970ead1eb0685ded1107862ddc339aa9a8db33b50514c0ecc0",
     "exit_code": 0,
-    "seconds": 64.8,
-    "stdout": "Sketch uses 824717 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.6,
+    "stdout": "Sketch uses 825385 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "4d3bddf399db7ed76c0363e41f6da79c6b0df23207e3eee8a86f23ba03c0d42f"
+    "firmware_sha256": "f8283c0d6522159046cfdfaa9d8f5f4db4cc013af3c94b02af46d5cd259a242b"
   },
   "jardin": {
-    "source_sha256": "5af70b98b6f5f1b56c899e49b83b4752e3a002130bfa2261a6c015e2daaae531",
+    "source_sha256": "d64441dbd19f5e8451da6e617be4b229c6c1640cdf8c2b8395736f98a6ed6b10",
     "exit_code": 0,
-    "seconds": 72.0,
-    "stdout": "Sketch uses 837245 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60308 bytes (18%) of dynamic memory, leaving 267372 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 32.1,
+    "stdout": "Sketch uses 838233 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60308 bytes (18%) of dynamic memory, leaving 267372 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "5d3290506be78da6cdccd66ea9060a8607365ad9893c6bbe859b5476625839a4"
+    "firmware_sha256": "045a06b06933eace8164d4bae09f50562d32f3a98334363c0a95fd35e5807b8c"
   },
   "salle_activites": {
-    "source_sha256": "d67133f5e7ab8c5b4d3becda6302aed7ba8285a4a9f038422b20c86a8b56fed5",
+    "source_sha256": "36611f4d83523f5c30e29d97854c076431212b785a3e7c7146e927f97f7b84c7",
     "exit_code": 0,
-    "seconds": 66.1,
-    "stdout": "Sketch uses 824733 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.3,
+    "stdout": "Sketch uses 825401 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "b67cc25a3012bbaa9c6e2351c19a5da5464e305cc4d0d0d4ebda796068b4ee8e"
+    "firmware_sha256": "4e307644659e0288e013f39ce0f1d310569df73f395b3f14ef8153e05c575a82"
   },
   "salle_manger": {
-    "source_sha256": "008153faa32ec380f68cb17be13a80141a096e1565ac5dcfaca0c5ab7544e637",
+    "source_sha256": "d800150c40e60082d584609356257a35ddadb51b566dff3c9aa0872a79567dd0",
     "exit_code": 0,
-    "seconds": 70.2,
-    "stdout": "Sketch uses 830337 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.2,
+    "stdout": "Sketch uses 831205 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "ac52ece2809b349b49b44a8a6068c8d448e67aa3ca00aeabdcd7b53fddd52b06"
+    "firmware_sha256": "9b2c78250a6595a6563b7280a7b990df4d2ac480e0d56d6bf569bfcd3f38695a"
   },
   "office_cuisine": {
-    "source_sha256": "37e6a7c4b6c761087221274af2b14c9e8930d4e54d59fb9ddb12c21080fb3446",
+    "source_sha256": "aff4f527774feed27e43f51d8fb4d6f168ec6145dc7ad0532d2f0ad054874d40",
     "exit_code": 0,
-    "seconds": 68.1,
-    "stdout": "Sketch uses 824729 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.7,
+    "stdout": "Sketch uses 825397 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "8b4f9a84a660d2914704dbdc26e4d08631befde6190f4b716e5bce76fa8e1faf"
+    "firmware_sha256": "ba8904516ebaba350923e6b5d81eba2c53685b5ed744bff1bda0c0e871b75b4e"
   },
   "couloir_aile_rdc": {
-    "source_sha256": "c787d50062fcbf46d36a55fafd692c10e909bcb4d6527c5a62cade509ec051d0",
+    "source_sha256": "93bcf51ca39af09dccf040c03dc3f798886e0a375eb50033126aa39bbe92a926",
     "exit_code": 0,
-    "seconds": 63.3,
-    "stdout": "Sketch uses 830365 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.5,
+    "stdout": "Sketch uses 831233 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "94fb5e656708da2a55beb8e21e0359660bf123c62e8961a1b5937983eba3442e"
+    "firmware_sha256": "9efd50ccf0e37627fe96b4c0dc67ddef550326db9d7923d2216d4a86a4cd9e79"
   },
   "escalier": {
-    "source_sha256": "e317004afc5ff6e520f93c27d908ecb73c87d56aa51a00762615ffb62e8dec5e",
+    "source_sha256": "a916457ed3ca1e85470a736d0ef56fba6a77226483bb2073f5216c228514e1fb",
     "exit_code": 0,
-    "seconds": 74.5,
-    "stdout": "Sketch uses 830293 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 32.8,
+    "stdout": "Sketch uses 831161 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "f171df8dd5988956e055308bc50cb97470091ad054699c3649e2b16ba84ddc68"
+    "firmware_sha256": "e6b8d48f5e6c8284f52b3907c920e71c3ddd8f4b18de7474ba596d742bbab7ca"
   },
   "ascenseur": {
-    "source_sha256": "9a99812230f826c9cfc61c005dbc464c57824bcb0bd7fd3c0a843138f8ad9099",
+    "source_sha256": "786143226e863792a8cb2d74002da75b39ec6d3e5334ca42ed0d20164cb5f49b",
     "exit_code": 0,
-    "seconds": 69.0,
-    "stdout": "Sketch uses 831733 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58916 bytes (17%) of dynamic memory, leaving 268764 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 33.6,
+    "stdout": "Sketch uses 832557 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58916 bytes (17%) of dynamic memory, leaving 268764 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "b1456ee13bcfc38986d6dad980a5d64d78258ef02c0676229e86f1c4d74faa43"
+    "firmware_sha256": "8f7fb38d8866e948ce1ce3e6bca40e2019a2490e2fba891569b56e34d7aef25d"
   },
   "poste_infirmier_etage": {
-    "source_sha256": "dd9f14168bb27ee7bf210351c3a01535ac8a13b5b2bab7d8e4b4ea427ee28043",
+    "source_sha256": "616f51121729c94ab49819ff4f8a3315d6064b015888309662011bd1cf000a86",
     "exit_code": 0,
-    "seconds": 72.2,
-    "stdout": "Sketch uses 819121 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 56060 bytes (17%) of dynamic memory, leaving 271620 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.9,
+    "stdout": "Sketch uses 819673 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 56060 bytes (17%) of dynamic memory, leaving 271620 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "3762364245d26a28eb2eec91417450db0b3e07a45812a8cbc0f0c71b21a60915"
+    "firmware_sha256": "c56ed6443bda62763027e44d769f2e4883b9f9bfd14a55a3281dd4d0c0cecaeb"
   },
   "salle_repos": {
-    "source_sha256": "ff4d21b66ae796a34ace36c0728a4e9687bec2a6b9e98fc074fad069a1a6dfe9",
+    "source_sha256": "f798cfc8f8f69f35c251be4ee7869bddd100e5944dc473283160af255b40bfb7",
     "exit_code": 0,
-    "seconds": 76.7,
-    "stdout": "Sketch uses 824701 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.4,
+    "stdout": "Sketch uses 825369 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 57468 bytes (17%) of dynamic memory, leaving 270212 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "c83bf17972b5cbe41e3dc910c3a797ac3f753c90907ba2c82754dcd23b749db9"
+    "firmware_sha256": "6d33ac3020b1a5c824daae713e06204ec0034fcccdcb9c87e258a36ca1794bdb"
   },
   "couloir_aile_a_etage": {
-    "source_sha256": "af7f6f10de5ad21c5c91f0498f03e475f7ba5b5fdee05befdb281433931d7078",
+    "source_sha256": "cac7e03b2219909ce5900c2b21397198ac745b15104833ae6cd3c04c29a323c8",
     "exit_code": 0,
-    "seconds": 75.0,
-    "stdout": "Sketch uses 830413 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.8,
+    "stdout": "Sketch uses 831281 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "9de1bcbb92ea7adbd6ab721ec60bb40ae7fd032320067e05dc72fe2099365619"
+    "firmware_sha256": "b356a1dd27ad726474835ddfe0bb42fce5b1a181650e68f22538f4cc10b32cef"
   },
   "couloir_aile_b_etage": {
-    "source_sha256": "92d55e83a20d1d03dbc45fac84b28f2aaeaf40d41ad269787e18f968c1e8c7de",
+    "source_sha256": "8145742abfb22638e4340b471c49e131f41e29611e7e3a6788775f1c3de42dab",
     "exit_code": 0,
-    "seconds": 76.0,
-    "stdout": "Sketch uses 830417 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 32.2,
+    "stdout": "Sketch uses 831285 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 58868 bytes (17%) of dynamic memory, leaving 268812 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "847328d68b66a21128669b76e8eeadaf93d0ed35faadffe77668c0371556570e"
+    "firmware_sha256": "31f12d98fec5cd4ec1d151bd0ee2967810db466ec7632180ac60ddca40defe81"
   },
   "palier_etage": {
-    "source_sha256": "2bedb03161561f1b5ee7ce2ec539b35a8dd41f8070eb1732f71c231abdcce4e7",
+    "source_sha256": "09428122e68674347249a08b979c4a52579a440368d9568cd3285d532afa1862",
     "exit_code": 0,
-    "seconds": 91.0,
-    "stdout": "Sketch uses 837273 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60308 bytes (18%) of dynamic memory, leaving 267372 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 34.0,
+    "stdout": "Sketch uses 838269 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60308 bytes (18%) of dynamic memory, leaving 267372 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "3b940e0e717108200314f5fc68e0b6be7cc9b125e0bdfabedac8563fd62fbacf"
+    "firmware_sha256": "bb692506821aed02c0699fc2216d27546fa25f442e1ebe5d072a51291a7bcd28"
   },
   "R004": {
-    "source_sha256": "08a20dd4bbcb13b8a38e92a798cb4550d75273217954065536c045cd3a67556f",
+    "source_sha256": "9122408d4f81eddbe9071c21de2de113a27b3a412c043c3a08d01e5e4d5e532e",
     "exit_code": 0,
-    "seconds": 95.8,
-    "stdout": "Sketch uses 835885 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 32.1,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "8f91a6292a9dc6fb96949f12653f838cc91d29eaa44a9a457a6c4e957388327f"
+    "firmware_sha256": "a46a2317ff4dfb6104b2e38bc205b2c858f7a14286b1aeef761419796ca88c37"
   },
   "R005": {
-    "source_sha256": "e316ecbeed1b3242acd45db20f8e552d2ddb1b72b2ae7eb46495729b3d253e5a",
+    "source_sha256": "1da2f78d0f3d844525ffada5dc1b2848bfd3ffba8515fcd3af1b1e8c895c4e8b",
     "exit_code": 0,
-    "seconds": 88.6,
-    "stdout": "Sketch uses 841693 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.9,
+    "stdout": "Sketch uses 842973 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "94e8f557cc4712f30c9170f7838f28b90732d2d3711d2973654019aa941cb26b"
+    "firmware_sha256": "af9efb7da8608094d790c6e6eb6da34aa82daabb1b640a148e9e5f495478d181"
   },
   "R006": {
-    "source_sha256": "e8a9da40d6e498b9f44226da89770553cde272c8259bb837cf69801cdc315cd6",
+    "source_sha256": "5ed71f78eafd4a65ac862f1219cc57c222a34163fb472148951b5a221e89f1f9",
     "exit_code": 0,
-    "seconds": 96.1,
-    "stdout": "Sketch uses 835885 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.4,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "a0c47b5f36aaf1c1deedfa670bb3e12edb0d7be457fd643633705372e91e4ca6"
+    "firmware_sha256": "e43972e6b5a324500220a29ad341124a62b2ce75418494d9b1debdac528bae24"
   },
   "R007": {
-    "source_sha256": "dcdccd60f5236d1c8d9b332e807d2a78f7048cc5756bf82bfc146531bc2dc00a",
+    "source_sha256": "b925f5d2b4220a6f7e093d1820a4b5b78dbaffc2e6670cfc0000cbf66d8f06b9",
     "exit_code": 0,
-    "seconds": 93.6,
-    "stdout": "Sketch uses 841693 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
+    "seconds": 31.5,
+    "stdout": "Sketch uses 842973 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
     "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
-    "firmware_sha256": "e2f490611e2c81a3f6ea29c54ade65f204c7e0894425a8277e3b6cfa85a49f57"
+    "firmware_sha256": "a311ac5b3609cb1e379e9674599affe3bac64cf5275c6be4a16775682bc71a04"
+  },
+  "R008": {
+    "source_sha256": "62af85bc245c5122ea3dd3404505e27ed40be7d77d23a97d010ee25c35aa359e",
+    "exit_code": 0,
+    "seconds": 31.1,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "451d575cd5d5011b6b0e2554fd9a21bf5f8a84aa02e9de77415e9a81cce09cd3"
+  },
+  "R009": {
+    "source_sha256": "6926fe585eb350eaf23e9ce0733e4c800f41739061d76c0f781d48201403ccd7",
+    "exit_code": 0,
+    "seconds": 31.4,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "57306fd8aa9673f588f33c8da95eb27e03aa19ca6dbb544b6680817feaa2632f"
+  },
+  "R010": {
+    "source_sha256": "e60dca7de6427ebfe63a29fd3e5a3602c0ee3c74d4069c3a2a0102d9bb884d04",
+    "exit_code": 0,
+    "seconds": 30.8,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "50b869f0d4a6d60b742ebcc9ee967df1b83dbe551b0e5c8a463f3c01b9516d39"
+  },
+  "R011": {
+    "source_sha256": "0deccd4b14224fa7001223c94c189c5b2a91fab13e6904d9d3b9cb4de47764b8",
+    "exit_code": 0,
+    "seconds": 31.2,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "04f342cc1c9764a10b9bfeac82e75c4c72425b59a7eb852b28963fd19c96d983"
+  },
+  "R012": {
+    "source_sha256": "9ef6bcabcddf51511afac62600d7e4beffffe70d100a8d0931b6a287d9a37df6",
+    "exit_code": 0,
+    "seconds": 31.5,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "b247edd263d66eac5dd6be231fdc9d8c23fcf86fa2ead5ccee3fa5814b5aa4b5"
+  },
+  "R013": {
+    "source_sha256": "b202366c15f8a887933823286710c72b1ed18ce3b0d4bbea943b9856f5cf00a0",
+    "exit_code": 0,
+    "seconds": 31.7,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "797c2bccf69425625b6e8dda73968de2c8321a98aaa6487fb9ca2226773ae899"
+  },
+  "R014": {
+    "source_sha256": "debaa358b93e857c4bacf1b23cb524fb5cb6d3c91363d05f24c88c219f1fcd20",
+    "exit_code": 0,
+    "seconds": 31.3,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "16c99779136049745cf99ff8c46366eeb39b3520d55652a425922d792b789b4c"
+  },
+  "R015": {
+    "source_sha256": "fb3376e2ee7652bf5d045f9f747d24a0ebe1f887d64f6245a8a89cf353c86185",
+    "exit_code": 0,
+    "seconds": 31.5,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "d4a34882440650a1912aa59c969b4991cf4d5525c5a06d70bc34bd920852b077"
+  },
+  "R016": {
+    "source_sha256": "97c099f6e794c42d6d98159d0f7bade35371ca89c0219823136940f129f4aafe",
+    "exit_code": 0,
+    "seconds": 31.3,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "7d88cd88deb2a7d8ab25659090c96a3141215f506d97e838053c74aeef2a5abf"
+  },
+  "R017": {
+    "source_sha256": "0959ab1535e3ff9ec30b223331f79e4376b523a0d3513fc03c056a5201d9e888",
+    "exit_code": 0,
+    "seconds": 31.3,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "9c49c86932e100447ba3434093a57324463073871387350ef9fb39efd7817730"
+  },
+  "R018": {
+    "source_sha256": "fd3b4bcb7449da3c2c86a169afe4b4acb00756ddc48699d570540467ead6d67d",
+    "exit_code": 0,
+    "seconds": 31.3,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "03765919f81befaefe608a1a2c50e6b3639d3aab20db00261b98d0322a247f5a"
+  },
+  "R019": {
+    "source_sha256": "654c3cbeb356618f8d5cbea49560c34422d0fbcef879ae8b72361b4ac7708025",
+    "exit_code": 0,
+    "seconds": 31.1,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "dd8a7068f38c1f2191af1ca864880c6d43605fa8f416f9d621c8d49c7fb3b095"
+  },
+  "R020": {
+    "source_sha256": "1ab25a2d226e02ee952a2673f5180849ffdb3e1d6d674475d37702dde3ec23b7",
+    "exit_code": 0,
+    "seconds": 31.5,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "007f251e6add17ef1eb6539523b7f5cd68eb6a97abc606d0df50673b06bfa9da"
+  },
+  "R021": {
+    "source_sha256": "661863ac356aa7d95435b9b923566600e9ba199e787c1eadeb9034eaf944d45b",
+    "exit_code": 0,
+    "seconds": 31.7,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "abfb7078aab2227a2769632424e02f80ad4f5008317b2a8f10d20f43468a0f1e"
+  },
+  "R022": {
+    "source_sha256": "5ac5cb40655c30cd993d04b79390cb0149c2ce5864cc25758c38a53672b63f0b",
+    "exit_code": 0,
+    "seconds": 35.5,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "376151eabb5dfc482fe998396ae2ed25627e625c4c8e67d61be9c65cfa3171a3"
+  },
+  "R023": {
+    "source_sha256": "a3146858a73c8119fc2405dbaae88268b0d827b05b923b63ba881857f3bbf31a",
+    "exit_code": 0,
+    "seconds": 31.7,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "c8928c90f1b6cde28d41a4b70956ae163b56c14d99661f69d0ff2da90cd4be62"
+  },
+  "R024": {
+    "source_sha256": "2ef51a9faacc302f613530b63d60bdfd85ea607c63d3a91e526610fbea46f404",
+    "exit_code": 0,
+    "seconds": 31.1,
+    "stdout": "Sketch uses 836817 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 60260 bytes (18%) of dynamic memory, leaving 267420 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "56aef5903e542585bddcd32048d74e8e5ad5a22392c25b08187735623627c414"
+  },
+  "R025": {
+    "source_sha256": "24003937f6cbc475e14d9d836d61c9e1cb19b8494adb423ca81b9a6b8191a2f4",
+    "exit_code": 0,
+    "seconds": 31.6,
+    "stdout": "Sketch uses 842973 bytes (26%) of program storage space. Maximum is 3145728 bytes.\nGlobal variables use 61660 bytes (18%) of dynamic memory, leaving 266020 bytes for local variables. Maximum is 327680 bytes.\n",
+    "stderr": "gen_esp32part.py:517: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal\n",
+    "firmware_sha256": "742f8b59b3b2d914199467d0636aa799f8d37c7e69be6b37dfea6b45cfff1f2b"
   }
 }

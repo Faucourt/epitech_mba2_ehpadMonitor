@@ -1,0 +1,272 @@
+[
+  {
+    "entity": "R001",
+    "capteurs": 11,
+    "page_existante": "https://wokwi.com/projects/476811018920338433",
+    "dossier": "R001"
+  },
+  {
+    "entity": "R002",
+    "capteurs": 10,
+    "page_existante": "https://wokwi.com/projects/476810814842254337",
+    "dossier": "R002"
+  },
+  {
+    "entity": "R003",
+    "capteurs": 11,
+    "page_existante": "https://wokwi.com/projects/476812231957251073",
+    "dossier": "R003"
+  },
+  {
+    "entity": "R004",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R004"
+  },
+  {
+    "entity": "R005",
+    "capteurs": 11,
+    "page_existante": null,
+    "dossier": "R005"
+  },
+  {
+    "entity": "R006",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R006"
+  },
+  {
+    "entity": "R007",
+    "capteurs": 11,
+    "page_existante": null,
+    "dossier": "R007"
+  },
+  {
+    "entity": "R008",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R008"
+  },
+  {
+    "entity": "R009",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R009"
+  },
+  {
+    "entity": "R010",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R010"
+  },
+  {
+    "entity": "R011",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R011"
+  },
+  {
+    "entity": "R012",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R012"
+  },
+  {
+    "entity": "R013",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R013"
+  },
+  {
+    "entity": "R014",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R014"
+  },
+  {
+    "entity": "R015",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R015"
+  },
+  {
+    "entity": "R016",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R016"
+  },
+  {
+    "entity": "R017",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R017"
+  },
+  {
+    "entity": "R018",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R018"
+  },
+  {
+    "entity": "R019",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R019"
+  },
+  {
+    "entity": "R020",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R020"
+  },
+  {
+    "entity": "R021",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R021"
+  },
+  {
+    "entity": "R022",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R022"
+  },
+  {
+    "entity": "R023",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R023"
+  },
+  {
+    "entity": "R024",
+    "capteurs": 10,
+    "page_existante": null,
+    "dossier": "R024"
+  },
+  {
+    "entity": "R025",
+    "capteurs": 11,
+    "page_existante": null,
+    "dossier": "R025"
+  },
+  {
+    "entity": "entree",
+    "capteurs": 10,
+    "page_existante": "https://wokwi.com/projects/476813411149295617",
+    "dossier": "entree"
+  },
+  {
+    "entity": "hors_ehpad",
+    "capteurs": 8,
+    "page_existante": "https://wokwi.com/projects/476811536858225665",
+    "dossier": "hors_ehpad"
+  },
+  {
+    "entity": "infirmerie_rdc",
+    "capteurs": 7,
+    "page_existante": "https://wokwi.com/projects/476811645982496769",
+    "dossier": "infirmerie_rdc"
+  },
+  {
+    "entity": "pharmacie_admin",
+    "capteurs": 7,
+    "page_existante": "https://wokwi.com/projects/476811754112711681",
+    "dossier": "pharmacie_admin"
+  },
+  {
+    "entity": "couloir_principal",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476811865720014849",
+    "dossier": "couloir_principal"
+  },
+  {
+    "entity": "salle_commune",
+    "capteurs": 8,
+    "page_existante": "https://wokwi.com/projects/476811973341673473",
+    "dossier": "salle_commune"
+  },
+  {
+    "entity": "patio",
+    "capteurs": 12,
+    "page_existante": "https://wokwi.com/projects/476812092031057921",
+    "dossier": "patio"
+  },
+  {
+    "entity": "jardin",
+    "capteurs": 10,
+    "page_existante": "https://wokwi.com/projects/476812205238482945",
+    "dossier": "jardin"
+  },
+  {
+    "entity": "salle_activites",
+    "capteurs": 8,
+    "page_existante": "https://wokwi.com/projects/476812311646939137",
+    "dossier": "salle_activites"
+  },
+  {
+    "entity": "salle_manger",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476812418387794945",
+    "dossier": "salle_manger"
+  },
+  {
+    "entity": "office_cuisine",
+    "capteurs": 8,
+    "page_existante": "https://wokwi.com/projects/476812525602607105",
+    "dossier": "office_cuisine"
+  },
+  {
+    "entity": "couloir_aile_rdc",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476812638260579329",
+    "dossier": "couloir_aile_rdc"
+  },
+  {
+    "entity": "escalier",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476812746600517633",
+    "dossier": "escalier"
+  },
+  {
+    "entity": "ascenseur",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476812886454362113",
+    "dossier": "ascenseur"
+  },
+  {
+    "entity": "poste_infirmier_etage",
+    "capteurs": 7,
+    "page_existante": "https://wokwi.com/projects/476813021704952833",
+    "dossier": "poste_infirmier_etage"
+  },
+  {
+    "entity": "kinesitherapie",
+    "capteurs": 16,
+    "page_existante": "https://wokwi.com/projects/476813146364931073",
+    "dossier": "kinesitherapie"
+  },
+  {
+    "entity": "salle_repos",
+    "capteurs": 8,
+    "page_existante": "https://wokwi.com/projects/476813391206425601",
+    "dossier": "salle_repos"
+  },
+  {
+    "entity": "couloir_aile_a_etage",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476813516353990657",
+    "dossier": "couloir_aile_a_etage"
+  },
+  {
+    "entity": "couloir_aile_b_etage",
+    "capteurs": 9,
+    "page_existante": "https://wokwi.com/projects/476813650362019841",
+    "dossier": "couloir_aile_b_etage"
+  },
+  {
+    "entity": "palier_etage",
+    "capteurs": 10,
+    "page_existante": "https://wokwi.com/projects/476815009189781505",
+    "dossier": "palier_etage"
+  }
+]

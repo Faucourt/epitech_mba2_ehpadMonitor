@@ -1,0 +1,26 @@
+PROJETS WOKWI CORRIGES - 5 OCTOBRE 2026
+
+REPRISE DE LA PUBLICATION
+Des copies corrigees sont maintenant enregistrees dans le compte Wokwi ouvert
+dans Chrome. Consulter LIENS-WOKWI.txt et pages-corrigees.json pour les adresses
+verifiees et le nombre de projets termines. Les anciennes pages sont conservees.
+Les preuves de comparaison des telechargements sont dans verified/.
+Les fichiers *-browser-simulation.json distinguent les simulations effectivement
+observees des projets controles uniquement par comparaison de leurs sources.
+
+ETAT INITIAL DU PAQUET (avant publication)
+
+45 dossiers : 25 residents et 20 zones.
+23 pages existantes sont referencees dans pages.json.
+Pour les 22 autres, aucune URL en ligne verifiee n'est disponible.
+Cette archive n'a pas ete transferee au site Wokwi.
+
+Dans chaque page : mettre a jour les fichiers texte correspondants du dossier
+(sketch.ino, en-tetes .h, diagram.json, libraries.txt et sources .chip.c/.chip.json).
+Les fichiers .chip.wasm et wokwi.toml servent aussi au lancement local.
+Les binaires ESP32 compiles sont dans les dossiers locaux collective/<identifiant>/build.
+Les projets collectifs emettent des trames UART SAMPLE ; la passerelle locale
+reste necessaire pour les transmettre au dashboard.
+
+Le code utilise des identites de demonstration. Les essais en ligne de cette
+revision restent a effectuer. Ne pas confondre compilation et validation Wokwi.

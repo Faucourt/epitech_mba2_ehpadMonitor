@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-05",
+  "shared_acquisition_sources_identical": [
+    "sketch.ino",
+    "sensors.h",
+    "protocols.h",
+    "nibp.h"
+  ],
+  "tests": {
+    "custom_chip_wasm": {
+      "passed": 3
+    },
+    "native_cpp_acquisition": {
+      "cases_passed": 6,
+      "executed_in": "ehpad-chip-toolchain"
+    },
+    "existing_extension_wasm": {
+      "passed": 12
+    },
+    "existing_extension_python": {
+      "passed": 29,
+      "skipped": 1,
+      "skip_reason": "Windows lacks g++; native test separately passed in container"
+    }
+  },
+  "compilation": {
+    "simulation": {
+      "exit_code": 0,
+      "flash_bytes": 789817,
+      "static_ram_bytes": 47540
+    },
+    "materiel": {
+      "exit_code": 0,
+      "flash_bytes": 1574757,
+      "static_ram_bytes": 60404
+    }
+  },
+  "wokwi_execution_of_this_revision": false,
+  "physical_hardware_test": false,
+  "collective_fleet_recompiled": true,
+  "sha256": {
+    "simulation/sketch.ino": "c4df25ed27cd964d45140505e1773a7cb9c436073b18ee98f46f7ca754b8b418",
+    "simulation/sensors.h": "3109c9d2c5ab69c7618d552fb28f083017d2cde632a105d7e0d96f484aee787b",
+    "simulation/protocols.h": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8",
+    "simulation/nibp.h": "f1856335fd8c92b70fa7c467d79d80b57528fe1b9868a35ead3f24447ee096c3",
+    "simulation/device_config.h": "8c49aa1a21232cc93cc25845622b5f2e691dd734f997ddd6e3b4ed9c338bbaf4",
+    "simulation/max30102.chip.c": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20",
+    "simulation/max30102.chip.wasm": "c3a099c37ee060912f104293c600e46b75239d350a82c3c9fff720e2cc5ad507",
+    "simulation/build/sketch.ino.bin": "c0d185a66418f74cf7dafba0b5f0aa6d2a73f95caf5e5d953c76b56bb39f6852",
+    "simulation/build/sketch.ino.elf": "c1556ec9771e3d704ebd5735c974be81d164bc5d12d6f7d057ef992f133d1ced",
+    "materiel/sketch.ino": "c4df25ed27cd964d45140505e1773a7cb9c436073b18ee98f46f7ca754b8b418",
+    "materiel/sensors.h": "3109c9d2c5ab69c7618d552fb28f083017d2cde632a105d7e0d96f484aee787b",
+    "materiel/protocols.h": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8",
+    "materiel/nibp.h": "f1856335fd8c92b70fa7c467d79d80b57528fe1b9868a35ead3f24447ee096c3",
+    "materiel/device_config.h": "c395de74177fba74231447f5b1867354eba722e3d519f2b2c0cfd7503c69da64",
+    "materiel/max30102.chip.c": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20",
+    "materiel/max30102.chip.wasm": "c3a099c37ee060912f104293c600e46b75239d350a82c3c9fff720e2cc5ad507",
+    "materiel/build/sketch.ino.bin": "1ff53dc717f45af19a80a6ad96dcd5ba47053bc69dc9303c01788d2c1107f779",
+    "materiel/build/sketch.ino.elf": "2ffa714c59d0ece4f394a026879918e7f89345d06c11f6f84d064b30dc84446f"
+  },
+  "fleet_validation": {
+    "report": "../../output/max30102-fleet-validation/fleet.json",
+    "groups": 45,
+    "endpoints": 437,
+    "launcher_check_passed": true,
+    "wokwi_status": "monthly_ci_quota_exhausted"
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "date": "2026-10-05",
+  "group_count": 45,
+  "device_count": 437,
+  "all_firmware_current": true,
+  "launcher_check_passed": true,
+  "tests": {
+    "python_passed": 29,
+    "python_skipped_native_cpp": 1,
+    "node_passed": 20
+  },
+  "wokwi_probe": {
+    "exit_code": 1,
+    "output": "Wokwi CLI v0.28.0 (872b270d5383)\nConnected to Wokwi Simulation API 1.0.0-20261005-g66a83b38\n\nAPI Error: You have used up your Free plan monthly CI minute quota. Please upgrade to a paid plan at https://wokwi.com/pricing.\n"
+  },
+  "wokwi_simulation_validated": false,
+  "physical_test_performed": false,
+  "serial_ports_detected": 0,
+  "browser_available": false,
+  "groups": [
+    {
+      "id": "R001",
+      "device_count": 11,
+      "source_sha256": "3d4b2fe52aa6fc336aaffd2af32bd29f518d7053c9320c5a481397070ccec573",
+      "firmware_sha256": "1ea98e8690d6afc24064503fc8ef7fdd576f96778f26e5771821a8b02ae22a6e"
+    },
+    {
+      "id": "R002",
+      "device_count": 10,
+      "source_sha256": "2ba4b92a744b7d4edf8733fb713d09185917a84a2ff4e913be4f4ce044bf4755",
+      "firmware_sha256": "ebbb5f873a7e547acf22c280526c6719841a8d26abfbd224d76c5c648b9e39a5"
+    },
+    {
+      "id": "R003",
+      "device_count": 11,
+      "source_sha256": "d07203554638f079eb80fcad0e7f43448fb2e25d417ed65514e0d7888d1b4067",
+      "firmware_sha256": "10539c70bb4442d264a45342290ae5d187a3abf6c1135d70cfdd8469e60ca2b6"
+    },
+    {
+      "id": "R004",
+      "device_count": 10,
+      "source_sha256": "9122408d4f81eddbe9071c21de2de113a27b3a412c043c3a08d01e5e4d5e532e",
+      "firmware_sha256": "a46a2317ff4dfb6104b2e38bc205b2c858f7a14286b1aeef761419796ca88c37"
+    },
+    {
+      "id": "R005",
+      "device_count": 11,
+      "source_sha256": "1da2f78d0f3d844525ffada5dc1b2848bfd3ffba8515fcd3af1b1e8c895c4e8b",
+      "firmware_sha256": "af9efb7da8608094d790c6e6eb6da34aa82daabb1b640a148e9e5f495478d181"
+    },
+    {
+      "id": "R006",
+      "device_count": 10,
+      "source_sha256": "5ed71f78eafd4a65ac862f1219cc57c222a34163fb472148951b5a221e89f1f9",
+      "firmware_sha256": "e43972e6b5a324500220a29ad341124a62b2ce75418494d9b1debdac528bae24"
+    },
+    {
+      "id": "R007",
+      "device_count": 11,
+      "source_sha256": "b925f5d2b4220a6f7e093d1820a4b5b78dbaffc2e6670cfc0000cbf66d8f06b9",
+      "firmware_sha256": "a311ac5b3609cb1e379e9674599affe3bac64cf5275c6be4a16775682bc71a04"
+    },
+    {
+      "id": "R008",
+      "device_count": 10,
+      "source_sha256": "62af85bc245c5122ea3dd3404505e27ed40be7d77d23a97d010ee25c35aa359e",
+      "firmware_sha256": "451d575cd5d5011b6b0e2554fd9a21bf5f8a84aa02e9de77415e9a81cce09cd3"
+    },
+    {
+      "id": "R009",
+      "device_count": 10,
+      "source_sha256": "6926fe585eb350eaf23e9ce0733e4c800f41739061d76c0f781d48201403ccd7",
+      "firmware_sha256": "57306fd8aa9673f588f33c8da95eb27e03aa19ca6dbb544b6680817feaa2632f"
+    },
+    {
+      "id": "R010",
+      "device_count": 10,
+      "source_sha256": "e60dca7de6427ebfe63a29fd3e5a3602c0ee3c74d4069c3a2a0102d9bb884d04",
+      "firmware_sha256": "50b869f0d4a6d60b742ebcc9ee967df1b83dbe551b0e5c8a463f3c01b9516d39"
+    },
+    {
+      "id": "R011",
+      "device_count": 10,
+      "source_sha256": "0deccd4b14224fa7001223c94c189c5b2a91fab13e6904d9d3b9cb4de47764b8",
+      "firmware_sha256": "04f342cc1c9764a10b9bfeac82e75c4c72425b59a7eb852b28963fd19c96d983"
+    },
+    {
+      "id": "R012",
+      "device_count": 10,
+      "source_sha256": "9ef6bcabcddf51511afac62600d7e4beffffe70d100a8d0931b6a287d9a37df6",
+      "firmware_sha256": "b247edd263d66eac5dd6be231fdc9d8c23fcf86fa2ead5ccee3fa5814b5aa4b5"
+    },
+    {
+      "id": "R013",
+      "device_count": 10,
+      "source_sha256": "b202366c15f8a887933823286710c72b1ed18ce3b0d4bbea943b9856f5cf00a0",
+      "firmware_sha256": "797c2bccf69425625b6e8dda73968de2c8321a98aaa6487fb9ca2226773ae899"
+    },
+    {
+      "id": "R014",
+      "device_count": 10,
+      "source_sha256": "debaa358b93e857c4bacf1b23cb524fb5cb6d3c91363d05f24c88c219f1fcd20",
+      "firmware_sha256": "16c99779136049745cf99ff8c46366eeb39b3520d55652a425922d792b789b4c"
+    },
+    {
+      "id": "R015",
+      "device_count": 10,
+      "source_sha256": "fb3376e2ee7652bf5d045f9f747d24a0ebe1f887d64f6245a8a89cf353c86185",
+      "firmware_sha256": "d4a34882440650a1912aa59c969b4991cf4d5525c5a06d70bc34bd920852b077"
+    },
+    {
+      "id": "R016",
+      "device_count": 10,
+      "source_sha256": "97c099f6e794c42d6d98159d0f7bade35371ca89c0219823136940f129f4aafe",
+      "firmware_sha256": "7d88cd88deb2a7d8ab25659090c96a3141215f506d97e838053c74aeef2a5abf"
+    },
+    {
+      "id": "R017",
+      "device_count": 10,
+      "source_sha256": "0959ab1535e3ff9ec30b223331f79e4376b523a0d3513fc03c056a5201d9e888",
+      "firmware_sha256": "9c49c86932e100447ba3434093a57324463073871387350ef9fb39efd7817730"
+    },
+    {
+      "id": "R018",
+      "device_count": 10,
+      "source_sha256": "fd3b4bcb7449da3c2c86a169afe4b4acb00756ddc48699d570540467ead6d67d",
+      "firmware_sha256": "03765919f81befaefe608a1a2c50e6b3639d3aab20db00261b98d0322a247f5a"
+    },
+    {
+      "id": "R019",
+      "device_count": 10,
+      "source_sha256": "654c3cbeb356618f8d5cbea49560c34422d0fbcef879ae8b72361b4ac7708025",
+      "firmware_sha256": "dd8a7068f38c1f2191af1ca864880c6d43605fa8f416f9d621c8d49c7fb3b095"
+    },
+    {
+      "id": "R020",
+      "device_count": 10,
+      "source_sha256": "1ab25a2d226e02ee952a2673f5180849ffdb3e1d6d674475d37702dde3ec23b7",
+      "firmware_sha256": "007f251e6add17ef1eb6539523b7f5cd68eb6a97abc606d0df50673b06bfa9da"
+    },
+    {
+      "id": "R021",
+      "device_count": 10,
+      "source_sha256": "661863ac356aa7d95435b9b923566600e9ba199e787c1eadeb9034eaf944d45b",
+      "firmware_sha256": "abfb7078aab2227a2769632424e02f80ad4f5008317b2a8f10d20f43468a0f1e"
+    },
+    {
+      "id": "R022",
+      "device_count": 10,
+      "source_sha256": "5ac5cb40655c30cd993d04b79390cb0149c2ce5864cc25758c38a53672b63f0b",
+      "firmware_sha256": "376151eabb5dfc482fe998396ae2ed25627e625c4c8e67d61be9c65cfa3171a3"
+    },
+    {
+      "id": "R023",
+      "device_count": 10,
+      "source_sha256": "a3146858a73c8119fc2405dbaae88268b0d827b05b923b63ba881857f3bbf31a",
+      "firmware_sha256": "c8928c90f1b6cde28d41a4b70956ae163b56c14d99661f69d0ff2da90cd4be62"
+    },
+    {
+      "id": "R024",
+      "device_count": 10,
+      "source_sha256": "2ef51a9faacc302f613530b63d60bdfd85ea607c63d3a91e526610fbea46f404",
+      "firmware_sha256": "56aef5903e542585bddcd32048d74e8e5ad5a22392c25b08187735623627c414"
+    },
+    {
+      "id": "R025",
+      "device_count": 11,
+      "source_sha256": "24003937f6cbc475e14d9d836d61c9e1cb19b8494adb423ca81b9a6b8191a2f4",
+      "firmware_sha256": "742f8b59b3b2d914199467d0636aa799f8d37c7e69be6b37dfea6b45cfff1f2b"
+    },
+    {
+      "id": "entree",
+      "device_count": 10,
+      "source_sha256": "903ea5a5892006c55614a1a66c711a057891a0227e73a940444bbcc9da5984eb",
+      "firmware_sha256": "e36dd41fd930aa9df47234d3c7fe339af19826d2feb293392ea75fd122d58817"
+    },
+    {
+      "id": "hors_ehpad",
+      "device_count": 8,
+      "source_sha256": "7301a1729581329c31b8a9d62a4f59be1c46bcc6d463f49d4d6e5c63d04453d1",
+      "firmware_sha256": "e15aa1cdb3f373a3050f0fe46d82b2a35c3d08f05e580dd04dd201889441dbc5"
+    },
+    {
+      "id": "infirmerie_rdc",
+      "device_count": 7,
+      "source_sha256": "253c8bbc04c7774598d9d1ae51e40a8f1993654ec4b4aca93df01283eab5acd6",
+      "firmware_sha256": "3390c6fd91b59f3b1bdc6e5002269f3f8a7d1ae03b76e5e2853417bb71950319"
+    },
+    {
+      "id": "pharmacie_admin",
+      "device_count": 7,
+      "source_sha256": "ee4b735a6a1c52cd61c6587b71d440437dbb441185dc7d1d0cf130a8f460245c",
+      "firmware_sha256": "f4f4735717d9b868e22b5611e7668cea9d65b20594a0b81b52e9248f5632a959"
+    },
+    {
+      "id": "couloir_principal",
+      "device_count": 9,
+      "source_sha256": "a1792c881925608042cae7df2f4e8e24cfd60cbd8f4dbd253411f964b01ca8d5",
+      "firmware_sha256": "42e723efc29202b76115c362fdd37e55638445850826bf1b7011125ca3de6989"
+    },
+    {
+      "id": "salle_commune",
+      "device_count": 8,
+      "source_sha256": "700bb74c485ac1970ead1eb0685ded1107862ddc339aa9a8db33b50514c0ecc0",
+      "firmware_sha256": "f8283c0d6522159046cfdfaa9d8f5f4db4cc013af3c94b02af46d5cd259a242b"
+    },
+    {
+      "id": "patio",
+      "device_count": 12,
+      "source_sha256": "f2e8424d990d14382b2c9049e4022bbf9007b649c6592aec29ee236f4a945440",
+      "firmware_sha256": "34dc12036f4325bafbc530df8f7cf97a8af71b7bb6c2c672cddbf209e69b9ecb"
+    },
+    {
+      "id": "jardin",
+      "device_count": 10,
+      "source_sha256": "d64441dbd19f5e8451da6e617be4b229c6c1640cdf8c2b8395736f98a6ed6b10",
+      "firmware_sha256": "045a06b06933eace8164d4bae09f50562d32f3a98334363c0a95fd35e5807b8c"
+    },
+    {
+      "id": "salle_activites",
+      "device_count": 8,
+      "source_sha256": "36611f4d83523f5c30e29d97854c076431212b785a3e7c7146e927f97f7b84c7",
+      "firmware_sha256": "4e307644659e0288e013f39ce0f1d310569df73f395b3f14ef8153e05c575a82"
+    },
+    {
+      "id": "salle_manger",
+      "device_count": 9,
+      "source_sha256": "d800150c40e60082d584609356257a35ddadb51b566dff3c9aa0872a79567dd0",
+      "firmware_sha256": "9b2c78250a6595a6563b7280a7b990df4d2ac480e0d56d6bf569bfcd3f38695a"
+    },
+    {
+      "id": "office_cuisine",
+      "device_count": 8,
+      "source_sha256": "aff4f527774feed27e43f51d8fb4d6f168ec6145dc7ad0532d2f0ad054874d40",
+      "firmware_sha256": "ba8904516ebaba350923e6b5d81eba2c53685b5ed744bff1bda0c0e871b75b4e"
+    },
+    {
+      "id": "couloir_aile_rdc",
+      "device_count": 9,
+      "source_sha256": "93bcf51ca39af09dccf040c03dc3f798886e0a375eb50033126aa39bbe92a926",
+      "firmware_sha256": "9efd50ccf0e37627fe96b4c0dc67ddef550326db9d7923d2216d4a86a4cd9e79"
+    },
+    {
+      "id": "escalier",
+      "device_count": 9,
+      "source_sha256": "a916457ed3ca1e85470a736d0ef56fba6a77226483bb2073f5216c228514e1fb",
+      "firmware_sha256": "e6b8d48f5e6c8284f52b3907c920e71c3ddd8f4b18de7474ba596d742bbab7ca"
+    },
+    {
+      "id": "ascenseur",
+      "device_count": 9,
+      "source_sha256": "786143226e863792a8cb2d74002da75b39ec6d3e5334ca42ed0d20164cb5f49b",
+      "firmware_sha256": "8f7fb38d8866e948ce1ce3e6bca40e2019a2490e2fba891569b56e34d7aef25d"
+    },
+    {
+      "id": "poste_infirmier_etage",
+      "device_count": 7,
+      "source_sha256": "616f51121729c94ab49819ff4f8a3315d6064b015888309662011bd1cf000a86",
+      "firmware_sha256": "c56ed6443bda62763027e44d769f2e4883b9f9bfd14a55a3281dd4d0c0cecaeb"
+    },
+    {
+      "id": "kinesitherapie",
+      "device_count": 16,
+      "source_sha256": "52adbcbd96566b59d05ea6c6541995b4b09fca874cd7ed005441158119b784c1",
+      "firmware_sha256": "f95d544e860bf66666a1db4fc57338f16a21a117af2b96690b7fa848467aa99f"
+    },
+    {
+      "id": "salle_repos",
+      "device_count": 8,
+      "source_sha256": "f798cfc8f8f69f35c251be4ee7869bddd100e5944dc473283160af255b40bfb7",
+      "firmware_sha256": "6d33ac3020b1a5c824daae713e06204ec0034fcccdcb9c87e258a36ca1794bdb"
+    },
+    {
+      "id": "couloir_aile_a_etage",
+      "device_count": 9,
+      "source_sha256": "cac7e03b2219909ce5900c2b21397198ac745b15104833ae6cd3c04c29a323c8",
+      "firmware_sha256": "b356a1dd27ad726474835ddfe0bb42fce5b1a181650e68f22538f4cc10b32cef"
+    },
+    {
+      "id": "couloir_aile_b_etage",
+      "device_count": 9,
+      "source_sha256": "8145742abfb22638e4340b471c49e131f41e29611e7e3a6788775f1c3de42dab",
+      "firmware_sha256": "31f12d98fec5cd4ec1d151bd0ee2967810db466ec7632180ac60ddca40defe81"
+    },
+    {
+      "id": "palier_etage",
+      "device_count": 10,
+      "source_sha256": "09428122e68674347249a08b979c4a52579a440368d9568cd3285d532afa1862",
+      "firmware_sha256": "bb692506821aed02c0699fc2216d27546fa25f442e1ebe5d072a51291a7bcd28"
+    }
+  ]
+}

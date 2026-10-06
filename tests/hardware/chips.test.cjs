@@ -43,6 +43,33 @@ test('SCD41 start/readiness/5sec measurement, CRC and stop',async()=>{
 test('MAX30102 identity, FIFO progression, sample data, reset and finger absent',async()=>{
  const m=await model('max30102');m.write([255]);assert.deepEqual(m.read(1),[21]);m.write([9,3]);m.tick(40);m.write([4]);assert.deepEqual(m.read(1),[1]);m.write([7]);const b=m.read(6);assert.ok((b[0]<<16|b[1]<<8|b[2])>5000);m.write([6]);assert.deepEqual(m.read(1),[1]);m.write([9,0x40]);m.write([4]);assert.deepEqual(m.read(1),[0]);m.set('finger',0);m.write([9,3]);m.tick(40);m.write([7]);assert.deepEqual(m.read(6),[0,0,0,0,0,0]);
 });
+
+test('MAX30102 has 32 FIFO slots, saturates overflow and preserves unread data',async()=>{
+ const m=await model('max30102');m.write([9,3]);
+ const reg=r=>{m.write([r]);return m.read(1)[0];};
+ for(let i=0;i<32;i++)m.tick(40);
+ assert.equal(reg(4),0);assert.equal(reg(5),0);assert.equal(reg(6),0);
+ assert.equal(reg(0)&0x80,0x80);
+ m.set('finger',0);for(let i=0;i<70;i++)m.tick(40);
+ assert.equal(reg(5),31);assert.equal(reg(4),0);
+ m.write([7]);const b=m.read(6);assert.ok((b[0]<<16|b[1]<<8|b[2])>5000);
+ assert.equal(reg(5),0);assert.equal(reg(6),1);
+ m.write([7]);assert.equal(m.read(31*6).length,186);
+ assert.equal(reg(6),0);m.write([7]);assert.deepEqual(m.read(6),[0,0,0,0,0,0]);
+ assert.equal(reg(6),0);
+});
+
+test('MAX30102 partial FIFO read stays coherent while producer rolls over',async()=>{
+ const m=await model('max30102');m.write([8,0x10]);m.write([9,3]);m.tick(40);
+ m.write([7]);const expected=m.read(6);
+ // Rewind the read pointer as documented for a failed transaction.
+ m.write([6,0]);m.write([7]);const first=m.read(1);
+ m.write([6]);assert.equal(m.read(1)[0],1); // advance on first byte
+ m.set('finger',0);for(let i=0;i<40;i++)m.tick(40);
+ m.write([7]);assert.deepEqual([...first,...m.read(5)],expected);
+ m.write([7]);assert.deepEqual(m.read(6),[0,0,0,0,0,0]);
+ m.write([9,0x40]);m.write([4]);assert.deepEqual(m.read(3),[0,0,0]);
+});
 test('AMG8833 supplies64 pixels with signed magnitude temperatures',async()=>{
  const m=await model('amg8833');m.set('ambient',-4);m.write([128]);const data=m.read(128);assert.deepEqual(data.slice(0,2),[16,8]);assert.deepEqual(data.slice(54,56),[136,0]);
 });

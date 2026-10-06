@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-05T13:21:07.243190+00:00",
+  "entity": "R001",
+  "staging_folder": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\R001",
+  "downloaded_zip": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\EHPAD collectif — R001 corrigé.zip",
+  "archive_copy": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R001-download-cee5b8e1a6fd.zip",
+  "zip_sha256": "cee5b8e1a6fdb6903d7ee56254c2ce791e49f79dbded39f6386e1ad32b9990e7",
+  "policy": {
+    "source_files": "exact_bytes",
+    "r001_original_esp_left_allowed": true,
+    "original_diagram_backup": "D:\\projet spé Hepad\\output\\wokwi-transfert\\backups\\EHPAD collectif — R001.zip",
+    "recognized_native_metadata": [
+      "wokwi-project.txt"
+    ]
+  },
+  "status": "passed",
+  "expected_file_count": 15,
+  "downloaded_file_count": 16,
+  "exact_count": 14,
+  "accepted_exception_count": 1,
+  "missing_files": [],
+  "extra_files": [
+    {
+      "name": "wokwi-project.txt",
+      "bytes": 109,
+      "sha256": "1bae6a66b19d551c56aceda845d9e4e125b3bb26ae1c2b9291a9fad57f6dceaf",
+      "classification": "native_wokwi_metadata"
+    }
+  ],
+  "unexpected_files": [],
+  "duplicate_archive_entries": [],
+  "mismatched_files": [],
+  "files": [
+    {
+      "name": "analog-signal.chip.c",
+      "expected": {
+        "bytes": 9631,
+        "sha256": "86c0707b923280fbdce7990e46ca1bd8b1578555491b34e0e92e5bdb3868a3b5"
+      },
+      "downloaded": {
+        "bytes": 9631,
+        "sha256": "86c0707b923280fbdce7990e46ca1bd8b1578555491b34e0e92e5bdb3868a3b5"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "analog-signal.chip.json",
+      "expected": {
+        "bytes": 1068,
+        "sha256": "9cda632a64d9158046acf1c81c417600b33c2acca3347aea74f8eaa60f40bae4"
+      },
+      "downloaded": {
+        "bytes": 1068,
+        "sha256": "9cda632a64d9158046acf1c81c417600b33c2acca3347aea74f8eaa60f40bae4"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "device_config.h",
+      "expected": {
+        "bytes": 701,
+        "sha256": "a7fa2be25b5b8b1224afe3350fd01e1e5da8ea4b026553befbdecf40c2ee9f27"
+      },
+      "downloaded": {
+        "bytes": 701,
+        "sha256": "a7fa2be25b5b8b1224afe3350fd01e1e5da8ea4b026553befbdecf40c2ee9f27"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "diagram.json",
+      "expected": {
+        "bytes": 5919,
+        "sha256": "d35f9aee8da4c79577b8fb3edd762039ef4c46007bfc0aed08a744900de85299"
+      },
+      "downloaded": {
+        "bytes": 3957,
+        "sha256": "9fb91a884da2afa206aa18fb2a187bff16dd14ff10fe6f07f966b70192485d9f"
+      },
+      "accepted": true,
+      "status": "accepted_original_esp_left",
+      "diagram_exception": {
+        "reason": "original_esp_left_preserved",
+        "expected_esp_left": 0,
+        "original_esp_left": -4.76,
+        "downloaded_esp_left": -4.76
+      }
+    },
+    {
+      "name": "endpoints.h",
+      "expected": {
+        "bytes": 159671,
+        "sha256": "fa90867d6e68391fde1f1127c78dc890591023f7edcbe8f7cb09537bc9eb8e8d"
+      },
+      "downloaded": {
+        "bytes": 159671,
+        "sha256": "fa90867d6e68391fde1f1127c78dc890591023f7edcbe8f7cb09537bc9eb8e8d"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "finite_float.h",
+      "expected": {
+        "bytes": 434,
+        "sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4"
+      },
+      "downloaded": {
+        "bytes": 434,
+        "sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "libraries.txt",
+      "expected": {
+        "bytes": 256,
+        "sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602"
+      },
+      "downloaded": {
+        "bytes": 256,
+        "sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "max30102.chip.c",
+      "expected": {
+        "bytes": 9624,
+        "sha256": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20"
+      },
+      "downloaded": {
+        "bytes": 9624,
+        "sha256": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "max30102.chip.json",
+      "expected": {
+        "bytes": 886,
+        "sha256": "551218d902c910b686f0c27e78403f324b2f700549288d61deb22d7ddddc2484"
+      },
+      "downloaded": {
+        "bytes": 886,
+        "sha256": "551218d902c910b686f0c27e78403f324b2f700549288d61deb22d7ddddc2484"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "par-nibp.chip.c",
+      "expected": {
+        "bytes": 9631,
+        "sha256": "c6068d9ba11d106dbb2ad6ca7ae1f26124ed640db21cf74ef8e9ed02f6c138cf"
+      },
+      "downloaded": {
+        "bytes": 9631,
+        "sha256": "c6068d9ba11d106dbb2ad6ca7ae1f26124ed640db21cf74ef8e9ed02f6c138cf"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "par-nibp.chip.json",
+      "expected": {
+        "bytes": 899,
+        "sha256": "7bd54e561fb900608dc9de7f59204f62d982598b53555c478da401adf5db2ca4"
+      },
+      "downloaded": {
+        "bytes": 899,
+        "sha256": "7bd54e561fb900608dc9de7f59204f62d982598b53555c478da401adf5db2ca4"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "protocols.h",
+      "expected": {
+        "bytes": 1993,
+        "sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8"
+      },
+      "downloaded": {
+        "bytes": 1993,
+        "sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "sketch.ino",
+      "expected": {
+        "bytes": 2689,
+        "sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7"
+      },
+      "downloaded": {
+        "bytes": 2689,
+        "sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "tmp117.chip.c",
+      "expected": {
+        "bytes": 9632,
+        "sha256": "5e3ef07e53da0a60c0119d694a0277e3950191759225a09f4cd1fa355d1424fd"
+      },
+      "downloaded": {
+        "bytes": 9632,
+        "sha256": "5e3ef07e53da0a60c0119d694a0277e3950191759225a09f4cd1fa355d1424fd"
+      },
+      "accepted": true,
+      "status": "exact"
+    },
+    {
+      "name": "tmp117.chip.json",
+      "expected": {
+        "bytes": 614,
+        "sha256": "d8deab5a035a91c9acf28b43108c41de93b144c0be63efc33884e73ce4cc7518"
+      },
+      "downloaded": {
+        "bytes": 614,
+        "sha256": "d8deab5a035a91c9acf28b43108c41de93b144c0be63efc33884e73ce4cc7518"
+      },
+      "accepted": true,
+      "status": "exact"
+    }
+  ]
+}

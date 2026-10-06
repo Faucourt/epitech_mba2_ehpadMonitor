@@ -1,0 +1,137 @@
+PROJETS WOKWI CORRIGÉS
+45 / 45 sauvegardés et vérifiés par téléchargement.
+
+R001 — 11 capteurs — simulation observée
+https://wokwi.com/projects/477043203503950849
+
+R002 — 10 capteurs — simulation observée
+https://wokwi.com/projects/477043364101807105
+
+R003 — 11 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477052131126243329
+
+R004 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477047596125723649
+
+R005 — 11 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477052321758466049
+
+R006 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477047809903190017
+
+R007 — 11 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477052529753013249
+
+R008 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477048018029860865
+
+R009 — 10 capteurs — simulation observée
+https://wokwi.com/projects/477047195350368257
+
+R010 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477048198376615937
+
+R011 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477050554101999617
+
+R012 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477048429265795073
+
+R013 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477050736208257025
+
+R014 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477048730515462145
+
+R015 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477050909537929217
+
+R016 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477048889165057025
+
+R017 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477051094264617985
+
+R018 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477049088829739009
+
+R019 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477051272171323393
+
+R020 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477049308233861121
+
+R021 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477051478006847489
+
+R022 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477049763255211009
+
+R023 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477051668860320769
+
+R024 — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477050223850765313
+
+R025 — 11 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477136860304458753
+
+entree — 10 capteurs — simulation observée
+https://wokwi.com/projects/477137163174193153
+
+hors_ehpad — 8 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477141241091889153
+
+infirmerie_rdc — 7 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477139012535715841
+
+pharmacie_admin — 7 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477139355746276353
+
+couloir_principal — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477143403102265345
+
+salle_commune — 8 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477139826201609217
+
+patio — 12 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477142104370136065
+
+jardin — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477141640707493889
+
+salle_activites — 8 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477140258778152961
+
+salle_manger — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477140496370897921
+
+office_cuisine — 8 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477140748600704001
+
+couloir_aile_rdc — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477144441072253953
+
+escalier — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477143866834099201
+
+ascenseur — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477140987596428289
+
+poste_infirmier_etage — 7 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477139685661966337
+
+kinesitherapie — 16 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477145354499705857
+
+salle_repos — 8 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477140077081891841
+
+couloir_aile_a_etage — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477144789996536833
+
+couloir_aile_b_etage — 9 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477144980838476801
+
+palier_etage — 10 capteurs — fichiers vérifiés
+https://wokwi.com/projects/477144229800873985

@@ -1,5 +1,30 @@
 # EHPAD Monitor - Detection et prediction de malaise
 
+## Wokwi : publication complète du 6 octobre 2026
+
+Les **45 projets corrigés** (25 résidents et 20 zones) sont sauvegardés sur Wokwi.
+Leurs **733 fichiers** ont été vérifiés par téléchargement. Consulter le
+[bilan complet](docs/BILAN-WOKWI-2026-10-06.md), les
+[45 liens](output/wokwi-transfert/LIENS-WOKWI.txt) et la
+[sauvegarde avec historique](output/sauvegardes-wokwi/WOKWI-REPRISE-DERNIERE.zip).
+Quatre modèles ont été observés dans le navigateur ; la flotte complète n'a pas
+été validée en fonctionnement simultané prolongé. La passerelle UART vers MQTT
+reste nécessaire pour alimenter le dashboard avec les mesures collectives.
+
+Les sources sont dans `firmware/all_sensors/collective/` ; le
+[banc MAX30102 corrigé](firmware/max30102_custom/README.md) et ses tests sont inclus.
+Pour vérifier les 45 archives et leur correspondance aux sources, sans réseau :
+
+```bash
+python scripts/verify_wokwi_publication.py
+```
+
+Le [lancement collectif](firmware/all_sensors/COLLECTIVE.md) explique la compilation
+et la passerelle. Le mode navigateur utilise maintenant les liens corrigés.
+Les anciennes démonstrations et leurs vidéos restent dans
+[l'archive M1](docs/TP-M1-HISTORIQUE.md). Le projet complet est disponible dans
+chacun des trois dépôts synchronisés ; les scripts utilisent la racine du dépôt.
+
 ## Branche acquisition Wokwi / ESP32 — tous les résidents
 
 Origine du projet : [lebretyves/D-tection-de-malaise-en-EHPAD](https://github.com/lebretyves/D-tection-de-malaise-en-EHPAD).

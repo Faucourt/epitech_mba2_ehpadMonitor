@@ -1,0 +1,57 @@
+{
+  "captured_at": "2026-10-05T13:24:14.369Z",
+  "project_url": "https://wokwi.com/projects/477047195350368257",
+  "saved": true,
+  "ready_header_observed": true,
+  "sample_count": 44,
+  "devices": [
+    "R009-wearable-mpu6050",
+    "R009-wearable-max30102",
+    "R009-wearable-tmp117",
+    "R009-wearable-sos",
+    "R009-wearable-ecg",
+    "R009-wearable-respiration",
+    "R009-wearable-nibp",
+    "R009-pir-pir",
+    "R009-porte-door",
+    "R009-sdb_pir-pir"
+  ],
+  "optical": [
+    {
+      "schema": 1,
+      "device_id": "R009-wearable-max30102",
+      "entity_id": "R009",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "22982bfd",
+      "seq": 4,
+      "uptime_ms": 7995,
+      "available": true,
+      "sample_age_ms": 4,
+      "values": {
+        "red_raw": 54821,
+        "ir_raw": 59725,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    },
+    {
+      "schema": 1,
+      "device_id": "R009-wearable-max30102",
+      "entity_id": "R009",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "22982bfd",
+      "seq": 5,
+      "uptime_ms": 9996,
+      "available": true,
+      "sample_age_ms": 5,
+      "values": {
+        "red_raw": 55178,
+        "ir_raw": 60274,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    }
+  ]
+}

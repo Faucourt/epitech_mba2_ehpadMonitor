@@ -1,0 +1,327 @@
+{
+  "source_entity": "R001",
+  "base_corrected_url": "https://wokwi.com/projects/477043203503950849",
+  "source_root": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload",
+  "targets": [
+    {
+      "entity": "R002",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R003",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": true,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R004",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R005",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": true,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R006",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R007",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": true,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R008",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R009",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R010",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R011",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R012",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R013",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R014",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R015",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R016",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R017",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R018",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R019",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R020",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R021",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R022",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R023",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R024",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": false,
+      "config_only_identity_change": true
+    },
+    {
+      "entity": "R025",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_clone_files": [],
+      "endpoints_only_identity_change": true,
+      "config_only_identity_change": true
+    }
+  ]
+}

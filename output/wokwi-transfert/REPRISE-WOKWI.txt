@@ -1,0 +1,82 @@
+REPRISE DU TRANSFERT WOKWI
+Dernière mise à jour UTC : 2026-10-06T15:34:37.230600+00:00
+
+Objectif : terminer les 45 projets (25 résidents, 20 zones, 437 capteurs prévus).
+L'utilisateur a demandé de terminer, puis de garder cet historique en cas d'arrêt du PC.
+Enregistrés en ligne : 45/45. Sources téléchargées et vérifiées : 45/45.
+Simulations observées : R001, R002, R009, entree.
+
+A REPRENDRE
+Copies enregistrées dont les corrections ou contrôles restent à terminer : aucune
+Copies restantes : aucune
+Dernier point de travail : Publication terminee : 45 projets corriges (25 residents et 20 zones) sauvegardes sur Wokwi et verifies integralement par ZIP telecharge. Aucun projet restant ni brouillon. Les 45 liens uniques sont dans LIENS-WOKWI.txt. Simulations observees pour R001, R002, R009 et entree; ne pas pretendre avoir simule les 45. La passerelle UART locale reste necessaire pour le dashboard. Historique et sauvegarde complete mis a jour.
+Ce point décrit le dernier état connu ; après redémarrage, réobserver Chrome avant toute saisie.
+
+PROCEDURE POUR LE PROCHAIN AGENT
+1. Lire REPRISE-WOKWI.json, pages-corrigees.json et les journaux *-publication-progress.json.
+2. Les projets verified sont déjà finis : ne pas les recréer. Utiliser leurs liens ci-dessous.
+3. Lire d'abord la phase du journal : une URL avec copy_created=true désigne une copie à réutiliser, même si saved=false et si elle n'est pas encore dans l'index. Terminer les corrections, enregistrer, télécharger son ZIP puis tout contrôler.
+4. Un brouillon non enregistré peut avoir disparu : repartir d'une copie sauvegardée et réappliquer les fichiers du dossier upload/<entity>.
+5. Achever les résidents, puis suivre zone-publication-plan.json pour les 20 zones.
+6. Ne jamais enregistrer la configuration d'une autre entité sur la copie servant de modèle : utiliser Save a copy.
+7. Utiliser le contrôle Chrome autorisé, un seul opérateur à la fois. Arrêter les entrées si l'outil signale un arrêt de politique ou du contrôle utilisateur.
+8. Vérifier chaque ZIP avec verify_wokwi_zip.py puis actualiser refresh_publication_index.py.
+Les écarts CRLF/LF sont admis ; R001 seul conserve son ancien placement ESP32. Aucune autre différence de source n'est admise.
+Le ZIP natif doit contenir l'URL correspondant à la copie vérifiée.
+Les trois modèles résidents ont été simulés ; les clones sont vérifiés par comparaison des sources, sans prétendre avoir tous été simulés.
+La passerelle UART locale reste nécessaire pour envoyer les données au dashboard.
+
+FICHIERS UTILES
+LIENS-WOKWI.txt : liens des copies vérifiées.
+upload/ : les 733 fichiers web corrigés, pour 45 projets, avec manifeste.
+45-projets-wokwi-corriges.zip : paquet de sources préparé avant publication.
+verified/ : archives téléchargées et rapports de comparaison.
+HISTORIQUE-WOKWI.jsonl : jalons horodatés depuis la demande de sauvegarde.
+../sauvegardes-wokwi/WOKWI-REPRISE-DERNIERE.zip : sauvegarde locale complète de ce dossier.
+
+LIENS ENREGISTRES
+R001 — vérifié — https://wokwi.com/projects/477043203503950849
+R002 — vérifié — https://wokwi.com/projects/477043364101807105
+R003 — vérifié — https://wokwi.com/projects/477052131126243329
+R004 — vérifié — https://wokwi.com/projects/477047596125723649
+R005 — vérifié — https://wokwi.com/projects/477052321758466049
+R006 — vérifié — https://wokwi.com/projects/477047809903190017
+R007 — vérifié — https://wokwi.com/projects/477052529753013249
+R008 — vérifié — https://wokwi.com/projects/477048018029860865
+R009 — vérifié — https://wokwi.com/projects/477047195350368257
+R010 — vérifié — https://wokwi.com/projects/477048198376615937
+R011 — vérifié — https://wokwi.com/projects/477050554101999617
+R012 — vérifié — https://wokwi.com/projects/477048429265795073
+R013 — vérifié — https://wokwi.com/projects/477050736208257025
+R014 — vérifié — https://wokwi.com/projects/477048730515462145
+R015 — vérifié — https://wokwi.com/projects/477050909537929217
+R016 — vérifié — https://wokwi.com/projects/477048889165057025
+R017 — vérifié — https://wokwi.com/projects/477051094264617985
+R018 — vérifié — https://wokwi.com/projects/477049088829739009
+R019 — vérifié — https://wokwi.com/projects/477051272171323393
+R020 — vérifié — https://wokwi.com/projects/477049308233861121
+R021 — vérifié — https://wokwi.com/projects/477051478006847489
+R022 — vérifié — https://wokwi.com/projects/477049763255211009
+R023 — vérifié — https://wokwi.com/projects/477051668860320769
+R024 — vérifié — https://wokwi.com/projects/477050223850765313
+R025 — vérifié — https://wokwi.com/projects/477136860304458753
+entree — vérifié — https://wokwi.com/projects/477137163174193153
+hors_ehpad — vérifié — https://wokwi.com/projects/477141241091889153
+infirmerie_rdc — vérifié — https://wokwi.com/projects/477139012535715841
+pharmacie_admin — vérifié — https://wokwi.com/projects/477139355746276353
+couloir_principal — vérifié — https://wokwi.com/projects/477143403102265345
+salle_commune — vérifié — https://wokwi.com/projects/477139826201609217
+patio — vérifié — https://wokwi.com/projects/477142104370136065
+jardin — vérifié — https://wokwi.com/projects/477141640707493889
+salle_activites — vérifié — https://wokwi.com/projects/477140258778152961
+salle_manger — vérifié — https://wokwi.com/projects/477140496370897921
+office_cuisine — vérifié — https://wokwi.com/projects/477140748600704001
+couloir_aile_rdc — vérifié — https://wokwi.com/projects/477144441072253953
+escalier — vérifié — https://wokwi.com/projects/477143866834099201
+ascenseur — vérifié — https://wokwi.com/projects/477140987596428289
+poste_infirmier_etage — vérifié — https://wokwi.com/projects/477139685661966337
+kinesitherapie — vérifié — https://wokwi.com/projects/477145354499705857
+salle_repos — vérifié — https://wokwi.com/projects/477140077081891841
+couloir_aile_a_etage — vérifié — https://wokwi.com/projects/477144789996536833
+couloir_aile_b_etage — vérifié — https://wokwi.com/projects/477144980838476801
+palier_etage — vérifié — https://wokwi.com/projects/477144229800873985

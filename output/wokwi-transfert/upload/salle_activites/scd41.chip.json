@@ -1,0 +1,52 @@
+{
+  "name": "scd41 (modèle pédagogique)",
+  "author": "EHPAD contributors",
+  "pins": [
+    "VCC",
+    "GND",
+    "SDA",
+    "SCL"
+  ],
+  "controls": [
+    {
+      "id": "co2",
+      "label": "co2",
+      "type": "range",
+      "min": 400,
+      "max": 5000,
+      "step": 0.01
+    },
+    {
+      "id": "temperature",
+      "label": "temperature",
+      "type": "range",
+      "min": -10,
+      "max": 60,
+      "step": 0.01
+    },
+    {
+      "id": "humidity",
+      "label": "humidity",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    },
+    {
+      "id": "connected",
+      "label": "connected",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    {
+      "id": "corrupt",
+      "label": "corrupt",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  ]
+}

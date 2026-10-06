@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "ui_owner": null,
+  "updated_at": "2026-10-06T15:34:36.622Z",
+  "verified_count": 45,
+  "simulation_observed_count": 4,
+  "description": "Publication terminee : 45 projets corriges (25 residents et 20 zones) sauvegardes sur Wokwi et verifies integralement par ZIP telecharge. Aucun projet restant ni brouillon. Les 45 liens uniques sont dans LIENS-WOKWI.txt. Simulations observees pour R001, R002, R009 et entree; ne pas pretendre avoir simule les 45. La passerelle UART locale reste necessaire pour le dashboard. Historique et sauvegarde complete mis a jour.",
+  "last_verified_url": "https://wokwi.com/projects/477145354499705857",
+  "draft": null
+}

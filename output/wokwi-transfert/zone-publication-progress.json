@@ -1,0 +1,627 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-06T15:34:36.622Z",
+  "status": "complete",
+  "ui_owner": null,
+  "source_plan": "zone-publication-plan.json",
+  "current_entity": null,
+  "completed_count": 20,
+  "total_count": 20,
+  "verification_policy": "Exact source bytes or CRLF/LF only; no unexpected sources; no diagram exception.",
+  "first_action_after_transfer": "Observe UI, open original entree URL, download original ZIP, compare before choosing replacements.",
+  "projects": [
+    {
+      "step": 1,
+      "entity": "entree",
+      "clone_from": null,
+      "original_url": "https://wokwi.com/projects/476813411149295617",
+      "planned_replace": [
+        "diagram.json",
+        "endpoints.h",
+        "scd41.chip.c",
+        "sgp40.chip.c",
+        "sound-level.chip.c",
+        "ze07co.chip.c"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif entree corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477137163174193153",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif entree corrige.zip",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\entree-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "ze07co.chip.c",
+      "original_comparison": "backups/entree-original-comparison.json",
+      "copy_created": true,
+      "applied_this_resume": [
+        "diagram.json",
+        "endpoints.h",
+        "scd41.chip.c",
+        "sgp40.chip.c",
+        "sound-level.chip.c",
+        "ze07co.chip.c"
+      ]
+    },
+    {
+      "step": 2,
+      "entity": "infirmerie_rdc",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476811645982496769",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif infirmerie_rdc corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477139012535715841",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif infirmerie_rdc corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/infirmerie_rdc-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "entree",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 3,
+      "entity": "pharmacie_admin",
+      "clone_from": "infirmerie_rdc",
+      "original_url": "https://wokwi.com/projects/476811754112711681",
+      "planned_replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif pharmacie_admin corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477139355746276353",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif pharmacie_admin corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/pharmacie_admin-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "infirmerie_rdc",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 4,
+      "entity": "poste_infirmier_etage",
+      "clone_from": "infirmerie_rdc",
+      "original_url": "https://wokwi.com/projects/476813021704952833",
+      "planned_replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif poste_infirmier_etage corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477139685661966337",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif poste_infirmier_etage corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/poste_infirmier_etage-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "pharmacie_admin",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 5,
+      "entity": "salle_commune",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476811973341673473",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif salle_commune corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477139826201609217",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif salle_commune corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/salle_commune-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "poste_infirmier_etage",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 6,
+      "entity": "salle_repos",
+      "clone_from": "salle_commune",
+      "original_url": "https://wokwi.com/projects/476813391206425601",
+      "planned_replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif salle_repos corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477140077081891841",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif salle_repos corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/salle_repos-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "salle_commune",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 7,
+      "entity": "salle_activites",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476812311646939137",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif salle_activites corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477140258778152961",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif salle_activites corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/salle_activites-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "salle_repos",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 8,
+      "entity": "salle_manger",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476812418387794945",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif salle_manger corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477140496370897921",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif salle_manger corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/salle_manger-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "salle_activites",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 9,
+      "entity": "office_cuisine",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476812525602607105",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif office_cuisine corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477140748600704001",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif office_cuisine corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/office_cuisine-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "salle_manger",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 10,
+      "entity": "ascenseur",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476812886454362113",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif ascenseur corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477140987596428289",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif ascenseur corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/ascenseur-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "office_cuisine",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 11,
+      "entity": "hors_ehpad",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476811536858225665",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif hors_ehpad corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477141241091889153",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif hors_ehpad corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/hors_ehpad-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "gps-nmea.chip.json",
+      "actual_clone_from": "ascenseur",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ]
+    },
+    {
+      "step": 12,
+      "entity": "jardin",
+      "clone_from": "hors_ehpad",
+      "original_url": "https://wokwi.com/projects/476812205238482945",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif jardin corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477141640707493889",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif jardin corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/jardin-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "amg8833.chip.json",
+      "actual_clone_from": "hors_ehpad",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "amg8833.chip.c",
+        "amg8833.chip.json"
+      ]
+    },
+    {
+      "step": 13,
+      "entity": "patio",
+      "clone_from": "jardin",
+      "original_url": "https://wokwi.com/projects/476812092031057921",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif patio corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477142104370136065",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif patio corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/patio-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "digital-presence.chip.json",
+      "actual_clone_from": "jardin",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ]
+    },
+    {
+      "step": 14,
+      "entity": "couloir_principal",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476811865720014849",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif couloir_principal corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477143403102265345",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif couloir_principal corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/couloir_principal-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "digital-presence.chip.json",
+      "actual_clone_from": "entree",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ]
+    },
+    {
+      "step": 15,
+      "entity": "escalier",
+      "clone_from": "couloir_principal",
+      "original_url": "https://wokwi.com/projects/476812746600517633",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif escalier corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477143866834099201",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif escalier corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/escalier-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "couloir_principal",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 16,
+      "entity": "palier_etage",
+      "clone_from": "couloir_principal",
+      "original_url": "https://wokwi.com/projects/476815009189781505",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif palier_etage corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477144229800873985",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif palier_etage corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/palier_etage-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "escalier",
+      "copy_created": true,
+      "url": "https://wokwi.com/projects/477144229800873985",
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 17,
+      "entity": "couloir_aile_rdc",
+      "clone_from": "entree",
+      "original_url": "https://wokwi.com/projects/476812638260579329",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif couloir_aile_rdc corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477144441072253953",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif couloir_aile_rdc corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/couloir_aile_rdc-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "ble-fixture.chip.json",
+      "actual_clone_from": "entree",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ]
+    },
+    {
+      "step": 18,
+      "entity": "couloir_aile_a_etage",
+      "clone_from": "couloir_aile_rdc",
+      "original_url": "https://wokwi.com/projects/476813516353990657",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif couloir_aile_a_etage corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477144789996536833",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif couloir_aile_a_etage corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/couloir_aile_a_etage-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "endpoints.h",
+      "actual_clone_from": "couloir_aile_rdc",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ]
+    },
+    {
+      "step": 19,
+      "entity": "couloir_aile_b_etage",
+      "clone_from": "couloir_aile_rdc",
+      "original_url": "https://wokwi.com/projects/476813650362019841",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif couloir_aile_b_etage corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477144980838476801",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif couloir_aile_b_etage corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/couloir_aile_b_etage-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "digital-presence.chip.json",
+      "actual_clone_from": "couloir_aile_a_etage",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ]
+    },
+    {
+      "step": 20,
+      "entity": "kinesitherapie",
+      "clone_from": "R001",
+      "original_url": "https://wokwi.com/projects/476813146364931073",
+      "planned_replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "planned_add": [
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "needs_original_zip_comparison": false,
+      "ascii_title": "EHPAD collectif kinesitherapie corrige",
+      "status": "verified",
+      "corrected_url": "https://wokwi.com/projects/477145354499705857",
+      "saved": true,
+      "downloaded_zip": "C:/Users/lebre/Downloads/EHPAD collectif kinesitherapie corrige.zip",
+      "verification_report": "D:/projet spé Hepad/output/wokwi-transfert/verified/kinesitherapie-full-comparison.json",
+      "verified": true,
+      "last_completed_file": "ze07co.chip.json",
+      "actual_clone_from": "R001",
+      "copy_created": true,
+      "applied_this_resume": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ]
+    }
+  ],
+  "phase": "complete",
+  "base_url": "https://wokwi.com/projects/476813411149295617",
+  "draft": null,
+  "last_completed_file": "diagram.json",
+  "interruption": "Chrome URL could not be determined reliably; no further application inputs"
+}

@@ -1,0 +1,88 @@
+{
+  "updated_at": "2026-10-05T13:22:17.762Z",
+  "mode": "copies_in_current_chrome_account",
+  "projects": [
+    {
+      "entity": "R001",
+      "original_url": "https://wokwi.com/projects/476811018920338433",
+      "corrected_url": "https://wokwi.com/projects/477043203503950849",
+      "saved": true,
+      "simulation": {
+        "ready": true,
+        "devices": 11,
+        "sample_count": 325,
+        "max30102_verified": true
+      },
+      "download_comparison": {
+        "status": "passed",
+        "all_exact": true,
+        "files_verified": 5,
+        "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R001-download-comparison.json",
+        "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\EHPAD collectif — R001 corrigé.zip",
+        "original_diagram_preserved": true
+      }
+    },
+    {
+      "entity": "R002",
+      "original_url": "https://wokwi.com/projects/476810814842254337",
+      "corrected_url": "https://wokwi.com/projects/477043364101807105",
+      "configuration": "configured",
+      "cloned_from": "R001",
+      "download_comparison": {
+        "status": "passed",
+        "all_exact": false,
+        "normalized_equal": true,
+        "files_verified": 17,
+        "exact_files": 16,
+        "normalized_files": [
+          "diagram.json"
+        ],
+        "difference": "CRLF_to_LF_only; no functional content difference",
+        "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R002-full-comparison.json",
+        "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R002-download-abc9f79dc216.zip"
+      },
+      "simulation": {
+        "ready": true,
+        "devices": 10,
+        "sample_count": 102,
+        "max30102_verified": true,
+        "proof_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\R002-browser-simulation.json",
+        "radar_verified": true
+      },
+      "status": "verified",
+      "saved": true,
+      "verified_at": "2026-10-05T13:26:23.060698+00:00"
+    },
+    {
+      "entity": "R009",
+      "corrected_url": "https://wokwi.com/projects/477047195350368257",
+      "saved": true,
+      "status": "verified",
+      "cloned_from": "R001",
+      "configuration": "configured",
+      "simulation": {
+        "ready": true,
+        "devices": 10,
+        "sample_count": 44,
+        "max30102_verified": true,
+        "proof_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\R009-browser-simulation.json"
+      },
+      "download_comparison": {
+        "status": "passed",
+        "all_exact": false,
+        "normalized_equal": true,
+        "files_verified": 15,
+        "exact_files": 14,
+        "normalized_files": [
+          "diagram.json"
+        ],
+        "difference": "CRLF_to_LF_only; no functional content difference",
+        "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R009-full-comparison.json",
+        "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R009-download-39f99ec3ac54.zip"
+      },
+      "verified_at": "2026-10-05T13:26:23.061325+00:00"
+    }
+  ],
+  "browser_interruption": null,
+  "unsaved_draft": null
+}

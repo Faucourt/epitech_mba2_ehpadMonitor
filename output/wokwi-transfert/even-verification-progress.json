@@ -1,0 +1,263 @@
+{
+  "updated_at": "2026-10-05T14:11:08.066531+00:00",
+  "scope": "Saved source contents only; no new simulation verification",
+  "expected_entities": [
+    "R004",
+    "R006",
+    "R008",
+    "R010",
+    "R012",
+    "R014",
+    "R016",
+    "R018",
+    "R020",
+    "R022",
+    "R024"
+  ],
+  "verified_count": 11,
+  "pending_entities": [],
+  "projects": [
+    {
+      "entity": "R004",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:28:45.535193+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477047596125723649",
+      "publisher_project_url": "https://wokwi.com/projects/477047596125723649",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "ed1e643dffef671b802b6f3dcb49868ca0edfbe21736832e8c48aa2dd1cd9b64",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R004-download-ed1e643dffef.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R004-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R006",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:32:37.861501+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477047809903190017",
+      "publisher_project_url": "https://wokwi.com/projects/477047809903190017",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "45d0148adc9fae38180daf85d866912986da5ae72721881bdfcc9211002e69e2",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R006-download-45d0148adc9f.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R006-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R008",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:35:35.123337+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477048018029860865",
+      "publisher_project_url": "https://wokwi.com/projects/477048018029860865",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "f5878e7393b75a69c19e72e084a078d7f083c2382357ef2ad3fcef0829ee63e8",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R008-download-f5878e7393b7.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R008-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R010",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:38:35.471822+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477048198376615937",
+      "publisher_project_url": "https://wokwi.com/projects/477048198376615937",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "1b2b1126f87889ed81119c9bf1af1a10c7a0af3b89f1cdddf0606a727db66f2e",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R010-download-1b2b1126f878.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R010-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R012",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:42:05.837913+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477048429265795073",
+      "publisher_project_url": "https://wokwi.com/projects/477048429265795073",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "1ee14824c6ef97d0f2319ad9eb24e4e257e7d0403392da7dc3e438cff0908bdb",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R012-download-1ee14824c6ef.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R012-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R014",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:47:06.215617+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477048730515462145",
+      "publisher_project_url": "https://wokwi.com/projects/477048730515462145",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "a2dfc512e111f45218a25ac2cb01a8f6c80ce2958491198e96b9067419a9a6e9",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R014-download-a2dfc512e111.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R014-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R016",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:49:36.482929+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477048889165057025",
+      "publisher_project_url": "https://wokwi.com/projects/477048889165057025",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "c8ff0dd2cbcb0468e7b21c00f7b3a58143c18c08440f7483575658eb8decacad",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R016-download-c8ff0dd2cbcb.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R016-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R018",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:52:36.793378+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477049088829739009",
+      "publisher_project_url": "https://wokwi.com/projects/477049088829739009",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "db5739e552b8ab1d77de019f7411759cf0364009ae8aab34bb6259ac045d939a",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R018-download-db5739e552b8.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R018-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R020",
+      "status": "passed",
+      "checked_at": "2026-10-05T13:56:07.129125+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477049308233861121",
+      "publisher_project_url": "https://wokwi.com/projects/477049308233861121",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "a3267636502a961ff9a16414595f051c5b690b344c86d864b350e5149cec2459",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R020-download-a3267636502a.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R020-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R022",
+      "status": "passed",
+      "checked_at": "2026-10-05T14:07:37.750333+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477049763255211009",
+      "publisher_project_url": "https://wokwi.com/projects/477049763255211009",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "ca521091e1d37b25029ab85fc0159c31c8eb91becc0eb72f2ec6c73270821498",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R022-download-ca521091e1d3.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R022-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    },
+    {
+      "entity": "R024",
+      "status": "passed",
+      "checked_at": "2026-10-05T14:11:08.066501+00:00",
+      "downloaded_project_url": "https://wokwi.com/projects/477050223850765313",
+      "publisher_project_url": "https://wokwi.com/projects/477050223850765313",
+      "metadata_matches_publication": true,
+      "saved_sources_verified": true,
+      "simulation_status": "not_checked",
+      "zip_sha256": "d31898aa22bc95a26d748081158b27ed40dfa83c8543de3319c6a7ce95d275f9",
+      "zip_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R024-download-d31898aa22bc.zip",
+      "report_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R024-full-comparison.json",
+      "files_verified": 17,
+      "all_exact": false,
+      "normalized_equal": true,
+      "normalized_files": [
+        "diagram.json"
+      ],
+      "missing_files": [],
+      "unexpected_files": [],
+      "mismatched_files": []
+    }
+  ]
+}

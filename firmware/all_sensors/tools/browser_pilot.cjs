@@ -16,7 +16,12 @@ const save = () => fs.writeFileSync(path.join(OUT, 'status.json'), JSON.stringif
   scope:'Three residents and entrance; other environmental zones not running', states
 }, null, 2));
 async function start(entity) {
-  const evidence = JSON.parse(fs.readFileSync(path.join(BASE, 'validation/collective', entity+'.json')));
+  const publication = JSON.parse(fs.readFileSync(path.join(ROOT, 'output/wokwi-transfert/pages-corrigees.json')));
+  const published = publication.projects.find(project => project.entity === entity && project.status === 'verified');
+  if (!published || !/^https:\/\/wokwi\.com\/projects\/[0-9]+$/.test(published.page_corrigee)) {
+    throw new Error('No verified published Wokwi project for ' + entity);
+  }
+  const evidence = {url: published.page_corrigee};
   const wiring = JSON.parse(fs.readFileSync(path.join(BASE, 'collective', entity, 'wiring.json')));
   const allowed = new Set(wiring.devices.map(d => d.id));
   const page = await browser.newPage({viewport:{width:1400,height:900}});

@@ -1,0 +1,52 @@
+PREPARATION DES 20 ZONES - aucune action UI effectuee
+Source: zone-publication-plan.json; fichiers upload inchanges.
+
+1. Base entree: ouvrir https://wokwi.com/projects/476813411149295617.
+   Telecharger le ZIP original, comparer tous les fichiers, puis creer la copie corrigee avant edition.
+   Cinq remplacements attendus d apres historique local: endpoints.h, scd41.chip.c, sgp40.chip.c, sound-level.chip.c, ze07co.chip.c.
+   La comparaison ZIP decide des vrais remplacements/ajouts; ne rien supposer sur le contenu live.
+   Base attendue: 15 fichiers source. Aucun extra de puce autorise.
+
+2. Sequences; D=device_config.h, J=diagram.json, E=endpoints.h.
+   Chaque fleche part de la COPIE CORRIGEE sauvegardee et verifiee du parent.
+   02. entree -> infirmerie_rdc: remplacer D, J, E (3 fichiers).
+   03. infirmerie_rdc -> pharmacie_admin: remplacer D, E (2 fichiers).
+   04. infirmerie_rdc -> poste_infirmier_etage: remplacer D, E (2 fichiers).
+   05. entree -> salle_commune: remplacer D, J, E (3 fichiers).
+   06. salle_commune -> salle_repos: remplacer D, E (2 fichiers).
+   07. entree -> salle_activites: remplacer D, J, E (3 fichiers).
+   08. entree -> salle_manger: remplacer D, J, E (3 fichiers).
+   09. entree -> office_cuisine: remplacer D, J, E (3 fichiers).
+   10. entree -> ascenseur: remplacer D, J, E (3 fichiers).
+   11. entree -> hors_ehpad: remplacer D, J, E; ajouter gps-nmea.chip.c, gps-nmea.chip.json (5 fichiers).
+   12. hors_ehpad -> jardin: remplacer D, J, E; ajouter amg8833.chip.c, amg8833.chip.json (5 fichiers).
+   13. jardin -> patio: remplacer D, J, E; ajouter digital-presence.chip.c, digital-presence.chip.json (5 fichiers).
+   14. entree -> couloir_principal: remplacer D, J, E; ajouter digital-presence.chip.c, digital-presence.chip.json (5 fichiers).
+   15. couloir_principal -> escalier: remplacer D, J, E (3 fichiers).
+   16. couloir_principal -> palier_etage: remplacer D, J, E (3 fichiers).
+   17. entree -> couloir_aile_rdc: remplacer D, J, E; ajouter ble-fixture.chip.c, ble-fixture.chip.json (5 fichiers).
+   18. couloir_aile_rdc -> couloir_aile_a_etage: remplacer D, J, E (3 fichiers).
+   19. couloir_aile_rdc -> couloir_aile_b_etage: remplacer D, J, E; ajouter digital-presence.chip.c, digital-presence.chip.json (5 fichiers).
+   20. R001 -> kinesitherapie: remplacer D, J, E; ajouter scd41.chip.c, scd41.chip.json, sgp40.chip.c, sgp40.chip.json, sound-level.chip.c, sound-level.chip.json, ze07co.chip.c, ze07co.chip.json (11 fichiers).
+
+3. Pour chaque copie: nom/entity correct, ouvrir fichiers exacts du dossier upload/<entity>, enregistrer, relever URL finale, telecharger ZIP.
+   Verification:
+python .\output\wokwi-transfert\verify_wokwi_zip.py --entity ENTITY --zip 'DOWNLOADED_ZIP' --allow-crlf-normalization
+   Exiger passed; aucune difference hors CRLF/LF, aucun fichier source manquant/extra, aucune exception diagramme.
+   wokwi-project.txt est la seule metadonnee native ignoree par la comparaison source.
+   Utiliser le parent pour un autre clone seulement apres verification de son ZIP.
+   En cas de rapport failed, corriger la copie puis retester; ne pas propager une base incorrecte.
+
+4. Controle Windows, uniquement apres exclusivite explicite root:
+   Skill Computer Use, guidance.md, api.md, confirmations.md lus. Utiliser seulement node_repl + @oai/sky pour UI.
+   Recuperer une unique fenetre Chrome depuis list_apps/list_windows, observer et inspecter.
+   Une action par observation suivie de refresh; ne jamais reutiliser index/coordonnees stale.
+   Avant type_text: observer le focus de la surface editable, puis taper dans un appel separe et rafraichir.
+   Lire chaque payload directement du fichier de staging; ne pas modifier JSON/format ou identifiants.
+   Si dialogue/interruption invalide l adresse ou le handle, reobserver; ne contourner aucun blocage.
+   Ne pas prendre node_repl/sky tant qu un autre agent controle UI.
+
+Cout: 74 ecritures apres base entree verifiee; base attendue 5 sous reserve du ZIP initial; total attendu 79.
+Le groupe entree comprend 10 zones AU TOTAL: entree et neuf clones. Les diagrammes identiques economisent trois ecritures.
+Kinesitherapie part de R001 corrige: D/J/E + huit fichiers scd41/sgp40/sound-level/ze07co; aucun fichier extra.
+Les 12 fichiers herites R001 ont ete controles en lecture dans son ZIP verifie: identiques aux sources courantes.

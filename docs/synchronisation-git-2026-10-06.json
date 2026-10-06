@@ -1,0 +1,155 @@
+{
+  "date": "2026-10-06",
+  "strategy": "Merge existing histories and publish only fast-forward updates; no force push.",
+  "repositories": {
+    "origin": "lebretyves/D-tection-de-malaise-en-EHPAD",
+    "delivery": "lebretyves/epitech_mba2_ehpadMonitor",
+    "faucourt": "Faucourt/epitech_mba2_ehpadMonitor"
+  },
+  "branches": [
+    {
+      "remote": "delivery",
+      "branch": "digi5-m1-wokwi",
+      "before": "f4370696771a9d60d14d43ca215e25996b75a7f8",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "feat/wokwi-all-sensors",
+      "before": "de17e3e9ad725b9e2c03c5e8a11f7546095c0f89",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "feature/aifosdcn",
+      "before": "1ee92a2e87d0bd9c8276cfbfe4183ddc9416bcd7",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "feature/audelmgn",
+      "before": "1ee92a2e87d0bd9c8276cfbfe4183ddc9416bcd7",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "main",
+      "before": "67261bc0c0a4c93ca11ae52de01054b85a45bcc4",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "master",
+      "before": "2299ed47bc445595518bf4b47526d7d4fb3f90b3",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "tp-m1-wokwi-mqtt",
+      "before": "0c22c7ed6ecdb71df3fb8e150637feceb0b90533",
+      "history_preserved": true
+    },
+    {
+      "remote": "delivery",
+      "branch": "validation-compilation-m1",
+      "before": "e09cf97c65fcb9567965b1e6fc46e191fbe2ce78",
+      "history_preserved": false
+    },
+    {
+      "remote": "faucourt",
+      "branch": "digi5-m1-wokwi",
+      "before": "ccdb1623631157eb81cf599c2af317125be1e727",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "feat/wokwi-all-sensors",
+      "before": "f5c417a4eb70e6c4db1e5f6222ff88f52e2fee23",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "feature/aifosdcn",
+      "before": "1ee92a2e87d0bd9c8276cfbfe4183ddc9416bcd7",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "feature/audelmgn",
+      "before": "1ee92a2e87d0bd9c8276cfbfe4183ddc9416bcd7",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "main",
+      "before": "67261bc0c0a4c93ca11ae52de01054b85a45bcc4",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "master",
+      "before": "2299ed47bc445595518bf4b47526d7d4fb3f90b3",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "tp-m1-wokwi-mqtt",
+      "before": "0c22c7ed6ecdb71df3fb8e150637feceb0b90533",
+      "history_preserved": true
+    },
+    {
+      "remote": "faucourt",
+      "branch": "validation-compilation-m1",
+      "before": "e09cf97c65fcb9567965b1e6fc46e191fbe2ce78",
+      "history_preserved": false
+    },
+    {
+      "remote": "origin",
+      "branch": "digi5-m1-wokwi",
+      "before": "f4370696771a9d60d14d43ca215e25996b75a7f8",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "feat/wokwi-all-sensors",
+      "before": "de17e3e9ad725b9e2c03c5e8a11f7546095c0f89",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "feature/aifosdcn",
+      "before": "1ee92a2e87d0bd9c8276cfbfe4183ddc9416bcd7",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "feature/audelmgn",
+      "before": "1ee92a2e87d0bd9c8276cfbfe4183ddc9416bcd7",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "main",
+      "before": "67261bc0c0a4c93ca11ae52de01054b85a45bcc4",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "master",
+      "before": "2299ed47bc445595518bf4b47526d7d4fb3f90b3",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "tp-m1-wokwi-mqtt",
+      "before": "0c22c7ed6ecdb71df3fb8e150637feceb0b90533",
+      "history_preserved": true
+    },
+    {
+      "remote": "origin",
+      "branch": "validation-compilation-m1",
+      "before": "e09cf97c65fcb9567965b1e6fc46e191fbe2ce78",
+      "history_preserved": false
+    }
+  ]
+}

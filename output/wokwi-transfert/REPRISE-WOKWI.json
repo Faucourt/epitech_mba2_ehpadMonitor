@@ -1,0 +1,701 @@
+{
+  "updated_at_utc": "2026-10-06T15:34:37.230600+00:00",
+  "fingerprint": "07c05fb6b7f75d14e1d7c037ccc9ab6cd848eb6af0ab25eabe07a52523e8672f",
+  "total": 45,
+  "saved_count": 45,
+  "verified_count": 45,
+  "state": {
+    "verified": [
+      [
+        "R001",
+        "https://wokwi.com/projects/477043203503950849"
+      ],
+      [
+        "R002",
+        "https://wokwi.com/projects/477043364101807105"
+      ],
+      [
+        "R003",
+        "https://wokwi.com/projects/477052131126243329"
+      ],
+      [
+        "R004",
+        "https://wokwi.com/projects/477047596125723649"
+      ],
+      [
+        "R005",
+        "https://wokwi.com/projects/477052321758466049"
+      ],
+      [
+        "R006",
+        "https://wokwi.com/projects/477047809903190017"
+      ],
+      [
+        "R007",
+        "https://wokwi.com/projects/477052529753013249"
+      ],
+      [
+        "R008",
+        "https://wokwi.com/projects/477048018029860865"
+      ],
+      [
+        "R009",
+        "https://wokwi.com/projects/477047195350368257"
+      ],
+      [
+        "R010",
+        "https://wokwi.com/projects/477048198376615937"
+      ],
+      [
+        "R011",
+        "https://wokwi.com/projects/477050554101999617"
+      ],
+      [
+        "R012",
+        "https://wokwi.com/projects/477048429265795073"
+      ],
+      [
+        "R013",
+        "https://wokwi.com/projects/477050736208257025"
+      ],
+      [
+        "R014",
+        "https://wokwi.com/projects/477048730515462145"
+      ],
+      [
+        "R015",
+        "https://wokwi.com/projects/477050909537929217"
+      ],
+      [
+        "R016",
+        "https://wokwi.com/projects/477048889165057025"
+      ],
+      [
+        "R017",
+        "https://wokwi.com/projects/477051094264617985"
+      ],
+      [
+        "R018",
+        "https://wokwi.com/projects/477049088829739009"
+      ],
+      [
+        "R019",
+        "https://wokwi.com/projects/477051272171323393"
+      ],
+      [
+        "R020",
+        "https://wokwi.com/projects/477049308233861121"
+      ],
+      [
+        "R021",
+        "https://wokwi.com/projects/477051478006847489"
+      ],
+      [
+        "R022",
+        "https://wokwi.com/projects/477049763255211009"
+      ],
+      [
+        "R023",
+        "https://wokwi.com/projects/477051668860320769"
+      ],
+      [
+        "R024",
+        "https://wokwi.com/projects/477050223850765313"
+      ],
+      [
+        "R025",
+        "https://wokwi.com/projects/477136860304458753"
+      ],
+      [
+        "entree",
+        "https://wokwi.com/projects/477137163174193153"
+      ],
+      [
+        "hors_ehpad",
+        "https://wokwi.com/projects/477141241091889153"
+      ],
+      [
+        "infirmerie_rdc",
+        "https://wokwi.com/projects/477139012535715841"
+      ],
+      [
+        "pharmacie_admin",
+        "https://wokwi.com/projects/477139355746276353"
+      ],
+      [
+        "couloir_principal",
+        "https://wokwi.com/projects/477143403102265345"
+      ],
+      [
+        "salle_commune",
+        "https://wokwi.com/projects/477139826201609217"
+      ],
+      [
+        "patio",
+        "https://wokwi.com/projects/477142104370136065"
+      ],
+      [
+        "jardin",
+        "https://wokwi.com/projects/477141640707493889"
+      ],
+      [
+        "salle_activites",
+        "https://wokwi.com/projects/477140258778152961"
+      ],
+      [
+        "salle_manger",
+        "https://wokwi.com/projects/477140496370897921"
+      ],
+      [
+        "office_cuisine",
+        "https://wokwi.com/projects/477140748600704001"
+      ],
+      [
+        "couloir_aile_rdc",
+        "https://wokwi.com/projects/477144441072253953"
+      ],
+      [
+        "escalier",
+        "https://wokwi.com/projects/477143866834099201"
+      ],
+      [
+        "ascenseur",
+        "https://wokwi.com/projects/477140987596428289"
+      ],
+      [
+        "poste_infirmier_etage",
+        "https://wokwi.com/projects/477139685661966337"
+      ],
+      [
+        "kinesitherapie",
+        "https://wokwi.com/projects/477145354499705857"
+      ],
+      [
+        "salle_repos",
+        "https://wokwi.com/projects/477140077081891841"
+      ],
+      [
+        "couloir_aile_a_etage",
+        "https://wokwi.com/projects/477144789996536833"
+      ],
+      [
+        "couloir_aile_b_etage",
+        "https://wokwi.com/projects/477144980838476801"
+      ],
+      [
+        "palier_etage",
+        "https://wokwi.com/projects/477144229800873985"
+      ]
+    ],
+    "pending_verification": [],
+    "not_started": [],
+    "activity": {
+      "status": "complete",
+      "ui_owner": null,
+      "updated_at": "2026-10-06T15:34:36.622Z",
+      "verified_count": 45,
+      "simulation_observed_count": 4,
+      "description": "Publication terminee : 45 projets corriges (25 residents et 20 zones) sauvegardes sur Wokwi et verifies integralement par ZIP telecharge. Aucun projet restant ni brouillon. Les 45 liens uniques sont dans LIENS-WOKWI.txt. Simulations observees pour R001, R002, R009 et entree; ne pas pretendre avoir simule les 45. La passerelle UART locale reste necessaire pour le dashboard. Historique et sauvegarde complete mis a jour.",
+      "last_verified_url": "https://wokwi.com/projects/477145354499705857",
+      "draft": null
+    },
+    "drafts": []
+  },
+  "projects": [
+    {
+      "entity": "R001",
+      "capteurs": 11,
+      "page_existante": "https://wokwi.com/projects/476811018920338433",
+      "dossier": "R001",
+      "page_corrigee": "https://wokwi.com/projects/477043203503950849",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R001-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": true
+    },
+    {
+      "entity": "R002",
+      "capteurs": 10,
+      "page_existante": "https://wokwi.com/projects/476810814842254337",
+      "dossier": "R002",
+      "page_corrigee": "https://wokwi.com/projects/477043364101807105",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R002-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": true
+    },
+    {
+      "entity": "R003",
+      "capteurs": 11,
+      "page_existante": "https://wokwi.com/projects/476812231957251073",
+      "dossier": "R003",
+      "page_corrigee": "https://wokwi.com/projects/477052131126243329",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R003-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R004",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R004",
+      "page_corrigee": "https://wokwi.com/projects/477047596125723649",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R004-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R005",
+      "capteurs": 11,
+      "page_existante": null,
+      "dossier": "R005",
+      "page_corrigee": "https://wokwi.com/projects/477052321758466049",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R005-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R006",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R006",
+      "page_corrigee": "https://wokwi.com/projects/477047809903190017",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R006-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R007",
+      "capteurs": 11,
+      "page_existante": null,
+      "dossier": "R007",
+      "page_corrigee": "https://wokwi.com/projects/477052529753013249",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R007-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R008",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R008",
+      "page_corrigee": "https://wokwi.com/projects/477048018029860865",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R008-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R009",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R009",
+      "page_corrigee": "https://wokwi.com/projects/477047195350368257",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R009-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": true
+    },
+    {
+      "entity": "R010",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R010",
+      "page_corrigee": "https://wokwi.com/projects/477048198376615937",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R010-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R011",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R011",
+      "page_corrigee": "https://wokwi.com/projects/477050554101999617",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R011-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R012",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R012",
+      "page_corrigee": "https://wokwi.com/projects/477048429265795073",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R012-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R013",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R013",
+      "page_corrigee": "https://wokwi.com/projects/477050736208257025",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R013-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R014",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R014",
+      "page_corrigee": "https://wokwi.com/projects/477048730515462145",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R014-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R015",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R015",
+      "page_corrigee": "https://wokwi.com/projects/477050909537929217",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R015-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R016",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R016",
+      "page_corrigee": "https://wokwi.com/projects/477048889165057025",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R016-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R017",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R017",
+      "page_corrigee": "https://wokwi.com/projects/477051094264617985",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R017-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R018",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R018",
+      "page_corrigee": "https://wokwi.com/projects/477049088829739009",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R018-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R019",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R019",
+      "page_corrigee": "https://wokwi.com/projects/477051272171323393",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R019-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R020",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R020",
+      "page_corrigee": "https://wokwi.com/projects/477049308233861121",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R020-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R021",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R021",
+      "page_corrigee": "https://wokwi.com/projects/477051478006847489",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R021-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R022",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R022",
+      "page_corrigee": "https://wokwi.com/projects/477049763255211009",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R022-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R023",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R023",
+      "page_corrigee": "https://wokwi.com/projects/477051668860320769",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R023-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R024",
+      "capteurs": 10,
+      "page_existante": null,
+      "dossier": "R024",
+      "page_corrigee": "https://wokwi.com/projects/477050223850765313",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R024-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "R025",
+      "capteurs": 11,
+      "page_existante": null,
+      "dossier": "R025",
+      "page_corrigee": "https://wokwi.com/projects/477136860304458753",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\R025-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "entree",
+      "capteurs": 10,
+      "page_existante": "https://wokwi.com/projects/476813411149295617",
+      "dossier": "entree",
+      "page_corrigee": "https://wokwi.com/projects/477137163174193153",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\entree-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": true
+    },
+    {
+      "entity": "hors_ehpad",
+      "capteurs": 8,
+      "page_existante": "https://wokwi.com/projects/476811536858225665",
+      "dossier": "hors_ehpad",
+      "page_corrigee": "https://wokwi.com/projects/477141241091889153",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\hors_ehpad-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "infirmerie_rdc",
+      "capteurs": 7,
+      "page_existante": "https://wokwi.com/projects/476811645982496769",
+      "dossier": "infirmerie_rdc",
+      "page_corrigee": "https://wokwi.com/projects/477139012535715841",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\infirmerie_rdc-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "pharmacie_admin",
+      "capteurs": 7,
+      "page_existante": "https://wokwi.com/projects/476811754112711681",
+      "dossier": "pharmacie_admin",
+      "page_corrigee": "https://wokwi.com/projects/477139355746276353",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\pharmacie_admin-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "couloir_principal",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476811865720014849",
+      "dossier": "couloir_principal",
+      "page_corrigee": "https://wokwi.com/projects/477143403102265345",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_principal-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "salle_commune",
+      "capteurs": 8,
+      "page_existante": "https://wokwi.com/projects/476811973341673473",
+      "dossier": "salle_commune",
+      "page_corrigee": "https://wokwi.com/projects/477139826201609217",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_commune-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "patio",
+      "capteurs": 12,
+      "page_existante": "https://wokwi.com/projects/476812092031057921",
+      "dossier": "patio",
+      "page_corrigee": "https://wokwi.com/projects/477142104370136065",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\patio-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "jardin",
+      "capteurs": 10,
+      "page_existante": "https://wokwi.com/projects/476812205238482945",
+      "dossier": "jardin",
+      "page_corrigee": "https://wokwi.com/projects/477141640707493889",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\jardin-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "salle_activites",
+      "capteurs": 8,
+      "page_existante": "https://wokwi.com/projects/476812311646939137",
+      "dossier": "salle_activites",
+      "page_corrigee": "https://wokwi.com/projects/477140258778152961",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_activites-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "salle_manger",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476812418387794945",
+      "dossier": "salle_manger",
+      "page_corrigee": "https://wokwi.com/projects/477140496370897921",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_manger-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "office_cuisine",
+      "capteurs": 8,
+      "page_existante": "https://wokwi.com/projects/476812525602607105",
+      "dossier": "office_cuisine",
+      "page_corrigee": "https://wokwi.com/projects/477140748600704001",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\office_cuisine-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "couloir_aile_rdc",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476812638260579329",
+      "dossier": "couloir_aile_rdc",
+      "page_corrigee": "https://wokwi.com/projects/477144441072253953",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_aile_rdc-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "escalier",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476812746600517633",
+      "dossier": "escalier",
+      "page_corrigee": "https://wokwi.com/projects/477143866834099201",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\escalier-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "ascenseur",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476812886454362113",
+      "dossier": "ascenseur",
+      "page_corrigee": "https://wokwi.com/projects/477140987596428289",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\ascenseur-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "poste_infirmier_etage",
+      "capteurs": 7,
+      "page_existante": "https://wokwi.com/projects/476813021704952833",
+      "dossier": "poste_infirmier_etage",
+      "page_corrigee": "https://wokwi.com/projects/477139685661966337",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\poste_infirmier_etage-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "kinesitherapie",
+      "capteurs": 16,
+      "page_existante": "https://wokwi.com/projects/476813146364931073",
+      "dossier": "kinesitherapie",
+      "page_corrigee": "https://wokwi.com/projects/477145354499705857",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\kinesitherapie-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "salle_repos",
+      "capteurs": 8,
+      "page_existante": "https://wokwi.com/projects/476813391206425601",
+      "dossier": "salle_repos",
+      "page_corrigee": "https://wokwi.com/projects/477140077081891841",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_repos-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "couloir_aile_a_etage",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476813516353990657",
+      "dossier": "couloir_aile_a_etage",
+      "page_corrigee": "https://wokwi.com/projects/477144789996536833",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_aile_a_etage-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "couloir_aile_b_etage",
+      "capteurs": 9,
+      "page_existante": "https://wokwi.com/projects/476813650362019841",
+      "dossier": "couloir_aile_b_etage",
+      "page_corrigee": "https://wokwi.com/projects/477144980838476801",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_aile_b_etage-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    },
+    {
+      "entity": "palier_etage",
+      "capteurs": 10,
+      "page_existante": "https://wokwi.com/projects/476815009189781505",
+      "dossier": "palier_etage",
+      "page_corrigee": "https://wokwi.com/projects/477144229800873985",
+      "status": "verified",
+      "verification_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\palier_etage-full-comparison.json",
+      "all_files_byte_identical": false,
+      "simulation_observed": false
+    }
+  ]
+}

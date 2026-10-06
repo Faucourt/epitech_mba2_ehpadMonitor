@@ -1,0 +1,76 @@
+{
+  "captured_at": "2026-10-05T12:17:37.485Z",
+  "project_url": "https://wokwi.com/projects/476811018920338433",
+  "saved": false,
+  "ready": true,
+  "sample_count": 325,
+  "devices": [
+    "R001-wearable-mpu6050",
+    "R001-wearable-max30102",
+    "R001-wearable-tmp117",
+    "R001-wearable-sos",
+    "R001-wearable-ecg",
+    "R001-wearable-respiration",
+    "R001-wearable-nibp",
+    "R001-pir-pir",
+    "R001-matelas-hx711",
+    "R001-porte-door",
+    "R001-sdb_pir-pir"
+  ],
+  "optical": [
+    {
+      "schema": 1,
+      "device_id": "R001-wearable-max30102",
+      "entity_id": "R001",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "d225052e",
+      "seq": 28,
+      "uptime_ms": 55946,
+      "available": true,
+      "sample_age_ms": 25,
+      "values": {
+        "red_raw": 53662,
+        "ir_raw": 57942,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    },
+    {
+      "schema": 1,
+      "device_id": "R001-wearable-max30102",
+      "entity_id": "R001",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "d225052e",
+      "seq": 29,
+      "uptime_ms": 57946,
+      "available": true,
+      "sample_age_ms": 25,
+      "values": {
+        "red_raw": 56337,
+        "ir_raw": 62057,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    },
+    {
+      "schema": 1,
+      "device_id": "R001-wearable-max30102",
+      "entity_id": "R001",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "d225052e",
+      "seq": 30,
+      "uptime_ms": 59946,
+      "available": true,
+      "sample_age_ms": 25,
+      "values": {
+        "red_raw": 53662,
+        "ir_raw": 57942,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    }
+  ]
+}

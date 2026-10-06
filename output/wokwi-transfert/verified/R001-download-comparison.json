@@ -1,0 +1,57 @@
+{
+  "entity": "R001",
+  "corrected_url": "https://wokwi.com/projects/477043203503950849",
+  "download": "C:\\Users\\lebre\\Downloads\\EHPAD collectif — R001 corrigé.zip",
+  "verified_backup": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\EHPAD collectif — R001 corrigé.zip",
+  "zip_sha256": "cee5b8e1a6fdb6903d7ee56254c2ce791e49f79dbded39f6386e1ad32b9990e7",
+  "all_exact": true,
+  "all_normalized_match": true,
+  "original_diagram_preserved": true,
+  "files": [
+    {
+      "name": "endpoints.h",
+      "exact": true,
+      "normalized_match": true,
+      "download_sha256": "fa90867d6e68391fde1f1127c78dc890591023f7edcbe8f7cb09537bc9eb8e8d",
+      "corrected_sha256": "fa90867d6e68391fde1f1127c78dc890591023f7edcbe8f7cb09537bc9eb8e8d",
+      "download_bytes": 159671,
+      "corrected_bytes": 159671
+    },
+    {
+      "name": "analog-signal.chip.c",
+      "exact": true,
+      "normalized_match": true,
+      "download_sha256": "86c0707b923280fbdce7990e46ca1bd8b1578555491b34e0e92e5bdb3868a3b5",
+      "corrected_sha256": "86c0707b923280fbdce7990e46ca1bd8b1578555491b34e0e92e5bdb3868a3b5",
+      "download_bytes": 9631,
+      "corrected_bytes": 9631
+    },
+    {
+      "name": "max30102.chip.c",
+      "exact": true,
+      "normalized_match": true,
+      "download_sha256": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20",
+      "corrected_sha256": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20",
+      "download_bytes": 9624,
+      "corrected_bytes": 9624
+    },
+    {
+      "name": "par-nibp.chip.c",
+      "exact": true,
+      "normalized_match": true,
+      "download_sha256": "c6068d9ba11d106dbb2ad6ca7ae1f26124ed640db21cf74ef8e9ed02f6c138cf",
+      "corrected_sha256": "c6068d9ba11d106dbb2ad6ca7ae1f26124ed640db21cf74ef8e9ed02f6c138cf",
+      "download_bytes": 9631,
+      "corrected_bytes": 9631
+    },
+    {
+      "name": "tmp117.chip.c",
+      "exact": true,
+      "normalized_match": true,
+      "download_sha256": "5e3ef07e53da0a60c0119d694a0277e3950191759225a09f4cd1fa355d1424fd",
+      "corrected_sha256": "5e3ef07e53da0a60c0119d694a0277e3950191759225a09f4cd1fa355d1424fd",
+      "download_bytes": 9632,
+      "corrected_bytes": 9632
+    }
+  ]
+}

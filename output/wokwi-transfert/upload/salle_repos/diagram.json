@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "author": "EHPAD collective",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pir-motion-sensor",
+      "id": "s0_sensor",
+      "top": -20,
+      "left": 270,
+      "attrs": {}
+    },
+    {
+      "type": "chip-scd41",
+      "id": "s1_sensor",
+      "top": -20,
+      "left": 620,
+      "attrs": {}
+    },
+    {
+      "type": "chip-sound-level",
+      "id": "s2_sensor",
+      "top": -20,
+      "left": 970,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "s3_sensor",
+      "top": 280,
+      "left": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "s4_sensor",
+      "top": 280,
+      "left": 620,
+      "attrs": {}
+    },
+    {
+      "type": "chip-sgp40",
+      "id": "s5_sensor",
+      "top": 280,
+      "left": 970,
+      "attrs": {}
+    },
+    {
+      "type": "chip-ze07co",
+      "id": "s6_sensor",
+      "top": 580,
+      "left": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-gas-sensor",
+      "id": "s7_sensor",
+      "top": 580,
+      "left": 620,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-text",
+      "id": "s7_adc_note",
+      "top": 780,
+      "left": 550,
+      "attrs": {
+        "text": "SIMULATION ONLY: virtual ADC 5V.\nHardware: AO -> 10k -> GPIO34 -> 18k -> GND."
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "s0_sensor:VCC",
+      "esp:5V",
+      "red",
+      []
+    ],
+    [
+      "s0_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s0_sensor:OUT",
+      "esp:4",
+      "green",
+      []
+    ],
+    [
+      "s1_sensor:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "s1_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s1_sensor:SDA",
+      "esp:21",
+      "green",
+      []
+    ],
+    [
+      "s1_sensor:SCL",
+      "esp:22",
+      "green",
+      []
+    ],
+    [
+      "s2_sensor:VCC",
+      "esp:5V",
+      "red",
+      []
+    ],
+    [
+      "s2_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s2_sensor:OUT",
+      "esp:34",
+      "green",
+      []
+    ],
+    [
+      "s3_sensor:2",
+      "esp:13",
+      "green",
+      []
+    ],
+    [
+      "s3_sensor:1",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s4_sensor:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "s4_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s4_sensor:SDA",
+      "esp:14",
+      "green",
+      []
+    ],
+    [
+      "s5_sensor:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "s5_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s5_sensor:SDA",
+      "esp:21",
+      "green",
+      []
+    ],
+    [
+      "s5_sensor:SCL",
+      "esp:22",
+      "green",
+      []
+    ],
+    [
+      "s6_sensor:VCC",
+      "esp:5V",
+      "red",
+      []
+    ],
+    [
+      "s6_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s6_sensor:TX",
+      "esp:16",
+      "green",
+      []
+    ],
+    [
+      "s6_sensor:RX",
+      "esp:17",
+      "green",
+      []
+    ],
+    [
+      "s7_sensor:VCC",
+      "esp:5V",
+      "red",
+      []
+    ],
+    [
+      "s7_sensor:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "s7_sensor:AOUT",
+      "esp:35",
+      "green",
+      []
+    ]
+  ],
+  "dependencies": {}
+}

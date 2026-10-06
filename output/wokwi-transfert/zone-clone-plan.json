@@ -1,0 +1,6112 @@
+{
+  "zone_count": 20,
+  "exact_identity_neutralized_groups": [
+    [
+      "entree"
+    ],
+    [
+      "hors_ehpad"
+    ],
+    [
+      "infirmerie_rdc",
+      "pharmacie_admin",
+      "poste_infirmier_etage"
+    ],
+    [
+      "couloir_principal"
+    ],
+    [
+      "salle_commune",
+      "salle_repos"
+    ],
+    [
+      "patio"
+    ],
+    [
+      "jardin"
+    ],
+    [
+      "salle_activites"
+    ],
+    [
+      "salle_manger"
+    ],
+    [
+      "office_cuisine"
+    ],
+    [
+      "couloir_aile_rdc"
+    ],
+    [
+      "escalier"
+    ],
+    [
+      "ascenseur"
+    ],
+    [
+      "kinesitherapie"
+    ],
+    [
+      "couloir_aile_a_etage"
+    ],
+    [
+      "couloir_aile_b_etage"
+    ],
+    [
+      "palier_etage"
+    ]
+  ],
+  "transition_cost_note": "Each replacement/addition counts as one file edit. Unused extra chip source files may remain inert; exact file-set equivalence would require deletion.",
+  "transitions": [
+    {
+      "from": "entree",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "entree",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "entree",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "entree",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "entree",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "entree",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "entree",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "entree",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "entree",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "entree",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "entree",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "hors_ehpad",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "infirmerie_rdc",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "pharmacie_admin",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_principal",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_principal",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "couloir_principal",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "couloir_principal",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_principal",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "couloir_principal",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_principal",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_principal",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_principal",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_commune",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_commune",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "salle_commune",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_commune",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_commune",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_commune",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_commune",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "salle_commune",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "salle_commune",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_commune",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_commune",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "patio",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "patio",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "patio",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "patio",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "patio",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "patio",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "jardin",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "jardin",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "jardin",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "jardin",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "jardin",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "jardin",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "jardin",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "jardin",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "salle_activites",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_activites",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_activites",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "salle_activites",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_activites",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_activites",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_activites",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "salle_activites",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_activites",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_activites",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_activites",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_manger",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_manger",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_manger",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "salle_manger",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_manger",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_manger",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_manger",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "salle_manger",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_manger",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_manger",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_manger",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "office_cuisine",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "office_cuisine",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "office_cuisine",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "office_cuisine",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "office_cuisine",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "office_cuisine",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "office_cuisine",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "office_cuisine",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "office_cuisine",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "office_cuisine",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "office_cuisine",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 9
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_rdc",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "escalier",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "escalier",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "escalier",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "escalier",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "escalier",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "escalier",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "escalier",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "escalier",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "escalier",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "ascenseur",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "ascenseur",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "ascenseur",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "ascenseur",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "ascenseur",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "ascenseur",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "ascenseur",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "ascenseur",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "ascenseur",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "ascenseur",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "poste_infirmier_etage",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 9
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "kinesitherapie",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "salle_repos",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_repos",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_repos",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 2
+    },
+    {
+      "from": "salle_repos",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 9
+    },
+    {
+      "from": "salle_repos",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_repos",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_repos",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_repos",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "salle_repos",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 11
+    },
+    {
+      "from": "salle_repos",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "salle_repos",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "salle_repos",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 9
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_a_etage",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "couloir_aile_b_etage",
+      "to": "palier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "entree",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "hors_ehpad",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "palier_etage",
+      "to": "infirmerie_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "pharmacie_admin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "couloir_principal",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "salle_commune",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "patio",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 7
+    },
+    {
+      "from": "palier_etage",
+      "to": "jardin",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 7
+    },
+    {
+      "from": "palier_etage",
+      "to": "salle_activites",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "salle_manger",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "office_cuisine",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "couloir_aile_rdc",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "palier_etage",
+      "to": "escalier",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "ascenseur",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "poste_infirmier_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "kinesitherapie",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 11
+    },
+    {
+      "from": "palier_etage",
+      "to": "salle_repos",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 3
+    },
+    {
+      "from": "palier_etage",
+      "to": "couloir_aile_a_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "write_count": 5
+    },
+    {
+      "from": "palier_etage",
+      "to": "couloir_aile_b_etage",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "unused_chip_files": [],
+      "write_count": 5
+    }
+  ]
+}

@@ -1,0 +1,1415 @@
+{
+  "schema_version": 1,
+  "status": "prepared_only_no_ui_actions",
+  "scope": "20 zones, using exact prepared sources; resident publication is managed separately",
+  "derived_from": [
+    "zone-clone-plan.json",
+    "pages.json",
+    "upload/manifest.json",
+    "firmware/max30102_custom/FLOTTE.md"
+  ],
+  "source_validation": {
+    "checked_file_count": 733,
+    "manifest_matches_upload": true,
+    "upload_matches_source": true
+  },
+  "policy": {
+    "source_equality": "Exact bytes; only CRLF versus LF normalization allowed. No JSON reformatting or diagram position exception.",
+    "extra_source_files_allowed": false,
+    "native_wokwi_metadata_allowed": [
+      "wokwi-project.txt"
+    ],
+    "saved_copy_before_edit": true,
+    "download_and_verify_each_project_before_using_as_clone_base": true,
+    "source_payloads": "Use prepared upload files verbatim. Do not reconstruct or neutralize identity.",
+    "source_code_changes": false,
+    "browser_ownership": "No UI control until explicit exclusive assignment by root."
+  },
+  "bootstrap": {
+    "step": 1,
+    "entity": "entree",
+    "original_url": "https://wokwi.com/projects/476813411149295617",
+    "new_title": "EHPAD collectif - entree corrige",
+    "expected_source_file_count": 15,
+    "required_before_changes": [
+      "Download original entree ZIP via visible UI.",
+      "Compare all downloaded source files to upload/entree using verify_wokwi_zip.py and keep the archive backup.",
+      "Create a separate saved corrected copy through the visible UI before changing code."
+    ],
+    "expected_replace_from_local_history": [
+      "endpoints.h",
+      "scd41.chip.c",
+      "sgp40.chip.c",
+      "sound-level.chip.c",
+      "ze07co.chip.c"
+    ],
+    "expected_add_from_local_history": [],
+    "basis": "Local git diff for collective/entree shows exactly endpoints.h and four .chip.c files changed. The shared chips/model.h carries the MAX30102 FIFO correction into every generated .chip.c, including zone sensors with other MODEL values. FLOTTE.md confirms regenerated local fleet; this is not proof of website contents.",
+    "actual_replace_add": "Derive from original downloaded ZIP comparison; replace every mismatch and add every missing expected file. Do not assume diagram.json or any other existing file is identical.",
+    "unexpected_files": "The final archive must contain no additional source files. If original ZIP has extras, resolve explicitly rather than treating them as inert.",
+    "all_expected_files": [
+      {
+        "name": "device_config.h",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\device_config.h",
+        "sha256": "70046c3808fae86809a3339708746d167ea2b6c697da0e76be3376dc382667a1",
+        "bytes": 703
+      },
+      {
+        "name": "diagram.json",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\diagram.json",
+        "sha256": "e30c7c1cb01b706f2b31d9cc4880f5a372d3b1ef78d724a42a0d60783e791551",
+        "bytes": 5292
+      },
+      {
+        "name": "endpoints.h",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\endpoints.h",
+        "sha256": "25a346ede7769e6284b08f3284eb6e3e9f35b1b464ae217e2db43028a0ccb502",
+        "bytes": 145146
+      },
+      {
+        "name": "finite_float.h",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\finite_float.h",
+        "sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4",
+        "bytes": 434
+      },
+      {
+        "name": "libraries.txt",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\libraries.txt",
+        "sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602",
+        "bytes": 256
+      },
+      {
+        "name": "protocols.h",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\protocols.h",
+        "sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8",
+        "bytes": 1993
+      },
+      {
+        "name": "scd41.chip.c",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\scd41.chip.c",
+        "sha256": "c0265458d2c64c9a23111f5ea1b3c799f652255f4cb7d1cd66627553dd078177",
+        "bytes": 9632
+      },
+      {
+        "name": "scd41.chip.json",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\scd41.chip.json",
+        "sha256": "f4b84ce4344c7dbe0698ae2d9e391591dd500c6211eea582a21c27e1bf28d6c9",
+        "bytes": 901
+      },
+      {
+        "name": "sgp40.chip.c",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\sgp40.chip.c",
+        "sha256": "714f687b7d1e615df7dda5b97c9a8f21b4a39657564b4005819a2cb0dbce1e9f",
+        "bytes": 9631
+      },
+      {
+        "name": "sgp40.chip.json",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\sgp40.chip.json",
+        "sha256": "f74731067779218c3dd5e7562a06771ac8ae2a56b5b91959f039150b122b1168",
+        "bytes": 607
+      },
+      {
+        "name": "sketch.ino",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\sketch.ino",
+        "sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7",
+        "bytes": 2689
+      },
+      {
+        "name": "sound-level.chip.c",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\sound-level.chip.c",
+        "sha256": "eec49391159da4cab89722ddaca8e6e885a0e95c31c090a7cdf40c92b157e010",
+        "bytes": 9629
+      },
+      {
+        "name": "sound-level.chip.json",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\sound-level.chip.json",
+        "sha256": "1c246790fb8b8d664820cbfb191909594960542cf1fb20d85bbbf3b5d9d34c03",
+        "bytes": 600
+      },
+      {
+        "name": "ze07co.chip.c",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\ze07co.chip.c",
+        "sha256": "c0fcb657816d1f01446ce08f3fbe5169fbebe3d3e5c9cb12ddfc6ef8bc2dd79c",
+        "bytes": 9621
+      },
+      {
+        "name": "ze07co.chip.json",
+        "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\entree\\ze07co.chip.json",
+        "sha256": "0ae0f08cf85a5704a7f35db64706bc9f6cca80367b1c0f872f6f986976ffd246",
+        "bytes": 592
+      }
+    ],
+    "status": "original_zip_not_yet_downloaded"
+  },
+  "steps": [
+    {
+      "step": 2,
+      "entity": "infirmerie_rdc",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476811645982496769",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\infirmerie_rdc\\device_config.h",
+          "sha256": "bc167182fe815354964a4bb6d2225e3403e2d7446487f2bae1ff753deb03d3cd",
+          "bytes": 711
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\infirmerie_rdc\\diagram.json",
+          "sha256": "03b04660f427c65cf08ac6ee8f78c616f59ea4699d878bbe92c2129f1ecad752",
+          "bytes": 3483
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\infirmerie_rdc\\endpoints.h",
+          "sha256": "67d46246e90edbe162d073d0e25a1894f27e511fba93bd0cc7c94d8dc7c235bd",
+          "bytes": 101890
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\infirmerie_rdc-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 3,
+      "entity": "pharmacie_admin",
+      "clone_from": "infirmerie_rdc",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476811754112711681",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 2,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "diagram.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\pharmacie_admin\\device_config.h",
+          "sha256": "a2df98a075dbd4ee08f1c19bbd555b7fcc82c49539d56567b0dbb1cdb4c53efb",
+          "bytes": 712
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\pharmacie_admin\\endpoints.h",
+          "sha256": "86ee6139e8d46160444e564718e3a06ca5bc7fac6d5ba6c70a8026cbd4abadd8",
+          "bytes": 101904
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\pharmacie_admin-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 4,
+      "entity": "poste_infirmier_etage",
+      "clone_from": "infirmerie_rdc",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476813021704952833",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 2,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "diagram.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\poste_infirmier_etage\\device_config.h",
+          "sha256": "1a301b0841e9bdd91a9d8e174310b7be64adf1b861f2ef28e125139e92e2031e",
+          "bytes": 718
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\poste_infirmier_etage\\endpoints.h",
+          "sha256": "4f9db0fe73d4d9c1b032052451a7a84a6c262c34123e0b1d3bc86e969af180bf",
+          "bytes": 101988
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\poste_infirmier_etage-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 5,
+      "entity": "salle_commune",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476811973341673473",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_commune\\device_config.h",
+          "sha256": "bc493e73b5ac8829e631f1a41f1c08ff787ac1b733d84cbc5529a8af500f485e",
+          "bytes": 710
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_commune\\diagram.json",
+          "sha256": "6e01ba3b7676a0670ae3e2b1ebca51c1c4310d84a483b9f56928da6bcd1fe946",
+          "bytes": 3871
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_commune\\endpoints.h",
+          "sha256": "082e4607191088ca697450dff2f878964d8b878663bbe440005abf3a738717fe",
+          "bytes": 116325
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_commune-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 6,
+      "entity": "salle_repos",
+      "clone_from": "salle_commune",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476813391206425601",
+      "replace": [
+        "device_config.h",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 2,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "diagram.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_repos\\device_config.h",
+          "sha256": "a2f915f3126426ea9808705345140d47b289d972fd7171aa91f6c9671b28ddd9",
+          "bytes": 708
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_repos\\endpoints.h",
+          "sha256": "a8040a665e8ee94edf50ca4ac61dbd571dc0fa571ec699b82013418536951060",
+          "bytes": 116293
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_repos-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 7,
+      "entity": "salle_activites",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812311646939137",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_activites\\device_config.h",
+          "sha256": "671cd7055bef6af23badac27d67be1af98e68f659ca1cd26d1b5aca410d3f143",
+          "bytes": 712
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_activites\\diagram.json",
+          "sha256": "6cbe90dcfb7605a1c544fec035b1a545647d8a4224bfdfadc7e00970756f4593",
+          "bytes": 3871
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_activites\\endpoints.h",
+          "sha256": "6a0291efd1c38d58c7b3c98fa9931db03f76b37714942f731b530528603db288",
+          "bytes": 116357
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_activites-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 8,
+      "entity": "salle_manger",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812418387794945",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_manger\\device_config.h",
+          "sha256": "2f7eb2084c67c4df2b0f90cdf5644b95364f9ee657042f335dedc8771b085614",
+          "bytes": 709
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_manger\\diagram.json",
+          "sha256": "811f9f2abad6583c1fc457062768a815280e80b4f12d478d0729c9c8da05ef97",
+          "bytes": 4361
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\salle_manger\\endpoints.h",
+          "sha256": "b1a0fb65b8b3ec9da2c06fb49cc85caf6f6c70e9e4bbbca3c91e1363d5345249",
+          "bytes": 130763
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\salle_manger-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 9,
+      "entity": "office_cuisine",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812525602607105",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\office_cuisine\\device_config.h",
+          "sha256": "343f87c92df7c5f0b100e624ef8f4b805209f519d293ce7f5e874ae8625123b0",
+          "bytes": 711
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\office_cuisine\\diagram.json",
+          "sha256": "62a2e4510afafa2b962b5d83721a757445457a5ac2e8399c269b4ee91ba30620",
+          "bytes": 3860
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\office_cuisine\\endpoints.h",
+          "sha256": "7087d8146b3a986c0b7578360947e19c17620c5819f3f2d1cd3ad04ea6bdb12c",
+          "bytes": 116339
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\office_cuisine-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 10,
+      "entity": "ascenseur",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812886454362113",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 15,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\ascenseur\\device_config.h",
+          "sha256": "333ba290bab1d218c38e91a5b42e3b9f3b0a7620a46ff38068b418fbbded8129",
+          "bytes": 706
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\ascenseur\\diagram.json",
+          "sha256": "40cd91979313e5f9726f4a60ae7efb5aef02e267080ed6c4119c40df38777b55",
+          "bytes": 4581
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\ascenseur\\endpoints.h",
+          "sha256": "52ce6d9f8774bb8c043f1842ba58b1b3d6cfd1916ed5cdd314124da68097a650",
+          "bytes": 130744
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\ascenseur-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 11,
+      "entity": "hors_ehpad",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476811536858225665",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 5,
+      "expected_source_file_count": 17,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\hors_ehpad\\device_config.h",
+          "sha256": "1e0b7bfde214430ac3967561d47d029b3b03053538733fb4db1677c518d5d3c8",
+          "bytes": 707
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\hors_ehpad\\diagram.json",
+          "sha256": "c925fe3eb1f577ee5d42f13fabcfcbd2db22761b5d19e2c714cfbc01f8950b4b",
+          "bytes": 4352
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\hors_ehpad\\endpoints.h",
+          "sha256": "4c05765f467dad36dce82e29d949391e321b73c239e54e319d833d194c441672",
+          "bytes": 116425
+        },
+        {
+          "name": "gps-nmea.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\hors_ehpad\\gps-nmea.chip.c",
+          "sha256": "17a57dc188fe3e813057c6b83d767fb72120572377fec05552069f34c30b972b",
+          "bytes": 9633
+        },
+        {
+          "name": "gps-nmea.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\hors_ehpad\\gps-nmea.chip.json",
+          "sha256": "16b37c9b659e2890d76fd34defd96baeca79e32434531c753cffbe53a389313e",
+          "bytes": 893
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\hors_ehpad-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 12,
+      "entity": "jardin",
+      "clone_from": "hors_ehpad",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812205238482945",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "amg8833.chip.c",
+        "amg8833.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 5,
+      "expected_source_file_count": 19,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\jardin\\device_config.h",
+          "sha256": "1eaa271e1fa7843ad5045b31006cfec914f88ec55bb85fb34e37b1ad7e09b8cd",
+          "bytes": 703
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\jardin\\diagram.json",
+          "sha256": "53ba569b40e2bf7a5c84658292ed4e3e4dc4efd16674c666de5f31dc5920846a",
+          "bytes": 5201
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\jardin\\endpoints.h",
+          "sha256": "0f49131426a4caf9b53551c2e1d0202723f7cd87551e1e45e23614758386e326",
+          "bytes": 145246
+        },
+        {
+          "name": "amg8833.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\jardin\\amg8833.chip.c",
+          "sha256": "fa6d2d7e8d8bd1ef63c9242a03d3d97ca0af3a0bcaa98dfd531020588ec275f1",
+          "bytes": 9629
+        },
+        {
+          "name": "amg8833.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\jardin\\amg8833.chip.json",
+          "sha256": "aa06e999a3cb841f0895cb67a327fed8d0ad1de246cedace22e9ee5fe16e366f",
+          "bytes": 891
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\jardin-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 13,
+      "entity": "patio",
+      "clone_from": "jardin",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812092031057921",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 5,
+      "expected_source_file_count": 21,
+      "inherits_identical_files": [
+        "amg8833.chip.c",
+        "amg8833.chip.json",
+        "finite_float.h",
+        "gps-nmea.chip.c",
+        "gps-nmea.chip.json",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\patio\\device_config.h",
+          "sha256": "1d5cc2623c4a3ed625a02143caa6b0ca304a8a102843e179ffcfedf7a2e4be60",
+          "bytes": 702
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\patio\\diagram.json",
+          "sha256": "e0ac639fbe01ea239d4844d09539f4478cd3a454d30804b08721e3765fa4cede",
+          "bytes": 6086
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\patio\\endpoints.h",
+          "sha256": "a17202381bc7a9379ecf1e5f86be6277b37506d84ae5e480cb47d73bf1eb2d0c",
+          "bytes": 174134
+        },
+        {
+          "name": "digital-presence.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\patio\\digital-presence.chip.c",
+          "sha256": "7562c61c40ff7b7fe73f013a716d8bd6f93aeec5f79674c4ef0ddb413dca99df",
+          "bytes": 9627
+        },
+        {
+          "name": "digital-presence.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\patio\\digital-presence.chip.json",
+          "sha256": "a21c1522f7cc6797784fc1bf6a974e09821c86277b3b04b1629080a90094c682",
+          "bytes": 599
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\patio-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 14,
+      "entity": "couloir_principal",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476811865720014849",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 5,
+      "expected_source_file_count": 17,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_principal\\device_config.h",
+          "sha256": "48142a20a359e7782d81b6354cbe6241e9932bc055b5a47ca1a543c2bf1809d3",
+          "bytes": 714
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_principal\\diagram.json",
+          "sha256": "307cfc7a3d2e9cf63e0c55a2364a89a2d2a13275788f1ce6afc2f35a56f7cddc",
+          "bytes": 4448
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_principal\\endpoints.h",
+          "sha256": "cd429b5021b9d231b9a9aaf41022d2fd9ee928fba6e0bdb4bb8d9ecc5da9b01d",
+          "bytes": 130871
+        },
+        {
+          "name": "digital-presence.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_principal\\digital-presence.chip.c",
+          "sha256": "7562c61c40ff7b7fe73f013a716d8bd6f93aeec5f79674c4ef0ddb413dca99df",
+          "bytes": 9627
+        },
+        {
+          "name": "digital-presence.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_principal\\digital-presence.chip.json",
+          "sha256": "a21c1522f7cc6797784fc1bf6a974e09821c86277b3b04b1629080a90094c682",
+          "bytes": 599
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_principal-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 15,
+      "entity": "escalier",
+      "clone_from": "couloir_principal",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812746600517633",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 17,
+      "inherits_identical_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\escalier\\device_config.h",
+          "sha256": "06994eacb46ada3248e99ea86066151bacf09e88784a0c50164841f6e3bf9d1c",
+          "bytes": 705
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\escalier\\diagram.json",
+          "sha256": "656052ac88af7b4a75ceee29ae7e6dbd803a0c22a6a86a8ea7b1b239c375b67b",
+          "bytes": 4257
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\escalier\\endpoints.h",
+          "sha256": "c88d787b88588852074bc551a5936f91334b14ffd065fdf01bfa665f950c6365",
+          "bytes": 130710
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\escalier-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 16,
+      "entity": "palier_etage",
+      "clone_from": "couloir_principal",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476815009189781505",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 17,
+      "inherits_identical_files": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\palier_etage\\device_config.h",
+          "sha256": "1822b19a079589cda02abf6caa980095aacfa6ae9825a7f2fd3606128847452c",
+          "bytes": 709
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\palier_etage\\diagram.json",
+          "sha256": "360d2894ddee2bb8b6e725b08114b937d5fa38e9845f32a6b5062e2a1ed9ad2d",
+          "bytes": 4968
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\palier_etage\\endpoints.h",
+          "sha256": "30f87630d4763d141e6f94a013810cfd5ab0e7c0ba614199b4bbcbb397106092",
+          "bytes": 145268
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\palier_etage-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 17,
+      "entity": "couloir_aile_rdc",
+      "clone_from": "entree",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476812638260579329",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 5,
+      "expected_source_file_count": 17,
+      "inherits_identical_files": [
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_rdc\\device_config.h",
+          "sha256": "e87720855824361e9d75db275a83b3dcded7b4409bce4d6f23d4d3a851e5167c",
+          "bytes": 713
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_rdc\\diagram.json",
+          "sha256": "20c8354e70a7afca6891e68fa3007fcfdd0d5af72cac95bac67abd776b845ac3",
+          "bytes": 4526
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_rdc\\endpoints.h",
+          "sha256": "979a4b90195c5c94cc2dadb4580738292739d338ba5a88ff0234178a0f07171a",
+          "bytes": 130814
+        },
+        {
+          "name": "ble-fixture.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_rdc\\ble-fixture.chip.c",
+          "sha256": "9a811d7de9ad75e30f5ef49eb95297e6a0e18cb9115aacbbc2c4c16373c0d2b4",
+          "bytes": 9626
+        },
+        {
+          "name": "ble-fixture.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_rdc\\ble-fixture.chip.json",
+          "sha256": "d4795ce1a5b05ac411b44830a4f9b6ea225364c44bdd5aeafb23542aacc3e427",
+          "bytes": 606
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_aile_rdc-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 18,
+      "entity": "couloir_aile_a_etage",
+      "clone_from": "couloir_aile_rdc",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476813516353990657",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 3,
+      "expected_source_file_count": 17,
+      "inherits_identical_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_a_etage\\device_config.h",
+          "sha256": "5def0c7184cbde5bfdfd677f2b51c7ca6a67c51a799e0b5f7378b8a58027a741",
+          "bytes": 717
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_a_etage\\diagram.json",
+          "sha256": "632af2f7c8a9eed1b927f026f1b610a99fa7ce2f84a8f288d323ee45c6ca9556",
+          "bytes": 4526
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_a_etage\\endpoints.h",
+          "sha256": "cec08bec3822303b7ec089c92a5fe3d06ccb47981274996bebedc205836b01dd",
+          "bytes": 130886
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_aile_a_etage-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 19,
+      "entity": "couloir_aile_b_etage",
+      "clone_from": "couloir_aile_rdc",
+      "clone_source_url": null,
+      "source_url_resolution": "Use corrected saved URL recorded during this batch, never the original old URL.",
+      "original_zone_url": "https://wokwi.com/projects/476813650362019841",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "digital-presence.chip.c",
+        "digital-presence.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 5,
+      "expected_source_file_count": 19,
+      "inherits_identical_files": [
+        "ble-fixture.chip.c",
+        "ble-fixture.chip.json",
+        "finite_float.h",
+        "libraries.txt",
+        "protocols.h",
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sketch.ino",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_b_etage\\device_config.h",
+          "sha256": "37a7ad6a5378b0e1ef4f9511068cfc5e6c028846ccc3b91c9519d578a7737b39",
+          "bytes": 717
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_b_etage\\diagram.json",
+          "sha256": "52408f507ed0ecddd155896b65b33da4bd6b8eabe06fddd8ba1602888143419e",
+          "bytes": 4422
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_b_etage\\endpoints.h",
+          "sha256": "c2eb6d75f0fa3fb4c8560a32b15fbc2c13f85dde267f4522dd4ad2a615813a9e",
+          "bytes": 130907
+        },
+        {
+          "name": "digital-presence.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_b_etage\\digital-presence.chip.c",
+          "sha256": "7562c61c40ff7b7fe73f013a716d8bd6f93aeec5f79674c4ef0ddb413dca99df",
+          "bytes": 9627
+        },
+        {
+          "name": "digital-presence.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\couloir_aile_b_etage\\digital-presence.chip.json",
+          "sha256": "a21c1522f7cc6797784fc1bf6a974e09821c86277b3b04b1629080a90094c682",
+          "bytes": 599
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\couloir_aile_b_etage-full-comparison.json",
+      "status": "not_started"
+    },
+    {
+      "step": 20,
+      "entity": "kinesitherapie",
+      "clone_from": "R001",
+      "clone_source_url": "https://wokwi.com/projects/477043203503950849",
+      "source_url_resolution": "Corrected R001 URL; replace diagram completely for kinesitherapie.",
+      "original_zone_url": "https://wokwi.com/projects/476813146364931073",
+      "replace": [
+        "device_config.h",
+        "diagram.json",
+        "endpoints.h"
+      ],
+      "add": [
+        "scd41.chip.c",
+        "scd41.chip.json",
+        "sgp40.chip.c",
+        "sgp40.chip.json",
+        "sound-level.chip.c",
+        "sound-level.chip.json",
+        "ze07co.chip.c",
+        "ze07co.chip.json"
+      ],
+      "delete": [],
+      "unexpected_inherited_files": [],
+      "write_count": 11,
+      "expected_source_file_count": 23,
+      "inherits_identical_files": [
+        "analog-signal.chip.c",
+        "analog-signal.chip.json",
+        "finite_float.h",
+        "libraries.txt",
+        "max30102.chip.c",
+        "max30102.chip.json",
+        "par-nibp.chip.c",
+        "par-nibp.chip.json",
+        "protocols.h",
+        "sketch.ino",
+        "tmp117.chip.c",
+        "tmp117.chip.json"
+      ],
+      "files_to_write": [
+        {
+          "name": "device_config.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\device_config.h",
+          "sha256": "cad8de309d467a42e3bf495d353e415e2bcbd73c321089e278bd610e1f06aefd",
+          "bytes": 711
+        },
+        {
+          "name": "diagram.json",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\diagram.json",
+          "sha256": "fc5439ec19bef2ba113de05c12e545a8056e110c79ac23240e33ab4635dd3cc0",
+          "bytes": 8308
+        },
+        {
+          "name": "endpoints.h",
+          "action": "replace",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\endpoints.h",
+          "sha256": "b16b6437a2d87617c6669fc3ef040f4c60f9308dfdccf0b4b060c4810a125b76",
+          "bytes": 232240
+        },
+        {
+          "name": "scd41.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\scd41.chip.c",
+          "sha256": "c0265458d2c64c9a23111f5ea1b3c799f652255f4cb7d1cd66627553dd078177",
+          "bytes": 9632
+        },
+        {
+          "name": "scd41.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\scd41.chip.json",
+          "sha256": "f4b84ce4344c7dbe0698ae2d9e391591dd500c6211eea582a21c27e1bf28d6c9",
+          "bytes": 901
+        },
+        {
+          "name": "sgp40.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\sgp40.chip.c",
+          "sha256": "714f687b7d1e615df7dda5b97c9a8f21b4a39657564b4005819a2cb0dbce1e9f",
+          "bytes": 9631
+        },
+        {
+          "name": "sgp40.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\sgp40.chip.json",
+          "sha256": "f74731067779218c3dd5e7562a06771ac8ae2a56b5b91959f039150b122b1168",
+          "bytes": 607
+        },
+        {
+          "name": "sound-level.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\sound-level.chip.c",
+          "sha256": "eec49391159da4cab89722ddaca8e6e885a0e95c31c090a7cdf40c92b157e010",
+          "bytes": 9629
+        },
+        {
+          "name": "sound-level.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\sound-level.chip.json",
+          "sha256": "1c246790fb8b8d664820cbfb191909594960542cf1fb20d85bbbf3b5d9d34c03",
+          "bytes": 600
+        },
+        {
+          "name": "ze07co.chip.c",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\ze07co.chip.c",
+          "sha256": "c0fcb657816d1f01446ce08f3fbe5169fbebe3d3e5c9cb12ddfc6ef8bc2dd79c",
+          "bytes": 9621
+        },
+        {
+          "name": "ze07co.chip.json",
+          "action": "add",
+          "upload_path": "D:\\projet spé Hepad\\output\\wokwi-transfert\\upload\\kinesitherapie\\ze07co.chip.json",
+          "sha256": "0ae0f08cf85a5704a7f35db64706bc9f6cca80367b1c0f872f6f986976ffd246",
+          "bytes": 592
+        }
+      ],
+      "download_report": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verified\\kinesitherapie-full-comparison.json",
+      "status": "not_started"
+    }
+  ],
+  "summary": {
+    "zone_count": 20,
+    "entry_chip_set_zone_count_including_entry": 10,
+    "entry_chip_set_clone_count": 9,
+    "writes_after_entry_verified": 74,
+    "entry_bootstrap_expected_writes_subject_to_download": 5,
+    "expected_total_writes_if_original_entry_matches_local_historical_version": 79,
+    "deletions_in_clone_sequence": 0,
+    "all_selected_transitions_have_no_extra_files": true,
+    "baseline_3_files_saved_by_exact_diagram_reuse": 3
+  },
+  "verification": {
+    "script": "D:\\projet spé Hepad\\output\\wokwi-transfert\\verify_wokwi_zip.py",
+    "command_template": "python .\\output\\wokwi-transfert\\verify_wokwi_zip.py --entity ENTITY --zip 'DOWNLOADED_ZIP' --allow-crlf-normalization",
+    "never_pass": "--allow-r001-original-esp-left",
+    "required": [
+      "status == passed",
+      "missing_files == []",
+      "unexpected_files == []",
+      "duplicate_archive_entries == []",
+      "mismatched_files == []",
+      "accepted_exception_count == 0"
+    ],
+    "note": "A correct download establishes saved sources only. Do not claim a successful simulation unless actually observed.",
+    "r001_to_kinesitherapie_inheritance": "The 12 inherited R001 files were compared directly from the saved verified R001 ZIP to current staging and were all exactly equal; its diagram is replaced for kine."
+  }
+}

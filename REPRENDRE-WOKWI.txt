@@ -1,0 +1,9 @@
+Publication terminee : 45 projets Wokwi corriges et 733 fichiers verifies.
+
+Lire docs/BILAN-WOKWI-2026-10-06.md et output/wokwi-transfert/REPRISE-WOKWI.txt.
+Liens : output/wokwi-transfert/LIENS-WOKWI.txt
+Sauvegarde : output/sauvegardes-wokwi/WOKWI-REPRISE-DERNIERE.zip
+Verification portable : python scripts/verify_wokwi_publication.py
+
+Les chemins absolus dans les anciens rapports sont des traces historiques du PC
+de publication. Le script portable utilise les fichiers de ce depot.

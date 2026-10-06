@@ -1,0 +1,4 @@
+{
+  "exit_code": 1,
+  "output": "Wokwi CLI v0.28.0 (872b270d5383)\nConnected to Wokwi Simulation API 1.0.0-20261005-g66a83b38\n\nAPI Error: You have used up your Free plan monthly CI minute quota. Please upgrade to a paid plan at https://wokwi.com/pricing.\n"
+}

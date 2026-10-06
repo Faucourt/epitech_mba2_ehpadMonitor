@@ -1,0 +1,89 @@
+{
+  "captured_at": "2026-10-05T13:22:47.216Z",
+  "project_url": "https://wokwi.com/projects/477043364101807105",
+  "saved": true,
+  "ready_header_observed": true,
+  "sample_count": 102,
+  "devices": [
+    "R002-wearable-mpu6050",
+    "R002-wearable-max30102",
+    "R002-wearable-tmp117",
+    "R002-wearable-sos",
+    "R002-wearable-ecg",
+    "R002-wearable-respiration",
+    "R002-wearable-nibp",
+    "R002-radar-radar",
+    "R002-porte-door",
+    "R002-sdb_pir-pir"
+  ],
+  "optical": [
+    {
+      "schema": 1,
+      "device_id": "R002-wearable-max30102",
+      "entity_id": "R002",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "47118f49",
+      "seq": 10,
+      "uptime_ms": 20022,
+      "available": true,
+      "sample_age_ms": 30,
+      "values": {
+        "red_raw": 54821,
+        "ir_raw": 59725,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    },
+    {
+      "schema": 1,
+      "device_id": "R002-wearable-max30102",
+      "entity_id": "R002",
+      "kind": "max30102",
+      "source": "wokwi",
+      "boot": "47118f49",
+      "seq": 11,
+      "uptime_ms": 22022,
+      "available": true,
+      "sample_age_ms": 30,
+      "values": {
+        "red_raw": 55178,
+        "ir_raw": 60274,
+        "heart_rate": 75,
+        "spo2": 93
+      }
+    }
+  ],
+  "radar": [
+    {
+      "schema": 1,
+      "device_id": "R002-radar-radar",
+      "entity_id": "R002",
+      "kind": "radar",
+      "source": "wokwi",
+      "boot": "47118f49",
+      "seq": 9,
+      "uptime_ms": 19222,
+      "available": true,
+      "sample_age_ms": 424,
+      "values": {
+        "presence": false
+      }
+    },
+    {
+      "schema": 1,
+      "device_id": "R002-radar-radar",
+      "entity_id": "R002",
+      "kind": "radar",
+      "source": "wokwi",
+      "boot": "47118f49",
+      "seq": 10,
+      "uptime_ms": 21222,
+      "available": true,
+      "sample_age_ms": 422,
+      "values": {
+        "presence": false
+      }
+    }
+  ]
+}

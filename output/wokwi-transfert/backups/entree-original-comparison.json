@@ -1,0 +1,289 @@
+{
+  "purpose": "Original project before corrections; not a corrected copy",
+  "entity": "entree",
+  "original_url": "https://wokwi.com/projects/476813411149295617",
+  "downloaded_zip": "C:\\Users\\lebre\\Downloads\\EHPAD collectif — entree.zip",
+  "backup_zip": "D:\\projet spé Hepad\\output\\wokwi-transfert\\backups\\entree-original-cfacc49168fc.zip",
+  "zip_sha256": "cfacc49168fcf869b094def178acbeae4facc5b67d117f026b5d5b5f0761c38a",
+  "checked_at": "2026-10-06T13:11:27.669827+00:00",
+  "status": "failed",
+  "expected_file_count": 15,
+  "downloaded_file_count": 16,
+  "exact_count": 9,
+  "all_exact": false,
+  "normalized_equal": false,
+  "crlf_normalized_count": 0,
+  "accepted_exception_count": 0,
+  "missing_files": [],
+  "extra_files": [
+    {
+      "name": "wokwi-project.txt",
+      "bytes": 109,
+      "sha256": "aa8eaf091b61cac6ed44bce8e4407d47ba5fd6a75ae236d04cd8ac9bc9dc7de2",
+      "classification": "native_wokwi_metadata"
+    }
+  ],
+  "unexpected_files": [],
+  "duplicate_archive_entries": [],
+  "mismatched_files": [
+    "diagram.json",
+    "endpoints.h",
+    "scd41.chip.c",
+    "sgp40.chip.c",
+    "sound-level.chip.c",
+    "ze07co.chip.c"
+  ],
+  "files": [
+    {
+      "name": "device_config.h",
+      "expected": {
+        "bytes": 703,
+        "sha256": "70046c3808fae86809a3339708746d167ea2b6c697da0e76be3376dc382667a1"
+      },
+      "downloaded": {
+        "bytes": 703,
+        "sha256": "70046c3808fae86809a3339708746d167ea2b6c697da0e76be3376dc382667a1"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "diagram.json",
+      "expected": {
+        "bytes": 5292,
+        "sha256": "e30c7c1cb01b706f2b31d9cc4880f5a372d3b1ef78d724a42a0d60783e791551"
+      },
+      "downloaded": {
+        "bytes": 3381,
+        "sha256": "239665888aa281204ed94aa85235fda912c2e250d4dd78e7c75a2e640c369876"
+      },
+      "accepted": false,
+      "exact_equal": false,
+      "normalized_equal": false,
+      "status": "mismatch"
+    },
+    {
+      "name": "endpoints.h",
+      "expected": {
+        "bytes": 145146,
+        "sha256": "25a346ede7769e6284b08f3284eb6e3e9f35b1b464ae217e2db43028a0ccb502"
+      },
+      "downloaded": {
+        "bytes": 134786,
+        "sha256": "1a82087ce0374fb9cdb201fbdf523f920024931495f9a0eee05857e789f99c6f"
+      },
+      "accepted": false,
+      "exact_equal": false,
+      "normalized_equal": false,
+      "status": "mismatch"
+    },
+    {
+      "name": "finite_float.h",
+      "expected": {
+        "bytes": 434,
+        "sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4"
+      },
+      "downloaded": {
+        "bytes": 434,
+        "sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "libraries.txt",
+      "expected": {
+        "bytes": 256,
+        "sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602"
+      },
+      "downloaded": {
+        "bytes": 256,
+        "sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "protocols.h",
+      "expected": {
+        "bytes": 1993,
+        "sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8"
+      },
+      "downloaded": {
+        "bytes": 1993,
+        "sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "scd41.chip.c",
+      "expected": {
+        "bytes": 9632,
+        "sha256": "c0265458d2c64c9a23111f5ea1b3c799f652255f4cb7d1cd66627553dd078177"
+      },
+      "downloaded": {
+        "bytes": 8951,
+        "sha256": "4a5628d719ca0d3009396401b56bf169bde6a64a71a18e8808b9e34e9d9dd9ce"
+      },
+      "accepted": false,
+      "exact_equal": false,
+      "normalized_equal": false,
+      "status": "mismatch"
+    },
+    {
+      "name": "scd41.chip.json",
+      "expected": {
+        "bytes": 901,
+        "sha256": "f4b84ce4344c7dbe0698ae2d9e391591dd500c6211eea582a21c27e1bf28d6c9"
+      },
+      "downloaded": {
+        "bytes": 901,
+        "sha256": "f4b84ce4344c7dbe0698ae2d9e391591dd500c6211eea582a21c27e1bf28d6c9"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "sgp40.chip.c",
+      "expected": {
+        "bytes": 9631,
+        "sha256": "714f687b7d1e615df7dda5b97c9a8f21b4a39657564b4005819a2cb0dbce1e9f"
+      },
+      "downloaded": {
+        "bytes": 8950,
+        "sha256": "4a6cf38550b37789b905677d05a17fc67f0e86e7e803ca7e0eb50be23739ba11"
+      },
+      "accepted": false,
+      "exact_equal": false,
+      "normalized_equal": false,
+      "status": "mismatch"
+    },
+    {
+      "name": "sgp40.chip.json",
+      "expected": {
+        "bytes": 607,
+        "sha256": "f74731067779218c3dd5e7562a06771ac8ae2a56b5b91959f039150b122b1168"
+      },
+      "downloaded": {
+        "bytes": 607,
+        "sha256": "f74731067779218c3dd5e7562a06771ac8ae2a56b5b91959f039150b122b1168"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "sketch.ino",
+      "expected": {
+        "bytes": 2689,
+        "sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7"
+      },
+      "downloaded": {
+        "bytes": 2689,
+        "sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "sound-level.chip.c",
+      "expected": {
+        "bytes": 9629,
+        "sha256": "eec49391159da4cab89722ddaca8e6e885a0e95c31c090a7cdf40c92b157e010"
+      },
+      "downloaded": {
+        "bytes": 8948,
+        "sha256": "a3c0a2d4469be6209855407a66cf3e3215c2319c45f46d1f34dacee9c59e4712"
+      },
+      "accepted": false,
+      "exact_equal": false,
+      "normalized_equal": false,
+      "status": "mismatch"
+    },
+    {
+      "name": "sound-level.chip.json",
+      "expected": {
+        "bytes": 600,
+        "sha256": "1c246790fb8b8d664820cbfb191909594960542cf1fb20d85bbbf3b5d9d34c03"
+      },
+      "downloaded": {
+        "bytes": 600,
+        "sha256": "1c246790fb8b8d664820cbfb191909594960542cf1fb20d85bbbf3b5d9d34c03"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    },
+    {
+      "name": "ze07co.chip.c",
+      "expected": {
+        "bytes": 9621,
+        "sha256": "c0fcb657816d1f01446ce08f3fbe5169fbebe3d3e5c9cb12ddfc6ef8bc2dd79c"
+      },
+      "downloaded": {
+        "bytes": 8940,
+        "sha256": "bc0485c7704e489c2c8a1bed435fa0b00114bcfcd3091f182ac528b657d757d3"
+      },
+      "accepted": false,
+      "exact_equal": false,
+      "normalized_equal": false,
+      "status": "mismatch"
+    },
+    {
+      "name": "ze07co.chip.json",
+      "expected": {
+        "bytes": 592,
+        "sha256": "0ae0f08cf85a5704a7f35db64706bc9f6cca80367b1c0f872f6f986976ffd246"
+      },
+      "downloaded": {
+        "bytes": 592,
+        "sha256": "0ae0f08cf85a5704a7f35db64706bc9f6cca80367b1c0f872f6f986976ffd246"
+      },
+      "accepted": true,
+      "exact_equal": true,
+      "normalized_equal": true,
+      "status": "exact"
+    }
+  ],
+  "diagram_difference": {
+    "semantically_equal": false,
+    "different_top_level_fields": [
+      "connections",
+      "parts"
+    ],
+    "changed_parts": [
+      {
+        "id": "esp",
+        "original": {
+          "type": "board-esp32-devkit-c-v4",
+          "id": "esp",
+          "top": 0,
+          "left": -4.76,
+          "attrs": {}
+        },
+        "corrected": {
+          "type": "board-esp32-devkit-c-v4",
+          "id": "esp",
+          "top": 0,
+          "left": 0,
+          "attrs": {}
+        }
+      }
+    ]
+  }
+}

@@ -8,6 +8,7 @@
 #include <string.h>
 typedef struct {
   uint8_t regs[256], fifo[32][6], reg, pos, wp, rp, bytepos;
+  uint8_t fifo_count, fifo_sample[6];
   uint8_t response[192], tx[256]; unsigned response_len, readpos, writes;
   uint16_t command; bool running; double measurement_at;
   uint8_t rx[8], rxlen; bool initialized, measured; double rx_at;
@@ -73,8 +74,10 @@ static bool write_i2c(void *u,uint8_t b) {
   if(m->writes==0)m->reg=b;else {
     m->regs[m->reg]=b;
 #if MODEL == 1
-    if(m->reg==4)m->wp=b&31;if(m->reg==6){m->rp=b&31;m->bytepos=0;}
-    if(m->reg==9 && (b&0x40)){memset(m->regs,0,256);m->wp=m->rp=m->bytepos=0;}
+    if(m->reg==4){m->wp=b&31;m->fifo_count=(m->wp-m->rp)&31;}
+    if(m->reg==5)m->regs[5]=b&31;
+    if(m->reg==6){m->rp=b&31;m->bytepos=0;m->fifo_count=(m->wp-m->rp)&31;}
+    if(m->reg==9 && (b&0x40)){memset(m->regs,0,256);m->wp=m->rp=m->bytepos=m->fifo_count=0;m->measurement_at=get_sim_nanos_d();}
 #endif
     m->reg++;
   }
@@ -84,8 +87,18 @@ static bool write_i2c(void *u,uint8_t b) {
 static uint8_t read_i2c(void *u) {
   model_t *m=u;
 #if MODEL == 1
-  if(m->reg==7){uint8_t v=m->fifo[m->rp][m->bytepos++];if(m->bytepos==6){m->bytepos=0;m->rp=(m->rp+1)&31;}return v;}
-  uint8_t r=m->reg++;if(r==4)return m->wp;if(r==6)return m->rp;if(r==255)return 0x15;if(r==254)return 3;return m->regs[r];
+  if(m->reg==7){
+    if(!m->bytepos){
+      if(!m->fifo_count)return 0;
+      // Datasheet: RD_PTR advances at the FIRST byte. Latch the complete
+      // sample so a producer tick/rollover cannot splice two samples.
+      memcpy(m->fifo_sample,m->fifo[m->rp],6);
+      m->rp=(m->rp+1)&31;m->fifo_count--;m->regs[5]=0;m->regs[0]&=~0x40;
+    }
+    uint8_t v=m->fifo_sample[m->bytepos++];if(m->bytepos==6)m->bytepos=0;return v;
+  }
+  uint8_t r=m->reg++;if(r==4)return m->wp;if(r==6)return m->rp;if(r==255)return 0x15;if(r==254)return 3;
+  uint8_t v=m->regs[r];if(r==0 || r==1)m->regs[r]=0;return v;
 #elif MODEL == 2
   return m->response[(m->readpos++)&1];
 #elif MODEL == 3 || MODEL == 4 || MODEL == 12
@@ -101,11 +114,17 @@ static void tick(void *u) {
   if((m->regs[9]&7)!=3 || (m->regs[9]&0x80))return;
   // 100 Hz ADC / averaging 4 = 25 FIFO samples/s, as configured by firmware.
   if(get_sim_nanos_d()-m->measurement_at<4e7)return;m->measurement_at=get_sim_nanos_d();
+  if(m->fifo_count==32){
+    if(m->regs[5]<31)m->regs[5]++;
+    if(!(m->regs[8]&0x10))return;
+    m->rp=(m->rp+1)&31;m->fifo_count--;
+  }
   float pulse=sinf(seconds*6.283185307*attr_read_float(m->a)/60);
   uint32_t ir=attr_read_float(m->d)>0 ? 60000+3500*pulse : 0;
   uint32_t red=attr_read_float(m->d)>0 ? 55000+attr_read_float(m->b)*3500*pulse : 0;
   uint8_t *p=m->fifo[m->wp];p[0]=red>>16;p[1]=red>>8;p[2]=red;p[3]=ir>>16;p[4]=ir>>8;p[5]=ir;
-  uint8_t next=(m->wp+1)&31;if(next==m->rp){m->regs[5]=(m->regs[5]+1)&31;if(m->regs[8]&0x10)m->rp=(m->rp+1)&31;else return;}m->wp=next;
+  m->wp=(m->wp+1)&31;m->fifo_count++;m->regs[0]|=0x40;
+  if(m->fifo_count>=32-(m->regs[8]&15))m->regs[0]|=0x80;
 #elif MODEL == 7
   pin_write(m->out,attr_read_float(m->a)>=.5);
 #elif MODEL == 8

@@ -1,7 +1,7 @@
 name: Sensor contracts and custom chips
 on:
   push:
-    branches: [feat/wokwi-all-sensors]
+    branches: [feat/wokwi-all-sensors, main, master]
   pull_request:
     paths: ['firmware/all_sensors/**', 'backend/hardware*', 'tests/hardware/**', 'dashboard/public/hardware*', 'dashboard/public/*acquisition.js', 'dashboard/public/acquisition-dashboard.js', 'dashboard/public/index.html', 'dashboard/public/wokwi-dashboard.js']
 jobs:
@@ -17,6 +17,8 @@ jobs:
           node-version: '20'
       - run: python -m unittest discover -s tests/hardware -p 'test_*.py' -v
       - run: node --test tests/hardware/*.test.cjs
+      - run: node --test tests/wokwi-feed.test.cjs
+      - run: python scripts/verify_wokwi_publication.py
       - run: |
           g++ -std=c++11 tests/hardware/par_protocol.cpp -o /tmp/par-protocol
           /tmp/par-protocol

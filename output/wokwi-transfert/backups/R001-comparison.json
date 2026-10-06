@@ -1,0 +1,128 @@
+{
+  "entity": "R001",
+  "downloaded_zip": "C:\\Users\\lebre\\Downloads\\EHPAD collectif — R001.zip",
+  "backup_zip": "D:\\projet spé Hepad\\output\\wokwi-transfert\\backups\\EHPAD collectif — R001.zip",
+  "backup_sha256": "27cd9e1d400f27d750c3a90e9970f030cd3bae10d2bcf385905cb6aff3b7838e",
+  "comparison": [
+    {
+      "name": "analog-signal.chip.c",
+      "status": "changed",
+      "live_bytes": 8950,
+      "corrected_bytes": 9631,
+      "live_sha256": "bfc8048ed17c1c966ac562075021398397cf81ff84df28f60cb19209ec9b4732",
+      "corrected_sha256": "86c0707b923280fbdce7990e46ca1bd8b1578555491b34e0e92e5bdb3868a3b5"
+    },
+    {
+      "name": "analog-signal.chip.json",
+      "status": "identical",
+      "live_bytes": 1068,
+      "corrected_bytes": 1068,
+      "live_sha256": "9cda632a64d9158046acf1c81c417600b33c2acca3347aea74f8eaa60f40bae4",
+      "corrected_sha256": "9cda632a64d9158046acf1c81c417600b33c2acca3347aea74f8eaa60f40bae4"
+    },
+    {
+      "name": "device_config.h",
+      "status": "identical",
+      "live_bytes": 701,
+      "corrected_bytes": 701,
+      "live_sha256": "a7fa2be25b5b8b1224afe3350fd01e1e5da8ea4b026553befbdecf40c2ee9f27",
+      "corrected_sha256": "a7fa2be25b5b8b1224afe3350fd01e1e5da8ea4b026553befbdecf40c2ee9f27"
+    },
+    {
+      "name": "diagram.json",
+      "status": "changed",
+      "live_bytes": 3957,
+      "corrected_bytes": 5919,
+      "live_sha256": "9fb91a884da2afa206aa18fb2a187bff16dd14ff10fe6f07f966b70192485d9f",
+      "corrected_sha256": "d35f9aee8da4c79577b8fb3edd762039ef4c46007bfc0aed08a744900de85299"
+    },
+    {
+      "name": "endpoints.h",
+      "status": "changed",
+      "live_bytes": 148275,
+      "corrected_bytes": 159671,
+      "live_sha256": "1bac5d798854736b4165af4bd2ae0c6f9acf0a9a1c5474bb515d79ddd6e5d230",
+      "corrected_sha256": "fa90867d6e68391fde1f1127c78dc890591023f7edcbe8f7cb09537bc9eb8e8d"
+    },
+    {
+      "name": "finite_float.h",
+      "status": "identical",
+      "live_bytes": 434,
+      "corrected_bytes": 434,
+      "live_sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4",
+      "corrected_sha256": "9ac294365788a1c1fca39dd9457a276172f56adbe432c2f5ecbff853a75cc5f4"
+    },
+    {
+      "name": "libraries.txt",
+      "status": "identical",
+      "live_bytes": 256,
+      "corrected_bytes": 256,
+      "live_sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602",
+      "corrected_sha256": "47327cd464a404841646cbceb9bf9f3ad6bb16d5e8b6a5ca90a1ddf47f568602"
+    },
+    {
+      "name": "max30102.chip.c",
+      "status": "changed",
+      "live_bytes": 8943,
+      "corrected_bytes": 9624,
+      "live_sha256": "5767df2cc6d5f63bdf433efdf0b03375f932eb07a89bf9239f187eb2532d667e",
+      "corrected_sha256": "180c2585b9fd8a74943f189a761f2cdac3b0ade4ee288a073343fdc5a4740c20"
+    },
+    {
+      "name": "max30102.chip.json",
+      "status": "identical",
+      "live_bytes": 886,
+      "corrected_bytes": 886,
+      "live_sha256": "551218d902c910b686f0c27e78403f324b2f700549288d61deb22d7ddddc2484",
+      "corrected_sha256": "551218d902c910b686f0c27e78403f324b2f700549288d61deb22d7ddddc2484"
+    },
+    {
+      "name": "par-nibp.chip.c",
+      "status": "changed",
+      "live_bytes": 8950,
+      "corrected_bytes": 9631,
+      "live_sha256": "d83a3412810e611c13a96dfa71cc08195c7efa2bba2b84abb030033f5ab7f503",
+      "corrected_sha256": "c6068d9ba11d106dbb2ad6ca7ae1f26124ed640db21cf74ef8e9ed02f6c138cf"
+    },
+    {
+      "name": "par-nibp.chip.json",
+      "status": "identical",
+      "live_bytes": 899,
+      "corrected_bytes": 899,
+      "live_sha256": "7bd54e561fb900608dc9de7f59204f62d982598b53555c478da401adf5db2ca4",
+      "corrected_sha256": "7bd54e561fb900608dc9de7f59204f62d982598b53555c478da401adf5db2ca4"
+    },
+    {
+      "name": "protocols.h",
+      "status": "identical",
+      "live_bytes": 1993,
+      "corrected_bytes": 1993,
+      "live_sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8",
+      "corrected_sha256": "4ffdb8fdd2a4e8fc1009e11486076fdde774c7811f0c8d024ee3d34a8f300bf8"
+    },
+    {
+      "name": "sketch.ino",
+      "status": "identical",
+      "live_bytes": 2689,
+      "corrected_bytes": 2689,
+      "live_sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7",
+      "corrected_sha256": "c66eb4d6bbd59ffe157bd0d10eb53dbbaf7eaeb32b1bc9ca931cbbd4e44a93f7"
+    },
+    {
+      "name": "tmp117.chip.c",
+      "status": "changed",
+      "live_bytes": 8951,
+      "corrected_bytes": 9632,
+      "live_sha256": "efc1577a9761142967b2f17bdd7662807f56888a97acb9e6dc60fa4c457591ba",
+      "corrected_sha256": "5e3ef07e53da0a60c0119d694a0277e3950191759225a09f4cd1fa355d1424fd"
+    },
+    {
+      "name": "tmp117.chip.json",
+      "status": "identical",
+      "live_bytes": 614,
+      "corrected_bytes": 614,
+      "live_sha256": "d8deab5a035a91c9acf28b43108c41de93b144c0be63efc33884e73ce4cc7518",
+      "corrected_sha256": "d8deab5a035a91c9acf28b43108c41de93b144c0be63efc33884e73ce4cc7518"
+    }
+  ]
+}
