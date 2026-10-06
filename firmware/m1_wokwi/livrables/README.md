@@ -1,9 +1,19 @@
-# Livrables
+# Livrables M1
 
-Les deux vidéos existantes sont regroupées dans le dossier **[video](video/README.md)**.
-Elles montrent le TP M1 avec un seul ESP32 et ne valident pas les 437 capteurs.
-Aucune nouvelle vidéo n'a été enregistrée pour l'extension collective.
+Les vidéos sont regroupées dans le dossier **[video](video/README.md)**.
 
-Pour les trois résidents et l'environnement, consulter le
-[fonctionnement collectif](../../all_sensors/COLLECTIVE.md) et les
-[résultats de validation](../../all_sensors/VALIDATION.md).
+Démonstration principale : **[demo-digi4-wokwi-firefox.webm](video/demo-digi4-wokwi-firefox.webm)**, 59 secondes, 1980 × 900, sans son. Elle montre le dashboard Digi4 historique (25 résidents) avec P001 Wokwi dans la même grille et sa fiche. Captures : dashboard-digi4-alertes.png et dashboard-digi4-offline.png. Résultats : validation-digi4.json.
+
+La vidéo ci-dessous est l’archive de la première démonstration sur la page M1 dédiée.
+
+Vidéo : [demo-wokwi-firefox.webm](video/demo-wokwi-firefox.webm) — 1 min 50 s, 1700 × 900, sans audio. Captures réelles des vues Firefox à 1 image/s, côte à côte ; pauses entre opérations coupées.
+
+Preuves : dashboard-alertes.png, wokwi-mqtt.png, dashboard-offline.png, moniteur-serie.txt, etat-final.txt.
+
+m1-full.bin est le firmware complet compilé localement, à charger dans Wokwi avec F1 → Upload Firmware and Start Simulation.
+
+Projet : https://wokwi.com/projects/476777815517850625
+
+Les mesures viennent de l'ESP32 simulé. Détails de validation et limites dans le README parent.
+
+Ces videos concernent un seul ESP32 M1 et ne valident pas les 437 points de la flotte collective. Consulter [la flotte collective](../../all_sensors/COLLECTIVE.md).
