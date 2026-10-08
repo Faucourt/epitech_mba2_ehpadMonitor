@@ -1727,3 +1727,5 @@ Deux chutes retenues : r02 et r03 ; r01 conserve comme essai supplementaire.
 Annotations estimees, equipe yves selon le choix utilisateur.
 Figures : [docs/figures/phyphox](docs/figures/phyphox/).
 Verification : `python scripts/verifier_tp_phyphox.py`.
+
+Guide de presentation : [les 45 pages Wokwi et les capteurs personnalises](docs/GUIDE-EXPLICATION-45-PAGES-WOKWI.md).
