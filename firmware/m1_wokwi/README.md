@@ -2,6 +2,34 @@
 
 Projet enregistré : https://wokwi.com/projects/476777815517850625
 
+## Vérification complémentaire du 8 octobre 2026
+
+Le binaire local `livrables/m1-full.bin` a été chargé dans Wokwi et le client
+web HiveMQ connecté à `broker.hivemq.com:8884`, avec l'abonnement
+`digi5/lebretyves-ehpad-m1/#`. Les messages `vitals` et l'alerte `sos` ont été
+reçus dans ce client indépendant : [capture du client MQTT](livrables/hivemq-mesures-2026-10-08.png)
+et [texte des messages reçus](livrables/hivemq-messages-2026-10-08.txt).
+La [capture d'état](livrables/hivemq-status-2026-10-08.png) conserve les états
+online/offline observés au cours de cette session.
+
+Le signal audio du buzzer a été contrôlé au niveau de la sortie Web Audio du
+navigateur : silence initial, signal non nul après SOS, puis retour au silence.
+Une sonde `AnalyserNode` a mesuré 41 fenêtres non nulles, sans injecter de son
+de test. La cadence réelle dépend du navigateur et du temps simulé ; cela ne
+mesure pas précisément trois secondes réelles ni le volume des haut-parleurs.
+Voir la [preuve audio et son empreinte de firmware](livrables/buzzer-audio-2026-10-08.json)
+et la [sonde utilisée](livrables/sonde-audio.js).
+
+L'avertissement `LEDC is not initialized` reste visible au premier déclenchement
+dans le [journal série](livrables/serial-revalidation-2026-10-08.txt), mais le signal
+audio est produit et les publications continuent après le SOS. Aucune correction
+du firmware n'a été nécessaire pour cette vérification. Les constats du 2 octobre
+ci-dessous restent historiques ; la vidéo ancienne demeure sans son.
+
+Un onglet Wokwi en arrière-plan peut ralentir fortement la simulation et faire
+expirer MQTT : garder cet onglet visible pendant la démonstration. Cette session
+ne revalide pas la flotte de 45 projets, les bonus facultatifs ni le dashboard.
+
 ## Intégration au dashboard Digi4 principal
 
 Le flux est désormais intégré à la grille et à la fiche P001 du dashboard principal (/). La vérification réelle affiche 25 résidents historiques et P001, soit 26 fiches. FC, niveaux warning/danger, SOS, chute à 2,83 g et état offline ont été testés. Une reconnexion du backend conserve la fiche et ses événements.

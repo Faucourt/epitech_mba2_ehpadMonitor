@@ -1,0 +1,31 @@
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0030,len:1344
+load:0x40078000,len:13964
+load:0x40080400,len:3600
+entry 0x400805f0
+MPU-6050 détecté (0x68)
+Wi-Fi : connexion à Wokwi-GUEST.
+Wi-Fi OK, IP = 10.10.0.2
+MQTT : connexion à broker.hivemq.com:1883 (client digi5-lebretyves-ehpad-m1-esp32-01-2f07)... OK
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":0,"timestamp":"2026-10-08T21:23:12Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":1,"timestamp":"2026-10-08T21:23:14Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":2,"timestamp":"2026-10-08T21:23:16Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":3,"timestamp":"2026-10-08T21:23:18Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":4,"timestamp":"2026-10-08T21:23:20Z","heart_rate":87,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":5,"timestamp":"2026-10-08T21:23:22Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"sos","level":"danger","value":1.00,"timestamp":"2026-10-08T21:23:22Z"}
+E (29255) ledc: ledc_get_duty(745): LEDC is not initialized
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":6,"timestamp":"2026-10-08T21:23:24Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":7,"timestamp":"2026-10-08T21:23:26Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":8,"timestamp":"2026-10-08T21:23:28Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":9,"timestamp":"2026-10-08T21:23:30Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":10,"timestamp":"2026-10-08T21:23:32Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":11,"timestamp":"2026-10-08T21:23:34Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":12,"timestamp":"2026-10-08T21:23:36Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":13,"timestamp":"2026-10-08T21:23:38Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":14,"timestamp":"2026-10-08T21:23:40Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[PUB] {"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":15,"timestamp":"2026-10-08T21:23:42Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+[ALERTE envoyée] digi5/lebretyves-ehpad-m1/patient/P001/alerts -> {"patient_id":"P001","device_id":"esp32-01","type":"sos","level":"danger","value":1.00,"timestamp":"2026-10-08T21:23:42Z"}

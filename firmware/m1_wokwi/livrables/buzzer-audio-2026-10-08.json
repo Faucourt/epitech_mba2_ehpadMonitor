@@ -1,0 +1,2514 @@
+{
+  "date": "2026-10-08",
+  "method": "AnalyserNode inserted on Web Audio connections to destination before local firmware run. Time-domain RMS, 2048 samples, nominal polling 100 ms (browser throttling possible).",
+  "scope": "Browser-generated audio signal, not physical speaker output. No generated test sound injected.",
+  "trigger": "SOS button in Wokwi M1",
+  "firmware_sha256": "320eec9fac7cc361df6dacc0daaab02abbffd7031f3d6792e682d0f51e8a9b99",
+  "active_samples": 41,
+  "max_rms": 0.08291507519254923,
+  "silence_after": true,
+  "samples": [
+    {
+      "audioTime": 0.4106666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494560839
+    },
+    {
+      "audioTime": 1.4106666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494561840
+    },
+    {
+      "audioTime": 2.4106666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494562839
+    },
+    {
+      "audioTime": 3.4106666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494563840
+    },
+    {
+      "audioTime": 4.410666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494564840
+    },
+    {
+      "audioTime": 5.421333333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494565847
+    },
+    {
+      "audioTime": 18.952,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579377
+    },
+    {
+      "audioTime": 19.050666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579475
+    },
+    {
+      "audioTime": 19.152,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579573
+    },
+    {
+      "audioTime": 19.250666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579672
+    },
+    {
+      "audioTime": 19.352,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579773
+    },
+    {
+      "audioTime": 19.450666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579879
+    },
+    {
+      "audioTime": 19.552,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494579973
+    },
+    {
+      "audioTime": 19.650666666666663,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494580072
+    },
+    {
+      "audioTime": 19.752,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494580172
+    },
+    {
+      "audioTime": 19.850666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494580273
+    },
+    {
+      "audioTime": 19.952,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494580373
+    },
+    {
+      "audioTime": 20.050666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494580472
+    },
+    {
+      "audioTime": 20.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494580840
+    },
+    {
+      "audioTime": 21.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494581840
+    },
+    {
+      "audioTime": 22.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494582839
+    },
+    {
+      "audioTime": 23.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494583839
+    },
+    {
+      "audioTime": 24.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494584840
+    },
+    {
+      "audioTime": 25.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494585839
+    },
+    {
+      "audioTime": 26.410666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494586839
+    },
+    {
+      "audioTime": 26.76,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587183
+    },
+    {
+      "audioTime": 26.850666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587272
+    },
+    {
+      "audioTime": 26.952,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587372
+    },
+    {
+      "audioTime": 27.050666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587473
+    },
+    {
+      "audioTime": 27.152,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587580
+    },
+    {
+      "audioTime": 27.250666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587673
+    },
+    {
+      "audioTime": 27.352,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587773
+    },
+    {
+      "audioTime": 27.450666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587872
+    },
+    {
+      "audioTime": 27.552,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494587973
+    },
+    {
+      "audioTime": 27.650666666666663,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588072
+    },
+    {
+      "audioTime": 27.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588226
+    },
+    {
+      "audioTime": 27.88,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588305
+    },
+    {
+      "audioTime": 27.952,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588372
+    },
+    {
+      "audioTime": 28.181333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588602
+    },
+    {
+      "audioTime": 28.250666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588672
+    },
+    {
+      "audioTime": 28.352,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588772
+    },
+    {
+      "audioTime": 28.44,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588872
+    },
+    {
+      "audioTime": 28.552,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494588973
+    },
+    {
+      "audioTime": 28.650666666666663,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589072
+    },
+    {
+      "audioTime": 28.752,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589173
+    },
+    {
+      "audioTime": 28.850666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589272
+    },
+    {
+      "audioTime": 28.952,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589372
+    },
+    {
+      "audioTime": 29.050666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589472
+    },
+    {
+      "audioTime": 29.152,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589572
+    },
+    {
+      "audioTime": 29.250666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589672
+    },
+    {
+      "audioTime": 29.352,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589772
+    },
+    {
+      "audioTime": 29.450666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589873
+    },
+    {
+      "audioTime": 29.541333333333338,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494589972
+    },
+    {
+      "audioTime": 29.650666666666663,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590072
+    },
+    {
+      "audioTime": 29.770666666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590194
+    },
+    {
+      "audioTime": 29.850666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590273
+    },
+    {
+      "audioTime": 29.970666666666663,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590397
+    },
+    {
+      "audioTime": 30.072,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590494
+    },
+    {
+      "audioTime": 30.152,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590574
+    },
+    {
+      "audioTime": 30.272,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590696
+    },
+    {
+      "audioTime": 30.370666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590791
+    },
+    {
+      "audioTime": 30.472,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590891
+    },
+    {
+      "audioTime": 30.552,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494590972
+    },
+    {
+      "audioTime": 30.650666666666663,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591072
+    },
+    {
+      "audioTime": 30.752,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591172
+    },
+    {
+      "audioTime": 30.850666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591272
+    },
+    {
+      "audioTime": 30.952,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591372
+    },
+    {
+      "audioTime": 31.050666666666668,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591473
+    },
+    {
+      "audioTime": 31.152,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591573
+    },
+    {
+      "audioTime": 31.272,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591696
+    },
+    {
+      "audioTime": 31.381333333333338,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591803
+    },
+    {
+      "audioTime": 31.472,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494591889
+    },
+    {
+      "audioTime": 31.592,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592010
+    },
+    {
+      "audioTime": 31.690666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592112
+    },
+    {
+      "audioTime": 31.752,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592173
+    },
+    {
+      "audioTime": 31.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592329
+    },
+    {
+      "audioTime": 32.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592432
+    },
+    {
+      "audioTime": 32.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592545
+    },
+    {
+      "audioTime": 32.192,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592615
+    },
+    {
+      "audioTime": 32.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592723
+    },
+    {
+      "audioTime": 32.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592833
+    },
+    {
+      "audioTime": 32.53066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494592948
+    },
+    {
+      "audioTime": 32.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593022
+    },
+    {
+      "audioTime": 32.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593126
+    },
+    {
+      "audioTime": 32.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593233
+    },
+    {
+      "audioTime": 32.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593338
+    },
+    {
+      "audioTime": 32.992,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593409
+    },
+    {
+      "audioTime": 33.101333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593522
+    },
+    {
+      "audioTime": 33.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593626
+    },
+    {
+      "audioTime": 33.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593730
+    },
+    {
+      "audioTime": 33.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593836
+    },
+    {
+      "audioTime": 33.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494593940
+    },
+    {
+      "audioTime": 33.592,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594010
+    },
+    {
+      "audioTime": 33.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594122
+    },
+    {
+      "audioTime": 33.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594229
+    },
+    {
+      "audioTime": 33.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594331
+    },
+    {
+      "audioTime": 34.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594434
+    },
+    {
+      "audioTime": 34.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594545
+    },
+    {
+      "audioTime": 34.192,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594615
+    },
+    {
+      "audioTime": 34.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594724
+    },
+    {
+      "audioTime": 34.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594831
+    },
+    {
+      "audioTime": 34.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494594940
+    },
+    {
+      "audioTime": 34.592,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595009
+    },
+    {
+      "audioTime": 34.690666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595111
+    },
+    {
+      "audioTime": 34.792,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595212
+    },
+    {
+      "audioTime": 34.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595321
+    },
+    {
+      "audioTime": 34.970666666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595390
+    },
+    {
+      "audioTime": 35.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595529
+    },
+    {
+      "audioTime": 35.21066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595632
+    },
+    {
+      "audioTime": 35.32,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595737
+    },
+    {
+      "audioTime": 35.38133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595807
+    },
+    {
+      "audioTime": 35.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494595933
+    },
+    {
+      "audioTime": 35.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596018
+    },
+    {
+      "audioTime": 35.672,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596090
+    },
+    {
+      "audioTime": 35.821333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596244
+    },
+    {
+      "audioTime": 35.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596320
+    },
+    {
+      "audioTime": 36.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596428
+    },
+    {
+      "audioTime": 36.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596535
+    },
+    {
+      "audioTime": 36.221333333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596637
+    },
+    {
+      "audioTime": 36.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596721
+    },
+    {
+      "audioTime": 36.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596837
+    },
+    {
+      "audioTime": 36.45066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494596873
+    },
+    {
+      "audioTime": 36.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597026
+    },
+    {
+      "audioTime": 36.712,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597133
+    },
+    {
+      "audioTime": 36.832,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597250
+    },
+    {
+      "audioTime": 36.872,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597289
+    },
+    {
+      "audioTime": 37.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597437
+    },
+    {
+      "audioTime": 37.090666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597515
+    },
+    {
+      "audioTime": 37.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597621
+    },
+    {
+      "audioTime": 37.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597735
+    },
+    {
+      "audioTime": 37.4,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597818
+    },
+    {
+      "audioTime": 37.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494597944
+    },
+    {
+      "audioTime": 37.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598017
+    },
+    {
+      "audioTime": 37.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598126
+    },
+    {
+      "audioTime": 37.832,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598251
+    },
+    {
+      "audioTime": 37.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598339
+    },
+    {
+      "audioTime": 38,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598419
+    },
+    {
+      "audioTime": 38.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598545
+    },
+    {
+      "audioTime": 38.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598625
+    },
+    {
+      "audioTime": 38.330666666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598750
+    },
+    {
+      "audioTime": 38.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598828
+    },
+    {
+      "audioTime": 38.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494598948
+    },
+    {
+      "audioTime": 38.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599024
+    },
+    {
+      "audioTime": 38.690666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599112
+    },
+    {
+      "audioTime": 38.792,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599214
+    },
+    {
+      "audioTime": 38.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599324
+    },
+    {
+      "audioTime": 39,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599425
+    },
+    {
+      "audioTime": 39.101333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599517
+    },
+    {
+      "audioTime": 39.221333333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599645
+    },
+    {
+      "audioTime": 39.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599721
+    },
+    {
+      "audioTime": 39.42133333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599844
+    },
+    {
+      "audioTime": 39.501333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494599922
+    },
+    {
+      "audioTime": 39.632,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600048
+    },
+    {
+      "audioTime": 39.712,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600131
+    },
+    {
+      "audioTime": 39.821333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600245
+    },
+    {
+      "audioTime": 39.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600340
+    },
+    {
+      "audioTime": 40.032,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600451
+    },
+    {
+      "audioTime": 40.141333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600564
+    },
+    {
+      "audioTime": 40.232,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600649
+    },
+    {
+      "audioTime": 40.34133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600758
+    },
+    {
+      "audioTime": 40.44,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600864
+    },
+    {
+      "audioTime": 40.552,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494600974
+    },
+    {
+      "audioTime": 40.74133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601166
+    },
+    {
+      "audioTime": 40.832,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601255
+    },
+    {
+      "audioTime": 40.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601336
+    },
+    {
+      "audioTime": 41,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601420
+    },
+    {
+      "audioTime": 41.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601542
+    },
+    {
+      "audioTime": 41.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601618
+    },
+    {
+      "audioTime": 41.34133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601765
+    },
+    {
+      "audioTime": 41.432,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601848
+    },
+    {
+      "audioTime": 41.472,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494601890
+    },
+    {
+      "audioTime": 41.64,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602057
+    },
+    {
+      "audioTime": 41.730666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602150
+    },
+    {
+      "audioTime": 41.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602228
+    },
+    {
+      "audioTime": 41.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602334
+    },
+    {
+      "audioTime": 41.992,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602412
+    },
+    {
+      "audioTime": 42.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602541
+    },
+    {
+      "audioTime": 42.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602618
+    },
+    {
+      "audioTime": 42.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602731
+    },
+    {
+      "audioTime": 42.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602827
+    },
+    {
+      "audioTime": 42.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494602946
+    },
+    {
+      "audioTime": 42.61066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603029
+    },
+    {
+      "audioTime": 42.712,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603137
+    },
+    {
+      "audioTime": 42.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603222
+    },
+    {
+      "audioTime": 42.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603328
+    },
+    {
+      "audioTime": 43.06133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603479
+    },
+    {
+      "audioTime": 43.232,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603651
+    },
+    {
+      "audioTime": 43.36,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603779
+    },
+    {
+      "audioTime": 43.472,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494603890
+    },
+    {
+      "audioTime": 43.62133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604041
+    },
+    {
+      "audioTime": 43.690666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604113
+    },
+    {
+      "audioTime": 43.821333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604239
+    },
+    {
+      "audioTime": 43.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604337
+    },
+    {
+      "audioTime": 43.992,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604418
+    },
+    {
+      "audioTime": 44.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604548
+    },
+    {
+      "audioTime": 44.232,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604654
+    },
+    {
+      "audioTime": 44.32,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494604742
+    },
+    {
+      "audioTime": 44.56,
+      "rms": 0.082892182916934,
+      "state": "running",
+      "wall": 1791494604987
+    },
+    {
+      "audioTime": 44.57066666666667,
+      "rms": 0.08289765013587835,
+      "state": "running",
+      "wall": 1791494605124
+    },
+    {
+      "audioTime": 44.57066666666667,
+      "rms": 0.08289765013587835,
+      "state": "running",
+      "wall": 1791494605230
+    },
+    {
+      "audioTime": 44.57066666666667,
+      "rms": 0.08289765013587835,
+      "state": "running",
+      "wall": 1791494605336
+    },
+    {
+      "audioTime": 44.57066666666667,
+      "rms": 0.08289765013587835,
+      "state": "running",
+      "wall": 1791494605443
+    },
+    {
+      "audioTime": 44.57066666666667,
+      "rms": 0.08289765013587835,
+      "state": "running",
+      "wall": 1791494605547
+    },
+    {
+      "audioTime": 44.61066666666667,
+      "rms": 0.08289764991140787,
+      "state": "running",
+      "wall": 1791494605630
+    },
+    {
+      "audioTime": 44.712,
+      "rms": 0.08289218547954097,
+      "state": "running",
+      "wall": 1791494605730
+    },
+    {
+      "audioTime": 44.88,
+      "rms": 0.08289219052975406,
+      "state": "running",
+      "wall": 1791494605896
+    },
+    {
+      "audioTime": 45.02133333333333,
+      "rms": 0.08291507519254923,
+      "state": "running",
+      "wall": 1791494606040
+    },
+    {
+      "audioTime": 45.12,
+      "rms": 0.0828921976101225,
+      "state": "running",
+      "wall": 1791494606141
+    },
+    {
+      "audioTime": 45.24,
+      "rms": 0.08289220248229907,
+      "state": "running",
+      "wall": 1791494606256
+    },
+    {
+      "audioTime": 45.36,
+      "rms": 0.0828922078361249,
+      "state": "running",
+      "wall": 1791494606375
+    },
+    {
+      "audioTime": 45.53066666666667,
+      "rms": 0.08289767616526818,
+      "state": "running",
+      "wall": 1791494606544
+    },
+    {
+      "audioTime": 45.650666666666666,
+      "rms": 0.08289768189486081,
+      "state": "running",
+      "wall": 1791494606662
+    },
+    {
+      "audioTime": 45.77066666666666,
+      "rms": 0.0828976893473491,
+      "state": "running",
+      "wall": 1791494606789
+    },
+    {
+      "audioTime": 45.96,
+      "rms": 0.08289223621435834,
+      "state": "running",
+      "wall": 1791494606981
+    },
+    {
+      "audioTime": 46.152,
+      "rms": 0.08289223671370727,
+      "state": "running",
+      "wall": 1791494607165
+    },
+    {
+      "audioTime": 46.272,
+      "rms": 0.08289223674464465,
+      "state": "running",
+      "wall": 1791494607288
+    },
+    {
+      "audioTime": 46.370666666666665,
+      "rms": 0.08289768723350366,
+      "state": "running",
+      "wall": 1791494607391
+    },
+    {
+      "audioTime": 46.552,
+      "rms": 0.08289223749813598,
+      "state": "running",
+      "wall": 1791494607563
+    },
+    {
+      "audioTime": 46.66133333333333,
+      "rms": 0.0829150676896197,
+      "state": "running",
+      "wall": 1791494607680
+    },
+    {
+      "audioTime": 46.84,
+      "rms": 0.08289224386001874,
+      "state": "running",
+      "wall": 1791494607856
+    },
+    {
+      "audioTime": 46.94133333333333,
+      "rms": 0.08291506600413878,
+      "state": "running",
+      "wall": 1791494607961
+    },
+    {
+      "audioTime": 47.06133333333333,
+      "rms": 0.08291506521196708,
+      "state": "running",
+      "wall": 1791494608073
+    },
+    {
+      "audioTime": 47.232,
+      "rms": 0.08289225655511362,
+      "state": "running",
+      "wall": 1791494608245
+    },
+    {
+      "audioTime": 47.352,
+      "rms": 0.08289225129226184,
+      "state": "running",
+      "wall": 1791494608364
+    },
+    {
+      "audioTime": 47.461333333333336,
+      "rms": 0.08291504871592859,
+      "state": "running",
+      "wall": 1791494608473
+    },
+    {
+      "audioTime": 47.632,
+      "rms": 0.08289224231843836,
+      "state": "running",
+      "wall": 1791494608643
+    },
+    {
+      "audioTime": 47.74133333333333,
+      "rms": 0.08291503159345362,
+      "state": "running",
+      "wall": 1791494608755
+    },
+    {
+      "audioTime": 47.84,
+      "rms": 0.08289223878582049,
+      "state": "running",
+      "wall": 1791494608856
+    },
+    {
+      "audioTime": 47.94133333333333,
+      "rms": 0.08291502229605137,
+      "state": "running",
+      "wall": 1791494608956
+    },
+    {
+      "audioTime": 48.050666666666665,
+      "rms": 0.0828976741305645,
+      "state": "running",
+      "wall": 1791494609070
+    },
+    {
+      "audioTime": 48.221333333333334,
+      "rms": 0.08291501150689955,
+      "state": "running",
+      "wall": 1791494609241
+    },
+    {
+      "audioTime": 48.312,
+      "rms": 0.08289223630269153,
+      "state": "running",
+      "wall": 1791494609331
+    },
+    {
+      "audioTime": 48.42133333333334,
+      "rms": 0.08291500581046443,
+      "state": "running",
+      "wall": 1791494609435
+    },
+    {
+      "audioTime": 48.53066666666667,
+      "rms": 0.08289767323946799,
+      "state": "running",
+      "wall": 1791494609549
+    },
+    {
+      "audioTime": 48.650666666666666,
+      "rms": 0.08289767201855873,
+      "state": "running",
+      "wall": 1791494609662
+    },
+    {
+      "audioTime": 48.752,
+      "rms": 0.0828922416659642,
+      "state": "running",
+      "wall": 1791494609763
+    },
+    {
+      "audioTime": 48.861333333333334,
+      "rms": 0.08289767416448761,
+      "state": "running",
+      "wall": 1791494609871
+    },
+    {
+      "audioTime": 49,
+      "rms": 0.0828922407637356,
+      "state": "running",
+      "wall": 1791494610018
+    },
+    {
+      "audioTime": 49.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610140
+    },
+    {
+      "audioTime": 49.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610221
+    },
+    {
+      "audioTime": 49.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610324
+    },
+    {
+      "audioTime": 49.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610428
+    },
+    {
+      "audioTime": 49.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610531
+    },
+    {
+      "audioTime": 49.632,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610643
+    },
+    {
+      "audioTime": 49.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610718
+    },
+    {
+      "audioTime": 49.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610826
+    },
+    {
+      "audioTime": 49.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494610941
+    },
+    {
+      "audioTime": 50,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611014
+    },
+    {
+      "audioTime": 50.101333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611121
+    },
+    {
+      "audioTime": 50.21066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611222
+    },
+    {
+      "audioTime": 50.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611328
+    },
+    {
+      "audioTime": 50.42133333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611437
+    },
+    {
+      "audioTime": 50.49066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611508
+    },
+    {
+      "audioTime": 50.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611615
+    },
+    {
+      "audioTime": 50.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611721
+    },
+    {
+      "audioTime": 50.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611828
+    },
+    {
+      "audioTime": 50.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494611933
+    },
+    {
+      "audioTime": 51.02133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612040
+    },
+    {
+      "audioTime": 51.101333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612114
+    },
+    {
+      "audioTime": 51.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612218
+    },
+    {
+      "audioTime": 51.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612322
+    },
+    {
+      "audioTime": 51.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612425
+    },
+    {
+      "audioTime": 51.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612533
+    },
+    {
+      "audioTime": 51.62133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612640
+    },
+    {
+      "audioTime": 51.690666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612707
+    },
+    {
+      "audioTime": 51.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612819
+    },
+    {
+      "audioTime": 51.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494612940
+    },
+    {
+      "audioTime": 51.992,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613011
+    },
+    {
+      "audioTime": 52.101333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613118
+    },
+    {
+      "audioTime": 52.221333333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613234
+    },
+    {
+      "audioTime": 52.32,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613339
+    },
+    {
+      "audioTime": 52.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613423
+    },
+    {
+      "audioTime": 52.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613530
+    },
+    {
+      "audioTime": 52.62133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613635
+    },
+    {
+      "audioTime": 52.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613714
+    },
+    {
+      "audioTime": 52.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613820
+    },
+    {
+      "audioTime": 52.93066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494613946
+    },
+    {
+      "audioTime": 53,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614015
+    },
+    {
+      "audioTime": 53.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614130
+    },
+    {
+      "audioTime": 53.221333333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614233
+    },
+    {
+      "audioTime": 53.32,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614338
+    },
+    {
+      "audioTime": 53.42133333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614440
+    },
+    {
+      "audioTime": 53.49066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614512
+    },
+    {
+      "audioTime": 53.61066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614625
+    },
+    {
+      "audioTime": 53.730666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614745
+    },
+    {
+      "audioTime": 53.821333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614840
+    },
+    {
+      "audioTime": 53.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494614922
+    },
+    {
+      "audioTime": 54.032,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615045
+    },
+    {
+      "audioTime": 54.141333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615152
+    },
+    {
+      "audioTime": 54.17066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615191
+    },
+    {
+      "audioTime": 54.330666666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615342
+    },
+    {
+      "audioTime": 54.392,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615410
+    },
+    {
+      "audioTime": 54.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615523
+    },
+    {
+      "audioTime": 54.57066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615591
+    },
+    {
+      "audioTime": 54.72,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615736
+    },
+    {
+      "audioTime": 54.792,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615810
+    },
+    {
+      "audioTime": 54.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494615915
+    },
+    {
+      "audioTime": 55.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616023
+    },
+    {
+      "audioTime": 55.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616129
+    },
+    {
+      "audioTime": 55.221333333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616238
+    },
+    {
+      "audioTime": 55.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616313
+    },
+    {
+      "audioTime": 55.4,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616418
+    },
+    {
+      "audioTime": 55.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616524
+    },
+    {
+      "audioTime": 55.61066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616627
+    },
+    {
+      "audioTime": 55.72,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616734
+    },
+    {
+      "audioTime": 55.821333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616841
+    },
+    {
+      "audioTime": 55.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494616912
+    },
+    {
+      "audioTime": 56,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617017
+    },
+    {
+      "audioTime": 56.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617126
+    },
+    {
+      "audioTime": 56.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617216
+    },
+    {
+      "audioTime": 56.272,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617291
+    },
+    {
+      "audioTime": 56.42133333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617439
+    },
+    {
+      "audioTime": 56.461333333333336,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617474
+    },
+    {
+      "audioTime": 56.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617612
+    },
+    {
+      "audioTime": 56.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617717
+    },
+    {
+      "audioTime": 56.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617824
+    },
+    {
+      "audioTime": 56.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494617928
+    },
+    {
+      "audioTime": 57.02133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618037
+    },
+    {
+      "audioTime": 57.090666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618107
+    },
+    {
+      "audioTime": 57.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618215
+    },
+    {
+      "audioTime": 57.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618321
+    },
+    {
+      "audioTime": 57.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618423
+    },
+    {
+      "audioTime": 57.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618526
+    },
+    {
+      "audioTime": 57.632,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618643
+    },
+    {
+      "audioTime": 57.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618714
+    },
+    {
+      "audioTime": 57.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618820
+    },
+    {
+      "audioTime": 57.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494618922
+    },
+    {
+      "audioTime": 58.02133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619034
+    },
+    {
+      "audioTime": 58.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619138
+    },
+    {
+      "audioTime": 58.192,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619208
+    },
+    {
+      "audioTime": 58.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619318
+    },
+    {
+      "audioTime": 58.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619431
+    },
+    {
+      "audioTime": 58.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619536
+    },
+    {
+      "audioTime": 58.632,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619645
+    },
+    {
+      "audioTime": 58.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619715
+    },
+    {
+      "audioTime": 58.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619820
+    },
+    {
+      "audioTime": 58.912,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494619925
+    },
+    {
+      "audioTime": 59.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620029
+    },
+    {
+      "audioTime": 59.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620132
+    },
+    {
+      "audioTime": 59.232,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620243
+    },
+    {
+      "audioTime": 59.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620313
+    },
+    {
+      "audioTime": 59.4,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620416
+    },
+    {
+      "audioTime": 59.512,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620530
+    },
+    {
+      "audioTime": 59.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620615
+    },
+    {
+      "audioTime": 59.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620722
+    },
+    {
+      "audioTime": 59.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620824
+    },
+    {
+      "audioTime": 59.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494620933
+    },
+    {
+      "audioTime": 60.02133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621036
+    },
+    {
+      "audioTime": 60.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621139
+    },
+    {
+      "audioTime": 60.16,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621175
+    },
+    {
+      "audioTime": 60.312,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621322
+    },
+    {
+      "audioTime": 60.410666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621431
+    },
+    {
+      "audioTime": 60.49066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621507
+    },
+    {
+      "audioTime": 60.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621622
+    },
+    {
+      "audioTime": 60.712,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621725
+    },
+    {
+      "audioTime": 60.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621829
+    },
+    {
+      "audioTime": 60.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494621918
+    },
+    {
+      "audioTime": 61.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622025
+    },
+    {
+      "audioTime": 61.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622133
+    },
+    {
+      "audioTime": 61.2,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622217
+    },
+    {
+      "audioTime": 61.30133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622318
+    },
+    {
+      "audioTime": 61.4,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622421
+    },
+    {
+      "audioTime": 61.52,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622532
+    },
+    {
+      "audioTime": 61.62133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622634
+    },
+    {
+      "audioTime": 61.72,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622736
+    },
+    {
+      "audioTime": 61.821333333333335,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622841
+    },
+    {
+      "audioTime": 61.89066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494622909
+    },
+    {
+      "audioTime": 62,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623014
+    },
+    {
+      "audioTime": 62.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623122
+    },
+    {
+      "audioTime": 62.21066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623228
+    },
+    {
+      "audioTime": 62.32,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623335
+    },
+    {
+      "audioTime": 62.44,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623454
+    },
+    {
+      "audioTime": 62.472,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623492
+    },
+    {
+      "audioTime": 62.61066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623626
+    },
+    {
+      "audioTime": 62.730666666666664,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623744
+    },
+    {
+      "audioTime": 62.8,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623816
+    },
+    {
+      "audioTime": 62.90133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494623920
+    },
+    {
+      "audioTime": 63.010666666666665,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624024
+    },
+    {
+      "audioTime": 63.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624133
+    },
+    {
+      "audioTime": 63.221333333333334,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624240
+    },
+    {
+      "audioTime": 63.29066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624306
+    },
+    {
+      "audioTime": 63.36,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624375
+    },
+    {
+      "audioTime": 63.49066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624509
+    },
+    {
+      "audioTime": 63.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624612
+    },
+    {
+      "audioTime": 63.70133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624714
+    },
+    {
+      "audioTime": 63.81066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624822
+    },
+    {
+      "audioTime": 63.88,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494624892
+    },
+    {
+      "audioTime": 64.02133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625033
+    },
+    {
+      "audioTime": 64.12,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625136
+    },
+    {
+      "audioTime": 64.232,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625243
+    },
+    {
+      "audioTime": 64.29066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625310
+    },
+    {
+      "audioTime": 64.4,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625415
+    },
+    {
+      "audioTime": 64.50133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625517
+    },
+    {
+      "audioTime": 64.61066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625625
+    },
+    {
+      "audioTime": 64.712,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625723
+    },
+    {
+      "audioTime": 64.81066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625824
+    },
+    {
+      "audioTime": 64.92,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494625936
+    },
+    {
+      "audioTime": 65.02133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626039
+    },
+    {
+      "audioTime": 65.09066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626107
+    },
+    {
+      "audioTime": 65.16,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626174
+    },
+    {
+      "audioTime": 65.29066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626312
+    },
+    {
+      "audioTime": 65.4,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626413
+    },
+    {
+      "audioTime": 65.50133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626518
+    },
+    {
+      "audioTime": 65.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626620
+    },
+    {
+      "audioTime": 65.712,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626725
+    },
+    {
+      "audioTime": 65.82133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626840
+    },
+    {
+      "audioTime": 65.89066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494626912
+    },
+    {
+      "audioTime": 66,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627016
+    },
+    {
+      "audioTime": 66.112,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627128
+    },
+    {
+      "audioTime": 66.22133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627238
+    },
+    {
+      "audioTime": 66.29066666666667,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627307
+    },
+    {
+      "audioTime": 66.392,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627408
+    },
+    {
+      "audioTime": 66.50133333333333,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627519
+    },
+    {
+      "audioTime": 66.6,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627619
+    },
+    {
+      "audioTime": 66.72,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627740
+    },
+    {
+      "audioTime": 66.81066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627830
+    },
+    {
+      "audioTime": 66.89066666666666,
+      "rms": 0,
+      "state": "running",
+      "wall": 1791494627910
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+﻿Websockets Client Showcase
+Need a fully managed MQTT broker?
+
+Get your own Cloud broker and connect up to 100 devices for free.
+
+Get your free account
+Connection
+Publish
+Topic
+QoS
+0
+Retain
+Publish
+Message
+Messages
+2026-10-08 23:24:18
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":28,"timestamp":"2026-10-08T21:24:08Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:16
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":27,"timestamp":"2026-10-08T21:24:06Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:14
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":26,"timestamp":"2026-10-08T21:24:04Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:11
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":25,"timestamp":"2026-10-08T21:24:02Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:09
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":24,"timestamp":"2026-10-08T21:24:00Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:07
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":23,"timestamp":"2026-10-08T21:23:58Z","heart_rate":87,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:05
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":22,"timestamp":"2026-10-08T21:23:56Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:03
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":21,"timestamp":"2026-10-08T21:23:54Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:24:01
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":20,"timestamp":"2026-10-08T21:23:52Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:58
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":19,"timestamp":"2026-10-08T21:23:50Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:56
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":18,"timestamp":"2026-10-08T21:23:48Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:54
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":17,"timestamp":"2026-10-08T21:23:46Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:51
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":16,"timestamp":"2026-10-08T21:23:44Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:48
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/alerts
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","type":"sos","level":"danger","value":1.00,"timestamp":"2026-10-08T21:23:42Z"}
+2026-10-08 23:23:47
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":15,"timestamp":"2026-10-08T21:23:42Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:45
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":14,"timestamp":"2026-10-08T21:23:40Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:43
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":13,"timestamp":"2026-10-08T21:23:38Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:41
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":12,"timestamp":"2026-10-08T21:23:36Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:39
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":11,"timestamp":"2026-10-08T21:23:34Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:37
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":10,"timestamp":"2026-10-08T21:23:32Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:34
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":9,"timestamp":"2026-10-08T21:23:30Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:32
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":8,"timestamp":"2026-10-08T21:23:28Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:30
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":7,"timestamp":"2026-10-08T21:23:26Z","heart_rate":83,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:27
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":6,"timestamp":"2026-10-08T21:23:24Z","heart_rate":84,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:24
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/alerts
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","type":"sos","level":"danger","value":1.00,"timestamp":"2026-10-08T21:23:22Z"}
+2026-10-08 23:23:24
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":5,"timestamp":"2026-10-08T21:23:22Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:21
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":4,"timestamp":"2026-10-08T21:23:20Z","heart_rate":87,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:18
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":3,"timestamp":"2026-10-08T21:23:18Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:16
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":2,"timestamp":"2026-10-08T21:23:16Z","heart_rate":86,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:14
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":1,"timestamp":"2026-10-08T21:23:14Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:12
+Topic: digi5/lebretyves-ehpad-m1/patient/P001/vitals
+Qos: 0
+{"patient_id":"P001","device_id":"esp32-01","source":"esp32","seq":0,"timestamp":"2026-10-08T21:23:12Z","heart_rate":85,"accel_g":{"x":0.00,"y":0.00,"z":1.00},"accel_peak_g":1.00,"imu_ok":true,"alert_level":"info"}
+2026-10-08 23:23:12
+Topic: digi5/lebretyves-ehpad-m1/device/esp32-01/status
+Qos: 0
+{"state":"online","device_id":"esp32-01"}
+2026-10-08 23:20:55
+Topic: digi5/lebretyves-ehpad-m1/device/esp32-01/status
+Qos: 1
+{"state":"offline"}
+2026-10-08 23:20:24
+Topic: digi5/lebretyves-ehpad-m1/device/esp32-01/status
+Qos: 0
+Retained
+{"state":"online","device_id":"esp32-01"}
+Subscriptions
+Add New Topic Subscription
+x
+Qos: 2
+digi5/lebretyves-ehpad-m1/#
