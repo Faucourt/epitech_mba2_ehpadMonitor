@@ -1,0 +1,188 @@
+[
+  {
+    "fichier": "20261008_yves_s01_debout_poche-droite_r01.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      0
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791490833.748",
+        "system time text": "2026-10-08 22:20:33.748 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "2.001436894E1",
+        "system time": "1791490853.763",
+        "system time text": "2026-10-08 22:20:53.763 UTC+02:00"
+      }
+    ]
+  },
+  {
+    "fichier": "20261008_yves_s01_marche_poche-droite_r01.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      0
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791491099.324",
+        "system time text": "2026-10-08 22:24:59.324 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "3.000708020E1",
+        "system time": "1791491129.331",
+        "system time text": "2026-10-08 22:25:29.331 UTC+02:00"
+      }
+    ],
+    "frequence_dominante_marche_hz": 1.5,
+    "methode": "Norme, 1-29 s, interpolation 50 Hz, Hann, FFT 0.5-3 Hz; pas un comptage valide des pas."
+  },
+  {
+    "fichier": "20261008_yves_s01_assis-debout_poche-droite_r01.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      0
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791491309.436",
+        "system time text": "2026-10-08 22:28:29.436 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "3.001072793E1",
+        "system time": "1791491339.447",
+        "system time text": "2026-10-08 22:28:59.447 UTC+02:00"
+      }
+    ]
+  },
+  {
+    "fichier": "20261008_yves_s01_assis_poche-droite_r01.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      0
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791491614.763",
+        "system time text": "2026-10-08 22:33:34.763 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "2.000732894E1",
+        "system time": "1791491634.771",
+        "system time text": "2026-10-08 22:33:54.771 UTC+02:00"
+      }
+    ]
+  },
+  {
+    "fichier": "20261008_yves_s01_allonge_poche-droite_r01.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      0
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791491798.400",
+        "system time text": "2026-10-08 22:36:38.400 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "2.000902852E1",
+        "system time": "1791491818.409",
+        "system time text": "2026-10-08 22:36:58.409 UTC+02:00"
+      }
+    ]
+  },
+  {
+    "fichier": "20261008_yves_s01_chute-objet_lache_r01.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      12
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791491927.658",
+        "system time text": "2026-10-08 22:38:47.658 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "1.501293160E1",
+        "system time": "1791491942.671",
+        "system time text": "2026-10-08 22:39:02.671 UTC+02:00"
+      }
+    ]
+  },
+  {
+    "fichier": "20261008_yves_s01_chute-objet_lache_r02.csv",
+    "proche_limite_99pct_par_axe": [
+      4,
+      0,
+      14
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791492058.104",
+        "system time text": "2026-10-08 22:40:58.104 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "1.501454598E1",
+        "system time": "1791492073.119",
+        "system time text": "2026-10-08 22:41:13.119 UTC+02:00"
+      }
+    ]
+  },
+  {
+    "fichier": "20261008_yves_s01_chute-objet_lache_r03.csv",
+    "proche_limite_99pct_par_axe": [
+      0,
+      0,
+      12
+    ],
+    "limite_par_axe_ms2": 78.4532,
+    "horodatages_originaux": [
+      {
+        "event": "START",
+        "experiment time": "0.000000000E0",
+        "system time": "1791492590.304",
+        "system time text": "2026-10-08 22:49:50.304 UTC+02:00"
+      },
+      {
+        "event": "PAUSE",
+        "experiment time": "1.501003141E1",
+        "system time": "1791492605.314",
+        "system time text": "2026-10-08 22:50:05.314 UTC+02:00"
+      }
+    ]
+  }
+]

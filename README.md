@@ -1718,3 +1718,12 @@ La trajectoire prevoit :
 ```bash
 docker compose down
 ```
+
+
+## TP M1 phyphox - 8 octobre 2026
+
+Huit enregistrements reels et leurs metadonnees : [dossier phyphox](data/raw/phyphox/README.md).
+Deux chutes retenues : r02 et r03 ; r01 conserve comme essai supplementaire.
+Annotations estimees, equipe yves selon le choix utilisateur.
+Figures : [docs/figures/phyphox](docs/figures/phyphox/).
+Verification : `python scripts/verifier_tp_phyphox.py`.
